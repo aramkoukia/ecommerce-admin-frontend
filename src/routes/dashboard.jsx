@@ -1,6 +1,7 @@
 // @material-ui/icons
 import Dashboard from "@material-ui/icons/Dashboard";
 import Person from "@material-ui/icons/Person";
+import Highlight from "@material-ui/icons/Highlight";
 // import ContentPaste from "@material-ui/icons/ContentPaste";
 import LibraryBooks from "@material-ui/icons/LibraryBooks";
 import BubbleChart from "@material-ui/icons/BubbleChart";
@@ -21,14 +22,56 @@ const dashboardRoutes = [
   {
     path: "/dashboard",
     sidebarName: "Dashboard",
-    navbarName: "Material Dashboard",
+    navbarName: "Dashboard",
     icon: Dashboard,
     component: DashboardPage
   },
   {
-    path: "/user",
-    sidebarName: "User Profile",
-    navbarName: "Profile",
+    path: "/orders",
+    sidebarName: "Orders",
+    navbarName: "Orders",
+    icon: Person,
+    component: UserProfile
+  },
+  {
+    path: "/products",
+    sidebarName: "Products",
+    navbarName: "Products",
+    icon: Highlight,
+    component: UserProfile
+  },
+  {
+    path: "/customers",
+    sidebarName: "Customers",
+    navbarName: "Customers",
+    icon: Person,
+    component: UserProfile
+  },
+  {
+    path: "/discounts",
+    sidebarName: "Discounts",
+    navbarName: "Discounts",
+    icon: Person,
+    component: UserProfile
+  },
+  {
+    path: "/locations",
+    sidebarName: "Locations",
+    navbarName: "Locations",
+    icon: Person,
+    component: UserProfile
+  },
+  {
+    path: "/taxes",
+    sidebarName: "Taxes",
+    navbarName: "Taxes",
+    icon: Person,
+    component: UserProfile
+  },
+  {
+    path: "/users",
+    sidebarName: "Users",
+    navbarName: "Users",
     icon: Person,
     component: UserProfile
   },
@@ -67,13 +110,13 @@ const dashboardRoutes = [
     icon: Notifications,
     component: NotificationsPage
   },
-  {
-    path: "/upgrade-to-pro",
-    sidebarName: "Upgrade To PRO",
-    navbarName: "Upgrade To PRO",
-    icon: Unarchive,
-    component: UpgradeToPro
-  },
+  // {
+  //   path: "/upgrade-to-pro",
+  //   sidebarName: "Upgrade To PRO",
+  //   navbarName: "Upgrade To PRO",
+  //   icon: Unarchive,
+  //   component: UpgradeToPro
+  // },
   { redirect: true, path: "/", to: "/dashboard", navbarName: "Redirect" }
 ];
 
