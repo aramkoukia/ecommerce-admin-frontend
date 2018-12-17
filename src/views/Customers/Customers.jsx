@@ -4,15 +4,14 @@ import withStyles from "@material-ui/core/styles/withStyles";
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
-import Table from "components/Table/Table.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
-import Search from "@material-ui/icons/Search";
-// core components
-import CustomInput from "components/CustomInput/CustomInput.jsx";
 import Button from "components/CustomButtons/Button.jsx";
+
 import MUIDataTable from "mui-datatables";
+
+import AddCustomer from "views/Customers/AddCustomer";
 
 const styles = {
   cardCategoryWhite: {
@@ -62,6 +61,7 @@ function Customers(props) {
   return (
     <div>
       <Button color="primary">Add Customer</Button>
+      <AddCustomer />
       <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
         <Card>
