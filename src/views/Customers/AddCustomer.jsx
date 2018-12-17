@@ -99,6 +99,10 @@ const schema = {
       "type": "string",
       "title": "PST Number"
     },
+    "creditLimit": {
+      "type": "number",
+      "title": "Credit Limit"
+    },
     "userName": {
       "type": "string",
       "title": "User Name"
@@ -115,17 +119,18 @@ const schema = {
 }
 
 const uiSchema = {
+  // "ui:orientation": "row",
   "firstName": {
     "ui:autofocus": true,
-    "ui:emptyValue": ""
+    "ui:emptyValue": "",
   },
   "lastName": {
     "ui:autofocus": true,
-    "ui:emptyValue": ""
+    "ui:emptyValue": "",
   },
   "companyName": {
     "ui:autofocus": true,
-    "ui:emptyValue": ""
+    "ui:emptyValue": "",
   },
   "phoneNumber": {
     "ui:autofocus": true,
@@ -159,6 +164,10 @@ const uiSchema = {
   "ui:autofocus": true,
     "ui:emptyValue": ""
   },
+  "creditLimit": {
+    "ui:autofocus": true,
+    "ui:emptyValue": 0
+  },
   "userName": {
     "ui:autofocus": true,
     "ui:emptyValue": ""
@@ -185,6 +194,7 @@ const initialFormData = {
   "province": "",
   "postalCode": "",
   "pstNumber": "",
+  "creditLimit": 0,
   "userName": "",
   "email": "",
   "website": "",

@@ -19,6 +19,8 @@ import NotificationsPage from "views/Notifications/Notifications.jsx";
 import Customers from "views/Customers/Customers.jsx";
 import Products from "views/Products/Products.jsx";
 import Locations from "views/Locations/Locations.jsx";
+import AddOrder from "../views/Orders/AddOrder";
+import Orders from "../views/Orders/Orders";
 
 const dashboardRoutes = [
   {
@@ -29,16 +31,37 @@ const dashboardRoutes = [
     component: DashboardPage
   },
   {
+    path: "/neworder",
+    sidebarName: "New Order",
+    navbarName: "New Order",
+    icon: Person,
+    component: AddOrder
+  },
+  {
     path: "/orders",
     sidebarName: "Orders",
     navbarName: "Orders",
     icon: Person,
-    component: UserProfile
+    component: Orders
   },
   {
     path: "/products",
     sidebarName: "Products",
     navbarName: "Products",
+    icon: Highlight,
+    component: Products
+  },
+  {
+    path: "/transfers",
+    sidebarName: "Transfers",
+    navbarName: "Transfers",
+    icon: Highlight,
+    component: Products
+  },
+  {
+    path: "/purchases",
+    sidebarName: "Purchases",
+    navbarName: "Purchases",
     icon: Highlight,
     component: Products
   },
