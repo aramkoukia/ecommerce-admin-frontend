@@ -43,13 +43,14 @@ const styles = {
 
 function Products(props) {
   const { classes } = props;
-  const columns = ["Order Date", "Total", "PO Number", "Status", "Customer"];
+  const columns = ["Type", "Code", "Name", "Total Inventory", "Price"];
 
   const data = [
-    ["11/12/2019", "120.00", "2123", "Unpaid", "Aram Koukia"],
-    ["11/12/2019", "150.00", "2344", "Draft", "Test"],
-    ["11/12/2019", "10.00", "2344", "On Hold", ""],
-    ["11/12/2019", "150.00", "234", "Completed", ""],
+    ["Accesories", "1234", "LED 23232", "12", "123$"],
+    ["Accesories", "1234", "LED 23232", "132", "123$"],
+    ["Accesories", "1234", "LED 23232", "1542", "123$"],
+    ["Accesories", "1234", "LED 23232", "126", "123$"],
+    ["Accesories", "1234", "LED 23232", "152", "123$"],
   ];
 
   const options = {
