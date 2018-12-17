@@ -21,6 +21,11 @@ import Products from "views/Products/Products.jsx";
 import Locations from "views/Locations/Locations.jsx";
 import AddOrder from "../views/Orders/AddOrder";
 import Orders from "../views/Orders/Orders";
+import Discounts from "../views/Discounts/Discounts";
+import Taxes from "../views/Taxes/Taxes";
+import Users from "../views/Users/Users";
+import Transfers from "../views/Transfers/Transfers";
+import Purchases from "../views/Purchases/Purchases";
 
 const dashboardRoutes = [
   {
@@ -56,14 +61,14 @@ const dashboardRoutes = [
     sidebarName: "Transfers",
     navbarName: "Transfers",
     icon: Highlight,
-    component: Products
+    component: Transfers
   },
   {
     path: "/purchases",
     sidebarName: "Purchases",
     navbarName: "Purchases",
     icon: Highlight,
-    component: Products
+    component: Purchases
   },
   {
     path: "/customers",
@@ -77,7 +82,7 @@ const dashboardRoutes = [
     sidebarName: "Discounts",
     navbarName: "Discounts",
     icon: Person,
-    component: UserProfile
+    component: Discounts
   },
   {
     path: "/locations",
@@ -91,14 +96,14 @@ const dashboardRoutes = [
     sidebarName: "Taxes",
     navbarName: "Taxes",
     icon: Person,
-    component: UserProfile
+    component: Taxes
   },
   {
     path: "/users",
     sidebarName: "Users",
     navbarName: "Users",
     icon: Person,
-    component: UserProfile
+    component: Users
   },
   {
     path: "/table",
