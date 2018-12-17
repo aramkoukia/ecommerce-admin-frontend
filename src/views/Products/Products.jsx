@@ -4,10 +4,12 @@ import withStyles from "@material-ui/core/styles/withStyles";
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
-import Table from "components/Table/Table.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
+import Button from "components/CustomButtons/Button.jsx";
+
+import MUIDataTable from "mui-datatables";
 
 const styles = {
   cardCategoryWhite: {
@@ -41,33 +43,39 @@ const styles = {
 
 function Products(props) {
   const { classes } = props;
+  const columns = ["Order Date", "Total", "PO Number", "Status", "Customer"];
+
+  const data = [
+    ["11/12/2019", "120.00", "2123", "Unpaid", "Aram Koukia"],
+    ["11/12/2019", "150.00", "2344", "Draft", "Test"],
+    ["11/12/2019", "10.00", "2344", "On Hold", ""],
+    ["11/12/2019", "150.00", "234", "Completed", ""],
+  ];
+
+  const options = {
+    filterType: 'checkbox',
+  };
+
   return (
-    <GridContainer>
-      <GridItem xs={12} sm={12} md={12}>
-        <Card>
-          <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Simple Table</h4>
-            <p className={classes.cardCategoryWhite}>
-              Here is a subtitle for this table
-            </p>
-          </CardHeader>
-          <CardBody>
-            <Table
-              tableHeaderColor="primary"
-              tableHead={["Name", "Country", "City", "Salary"]}
-              tableData={[
-                ["Dakota Rice", "Niger", "Oud-Turnhout", "$36,738"],
-                ["Minerva Hooper", "Curaçao", "Sinaai-Waas", "$23,789"],
-                ["Sage Rodriguez", "Netherlands", "Baileux", "$56,142"],
-                ["Philip Chaney", "Korea, South", "Overland Park", "$38,735"],
-                ["Doris Greene", "Malawi", "Feldkirchen in Kärnten", "$63,542"],
-                ["Mason Porter", "Chile", "Gloucester", "$78,615"]
-              ]}
-            />
-          </CardBody>
-        </Card>
-      </GridItem>
-    </GridContainer>
+    <div>
+      <GridContainer>
+        <GridItem xs={12} sm={12} md={12}>
+          <Card>
+            <CardHeader color="primary">
+              <h4 className={classes.cardTitleWhite}>Products List</h4>
+            </CardHeader>
+            <CardBody>
+              <MUIDataTable
+                // title={"Employee List"}
+                data={data}
+                columns={columns}
+                options={options}
+              />
+            </CardBody>
+          </Card>
+        </GridItem>
+      </GridContainer>
+    </div>
   );
 }
 
