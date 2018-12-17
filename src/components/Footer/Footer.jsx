@@ -11,7 +11,7 @@ function Footer({ ...props }) {
   const { classes } = props;
   return (
     <footer className={classes.footer}>
-      <div className={classes.container}>
+      {/* <div className={classes.container}>
         <div className={classes.left}>
           <List className={classes.list}>
             <ListItem className={classes.inlineBlock}>
@@ -44,7 +44,7 @@ function Footer({ ...props }) {
             </a>, made with love for a better web
           </span>
         </p>
-      </div>
+      </div> */}
     </footer>
   );
 }

@@ -17,6 +17,8 @@ import Icons from "views/Icons/Icons.jsx";
 import Maps from "views/Maps/Maps.jsx";
 import NotificationsPage from "views/Notifications/Notifications.jsx";
 import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro.jsx";
+import Customers from "views/Customers/Customers.jsx";
+import Products from "views/Products/Products.jsx";
 
 const dashboardRoutes = [
   {
@@ -38,14 +40,14 @@ const dashboardRoutes = [
     sidebarName: "Products",
     navbarName: "Products",
     icon: Highlight,
-    component: UserProfile
+    component: Products
   },
   {
     path: "/customers",
     sidebarName: "Customers",
     navbarName: "Customers",
     icon: Person,
-    component: UserProfile
+    component: Customers
   },
   {
     path: "/discounts",
