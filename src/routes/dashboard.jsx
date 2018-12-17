@@ -16,9 +16,9 @@ import Typography from "views/Typography/Typography.jsx";
 import Icons from "views/Icons/Icons.jsx";
 import Maps from "views/Maps/Maps.jsx";
 import NotificationsPage from "views/Notifications/Notifications.jsx";
-import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro.jsx";
 import Customers from "views/Customers/Customers.jsx";
 import Products from "views/Products/Products.jsx";
+import Locations from "views/Locations/Locations.jsx";
 
 const dashboardRoutes = [
   {
@@ -61,7 +61,7 @@ const dashboardRoutes = [
     sidebarName: "Locations",
     navbarName: "Locations",
     icon: Person,
-    component: UserProfile
+    component: Locations
   },
   {
     path: "/taxes",
