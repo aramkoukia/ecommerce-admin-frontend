@@ -53,7 +53,7 @@ function Products(props) {
   ];
 
   const options = {
-    filterType: 'checkbox',
+    filterType: "checkbox",
   };
 
   return (
