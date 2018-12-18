@@ -20,10 +20,10 @@ export default class Locations extends React.Component {
   }
 
   componentDidMount() {
-    this.UserList();
+    this.LocationsList();
   }
 
-  UserList() {
+  LocationsList() {
     fetch("https://lightsandpartsapi.azurewebsites.net/api/locations")
       .then(response => response.json())
       .then(data => this.setState({ locations: data }));
