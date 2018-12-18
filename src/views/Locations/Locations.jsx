@@ -24,8 +24,16 @@ export default class Locations extends React.Component {
   }
 
   LocationsList() {
+    const columns = ["locationId", "locationName", "locationAddress"];
     fetch("https://lightsandpartsapi.azurewebsites.net/api/locations")
       .then(response => response.json())
+      .then(results => {
+        return results.map(row => {
+          return columns.map(column => {
+            return row[column] || "";
+          });
+        });
+      })
       .then(data => this.setState({ locations: data }));
   }
 
@@ -60,7 +68,7 @@ export default class Locations extends React.Component {
       }
     };
 
-    const columns = ["locationId", "locationName", "locationAddress"];
+    const columns = ["Location Id", "Location Name", "Location Address"];
     const options = {
       filterType: "checkbox",
     };
