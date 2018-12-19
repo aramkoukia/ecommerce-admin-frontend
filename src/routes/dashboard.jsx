@@ -1,20 +1,20 @@
 // @material-ui/icons
-import Dashboard from "@material-ui/icons/Dashboard";
+// import Dashboard from "@material-ui/icons/Dashboard";
 import Person from "@material-ui/icons/Person";
 import Highlight from "@material-ui/icons/Highlight";
 // import ContentPaste from "@material-ui/icons/ContentPaste";
-import LibraryBooks from "@material-ui/icons/LibraryBooks";
-import BubbleChart from "@material-ui/icons/BubbleChart";
-import LocationOn from "@material-ui/icons/LocationOn";
-import Notifications from "@material-ui/icons/Notifications";
-import Unarchive from "@material-ui/icons/Unarchive";
+// import LibraryBooks from "@material-ui/icons/LibraryBooks";
+// import BubbleChart from "@material-ui/icons/BubbleChart";
+// import LocationOn from "@material-ui/icons/LocationOn";
+// import Notifications from "@material-ui/icons/Notifications";
+// import Unarchive from "@material-ui/icons/Unarchive";
 // core components/views
-import DashboardPage from "views/Dashboard/Dashboard.jsx";
-import TableList from "views/TableList/TableList.jsx";
-import Typography from "views/Typography/Typography.jsx";
-import Icons from "views/Icons/Icons.jsx";
-import Maps from "views/Maps/Maps.jsx";
-import NotificationsPage from "views/Notifications/Notifications.jsx";
+import Reports from "views/Reports/Reports.jsx";
+// import TableList from "views/TableList/TableList.jsx";
+// import Typography from "views/Typography/Typography.jsx";
+// import Icons from "views/Icons/Icons.jsx";
+// import Maps from "views/Maps/Maps.jsx";
+// import NotificationsPage from "views/Notifications/Notifications.jsx";
 import Customers from "views/Customers/Customers.jsx";
 import Products from "views/Products/Products.jsx";
 import Locations from "views/Locations/Locations.jsx";
@@ -27,13 +27,13 @@ import Transfers from "../views/Transfers/Transfers";
 import Purchases from "../views/Purchases/Purchases";
 
 const dashboardRoutes = [
-  {
-    path: "/dashboard",
-    sidebarName: "Dashboard",
-    navbarName: "Dashboard",
-    icon: Dashboard,
-    component: DashboardPage
-  },
+  // {
+  //   path: "/dashboard",
+  //   sidebarName: "Dashboard",
+  //   navbarName: "Dashboard",
+  //   icon: Dashboard,
+  //   component: DashboardPage
+  // },
   {
     path: "/neworder",
     sidebarName: "New Order",
@@ -62,13 +62,13 @@ const dashboardRoutes = [
     icon: Highlight,
     component: Transfers
   },
-  {
-    path: "/purchases",
-    sidebarName: "Purchases",
-    navbarName: "Purchases",
-    icon: Highlight,
-    component: Purchases
-  },
+  // {
+  //   path: "/purchases",
+  //   sidebarName: "Purchases",
+  //   navbarName: "Purchases",
+  //   icon: Highlight,
+  //   component: Purchases
+  // },
   {
     path: "/customers",
     sidebarName: "Customers",
@@ -105,40 +105,47 @@ const dashboardRoutes = [
     component: Users
   },
   {
-    path: "/table",
-    sidebarName: "Table List",
-    navbarName: "Table List",
-    icon: "content_paste",
-    component: TableList
+    path: "/reports",
+    sidebarName: "Reports",
+    navbarName: "Reports",
+    icon: Person,
+    component: Reports
   },
-  {
-    path: "/typography",
-    sidebarName: "Typography",
-    navbarName: "Typography",
-    icon: LibraryBooks,
-    component: Typography
-  },
-  {
-    path: "/icons",
-    sidebarName: "Icons",
-    navbarName: "Icons",
-    icon: BubbleChart,
-    component: Icons
-  },
-  {
-    path: "/maps",
-    sidebarName: "Maps",
-    navbarName: "Map",
-    icon: LocationOn,
-    component: Maps
-  },
-  {
-    path: "/notifications",
-    sidebarName: "Notifications",
-    navbarName: "Notifications",
-    icon: Notifications,
-    component: NotificationsPage
-  },
+  // {
+  //   path: "/table",
+  //   sidebarName: "Table List",
+  //   navbarName: "Table List",
+  //   icon: "content_paste",
+  //   component: TableList
+  // },
+  // {
+  //   path: "/typography",
+  //   sidebarName: "Typography",
+  //   navbarName: "Typography",
+  //   icon: LibraryBooks,
+  //   component: Typography
+  // },
+  // {
+  //   path: "/icons",
+  //   sidebarName: "Icons",
+  //   navbarName: "Icons",
+  //   icon: BubbleChart,
+  //   component: Icons
+  // },
+  // {
+  //   path: "/maps",
+  //   sidebarName: "Maps",
+  //   navbarName: "Map",
+  //   icon: LocationOn,
+  //   component: Maps
+  // },
+  // {
+  //   path: "/notifications",
+  //   sidebarName: "Notifications",
+  //   navbarName: "Notifications",
+  //   icon: Notifications,
+  //   component: NotificationsPage
+  // },
   // {
   //   path: "/upgrade-to-pro",
   //   sidebarName: "Upgrade To PRO",
@@ -146,7 +153,7 @@ const dashboardRoutes = [
   //   icon: Unarchive,
   //   component: UpgradeToPro
   // },
-  { redirect: true, path: "/", to: "/dashboard", navbarName: "Redirect" }
+  { redirect: true, path: "/", to: "/reports", navbarName: "Redirect" }
 ];
 
 export default dashboardRoutes;
