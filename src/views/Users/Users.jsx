@@ -43,13 +43,11 @@ const styles = {
 
 function Users(props) {
   const { classes } = props;
-  const columns = ["Order Date", "Total", "PO Number", "Status", "Customer"];
+  const columns = ["First Name", "Last Name", "User Name", "Roles"];
 
   const data = [
-    ["11/12/2019", "120.00", "2123", "Unpaid", "Aram Koukia"],
-    ["11/12/2019", "150.00", "2344", "Draft", "Test"],
-    ["11/12/2019", "10.00", "2344", "On Hold", ""],
-    ["11/12/2019", "150.00", "234", "Completed", ""],
+    ["Aram", "Koukia", "aramk", "Admin"],
+    ["Mehdi", "Taheri", "mehdit", "Sales"],
   ];
 
   const options = {

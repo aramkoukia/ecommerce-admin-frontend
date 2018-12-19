@@ -43,13 +43,11 @@ const styles = {
 
 function Discounts(props) {
   const { classes } = props;
-  const columns = ["Order Date", "Total", "PO Number", "Status", "Customer"];
+  const columns = ["From Date", "To Date", "Customer With Tags", "Percent"];
 
   const data = [
-    ["11/12/2019", "120.00", "2123", "Unpaid", "Aram Koukia"],
-    ["11/12/2019", "150.00", "2344", "Draft", "Test"],
-    ["11/12/2019", "10.00", "2344", "On Hold", ""],
-    ["11/12/2019", "150.00", "234", "Completed", ""],
+    ["11/12/2018", "11/12/2019", "Promotion", "5%"],
+    ["09/09/2018", "10/08/2022", "Wholesales", "10%"],
   ];
 
   const options = {
@@ -62,7 +60,7 @@ function Discounts(props) {
         <GridItem xs={12} sm={12} md={12}>
           <Card>
             <CardHeader color="primary">
-              <h4 className={classes.cardTitleWhite}>Products List</h4>
+              <h4 className={classes.cardTitleWhite}>Discounts</h4>
             </CardHeader>
             <CardBody>
               <MUIDataTable
