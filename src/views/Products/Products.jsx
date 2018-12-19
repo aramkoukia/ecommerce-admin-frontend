@@ -10,74 +10,94 @@ import CardBody from "components/Card/CardBody.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 
 import MUIDataTable from "mui-datatables";
+import AddLocation from "views/Locations/AddLocation";
 
-const styles = {
-  cardCategoryWhite: {
-    "&,& a,& a:hover,& a:focus": {
-      color: "rgba(255,255,255,.62)",
-      margin: "0",
-      fontSize: "14px",
-      marginTop: "0",
-      marginBottom: "0"
-    },
-    "& a,& a:hover,& a:focus": {
-      color: "#FFFFFF"
-    }
-  },
-  cardTitleWhite: {
-    color: "#FFFFFF",
-    marginTop: "0px",
-    minHeight: "auto",
-    fontWeight: "300",
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-    marginBottom: "3px",
-    textDecoration: "none",
-    "& small": {
-      color: "#777",
-      fontSize: "65%",
-      fontWeight: "400",
-      lineHeight: "1"
-    }
+export default class Locations extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = { products: [] };
   }
-};
 
-function Products(props) {
-  const { classes } = props;
-  const columns = ["Type", "Code", "Name", "Total Inventory", "Price"];
+  componentDidMount() {
+    this.LocationsList();
+  }
 
-  const data = [
-    ["Accesories", "1234", "LED 23232", "12", "123$"],
-    ["Accesories", "1234", "LED 23232", "132", "123$"],
-    ["Accesories", "1234", "LED 23232", "1542", "123$"],
-    ["Accesories", "1234", "LED 23232", "126", "123$"],
-    ["Accesories", "1234", "LED 23232", "152", "123$"],
-  ];
+  LocationsList() {
+    const columns = ["productCode", "productName", "salesPrice"];
+    fetch("https://lightsandpartsapi.azurewebsites.net/api/products")
+      .then(response => response.json())
+      .then(results => {
+        return results.map(row => {
+          return columns.map(column => {
+            return row[column] || "";
+          });
+        });
+      })
+      .then(data => this.setState({ products: data }));
+  }
 
-  const options = {
-    filterType: "checkbox",
-  };
+  render() {
+    const styles = {
+      cardCategoryWhite: {
+        "&,& a,& a:hover,& a:focus": {
+          color: "rgba(255,255,255,.62)",
+          margin: "0",
+          fontSize: "14px",
+          marginTop: "0",
+          marginBottom: "0"
+        },
+        "& a,& a:hover,& a:focus": {
+          color: "#FFFFFF"
+        }
+      },
+      cardTitleWhite: {
+        color: "#FFFFFF",
+        marginTop: "0px",
+        minHeight: "auto",
+        fontWeight: "300",
+        fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+        marginBottom: "3px",
+        textDecoration: "none",
+        "& small": {
+          color: "#777",
+          fontSize: "65%",
+          fontWeight: "400",
+          lineHeight: "1"
+        }
+      }
+    };
 
-  return (
-    <div>
-      <GridContainer>
-        <GridItem xs={12} sm={12} md={12}>
-          <Card>
-            <CardHeader color="primary">
-              <h4 className={classes.cardTitleWhite}>Products List</h4>
-            </CardHeader>
-            <CardBody>
-              <MUIDataTable
-                // title={"Employee List"}
-                data={data}
-                columns={columns}
-                options={options}
-              />
-            </CardBody>
-          </Card>
-        </GridItem>
-      </GridContainer>
-    </div>
-  );
+    const columns = ["Code", "Name", "Price", "Type", "Total Inventory"];
+
+    const options = {
+      filterType: "checkbox",
+    };
+
+    const { products } = this.state;
+
+    return (
+      <div>
+        <GridContainer>
+          <GridItem xs={12} sm={12} md={12}>
+            <Card>
+              <CardHeader color="primary">
+                <h4 className={styles.cardTitleWhite}>Products List</h4>
+              </CardHeader>
+              <CardBody>
+                <MUIDataTable
+                  // title={"Employee List"}
+                  data={products}
+                  columns={columns}
+                  options={options}
+                />
+              </CardBody>
+            </Card>
+          </GridItem>
+        </GridContainer>
+      </div>
+    );
+  }
 }
 
-export default withStyles(styles)(Products);
+// export default withStyles(styles)(Locations);
