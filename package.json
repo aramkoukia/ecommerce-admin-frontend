@@ -1,7 +1,7 @@
 {
-  "name": "material-dashboard-react",
+  "name": "",
   "version": "1.5.0",
-  "description": "Material Dashboard React. Coded by Creative Tim",
+  "description": "",
   "private": false,
   "main": "dist/index.js",
   "dependencies": {
@@ -36,15 +36,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/creativetimofficial/material-dashboard-react.git"
+    "url": ""
   },
   "keywords": [],
-  "author": "Creative Tim <hello@creative-tim.com> (https://www.creative-tim.com/)",
+  "author": "Aram Koukia",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/creativetimofficial/material-dashboard-react/issues"
+    "url": ""
   },
-  "homepage": "https://creativetimofficial.github.io/material-dashboard-react/#/dashboard",
+  "homepage": "https://koukia.ca",
   "optionalDependencies": {
     "babel-eslint": "7.2.3",
     "eslint": "4.19.1",
