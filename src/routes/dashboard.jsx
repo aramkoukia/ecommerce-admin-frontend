@@ -5,7 +5,7 @@ import Highlight from "@material-ui/icons/Highlight";
 // import ContentPaste from "@material-ui/icons/ContentPaste";
 // import LibraryBooks from "@material-ui/icons/LibraryBooks";
 // import BubbleChart from "@material-ui/icons/BubbleChart";
-// import LocationOn from "@material-ui/icons/LocationOn";
+import LocationOn from "@material-ui/icons/LocationOn";
 // import Notifications from "@material-ui/icons/Notifications";
 // import Unarchive from "@material-ui/icons/Unarchive";
 // core components/views
@@ -13,7 +13,7 @@ import Reports from "views/Reports/Reports.jsx";
 // import TableList from "views/TableList/TableList.jsx";
 // import Typography from "views/Typography/Typography.jsx";
 // import Icons from "views/Icons/Icons.jsx";
-// import Maps from "views/Maps/Maps.jsx";
+import Maps from "views/Maps/Maps.jsx";
 // import NotificationsPage from "views/Notifications/Notifications.jsx";
 import Customers from "views/Customers/Customers.jsx";
 import Products from "views/Products/Products.jsx";
@@ -25,6 +25,7 @@ import Taxes from "../views/Taxes/Taxes";
 import Users from "../views/Users/Users";
 import Transfers from "../views/Transfers/Transfers";
 import Purchases from "../views/Purchases/Purchases";
+import { SignIn } from "../views/Login/Auth";
 
 const dashboardRoutes = [
   // {
@@ -111,6 +112,13 @@ const dashboardRoutes = [
     icon: Person,
     component: Reports
   },
+  {
+    path: "/login",
+    sidebarName: "",
+    navbarName: "",
+    icon: Person,
+    component: SignIn
+  },
   // {
   //   path: "/table",
   //   sidebarName: "Table List",
@@ -153,7 +161,7 @@ const dashboardRoutes = [
   //   icon: Unarchive,
   //   component: UpgradeToPro
   // },
-  { redirect: true, path: "/", to: "/reports", navbarName: "Redirect" }
+  { redirect: true, path: "/", to: "/login", navbarName: "Redirect" }
 ];
 
 export default dashboardRoutes;

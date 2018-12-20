@@ -1,8 +1,18 @@
 import * as React from "react";
 import { Link, Redirect, RouteComponentProps } from "react-router-dom";
-import { RoutePaths } from "./Routes";
+import { RoutePaths } from "../../routes/routes";
 import AuthService from "../../services/Auth";
-let authStyle = require("../styles/auth.styl");
+import CustomInput from "components/CustomInput/CustomInput.jsx";
+import Button from "components/CustomButtons/Button.jsx";
+import GridItem from "components/Grid/GridItem.jsx";
+import GridContainer from "components/Grid/GridContainer.jsx";
+import Card from "components/Card/Card.jsx";
+import CardHeader from "components/Card/CardHeader.jsx";
+// import CardAvatar from "components/Card/CardAvatar.jsx";
+import CardBody from "components/Card/CardBody.jsx";
+// import CardFooter from "components/Card/CardFooter.jsx";
+
+// let authStyle = require("../../styles/auth.styl");
 let authService = new AuthService();
 
 export class SignIn extends React.Component {
@@ -32,6 +42,24 @@ export class SignIn extends React.Component {
   }
 
   render() {
+    const styles = {
+      cardCategoryWhite: {
+        color: "rgba(255,255,255,.62)",
+        margin: "0",
+        fontSize: "14px",
+        marginTop: "0",
+        marginBottom: "0"
+      },
+      cardTitleWhite: {
+        color: "#FFFFFF",
+        marginTop: "0px",
+        minHeight: "auto",
+        fontWeight: "300",
+        fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+        marginBottom: "3px",
+        textDecoration: "none"
+      }
+    };
     const search = this.props.location.search;
     const params = new URLSearchParams(search);
 
@@ -65,19 +93,24 @@ export class SignIn extends React.Component {
       }
     }
     return (
-      <div className={authStyle.auth}>
-        <form
-          className={authStyle.formAuth}
-          onSubmit={e => this.handleSubmit(e)}
-        >
-          <h2 className={authStyle.formAuthHeading}>Please sign in</h2>
-          {initialLoadContent}
-          {this.state.error && (
-            <div className="alert alert-danger" role="alert">
-              {this.state.error}
-            </div>
-          )}
-          <label htmlFor="inputEmail" className="form-control-label sr-only">
+      <div>
+        <form onSubmit={e => this.handleSubmit(e)}>
+          <GridContainer>
+            <GridItem xs={12} sm={6} md={3} />
+            <GridItem xs={12} sm={6} md={3}>
+              <Card>
+                <CardHeader color="primary">
+                  <h4 className={styles.cardTitleWhite}>Please Sign In</h4>
+                  {initialLoadContent}
+                  {this.state.error && (
+                    <div className="alert alert-danger" role="alert">
+                      {this.state.error}
+                    </div>
+                  )}
+                </CardHeader>
+                <CardBody>
+                  <GridContainer>
+                    {/* <label htmlFor="inputEmail" className="form-control-label sr-only">
             Email address
           </label>
           <input
@@ -86,9 +119,26 @@ export class SignIn extends React.Component {
             ref="username"
             defaultValue="user@test.com"
             className="form-control form-control-danger"
-            placeholder="Email address"
-          />
-          <label htmlFor="inputPassword" className="form-control-label sr-only">
+            placeholder="User Name"
+          /> */}
+                    <GridItem xs={12} sm={12} md={12}>
+                      <CustomInput
+                        labelText="User Name"
+                        id="username"
+                        formControlProps={{
+                          fullWidth: true
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={12}>
+                      <CustomInput
+                        labelText="Password"
+                        id="password"
+                        formControlProps={{
+                          fullWidth: true
+                        }}
+                      />
+                      {/* <label htmlFor="inputPassword" className="form-control-label sr-only">
             Password
           </label>
           <input
@@ -98,14 +148,18 @@ export class SignIn extends React.Component {
             defaultValue="P2ssw0rd!"
             className="form-control"
             placeholder="Password"
-          />
-          <button className="btn btn-lg btn-primary btn-block" type="submit">
-            Sign in
-          </button>
+          /> */}
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={12}>
+                      <Button color="primary">Sign In</Button>
+                    </GridItem>
+                  </GridContainer>
+                </CardBody>
+              </Card>
+            </GridItem>
+            <GridItem xs={12} sm={6} md={3} />
+          </GridContainer>
         </form>
-        <div className={authStyle.authEtc}>
-          <Link to="/register">Register</Link>
-        </div>
       </div>
     );
   }
@@ -150,14 +204,9 @@ export class Register extends React.Component {
       return <RegisterComplete email={this.refs.email.value} />;
     } else {
       return (
-        <div className={authStyle.auth}>
-          <form
-            className={authStyle.formAuth}
-            onSubmit={e => this.handleSubmit(e)}
-          >
-            <h2 className={authStyle.formAuthHeading}>
-              Please register for access
-            </h2>
+        <div>
+          <form onSubmit={e => this.handleSubmit(e)}>
+            <h2>Please register for access</h2>
             {this.state.errors.general && (
               <div className="alert alert-danger" role="alert">
                 {this.state.errors.general}
@@ -202,7 +251,7 @@ export class Register extends React.Component {
 export class RegisterComplete extends React.Component {
   render() {
     return (
-      <div className={authStyle.auth}>
+      <div>
         <div className="alert alert-success" role="alert">
           <strong>Success!</strong> Your account has been created.
         </div>

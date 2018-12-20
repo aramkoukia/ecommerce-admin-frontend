@@ -31,8 +31,8 @@ const styles = {
 const schema = {
   // "title": "A registration form",
   // "description": "A simple form example.",
-  "type": "object",
-  "required": [
+  type: "object",
+  required: [
     "firstName",
     "lastName",
     "companyName",
@@ -43,162 +43,155 @@ const schema = {
     "city",
     "postalCode",
     "userName",
-    "email",
+    "email"
   ],
-  "properties": {
-    "firstName": {
-      "type": "string",
-      "title": "First Name"
+  properties: {
+    firstName: {
+      type: "string",
+      title: "First Name"
     },
-    "lastName": {
-      "type": "string",
-      "title": "Last Name"
+    lastName: {
+      type: "string",
+      title: "Last Name"
     },
-    "companyName": {
-      "type": "string",
-      "title": "Company Name"
+    companyName: {
+      type: "string",
+      title: "Company Name"
     },
-    "phoneNumber": {
-      "type": "string",
-      "title": "Phone Number"
+    phoneNumber: {
+      type: "string",
+      title: "Phone Number"
     },
-    "mobile": {
-      "type": "string",
-      "title": "Mobile"
+    mobile: {
+      type: "string",
+      title: "Mobile"
     },
-    "country": {
-      "type": "string",
-      "title": "Country",
-      "enum": [
-        "Canada",
-        "United States",
-      ]
+    country: {
+      type: "string",
+      title: "Country",
+      enum: ["Canada", "United States"]
     },
-    "address": {
-      "type": "string",
-      "title": "Address"
+    address: {
+      type: "string",
+      title: "Address"
     },
-    "city": {
-      "type": "string",
-      "title": "City"
+    city: {
+      type: "string",
+      title: "City"
     },
-    "province": {
-      "type": "string",
-      "title": "Province",
-      "enum": [
-        "British Columbia",
-        "Alberta",
-        "Ontario",
-      ]
+    province: {
+      type: "string",
+      title: "Province",
+      enum: ["British Columbia", "Alberta", "Ontario"]
     },
-    "postalCode": {
-      "type": "string",
-      "title": "Postal Code"
+    postalCode: {
+      type: "string",
+      title: "Postal Code"
     },
-    "pstNumber": {
-      "type": "string",
-      "title": "PST Number"
+    pstNumber: {
+      type: "string",
+      title: "PST Number"
     },
-    "creditLimit": {
-      "type": "number",
-      "title": "Credit Limit"
+    creditLimit: {
+      type: "number",
+      title: "Credit Limit"
     },
-    "userName": {
-      "type": "string",
-      "title": "User Name"
+    userName: {
+      type: "string",
+      title: "User Name"
     },
-    "email": {
-      "type": "string",
-      "title": "Email"
+    email: {
+      type: "string",
+      title: "Email"
     },
-    "website": {
-      "type": "string",
-      "title": "Website"
-    },
+    website: {
+      type: "string",
+      title: "Website"
+    }
   }
-}
+};
 
 const uiSchema = {
   // "ui:orientation": "row",
-  "firstName": {
-    "ui:autofocus": true,
-    "ui:emptyValue": "",
-  },
-  "lastName": {
-    "ui:autofocus": true,
-    "ui:emptyValue": "",
-  },
-  "companyName": {
-    "ui:autofocus": true,
-    "ui:emptyValue": "",
-  },
-  "phoneNumber": {
+  firstName: {
     "ui:autofocus": true,
     "ui:emptyValue": ""
   },
-  "mobile": {
+  lastName: {
     "ui:autofocus": true,
     "ui:emptyValue": ""
   },
-  "country": {
+  companyName: {
     "ui:autofocus": true,
     "ui:emptyValue": ""
   },
-  "address": {
+  phoneNumber: {
     "ui:autofocus": true,
     "ui:emptyValue": ""
   },
-  "city": {
+  mobile: {
     "ui:autofocus": true,
     "ui:emptyValue": ""
   },
-  "province": {
+  country: {
     "ui:autofocus": true,
     "ui:emptyValue": ""
   },
-  "postalCode": {
+  address: {
     "ui:autofocus": true,
     "ui:emptyValue": ""
   },
-  "pstNumber": {
-  "ui:autofocus": true,
+  city: {
+    "ui:autofocus": true,
     "ui:emptyValue": ""
   },
-  "creditLimit": {
+  province: {
+    "ui:autofocus": true,
+    "ui:emptyValue": ""
+  },
+  postalCode: {
+    "ui:autofocus": true,
+    "ui:emptyValue": ""
+  },
+  pstNumber: {
+    "ui:autofocus": true,
+    "ui:emptyValue": ""
+  },
+  creditLimit: {
     "ui:autofocus": true,
     "ui:emptyValue": 0
   },
-  "userName": {
+  userName: {
     "ui:autofocus": true,
     "ui:emptyValue": ""
   },
-  "email": {
+  email: {
     "ui:autofocus": true,
     "ui:emptyValue": ""
   },
-  "website": {
+  website: {
     "ui:autofocus": true,
     "ui:emptyValue": ""
-  },
-}
+  }
+};
 
 const initialFormData = {
-  "firstName": "",
-  "lastName": "",
-  "companyName": "",
-  "phoneNumber": "",
-  "mobile": "",
-  "country": "",
-  "address": "",
-  "city": "",
-  "province": "",
-  "postalCode": "",
-  "pstNumber": "",
-  "creditLimit": 0,
-  "userName": "",
-  "email": "",
-  "website": "",
-}
+  firstName: "",
+  lastName: "",
+  companyName: "",
+  phoneNumber: "",
+  mobile: "",
+  country: "",
+  address: "",
+  city: "",
+  province: "",
+  postalCode: "",
+  pstNumber: "",
+  creditLimit: 0,
+  userName: "",
+  email: "",
+  website: ""
+};
 
 function AddCustomer(props) {
   return (
@@ -207,9 +200,9 @@ function AddCustomer(props) {
       schema={schema}
       uiSchema={uiSchema}
       formData={initialFormData}
-    //onCancel={this.onCancel}
-    //onSubmit={this.onSubmit}
-    //onChange={this.onFormChanged}
+      //onCancel={this.onCancel}
+      //onSubmit={this.onSubmit}
+      //onChange={this.onFormChanged}
     />
   );
 }

@@ -40,9 +40,15 @@ class App extends React.Component {
   handleDrawerToggle = () => {
     this.setState({ mobileOpen: !this.state.mobileOpen });
   };
+
   getRoute() {
     return this.props.location.pathname !== "/maps";
   }
+
+  isLogin() {
+    return this.props.location.pathname === "/login";
+  }
+
   resizeFunction() {
     if (window.innerWidth >= 960) {
       this.setState({ mobileOpen: false });
@@ -69,22 +75,28 @@ class App extends React.Component {
     const { classes, ...rest } = this.props;
     return (
       <div className={classes.wrapper}>
-        <Sidebar
-          routes={dashboardRoutes}
-          logoText={"Lights and Parts"}
-          logo={logo}
-          image={image}
-          handleDrawerToggle={this.handleDrawerToggle}
-          open={this.state.mobileOpen}
-          color="blue"
-          {...rest}
-        />
+      
+        { !this.isLogin() ? (
+          <Sidebar
+            routes={dashboardRoutes}
+            logoText={"Lights and Parts"}
+            logo={logo}
+            image={image}
+            handleDrawerToggle={this.handleDrawerToggle}
+            open={this.state.mobileOpen}
+            color="blue"
+            {...rest}
+          /> ) : <div></div>
+        }
+
         <div className={classes.mainPanel} ref="mainPanel">
+
           <Header
             routes={dashboardRoutes}
             handleDrawerToggle={this.handleDrawerToggle}
             {...rest}
           />
+
           {/* On the /maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}
           {this.getRoute() ? (
             <div className={classes.content}>
