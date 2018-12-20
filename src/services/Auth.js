@@ -8,7 +8,7 @@ export default class Auth {
 
   signInOrRegister(email, password, isRegister) {
     return RestUtilities.post(
-      `/api/auth/${isRegister ? "register" : "login"}`,
+      `https://lightsandpartsapi.azurewebsites.net/api/auth/${isRegister ? "register" : "login"}`,
       `username=${email}&password=${password}${
         !isRegister ? "&grant_type=password" : ""
       }`
@@ -29,7 +29,7 @@ export default class Auth {
   }
 
   confirm(token) {
-    return RestUtilities.post("/api/auth/confirm", { token: token })
+    return RestUtilities.post("https://lightsandpartsapi.azurewebsites.net/api/auth/confirm", { token: token })
       .then(response => {
         return true;
       })

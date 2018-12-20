@@ -21,17 +21,26 @@ export class SignIn extends React.Component {
   //   password;
   // };
 
-  state = {
-    initialLoad: true,
-    error: null
-  };
+  constructor(props) {
+    super(props);
 
-  handleSubmit(event) {
-    event.preventDefault();
+    this.state = {
+      initialLoad: true,
+      userInfo: {
+        username: "",
+        password: ""
+      },
+      error: null
+    };
 
+    this.handleSignIn = this.handleSignIn.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
+  }
+
+  handleSignIn(event) {
     this.setState({ errors: null, initialLoad: false });
     authService
-      .signIn(this.refs.username.value, this.refs.password.value)
+      .signIn(this.state.userInfo.username, this.state.userInfo.password)
       .then(response => {
         if (!response.is_error) {
           this.props.history.push(RoutePaths.Contacts);
@@ -39,6 +48,19 @@ export class SignIn extends React.Component {
           this.setState({ error: response.error_content.error_description });
         }
       });
+  }
+
+  handleInputChange(event) {
+    const target = event.target;
+    const name = target.name;
+    const value = target.value;
+    let userInfoUpdates = {
+      [name]: value
+    };
+    //const { state } = this.state.userInfo;
+    this.setState({
+      userInfo: Object.assign(this.state.userInfo, userInfoUpdates)
+    });
   }
 
   render() {
@@ -94,175 +116,62 @@ export class SignIn extends React.Component {
     }
     return (
       <div>
-        <form onSubmit={e => this.handleSubmit(e)}>
-          <GridContainer>
-            <GridItem xs={12} sm={6} md={3} />
-            <GridItem xs={12} sm={6} md={3}>
-              <Card>
-                <CardHeader color="primary">
-                  <h4 className={styles.cardTitleWhite}>Please Sign In</h4>
-                  {initialLoadContent}
-                  {this.state.error && (
-                    <div className="alert alert-danger" role="alert">
-                      {this.state.error}
-                    </div>
-                  )}
-                </CardHeader>
-                <CardBody>
-                  <GridContainer>
-                    {/* <label htmlFor="inputEmail" className="form-control-label sr-only">
-            Email address
-          </label>
-          <input
-            type="email"
-            id="inputEmail"
-            ref="username"
-            defaultValue="user@test.com"
-            className="form-control form-control-danger"
-            placeholder="User Name"
-          /> */}
-                    <GridItem xs={12} sm={12} md={12}>
-                      <CustomInput
-                        labelText="User Name"
-                        id="username"
-                        formControlProps={{
-                          fullWidth: true
-                        }}
-                      />
-                    </GridItem>
-                    <GridItem xs={12} sm={12} md={12}>
-                      <CustomInput
-                        labelText="Password"
-                        id="password"
-                        formControlProps={{
-                          fullWidth: true
-                        }}
-                      />
-                      {/* <label htmlFor="inputPassword" className="form-control-label sr-only">
-            Password
-          </label>
-          <input
-            type="password"
-            id="inputPassword"
-            ref="password"
-            defaultValue="P2ssw0rd!"
-            className="form-control"
-            placeholder="Password"
-          /> */}
-                    </GridItem>
-                    <GridItem xs={12} sm={12} md={12}>
-                      <Button color="primary">Sign In</Button>
-                    </GridItem>
-                  </GridContainer>
-                </CardBody>
-              </Card>
-            </GridItem>
-            <GridItem xs={12} sm={6} md={3} />
-          </GridContainer>
-        </form>
-      </div>
-    );
-  }
-}
-
-export class Register extends React.Component {
-  // refs: {
-  //   email;
-  //   password;
-  // };
-
-  state = {
-    registerComplete: false,
-    errors: ""
-  };
-
-  handleSubmit(event) {
-    event.preventDefault();
-
-    this.setState({ errors: {} });
-    authService
-      .register(this.refs.email.value, this.refs.password.value)
-      .then(response => {
-        if (!response.is_error) {
-          this.setState({ registerComplete: true });
-        } else {
-          this.setState({ errors: response.error_content });
-        }
-      });
-  }
-
-  _formGroupClass(field) {
-    var className = "form-group ";
-    if (field) {
-      className += " has-danger";
-    }
-    return className;
-  }
-
-  render() {
-    if (this.state.registerComplete) {
-      return <RegisterComplete email={this.refs.email.value} />;
-    } else {
-      return (
-        <div>
-          <form onSubmit={e => this.handleSubmit(e)}>
-            <h2>Please register for access</h2>
-            {this.state.errors.general && (
-              <div className="alert alert-danger" role="alert">
-                {this.state.errors.general}
-              </div>
-            )}
-            <div className={this._formGroupClass(this.state.errors.username)}>
-              <label htmlFor="inputEmail">Email address</label>
-              <input
-                type="email"
-                id="inputEmail"
-                ref="email"
-                className="form-control"
-                placeholder="Email address"
-              />
-              <div className="form-control-feedback">
-                {this.state.errors.username}
-              </div>
-            </div>
-            <div className={this._formGroupClass(this.state.errors.password)}>
-              <label htmlFor="inputPassword">Password</label>
-              <input
-                type="password"
-                id="inputPassword"
-                ref="password"
-                className="form-control"
-                placeholder="Password"
-              />
-              <div className="form-control-feedback">
-                {this.state.errors.password}
-              </div>
-            </div>
-            <button className="btn btn-lg btn-primary btn-block" type="submit">
-              Sign up
-            </button>
-          </form>
-        </div>
-      );
-    }
-  }
-}
-
-export class RegisterComplete extends React.Component {
-  render() {
-    return (
-      <div>
-        <div className="alert alert-success" role="alert">
-          <strong>Success!</strong> Your account has been created.
-        </div>
-        <p>
-          A confirmation email has been sent to {this.props.email}. You will
-          need to follow the provided link to confirm your email address before
-          signing in.
-        </p>
-        <Link className="btn btn-lg btn-primary btn-block" role="button" to="/">
-          Sign in
-        </Link>
+        <GridContainer>
+          <GridItem xs={12} sm={6} md={4} />
+          <GridItem xs={12} sm={6} md={3}>
+            <Card>
+              <CardHeader color="primary">
+                <h4 className={styles.cardTitleWhite}>
+                  Lights and Parts - Sign In
+                </h4>
+                {initialLoadContent}
+                {this.state.error && (
+                  <div className="alert alert-danger" role="alert">
+                    {this.state.error}
+                  </div>
+                )}
+              </CardHeader>
+              <CardBody>
+                <GridContainer>
+                  <GridItem xs={12} sm={12} md={12}>
+                    <CustomInput
+                      value={this.state.userInfo.username}
+                      labelText="User Name"
+                      id="username"
+                      formControlProps={{
+                        fullWidth: true
+                      }}
+                      inputProps={{
+                        onChange: this.handleInputChange,
+                        name: "username"
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={12}>
+                    <CustomInput
+                      value={this.state.userInfo.password}
+                      labelText="Password"
+                      id="password"
+                      formControlProps={{
+                        fullWidth: true
+                      }}
+                      inputProps={{
+                        onChange: this.handleInputChange,
+                        name: "password"
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={12}>
+                    <Button color="primary" onClick={this.handleSignIn}>
+                      Sign In
+                    </Button>
+                  </GridItem>
+                </GridContainer>
+              </CardBody>
+            </Card>
+          </GridItem>
+          <GridItem xs={12} sm={6} md={4} />
+        </GridContainer>
       </div>
     );
   }

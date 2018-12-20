@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Route, Redirect, Switch } from "react-router-dom";
-import { SignIn, Register } from "../views/Login/Auth";
+import { SignIn } from "../views/Login/Auth";
 import AuthService from "../services/Auth.js";
 import { ErrorPage } from "../views/Error/Error";
 // import { Contacts } from "./Contacts";
@@ -12,7 +12,7 @@ export class RoutePaths {
   static ContactEdit = "/contacts/edit/:id";
   static ContactNew = "/contacts/new";
   static SignIn = "/";
-  static Register = "/register/";
+  // static Register = "/register/";
 }
 
 export default class Routes extends React.Component {
@@ -20,8 +20,8 @@ export default class Routes extends React.Component {
     return (
       <Switch>
         <Route exact path={RoutePaths.SignIn} component={SignIn} />
-        <Route path={RoutePaths.Register} component={Register} />
-        {/* <DefaultLayout exact path={RoutePaths.Contacts} component={Contacts} />
+        {/*<Route path={RoutePaths.Register} component={Register} />
+        <DefaultLayout exact path={RoutePaths.Contacts} component={Contacts} />
         <DefaultLayout path={RoutePaths.ContactNew} component={ContactForm} />
         <DefaultLayout path={RoutePaths.ContactEdit} component={ContactForm} /> */}
         <Route path="/error/:code?" component={ErrorPage} />
