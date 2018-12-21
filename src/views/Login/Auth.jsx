@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Link, Redirect, RouteComponentProps } from "react-router-dom";
 import { RoutePaths } from "../../routes/routes";
+// import { PropTypes } from "proprtypes";
 import AuthService from "../../services/Auth";
 import CustomInput from "components/CustomInput/CustomInput.jsx";
 import Button from "components/CustomButtons/Button.jsx";
@@ -11,7 +12,7 @@ import CardHeader from "components/Card/CardHeader.jsx";
 // import CardAvatar from "components/Card/CardAvatar.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 // import CardFooter from "components/Card/CardFooter.jsx";
-
+import dashboardPath from "../../routes/dashboard";
 // let authStyle = require("../../styles/auth.styl");
 let authService = new AuthService();
 
@@ -35,7 +36,17 @@ export class SignIn extends React.Component {
 
     this.handleSignIn = this.handleSignIn.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
+
+    if (AuthService.isSignedIn()) {
+      return this.props.history.push("reports");
+    }
   }
+
+  // static get contextTypes() {
+  //   return {
+  //     router: PropTypes.object.isRequired,
+  //   };
+  // }
 
   handleSignIn(event) {
     this.setState({ errors: null, initialLoad: false });
@@ -43,7 +54,7 @@ export class SignIn extends React.Component {
       .signIn(this.state.userInfo.username, this.state.userInfo.password)
       .then(response => {
         if (!response.is_error) {
-          this.props.history.push(RoutePaths.Contacts);
+          this.props.history.push("reports");
         } else {
           this.setState({ error: response.error_content.error_description });
         }
@@ -117,8 +128,8 @@ export class SignIn extends React.Component {
     return (
       <div>
         <GridContainer>
-          <GridItem xs={12} sm={6} md={4} />
-          <GridItem xs={12} sm={6} md={3}>
+          <GridItem xs={4} sm={4} md={4} />
+          <GridItem xs={4} sm={4} md={4}>
             <Card>
               <CardHeader color="primary">
                 <h4 className={styles.cardTitleWhite}>
@@ -170,7 +181,7 @@ export class SignIn extends React.Component {
               </CardBody>
             </Card>
           </GridItem>
-          <GridItem xs={12} sm={6} md={4} />
+          <GridItem xs={4} sm={4} md={4} />
         </GridContainer>
       </div>
     );

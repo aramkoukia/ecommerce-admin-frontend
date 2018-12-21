@@ -1,8 +1,8 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+//import * as ReactDOM from "react-dom";
 import { Route, Redirect, Switch } from "react-router-dom";
 import { SignIn } from "../views/Login/Auth";
-import AuthService from "../services/Auth.js";
+//import AuthService from "../services/Auth.js";
 import { ErrorPage } from "../views/Error/Error";
 // import { Contacts } from "./Contacts";
 // import { ContactForm } from "./ContactForm";
@@ -30,25 +30,25 @@ export default class Routes extends React.Component {
   }
 }
 
-const DefaultLayout = ({ component: Component, ...rest }) => (
-  <Route
-    {...rest}
-    render={props =>
-      AuthService.isSignedIn() ? (
-        <div>
-          {/* <Header {...props} /> */}
-          <div className="container">
-            <Component {...props} />
-          </div>
-        </div>
-      ) : (
-        <Redirect
-          to={{
-            pathname: RoutePaths.SignIn,
-            state: { from: props.location }
-          }}
-        />
-      )
-    }
-  />
-);
+// const DefaultLayout = ({ component: Component, ...rest }) => (
+//   <Route
+//     {...rest}
+//     render={props =>
+//       AuthService.isSignedIn() ? (
+//         <div>
+//           {/* <Header {...props} /> */}
+//           <div className="container">
+//             <Component {...props} />
+//           </div>
+//         </div>
+//       ) : (
+//         <Redirect
+//           to={{
+//             pathname: RoutePaths.SignIn,
+//             state: { from: props.location }
+//           }}
+//         />
+//       )
+//     }
+//   />
+// );
