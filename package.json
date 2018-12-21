@@ -45,7 +45,7 @@
   "bugs": {
     "url": ""
   },
-  "homepage": "https://koukia.ca",
+  "homepage": ".",
   "optionalDependencies": {
     "babel-eslint": "7.2.3",
     "eslint": "4.19.1",
