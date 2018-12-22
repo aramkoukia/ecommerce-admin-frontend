@@ -9,9 +9,9 @@ import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
-import Search from "@material-ui/icons/Search";
 import PropTypes from "prop-types";
-import IntegrationAutosuggest from "./ProductSearch";
+import ProductSearch from "./ProductSearch";
+import CustomerSearch from "./CustomerSearch";
 import SpanningTable from "./SpanningTable";
 
 const styles = {
@@ -46,19 +46,24 @@ export class AddOrder extends React.Component {
     return (
       <div>
         <GridContainer>
-          <GridItem xs={12} sm={12} md={8}>
+          <GridItem xs={12} sm={12} md={12}>
             <Card>
               <CardHeader color="primary">
                 <h4 className={classes.cardTitleWhite}>New Order</h4>
               </CardHeader>
               <CardBody>
                 <GridContainer>
-                  <GridItem xs={12} sm={12} md={5}>
-                    <IntegrationAutosuggest />
+                  <GridItem xs={12} sm={12} md={12}>
+                    <CustomerSearch />
                   </GridItem>
                 </GridContainer>
                 <GridContainer>
-                  <GridItem xs={12} sm={12} md={12} >
+                  <GridItem xs={12} sm={12} md={12}>
+                    <ProductSearch />
+                  </GridItem>
+                </GridContainer>
+                <GridContainer>
+                  <GridItem xs={12} sm={12} md={12}>
                     <SpanningTable />
                   </GridItem>
                 </GridContainer>
@@ -69,16 +74,6 @@ export class AddOrder extends React.Component {
                 <Button color="secondary">Draft</Button>
                 <Button color="secondary">Account</Button>
               </CardFooter>
-            </Card>
-          </GridItem>
-          <GridItem xs={12} sm={12} md={4}>
-            <Card profile>
-              <CardBody profile>
-                <Button color="white" aria-label="edit" justIcon round>
-                  <Search />
-                </Button>
-                <Button color="primary">New Customer</Button>
-              </CardBody>
             </Card>
           </GridItem>
         </GridContainer>

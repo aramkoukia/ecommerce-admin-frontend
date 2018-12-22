@@ -7,6 +7,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import Checkbox from "@material-ui/core/Checkbox";
 
 const TAX_RATE = 0.07;
 
@@ -55,9 +56,16 @@ function SpanningTable(props) {
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <TableCell>Desc</TableCell>
-            <TableCell numeric>Qty.</TableCell>
-            <TableCell numeric>@</TableCell>
+            {/* <TableCell padding="checkbox">
+              <Checkbox
+              // indeterminate={numSelected > 0 && numSelected < rowCount}
+              // checked={numSelected === rowCount}
+              // onChange={onSelectAllClick}
+              />
+            </TableCell> */}
+            <TableCell>Product</TableCell>
+            <TableCell numeric>Amount</TableCell>
+            <TableCell numeric>Unit Price</TableCell>
             <TableCell numeric>Price</TableCell>
           </TableRow>
         </TableHead>
@@ -65,6 +73,13 @@ function SpanningTable(props) {
           {rows.map(row => {
             return (
               <TableRow key={row.id}>
+                {/* <TableCell padding="checkbox">
+                  <Checkbox
+                  // indeterminate={numSelected > 0 && numSelected < rowCount}
+                  // checked={numSelected === rowCount}
+                  // onChange={onSelectAllClick}
+                  />
+                </TableCell> */}
                 <TableCell>{row.desc}</TableCell>
                 <TableCell numeric>{row.qty}</TableCell>
                 <TableCell numeric>{row.unit}</TableCell>
@@ -73,12 +88,22 @@ function SpanningTable(props) {
             );
           })}
           <TableRow>
-            <TableCell rowSpan={3} />
+            <TableCell rowSpan={5} />
             <TableCell colSpan={2}>Subtotal</TableCell>
             <TableCell numeric>{ccyFormat(invoiceSubtotal)}</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell>Tax</TableCell>
+            <TableCell>GST Tax</TableCell>
+            <TableCell numeric>{`${(TAX_RATE * 100).toFixed(0)} %`}</TableCell>
+            <TableCell numeric>{ccyFormat(invoiceTaxes)}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>PST Tax</TableCell>
+            <TableCell numeric>{`${(TAX_RATE * 100).toFixed(0)} %`}</TableCell>
+            <TableCell numeric>{ccyFormat(invoiceTaxes)}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Discount</TableCell>
             <TableCell numeric>{`${(TAX_RATE * 100).toFixed(0)} %`}</TableCell>
             <TableCell numeric>{ccyFormat(invoiceTaxes)}</TableCell>
           </TableRow>

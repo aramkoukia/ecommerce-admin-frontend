@@ -141,7 +141,7 @@ const styles = theme => ({
   }
 });
 
-class ProductSearch extends React.Component {
+class CustomerSearch extends React.Component {
   state = {
     single: "",
     popper: "",
@@ -184,8 +184,8 @@ class ProductSearch extends React.Component {
           {...autosuggestProps}
           inputProps={{
             classes,
-            label: "Product",
-            placeholder: "Search Products",
+            label: "Customer",
+            placeholder: "Search Customers",
             value: this.state.popper,
             onChange: this.handleChange("popper"),
             inputRef: node => {
@@ -218,8 +218,8 @@ class ProductSearch extends React.Component {
   }
 }
 
-ProductSearch.propTypes = {
+CustomerSearch.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(ProductSearch);
+export default withStyles(styles)(CustomerSearch);
