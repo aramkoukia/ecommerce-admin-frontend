@@ -1,7 +1,7 @@
 import RestUtilities from "./RestUtilities";
 
 export default class CustomerService {
-  async static getCustomers() {
+  static async getCustomers() {
     try {
       const response = await RestUtilities.get(
         "https://lightsandpartsapi.azurewebsites.net/api/customers"

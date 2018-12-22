@@ -1,7 +1,7 @@
 import RestUtilities from "./RestUtilities";
 
 export default class ProductService {
-  async static getProducts() {
+  static async getProducts() {
     try {
       const response = await RestUtilities.get(
         "https://lightsandpartsapi.azurewebsites.net/api/products"
