@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Link, Redirect, RouteComponentProps } from "react-router-dom";
-import { RoutePaths } from "../../routes/routes";
+// import { Link, Redirect, RouteComponentProps } from "react-router-dom";
+// import { RoutePaths } from "../../routes/routes";
 // import { PropTypes } from "proprtypes";
 import AuthService from "../../services/Auth";
 import CustomInput from "components/CustomInput/CustomInput.jsx";
@@ -12,7 +12,7 @@ import CardHeader from "components/Card/CardHeader.jsx";
 // import CardAvatar from "components/Card/CardAvatar.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 // import CardFooter from "components/Card/CardFooter.jsx";
-import dashboardPath from "../../routes/dashboard";
+// import dashboardPath from "../../routes/dashboard";
 // let authStyle = require("../../styles/auth.styl");
 let authService = new AuthService();
 

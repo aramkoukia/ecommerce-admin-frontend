@@ -9,46 +9,14 @@ import Paper from "@material-ui/core/Paper";
 import MenuItem from "@material-ui/core/MenuItem";
 import Popper from "@material-ui/core/Popper";
 import { withStyles } from "@material-ui/core/styles";
+import CustomerService from "../../services/CustomerService.js";
 
-const suggestions = [
-  { label: "Afghanistan" },
-  { label: "Aland Islands" },
-  { label: "Albania" },
-  { label: "Algeria" },
-  { label: "American Samoa" },
-  { label: "Andorra" },
-  { label: "Angola" },
-  { label: "Anguilla" },
-  { label: "Antarctica" },
-  { label: "Antigua and Barbuda" },
-  { label: "Argentina" },
-  { label: "Armenia" },
-  { label: "Aruba" },
-  { label: "Australia" },
-  { label: "Austria" },
-  { label: "Azerbaijan" },
-  { label: "Bahamas" },
-  { label: "Bahrain" },
-  { label: "Bangladesh" },
-  { label: "Barbados" },
-  { label: "Belarus" },
-  { label: "Belgium" },
-  { label: "Belize" },
-  { label: "Benin" },
-  { label: "Bermuda" },
-  { label: "Bhutan" },
-  { label: "Bolivia, Plurinational State of" },
-  { label: "Bonaire, Sint Eustatius and Saba" },
-  { label: "Bosnia and Herzegovina" },
-  { label: "Botswana" },
-  { label: "Bouvet Island" },
-  { label: "Brazil" },
-  { label: "British Indian Ocean Territory" },
-  { label: "Brunei Darussalam" }
-];
+function getSuggestionValue(suggestion) {
+  return suggestion.CustomerName;
+}
 
 function renderInputComponent(inputProps) {
-  const { classes, inputRef = () => {}, ref, ...other } = inputProps;
+  const { classes, inputRef = () => { }, ref, ...other } = inputProps;
 
   return (
     <TextField
@@ -68,8 +36,8 @@ function renderInputComponent(inputProps) {
 }
 
 function renderSuggestion(suggestion, { query, isHighlighted }) {
-  const matches = match(suggestion.label, query);
-  const parts = parse(suggestion.label, matches);
+  const matches = match(suggestion.CustomerName, query);
+  const parts = parse(suggestion.CustomerName, matches);
 
   return (
     <MenuItem selected={isHighlighted} component="div">
@@ -80,44 +48,20 @@ function renderSuggestion(suggestion, { query, isHighlighted }) {
               {part.text}
             </span>
           ) : (
-            <strong key={String(index)} style={{ fontWeight: 300 }}>
-              {part.text}
-            </strong>
-          );
+              <strong key={String(index)} style={{ fontWeight: 300 }}>
+                {part.text}
+              </strong>
+            );
         })}
       </div>
     </MenuItem>
   );
 }
 
-function getSuggestions(value) {
-  const inputValue = deburr(value.trim()).toLowerCase();
-  const inputLength = inputValue.length;
-  let count = 0;
-
-  return inputLength === 0
-    ? []
-    : suggestions.filter(suggestion => {
-        const keep =
-          count < 5 &&
-          suggestion.label.slice(0, inputLength).toLowerCase() === inputValue;
-
-        if (keep) {
-          count += 1;
-        }
-
-        return keep;
-      });
-}
-
-function getSuggestionValue(suggestion) {
-  return suggestion.label;
-}
-
 const styles = theme => ({
   root: {
     height: 80,
-    flexGrow: 1,
+    flexGrow: 1
   },
   container: {
     position: "relative"
@@ -143,21 +87,60 @@ const styles = theme => ({
 });
 
 class CustomerSearch extends React.Component {
-  state = {
-    single: "",
-    popper: "",
-    suggestions: []
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      single: "",
+      popper: "",
+      suggestions: [],
+      filteredSuggestions: []
+    };
+
+    this.handleSuggestionsFetchRequested = this.handleSuggestionsFetchRequested.bind(
+      this
+    );
+    this.handleSuggestionsClearRequested = this.handleSuggestionsClearRequested.bind(
+      this
+    );
+  }
+
+  async componentDidMount() {
+    const suggestions = await CustomerService.getCustomers();
+    this.setState({ suggestions: suggestions });
+  }
+
+  getSuggestions(value) {
+    const { suggestions } = this.state;
+    const inputValue = deburr(value.trim()).toLowerCase();
+    const inputLength = inputValue.length;
+    let count = 0;
+
+    return inputLength === 0
+      ? []
+      : suggestions.filter(suggestion => {
+        const keep =
+          count < 5 &&
+          (suggestion.CustomerName.toLowerCase().includes(inputValue) ||
+            suggestion.CustomerCode.toLowerCase().includes(inputValue));
+
+        if (keep) {
+          count += 1;
+        }
+
+        return keep;
+      });
+  }
 
   handleSuggestionsFetchRequested = ({ value }) => {
     this.setState({
-      suggestions: getSuggestions(value)
+      filteredSuggestions: this.getSuggestions(value)
     });
   };
 
   handleSuggestionsClearRequested = () => {
     this.setState({
-      suggestions: []
+      filteredSuggestions: []
     });
   };
 
@@ -172,7 +155,7 @@ class CustomerSearch extends React.Component {
 
     const autosuggestProps = {
       renderInputComponent,
-      suggestions: this.state.suggestions,
+      suggestions: this.state.filteredSuggestions,
       onSuggestionsFetchRequested: this.handleSuggestionsFetchRequested,
       onSuggestionsClearRequested: this.handleSuggestionsClearRequested,
       getSuggestionValue,

@@ -18,7 +18,7 @@ export default class RestUtilities {
   }
 
   static request(method, url, data) {
-    let isJsonResponse = false;
+    // let isJsonResponse = false;
     let isBadRequest = false;
     let body = data;
     let headers = new Headers();
@@ -41,20 +41,20 @@ export default class RestUtilities {
       body: body
     })
       .then(response => {
-        if (response.status == 401) {
+        if (response.status === 401) {
           // Unauthorized; redirect to sign-in
           AuthStore.removeToken();
           window.location.replace(`/?expired=1`);
         }
 
-        isBadRequest = response.status == 400;
+        isBadRequest = response.status === 400;
 
         let responseContentType = response.headers.get("content-type");
         if (
           responseContentType &&
           responseContentType.indexOf("application/json") !== -1
         ) {
-          isJsonResponse = true;
+          // isJsonResponse = true;
           return response.json();
         } else {
           return response.text();

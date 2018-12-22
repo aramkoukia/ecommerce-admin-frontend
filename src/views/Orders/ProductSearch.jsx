@@ -11,8 +11,6 @@ import Popper from "@material-ui/core/Popper";
 import { withStyles } from "@material-ui/core/styles";
 import ProductService from "../../services/ProductService.js";
 
-let productService = new ProductService();
-
 function getSuggestionValue(suggestion) {
   return suggestion.productName;
 }
@@ -108,7 +106,7 @@ class ProductSearch extends React.Component {
   }
 
   async componentDidMount() {
-    const suggestions = await productService.getProducts();
+    const suggestions = await ProductService.getProducts();
     this.setState({ suggestions: suggestions });
   }
 
@@ -142,7 +140,7 @@ class ProductSearch extends React.Component {
 
   handleSuggestionsClearRequested = () => {
     this.setState({
-      suggestions: []
+      filteredSuggestions: []
     });
   };
 
