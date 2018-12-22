@@ -15,7 +15,7 @@ const styles = theme => ({
   root: {
     width: "100%",
     marginTop: theme.spacing.unit * 3,
-    overflowX: "auto"
+    overflowX: "auto",
   },
   table: {
     minWidth: 700
@@ -49,7 +49,7 @@ const invoiceSubtotal = subtotal(rows);
 const invoiceTaxes = TAX_RATE * invoiceSubtotal;
 const invoiceTotal = invoiceTaxes + invoiceSubtotal;
 
-function SpanningTable(props) {
+function OrderTable(props) {
   const { classes } = props;
   return (
     <Paper className={classes.root}>
@@ -117,8 +117,8 @@ function SpanningTable(props) {
   );
 }
 
-SpanningTable.propTypes = {
+OrderTable.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(SpanningTable);
+export default withStyles(styles)(OrderTable);

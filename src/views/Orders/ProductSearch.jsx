@@ -9,43 +9,9 @@ import Paper from "@material-ui/core/Paper";
 import MenuItem from "@material-ui/core/MenuItem";
 import Popper from "@material-ui/core/Popper";
 import { withStyles } from "@material-ui/core/styles";
+import ProductService from "../../services/ProductService.js";
 
-const suggestions = [
-  { label: "Afghanistan" },
-  { label: "Aland Islands" },
-  { label: "Albania" },
-  { label: "Algeria" },
-  { label: "American Samoa" },
-  { label: "Andorra" },
-  { label: "Angola" },
-  { label: "Anguilla" },
-  { label: "Antarctica" },
-  { label: "Antigua and Barbuda" },
-  { label: "Argentina" },
-  { label: "Armenia" },
-  { label: "Aruba" },
-  { label: "Australia" },
-  { label: "Austria" },
-  { label: "Azerbaijan" },
-  { label: "Bahamas" },
-  { label: "Bahrain" },
-  { label: "Bangladesh" },
-  { label: "Barbados" },
-  { label: "Belarus" },
-  { label: "Belgium" },
-  { label: "Belize" },
-  { label: "Benin" },
-  { label: "Bermuda" },
-  { label: "Bhutan" },
-  { label: "Bolivia, Plurinational State of" },
-  { label: "Bonaire, Sint Eustatius and Saba" },
-  { label: "Bosnia and Herzegovina" },
-  { label: "Botswana" },
-  { label: "Bouvet Island" },
-  { label: "Brazil" },
-  { label: "British Indian Ocean Territory" },
-  { label: "Brunei Darussalam" }
-];
+let productService = new ProductService();
 
 function renderInputComponent(inputProps) {
   const { classes, inputRef = () => {}, ref, ...other } = inputProps;
@@ -68,8 +34,8 @@ function renderInputComponent(inputProps) {
 }
 
 function renderSuggestion(suggestion, { query, isHighlighted }) {
-  const matches = match(suggestion.label, query);
-  const parts = parse(suggestion.label, matches);
+  const matches = match(suggestion.productName, query);
+  const parts = parse(suggestion.productName, matches);
 
   return (
     <MenuItem selected={isHighlighted} component="div">
@@ -91,6 +57,7 @@ function renderSuggestion(suggestion, { query, isHighlighted }) {
 }
 
 function getSuggestions(value) {
+  const { suggestions } = this.state;
   const inputValue = deburr(value.trim()).toLowerCase();
   const inputLength = inputValue.length;
   let count = 0;
@@ -100,7 +67,8 @@ function getSuggestions(value) {
     : suggestions.filter(suggestion => {
         const keep =
           count < 5 &&
-          suggestion.label.slice(0, inputLength).toLowerCase() === inputValue;
+          (suggestion.productName.toLowerCase().includes(inputValue) ||
+            suggestion.productCode.toLowerCase().includes(inputValue));
 
         if (keep) {
           count += 1;
@@ -111,11 +79,12 @@ function getSuggestions(value) {
 }
 
 function getSuggestionValue(suggestion) {
-  return suggestion.label;
+  return suggestion.productName;
 }
 
 const styles = theme => ({
   root: {
+    height: 80,
     flexGrow: 1
   },
   container: {
@@ -147,6 +116,11 @@ class ProductSearch extends React.Component {
     popper: "",
     suggestions: []
   };
+
+  async componentDidMount() {
+    const suggestions = await productService.getProducts();
+    this.setState({ suggestions: suggestions });
+  }
 
   handleSuggestionsFetchRequested = ({ value }) => {
     this.setState({
@@ -184,7 +158,7 @@ class ProductSearch extends React.Component {
           {...autosuggestProps}
           inputProps={{
             classes,
-            label: "Product",
+            label: "",
             placeholder: "Search Products",
             value: this.state.popper,
             onChange: this.handleChange("popper"),

@@ -12,7 +12,7 @@ import CardFooter from "components/Card/CardFooter.jsx";
 import PropTypes from "prop-types";
 import ProductSearch from "./ProductSearch";
 import CustomerSearch from "./CustomerSearch";
-import SpanningTable from "./SpanningTable";
+import OrderTable from "./OrderTable";
 
 const styles = {
   cardCategoryWhite: {
@@ -64,15 +64,15 @@ export class AddOrder extends React.Component {
                 </GridContainer>
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={12}>
-                    <SpanningTable />
+                    <OrderTable />
                   </GridItem>
                 </GridContainer>
               </CardBody>
               <CardFooter>
                 <Button color="primary">Complete</Button>
-                <Button color="secondary">On Hold</Button>
-                <Button color="secondary">Draft</Button>
-                <Button color="secondary">Account</Button>
+                <Button color="info">On Hold</Button>
+                <Button color="info">Draft</Button>
+                <Button color="info">Account</Button>
               </CardFooter>
             </Card>
           </GridItem>

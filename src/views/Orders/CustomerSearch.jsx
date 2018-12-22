@@ -116,7 +116,8 @@ function getSuggestionValue(suggestion) {
 
 const styles = theme => ({
   root: {
-    flexGrow: 1
+    height: 80,
+    flexGrow: 1,
   },
   container: {
     position: "relative"
@@ -184,7 +185,7 @@ class CustomerSearch extends React.Component {
           {...autosuggestProps}
           inputProps={{
             classes,
-            label: "Customer",
+            label: "",
             placeholder: "Search Customers",
             value: this.state.popper,
             onChange: this.handleChange("popper"),
