@@ -6,6 +6,10 @@ export default class Auth {
     return !!AuthStore.getToken();
   }
 
+  static getUser() {
+    return AuthStore.getUser();
+  }
+
   signInOrRegister(email, password, isRegister) {
     return RestUtilities.post(
       `https://lightsandpartsapi.azurewebsites.net/api/auth/${isRegister ? "register" : "login"}`,
@@ -15,6 +19,7 @@ export default class Auth {
     ).then(response => {
       if (!response.is_error) {
         AuthStore.setToken(response.content.token);
+        AuthStore.setUser(email);
       }
       return response;
     });
@@ -41,5 +46,6 @@ export default class Auth {
 
   signOut() {
     AuthStore.removeToken();
+    AuthStore.removeUser();
   }
 }

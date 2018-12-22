@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { createBrowserHistory } from "history";
-import { Router, Route, Switch /*, Redirect */} from "react-router-dom";
+import { Router, Route, Switch , Redirect } from "react-router-dom";
 
 import "assets/css/material-dashboard-react.css?v=1.5.0";
 
@@ -19,9 +19,8 @@ ReactDOM.render(
           return (
             <Route path={prop.path} component={prop.component} key={key} />
           );
-        return;
-        // <Route path={prop.path} component={prop.component} key={key} />
-        //return <Redirect from={prop.path} to={RoutePaths.SignIn} key={key} />;
+        return <Route path={prop.path} component={prop.component} key={key} />
+        // return <Redirect from={prop.path} to="/login" key={key} />;
       })}
     </Switch>
   </Router>,

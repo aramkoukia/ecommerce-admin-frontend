@@ -11,6 +11,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 // import ReactDOM from 'react-dom';
 import FormControl from '@material-ui/core/FormControl';
+import AuthService from "../../services/Auth";
 
 class HeaderLinks extends React.Component {
   state = {
@@ -32,6 +33,9 @@ class HeaderLinks extends React.Component {
 
     return (
       <div>
+        {
+        AuthService.isSignedIn() ? (
+        <div>
         <FormControl className={classes.formControl}>
           <InputLabel htmlFor="location">Location</InputLabel>
           <Select
@@ -46,10 +50,15 @@ class HeaderLinks extends React.Component {
             <MenuItem value="Abbotsford">Abbotsford</MenuItem>
           </Select>
         </FormControl>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        { AuthService.getUser() }
+        &nbsp;&nbsp;&nbsp;&nbsp;
         <Button>
           <Person />
           Sign out
         </Button>
+        </div>
+        ) : (<div></div>)}
       </div>
     );
   }
