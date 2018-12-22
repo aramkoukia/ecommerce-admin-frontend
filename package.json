@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "ecommerce-admin-fronend",
   "version": "1.5.0",
   "description": "",
   "private": false,
@@ -47,16 +47,13 @@
   "author": "Aram Koukia",
   "license": "MIT",
   "bugs": {
-    "url": ""
+    "url": "https://koukia.ca"
   },
-  "homepage": ".",
+  "homepage": "https://koukia.ca",
   "optionalDependencies": {
     "babel-eslint": "7.2.3",
     "eslint": "4.19.1",
-    "eslint-config-prettier": "3.0.1",
-    "eslint-plugin-prettier": "2.6.2",
     "eslint-plugin-react": "7.11.1",
-    "prettier": "1.14.3"
   },
   "devDependencies": {
     "babel-cli": "6.26.0",
