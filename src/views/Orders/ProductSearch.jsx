@@ -13,6 +13,10 @@ import ProductService from "../../services/ProductService.js";
 
 let productService = new ProductService();
 
+function getSuggestionValue(suggestion) {
+  return suggestion.productName;
+}
+
 function renderInputComponent(inputProps) {
   const { classes, inputRef = () => {}, ref, ...other } = inputProps;
 
@@ -56,32 +60,6 @@ function renderSuggestion(suggestion, { query, isHighlighted }) {
   );
 }
 
-function getSuggestions(value) {
-  const { suggestions } = this.state;
-  const inputValue = deburr(value.trim()).toLowerCase();
-  const inputLength = inputValue.length;
-  let count = 0;
-
-  return inputLength === 0
-    ? []
-    : suggestions.filter(suggestion => {
-        const keep =
-          count < 5 &&
-          (suggestion.productName.toLowerCase().includes(inputValue) ||
-            suggestion.productCode.toLowerCase().includes(inputValue));
-
-        if (keep) {
-          count += 1;
-        }
-
-        return keep;
-      });
-}
-
-function getSuggestionValue(suggestion) {
-  return suggestion.productName;
-}
-
 const styles = theme => ({
   root: {
     height: 80,
@@ -111,20 +89,54 @@ const styles = theme => ({
 });
 
 class ProductSearch extends React.Component {
-  state = {
-    single: "",
-    popper: "",
-    suggestions: []
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      single: "",
+      popper: "",
+      suggestions: [],
+      filteredSuggestions: []
+    };
+
+    this.handleSuggestionsFetchRequested = this.handleSuggestionsFetchRequested.bind(
+      this
+    );
+    this.handleSuggestionsClearRequested = this.handleSuggestionsClearRequested.bind(
+      this
+    );
+  }
 
   async componentDidMount() {
     const suggestions = await productService.getProducts();
     this.setState({ suggestions: suggestions });
   }
 
+  getSuggestions(value) {
+    const { suggestions } = this.state;
+    const inputValue = deburr(value.trim()).toLowerCase();
+    const inputLength = inputValue.length;
+    let count = 0;
+
+    return inputLength === 0
+      ? []
+      : suggestions.filter(suggestion => {
+          const keep =
+            count < 5 &&
+            (suggestion.productName.toLowerCase().includes(inputValue) ||
+              suggestion.productCode.toLowerCase().includes(inputValue));
+
+          if (keep) {
+            count += 1;
+          }
+
+          return keep;
+        });
+  }
+
   handleSuggestionsFetchRequested = ({ value }) => {
     this.setState({
-      suggestions: getSuggestions(value)
+      filteredSuggestions: this.getSuggestions(value)
     });
   };
 
@@ -145,7 +157,7 @@ class ProductSearch extends React.Component {
 
     const autosuggestProps = {
       renderInputComponent,
-      suggestions: this.state.suggestions,
+      suggestions: this.state.filteredSuggestions,
       onSuggestionsFetchRequested: this.handleSuggestionsFetchRequested,
       onSuggestionsClearRequested: this.handleSuggestionsClearRequested,
       getSuggestionValue,
