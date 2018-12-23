@@ -11,12 +11,8 @@ import Popper from "@material-ui/core/Popper";
 import { withStyles } from "@material-ui/core/styles";
 import CustomerService from "../../services/CustomerService.js";
 
-function getSuggestionValue(suggestion) {
-  return suggestion.CustomerName;
-}
-
 function renderInputComponent(inputProps) {
-  const { classes, inputRef = () => { }, ref, ...other } = inputProps;
+  const { classes, inputRef = () => {}, ref, ...other } = inputProps;
 
   return (
     <TextField
@@ -36,8 +32,8 @@ function renderInputComponent(inputProps) {
 }
 
 function renderSuggestion(suggestion, { query, isHighlighted }) {
-  const matches = match(suggestion.CustomerName, query);
-  const parts = parse(suggestion.CustomerName, matches);
+  const matches = match(suggestion.email, query);
+  const parts = parse(suggestion.email, matches);
 
   return (
     <MenuItem selected={isHighlighted} component="div">
@@ -48,10 +44,10 @@ function renderSuggestion(suggestion, { query, isHighlighted }) {
               {part.text}
             </span>
           ) : (
-              <strong key={String(index)} style={{ fontWeight: 300 }}>
-                {part.text}
-              </strong>
-            );
+            <strong key={String(index)} style={{ fontWeight: 300 }}>
+              {part.text}
+            </strong>
+          );
         })}
       </div>
     </MenuItem>
@@ -103,11 +99,18 @@ class CustomerSearch extends React.Component {
     this.handleSuggestionsClearRequested = this.handleSuggestionsClearRequested.bind(
       this
     );
+
+    this.getSuggestionValue = this.getSuggestionValue.bind(this);
   }
 
   async componentDidMount() {
     const suggestions = await CustomerService.getCustomers();
     this.setState({ suggestions: suggestions });
+  }
+
+  getSuggestionValue = (suggestion) => {
+    this.props.customerChanged(suggestion);
+    return `${suggestion.email} - ${suggestion.firstName} ${suggestion.lastName} - ${suggestion.companyName}`;
   }
 
   getSuggestions(value) {
@@ -119,17 +122,19 @@ class CustomerSearch extends React.Component {
     return inputLength === 0
       ? []
       : suggestions.filter(suggestion => {
-        const keep =
-          count < 5 &&
-          (suggestion.CustomerName.toLowerCase().includes(inputValue) ||
-            suggestion.CustomerCode.toLowerCase().includes(inputValue));
+          const keep =
+            count < 5 &&
+            (suggestion.email.toLowerCase().includes(inputValue) ||
+              suggestion.lastName.toLowerCase().includes(inputValue) ||
+              suggestion.customerCode.toLowerCase().includes(inputValue) ||
+              suggestion.firstName.toLowerCase().includes(inputValue));
 
-        if (keep) {
-          count += 1;
-        }
+          if (keep) {
+            count += 1;
+          }
 
-        return keep;
-      });
+          return keep;
+        });
   }
 
   handleSuggestionsFetchRequested = ({ value }) => {
@@ -145,6 +150,7 @@ class CustomerSearch extends React.Component {
   };
 
   handleChange = name => (event, { newValue }) => {
+    // this.props.CustomerChanged(newValue);
     this.setState({
       [name]: newValue
     });
@@ -158,7 +164,7 @@ class CustomerSearch extends React.Component {
       suggestions: this.state.filteredSuggestions,
       onSuggestionsFetchRequested: this.handleSuggestionsFetchRequested,
       onSuggestionsClearRequested: this.handleSuggestionsClearRequested,
-      getSuggestionValue,
+      getSuggestionValue: this.getSuggestionValue,
       renderSuggestion
     };
 
@@ -203,7 +209,8 @@ class CustomerSearch extends React.Component {
 }
 
 CustomerSearch.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  CustomerChanged: PropTypes.func,
 };
 
 export default withStyles(styles)(CustomerSearch);

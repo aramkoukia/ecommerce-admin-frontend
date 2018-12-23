@@ -37,21 +37,17 @@ export class AddOrder extends React.Component {
   constructor(props) {
     super(props);
 
-    // const rows = [
-    //   ["Paperclips (Box)", 100, 1.15],
-    //   ["Paper (Case)", 10, 45.99],
-    //   ["Waste Basket", 2, 17.99]
-    // ].map((row, productId) => this.createRow(productId, ...row));
-
     this.state = {
+      customer: {},
       rows: [],
       discountPercent: 0.08,
       discountAmount:0,
       gstTax: 0.05,
-      pstTax: 0.07//rows
+      pstTax: 0.07
     };
 
     this.productChanged = this.productChanged.bind(this);
+    this.customerChanged = this.customerChanged.bind(this);
   }
 
   priceRow(qty, unit) {
@@ -72,8 +68,10 @@ export class AddOrder extends React.Component {
   };
 
   customerChanged(customer) {
-    console.warn(customer);
-  };
+    this.setState({
+      customer: customer
+    });
+  }
 
   render() {
     const { classes } = this.props;
@@ -93,6 +91,11 @@ export class AddOrder extends React.Component {
                     <CustomerSearch customerChanged={this.customerChanged} />
                   </GridItem>
                 </GridContainer>
+                <GridContainer>
+                  <GridItem xs={12} sm={12} md={12}>
+                      
+                  </GridItem>
+                </GridContainer>                
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={12}>
                     <ProductSearch productChanged={this.productChanged} />
