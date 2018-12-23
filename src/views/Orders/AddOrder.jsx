@@ -37,30 +37,38 @@ export class AddOrder extends React.Component {
   constructor(props) {
     super(props);
 
-    const rows = [
-      ["Paperclips (Box)", 100, 1.15],
-      ["Paper (Case)", 10, 45.99],
-      ["Waste Basket", 2, 17.99]
-    ].map((row, id) => this.createRow(id, ...row));
+    // const rows = [
+    //   ["Paperclips (Box)", 100, 1.15],
+    //   ["Paper (Case)", 10, 45.99],
+    //   ["Waste Basket", 2, 17.99]
+    // ].map((row, productId) => this.createRow(productId, ...row));
 
     this.state = {
-      rows: rows
+      rows: [],
+      discountPercent: 0.08,
+      discountAmount:0,
+      gstTax: 0.05,
+      pstTax: 0.07//rows
     };
 
-    // this.getSuggestionValue = this.getSuggestionValue.bind(this);
+    this.productChanged = this.productChanged.bind(this);
   }
 
   priceRow(qty, unit) {
     return qty * unit;
   }
 
-  createRow(id, desc, qty, unit) {
-    const price = this.priceRow(qty, unit);
-    return { id, desc, qty, unit, price };
+  createRow(productId, productName, salesPrice) {
+    const qty = 1;
+    const price = this.priceRow(qty, salesPrice);
+    return { productId, productName, qty, salesPrice, price };
   }
 
   productChanged(product) {
-    console.warn(product);
+    var newRow = this.createRow(product.productId, product.productName, product.salesPrice);
+    this.setState(prevState => ({
+      rows: [...prevState.rows, newRow]
+    }))
   };
 
   customerChanged(customer) {
@@ -69,7 +77,7 @@ export class AddOrder extends React.Component {
 
   render() {
     const { classes } = this.props;
-
+    const { rows, gstTax, pstTax, discountAmount, discountPercent } = this.state;
 
     return (
       <div>
@@ -92,7 +100,13 @@ export class AddOrder extends React.Component {
                 </GridContainer>
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={12}>
-                    <OrderTable rows={this.state.rows} />
+                    <OrderTable 
+                      rows={rows} 
+                      gstTax={gstTax}
+                      pstTax={pstTax}
+                      discountAmount={discountAmount}
+                      discountPercent={discountPercent}
+                    />
                   </GridItem>
                 </GridContainer>
               </CardBody>

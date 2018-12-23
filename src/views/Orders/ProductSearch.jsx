@@ -110,6 +110,7 @@ class ProductSearch extends React.Component {
 
   getSuggestionValue = (suggestion) => {
     this.props.productChanged(suggestion);
+    return suggestion.productName;
   }
 
   getSuggestions(value) {

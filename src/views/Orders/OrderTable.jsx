@@ -7,6 +7,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import TextField from '@material-ui/core/TextField';
 // import Checkbox from "@material-ui/core/Checkbox";
 
 const styles = theme => ({
@@ -21,9 +22,9 @@ const styles = theme => ({
 });
 
 export class OrderTable extends React.Component {  
-  constructor(props) {
-    super(props);
-  }
+  // constructor(props) {
+  //   super(props);
+  // }
 
     ccyFormat(num) {
     return `${num.toFixed(2)}`;
@@ -34,11 +35,18 @@ export class OrderTable extends React.Component {
   }
 
   render() {
-    const { classes, rows } = this.props;
+    const { classes, rows, discountPercent, discountAmount, gstTax, pstTax } = this.props;
     const invoiceSubtotal = this.subtotal(rows);
-    const invoiceTaxes = TAX_RATE * invoiceSubtotal;
-    const invoiceTotal = invoiceTaxes + invoiceSubtotal;
-    const TAX_RATE = 0.07;
+    const gstInvoiceTaxes = gstTax * invoiceSubtotal
+    const pstInvoiceTaxes = pstTax * invoiceSubtotal;
+    let invoiceDiscount = 0; 
+    if(discountPercent > 0) {
+      invoiceDiscount = discountPercent * invoiceSubtotal;
+    } else if(discountPercent > 0) {
+      invoiceDiscount = discountAmount;
+    }
+    
+    const invoiceTotal = invoiceSubtotal + gstInvoiceTaxes + pstInvoiceTaxes - invoiceDiscount;
 
     return (
     <Paper className={classes.root}>
@@ -61,7 +69,7 @@ export class OrderTable extends React.Component {
         <TableBody>
           {rows.map(row => {
             return (
-              <TableRow key={row.id}>
+              <TableRow key={row.productId}>
                 {/* <TableCell padding="checkbox">
                   <Checkbox
                   // indeterminate={numSelected > 0 && numSelected < rowCount}
@@ -69,9 +77,15 @@ export class OrderTable extends React.Component {
                   // onChange={onSelectAllClick}
                   />
                 </TableCell> */}
-                <TableCell>{row.desc}</TableCell>
-                <TableCell numeric>{row.qty}</TableCell>
-                <TableCell numeric>{row.unit}</TableCell>
+                <TableCell>{row.productName}</TableCell>
+                <TableCell numeric>
+                <TextField
+                      value={row.qty}
+                      // onChange={this.handleChange('age')}
+                      type="number"
+                    />
+                </TableCell>
+                <TableCell numeric>{row.salesPrice}</TableCell>
                 <TableCell numeric>{this.ccyFormat(row.price)}</TableCell>
               </TableRow>
             );
@@ -83,18 +97,20 @@ export class OrderTable extends React.Component {
           </TableRow>
           <TableRow>
             <TableCell>GST Tax</TableCell>
-            <TableCell numeric>{`${(TAX_RATE * 100).toFixed(0)} %`}</TableCell>
-            <TableCell numeric>{this.ccyFormat(invoiceTaxes)}</TableCell>
+            <TableCell numeric>{`${(gstTax * 100).toFixed(0)} %`}</TableCell>
+            <TableCell numeric>{this.ccyFormat(gstInvoiceTaxes)}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>PST Tax</TableCell>
-            <TableCell numeric>{`${(TAX_RATE * 100).toFixed(0)} %`}</TableCell>
-            <TableCell numeric>{this.ccyFormat(invoiceTaxes)}</TableCell>
+            <TableCell numeric>{`${(pstTax * 100).toFixed(0)} %`}</TableCell>
+            <TableCell numeric>{this.ccyFormat(pstInvoiceTaxes)}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Discount</TableCell>
-            <TableCell numeric>{`${(TAX_RATE * 100).toFixed(0)} %`}</TableCell>
-            <TableCell numeric>{this.ccyFormat(invoiceTaxes)}</TableCell>
+            <TableCell numeric> 
+              {/* {`${(TAX_RATE * 100).toFixed(0)} %`} */}
+            </TableCell>
+            <TableCell numeric>{this.ccyFormat(invoiceDiscount)}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell colSpan={2}>Total</TableCell>
