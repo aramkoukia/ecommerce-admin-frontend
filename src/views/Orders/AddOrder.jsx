@@ -34,14 +34,42 @@ const styles = {
 };
 
 export class AddOrder extends React.Component {
-  handleChange = name => (event, { newValue }) => {
-    this.setState({
-      [name]: newValue
-    });
+  constructor(props) {
+    super(props);
+
+    const rows = [
+      ["Paperclips (Box)", 100, 1.15],
+      ["Paper (Case)", 10, 45.99],
+      ["Waste Basket", 2, 17.99]
+    ].map((row, id) => this.createRow(id, ...row));
+
+    this.state = {
+      rows: rows
+    };
+
+    // this.getSuggestionValue = this.getSuggestionValue.bind(this);
+  }
+
+  priceRow(qty, unit) {
+    return qty * unit;
+  }
+
+  createRow(id, desc, qty, unit) {
+    const price = this.priceRow(qty, unit);
+    return { id, desc, qty, unit, price };
+  }
+
+  productChanged(product) {
+    console.warn(product);
+  };
+
+  customerChanged(customer) {
+    console.warn(customer);
   };
 
   render() {
     const { classes } = this.props;
+
 
     return (
       <div>
@@ -54,17 +82,17 @@ export class AddOrder extends React.Component {
               <CardBody>
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={12}>
-                    <CustomerSearch />
+                    <CustomerSearch customerChanged={this.customerChanged} />
                   </GridItem>
                 </GridContainer>
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={12}>
-                    <ProductSearch />
+                    <ProductSearch productChanged={this.productChanged} />
                   </GridItem>
                 </GridContainer>
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={12}>
-                    <OrderTable />
+                    <OrderTable rows={this.state.rows} />
                   </GridItem>
                 </GridContainer>
               </CardBody>

@@ -9,8 +9,6 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 // import Checkbox from "@material-ui/core/Checkbox";
 
-const TAX_RATE = 0.07;
-
 const styles = theme => ({
   root: {
     width: "100%",
@@ -22,36 +20,27 @@ const styles = theme => ({
   }
 });
 
-function ccyFormat(num) {
-  return `${num.toFixed(2)}`;
-}
+export class OrderTable extends React.Component {  
+  constructor(props) {
+    super(props);
+  }
 
-function priceRow(qty, unit) {
-  return qty * unit;
-}
+    ccyFormat(num) {
+    return `${num.toFixed(2)}`;
+  }
 
-function createRow(id, desc, qty, unit) {
-  const price = priceRow(qty, unit);
-  return { id, desc, qty, unit, price };
-}
+  subtotal(items) {
+    return items.map(({ price }) => price).reduce((sum, i) => sum + i, 0);
+  }
 
-function subtotal(items) {
-  return items.map(({ price }) => price).reduce((sum, i) => sum + i, 0);
-}
+  render() {
+    const { classes, rows } = this.props;
+    const invoiceSubtotal = this.subtotal(rows);
+    const invoiceTaxes = TAX_RATE * invoiceSubtotal;
+    const invoiceTotal = invoiceTaxes + invoiceSubtotal;
+    const TAX_RATE = 0.07;
 
-const rows = [
-  ["Paperclips (Box)", 100, 1.15],
-  ["Paper (Case)", 10, 45.99],
-  ["Waste Basket", 2, 17.99]
-].map((row, id) => createRow(id, ...row));
-
-const invoiceSubtotal = subtotal(rows);
-const invoiceTaxes = TAX_RATE * invoiceSubtotal;
-const invoiceTotal = invoiceTaxes + invoiceSubtotal;
-
-function OrderTable(props) {
-  const { classes } = props;
-  return (
+    return (
     <Paper className={classes.root}>
       <Table className={classes.table}>
         <TableHead>
@@ -83,38 +72,40 @@ function OrderTable(props) {
                 <TableCell>{row.desc}</TableCell>
                 <TableCell numeric>{row.qty}</TableCell>
                 <TableCell numeric>{row.unit}</TableCell>
-                <TableCell numeric>{ccyFormat(row.price)}</TableCell>
+                <TableCell numeric>{this.ccyFormat(row.price)}</TableCell>
               </TableRow>
             );
           })}
           <TableRow>
             <TableCell rowSpan={5} />
             <TableCell colSpan={2}>Subtotal</TableCell>
-            <TableCell numeric>{ccyFormat(invoiceSubtotal)}</TableCell>
+            <TableCell numeric>{this.ccyFormat(invoiceSubtotal)}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>GST Tax</TableCell>
             <TableCell numeric>{`${(TAX_RATE * 100).toFixed(0)} %`}</TableCell>
-            <TableCell numeric>{ccyFormat(invoiceTaxes)}</TableCell>
+            <TableCell numeric>{this.ccyFormat(invoiceTaxes)}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>PST Tax</TableCell>
             <TableCell numeric>{`${(TAX_RATE * 100).toFixed(0)} %`}</TableCell>
-            <TableCell numeric>{ccyFormat(invoiceTaxes)}</TableCell>
+            <TableCell numeric>{this.ccyFormat(invoiceTaxes)}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Discount</TableCell>
             <TableCell numeric>{`${(TAX_RATE * 100).toFixed(0)} %`}</TableCell>
-            <TableCell numeric>{ccyFormat(invoiceTaxes)}</TableCell>
+            <TableCell numeric>{this.ccyFormat(invoiceTaxes)}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell colSpan={2}>Total</TableCell>
-            <TableCell numeric>{ccyFormat(invoiceTotal)}</TableCell>
+            <TableCell numeric>{this.ccyFormat(invoiceTotal)}</TableCell>
           </TableRow>
         </TableBody>
       </Table>
     </Paper>
-  );
+    );
+  }
+
 }
 
 OrderTable.propTypes = {

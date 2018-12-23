@@ -11,10 +11,6 @@ import Popper from "@material-ui/core/Popper";
 import { withStyles } from "@material-ui/core/styles";
 import ProductService from "../../services/ProductService.js";
 
-function getSuggestionValue(suggestion) {
-  return suggestion.productName;
-}
-
 function renderInputComponent(inputProps) {
   const { classes, inputRef = () => {}, ref, ...other } = inputProps;
 
@@ -103,11 +99,17 @@ class ProductSearch extends React.Component {
     this.handleSuggestionsClearRequested = this.handleSuggestionsClearRequested.bind(
       this
     );
+
+    this.getSuggestionValue = this.getSuggestionValue.bind(this);
   }
 
   async componentDidMount() {
     const suggestions = await ProductService.getProducts();
     this.setState({ suggestions: suggestions });
+  }
+
+  getSuggestionValue = (suggestion) => {
+    this.props.productChanged(suggestion);
   }
 
   getSuggestions(value) {
@@ -145,6 +147,7 @@ class ProductSearch extends React.Component {
   };
 
   handleChange = name => (event, { newValue }) => {
+    // this.props.productChanged(newValue);
     this.setState({
       [name]: newValue
     });
@@ -158,7 +161,7 @@ class ProductSearch extends React.Component {
       suggestions: this.state.filteredSuggestions,
       onSuggestionsFetchRequested: this.handleSuggestionsFetchRequested,
       onSuggestionsClearRequested: this.handleSuggestionsClearRequested,
-      getSuggestionValue,
+      getSuggestionValue: this.getSuggestionValue,
       renderSuggestion
     };
 
@@ -203,7 +206,8 @@ class ProductSearch extends React.Component {
 }
 
 ProductSearch.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  productChanged: PropTypes.func,
 };
 
 export default withStyles(styles)(ProductSearch);
