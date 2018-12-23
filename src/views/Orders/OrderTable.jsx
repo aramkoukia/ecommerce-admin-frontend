@@ -8,6 +8,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import TextField from '@material-ui/core/TextField';
+import RestoreFromTrash from "@material-ui/icons/RestoreFromTrash";
 // import Checkbox from "@material-ui/core/Checkbox";
 
 const styles = theme => ({
@@ -22,21 +23,64 @@ const styles = theme => ({
 });
 
 export class OrderTable extends React.Component {  
-  // constructor(props) {
-  //   super(props);
-  // }
+  constructor(props) {
+    super(props);
+    this.state = {
+      orderRows: [],
+    };
+  }
 
-    ccyFormat(num) {
+  componentDidMount() {
+    const { rows } = this.props;
+    this.setState({
+      orderRows: rows
+    });
+
+    this.handleQuantityChanged = this.handleQuantityChanged.bind(this);
+  }
+
+  componentDidUpdate(prevProps) {
+    // Typical usage (don't forget to compare props):
+    const { rows } = this.props;
+    if (this.props.rows.length !== prevProps.rows.length) {
+      this.setState({
+        orderRows: rows
+      });
+    }
+  }
+
+  handleQuantityChanged(event) {
+    // let { orderRows } = this.state;
+    let orderRows = this.state.orderRows.slice();
+    for(let i in orderRows) {
+        if(orderRows[i].productId == event.target.name){
+          orderRows[i].qty = event.target.value;
+          this.setState ({orderRows});
+          break;
+        }
+    }
+  }
+
+  handleChange = name => event => {
+    this.setState({
+      [name]: event.target.value,
+    });
+  };
+
+  ccyFormat(num) {
     return `${num.toFixed(2)} $`;
   }
 
   subtotal(items) {
-    return items.map(({ price }) => price).reduce((sum, i) => sum + i, 0);
+    return items.map(({ salesPrice, qty }) => salesPrice * qty).reduce((sum, i) => sum + i, 0);
   }
 
   render() {
-    const { classes, rows, discountPercent, discountAmount, gstTax, pstTax } = this.props;
-    const invoiceSubtotal = this.subtotal(rows);
+    const { classes, discountPercent, discountAmount, gstTax, pstTax } = this.props;
+
+    const { orderRows } = this.state;
+
+    const invoiceSubtotal = this.subtotal(orderRows);
     const gstInvoiceTaxes = gstTax * invoiceSubtotal
     const pstInvoiceTaxes = pstTax * invoiceSubtotal;
     let invoiceDiscount = 0; 
@@ -63,11 +107,11 @@ export class OrderTable extends React.Component {
             <TableCell>Product</TableCell>
             <TableCell numeric>Amount</TableCell>
             <TableCell numeric>Unit Price</TableCell>
-            <TableCell numeric>Price</TableCell>
+            <TableCell numeric>Total Price</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(row => {
+          {orderRows.map(row => {
             return (
               <TableRow key={row.productId}>
                 {/* <TableCell padding="checkbox">
@@ -78,15 +122,17 @@ export class OrderTable extends React.Component {
                   />
                 </TableCell> */}
                 <TableCell>{row.productName}</TableCell>
-                <TableCell numeric>
+                <TableCell numeric align="right">
                 <TextField
+                      name={row.productId}
                       value={row.qty}
-                      // onChange={this.handleChange('age')}
+                      onChange={this.handleQuantityChanged}
                       type="number"
                     />
                 </TableCell>
                 <TableCell numeric>{this.ccyFormat(row.salesPrice)}</TableCell>
-                <TableCell numeric>{this.ccyFormat(row.price)}</TableCell>
+                <TableCell numeric>{this.ccyFormat(row.salesPrice * row.qty)}</TableCell>
+                {/* <RestoreFromTrash /> */}
               </TableRow>
             );
           })}

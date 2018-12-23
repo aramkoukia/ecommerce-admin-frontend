@@ -59,7 +59,7 @@ export class AddOrder extends React.Component {
   }
 
   createRow(productId, productName, salesPrice) {
-    const qty = 1;
+    let qty = 2;
     const price = this.priceRow(qty, salesPrice);
     return { productId, productName, qty, salesPrice, price };
   }
