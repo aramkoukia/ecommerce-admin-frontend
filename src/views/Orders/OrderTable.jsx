@@ -27,7 +27,7 @@ export class OrderTable extends React.Component {
   // }
 
     ccyFormat(num) {
-    return `${num.toFixed(2)}`;
+    return `${num.toFixed(2)} $`;
   }
 
   subtotal(items) {
@@ -85,7 +85,7 @@ export class OrderTable extends React.Component {
                       type="number"
                     />
                 </TableCell>
-                <TableCell numeric>{row.salesPrice}</TableCell>
+                <TableCell numeric>{this.ccyFormat(row.salesPrice)}</TableCell>
                 <TableCell numeric>{this.ccyFormat(row.price)}</TableCell>
               </TableRow>
             );
