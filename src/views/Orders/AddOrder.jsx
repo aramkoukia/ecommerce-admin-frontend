@@ -1,4 +1,6 @@
 import React from "react";
+import Check from "@material-ui/icons/Check";
+import Error from "@material-ui/icons/Error";
 // @material-ui/core components
 import { withStyles } from "@material-ui/core/styles";
 // core components
@@ -16,6 +18,7 @@ import OrderTable from "./OrderTable";
 import CustomInput from "components/CustomInput/CustomInput.jsx";
 import OrderService from "../../services/OrderService";
 import TaxService from "../../services/TaxService";
+import Snackbar from "components/Snackbar/Snackbar.jsx";
 
 let orderService = new OrderService();
 
@@ -50,7 +53,8 @@ export class AddOrder extends React.Component {
       gstTax: 0.05,
       pstTax: 0.07,
       note: "",
-      taxes: []
+      taxes: [],
+      openSnackbar: false,
     };
 
     this.productChanged = this.productChanged.bind(this);
@@ -145,6 +149,11 @@ export class AddOrder extends React.Component {
     };
 
     orderService.saveOrder(order);
+    this.setState({ 
+      openSnackbar: true,
+      snackbarMessage: "Order was saved successfully!",
+      snackbarColor: "success",
+    });
   }
 
   saveAsDraft() {
@@ -164,7 +173,7 @@ export class AddOrder extends React.Component {
 
   render() {
     const { classes, note, poNumber } = this.props;
-    const { rows, taxes, discountAmount, discountPercent, customer } = this.state;
+    const { rows, taxes, discountAmount, discountPercent, customer, openSnackbar, snackbarMessage, snackbarColor } = this.state;
 
     return (
       <div>
@@ -342,6 +351,40 @@ export class AddOrder extends React.Component {
                 </GridContainer> 
               </CardFooter>
             </Card>
+            <Snackbar
+                    place="tl"
+                    color={snackbarColor}
+                    icon={Check}
+                    message={snackbarMessage}
+                    open={openSnackbar}
+                    closeNotification={() => this.setState({ openSnackbar: false })}
+                    close
+                  />
+
+            {/* <Snackbar
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+                open={openSnackbar}
+                autoHideDuration={6000}
+                onClose={this.handleClose}
+                ContentProps={{
+                  'aria-describedby': 'message-id',
+                }}
+                message={<span id="message-id">{ snackbarMessage }</span>}
+                action={[
+                  <IconButton
+                    key="close"
+                    aria-label="Close"
+                    color="inherit"
+                    className={classes.close}
+                    onClick={this.handleClose}
+                  >
+                    <CloseIcon />
+                  </IconButton>,
+                ]}
+              /> */}
           </GridItem>
         </GridContainer>
       </div>
