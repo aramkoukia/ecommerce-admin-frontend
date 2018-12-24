@@ -142,7 +142,7 @@ export class AddOrder extends React.Component {
   }
 
   render() {
-    const { classes, note } = this.props;
+    const { classes, note, poNumber } = this.props;
     const { rows, gstTax, pstTax, discountAmount, discountPercent, customer } = this.state;
 
     return (
@@ -269,7 +269,19 @@ export class AddOrder extends React.Component {
                   </GridItem>
                 </GridContainer>
                 <GridContainer>
-                  <GridItem xs={12} sm={12} md={12}>
+                <GridItem xs={12} sm={12} md={3}>
+                    <CustomInput
+                        labelText="PO Number"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                        inputProps={{
+                          value: poNumber,
+                          // onChange: this.noteChanged(note)
+                        }}                            
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={9}>
                     <CustomInput
                         labelText="Notes"
                         formControlProps={{
@@ -277,7 +289,7 @@ export class AddOrder extends React.Component {
                         }}
                         inputProps={{
                           multiline:true,
-                          rows:2,
+                          rows:1,
                           value: note,
                           // onChange: this.noteChanged(note)
                         }}                            
