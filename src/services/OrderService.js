@@ -13,4 +13,17 @@ export default class OrderService {
       return false;
     }
   }
+
+  async getOrders() {
+    try {
+      const response = await RestUtilities.get(
+        "https://lightsandpartsapi.azurewebsites.net/api/orders"
+      );
+      return response.content;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  }
+
 }

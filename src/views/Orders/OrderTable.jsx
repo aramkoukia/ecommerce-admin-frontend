@@ -9,6 +9,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import TextField from '@material-ui/core/TextField';
 // import Checkbox from "@material-ui/core/Checkbox";
+import Success from "components/Typography/Success.jsx";
 
 const styles = theme => ({
   root: {
@@ -88,21 +89,18 @@ export class OrderTable extends React.Component {
   }
 
   render() {
-    const { classes, discountPercent, discountAmount, gstTax, pstTax } = this.props;
+    const { classes, discountPercent, discountAmount, taxes } = this.props;
 
-    const { orderRows } = this.state;
+    const { orderRows, total, subTotal } = this.state;
 
-    const invoiceSubtotal = this.subtotal(orderRows);
-    const gstInvoiceTaxes = gstTax * invoiceSubtotal
-    const pstInvoiceTaxes = pstTax * invoiceSubtotal;
     let invoiceDiscount = 0; 
     if(discountPercent > 0) {
-      invoiceDiscount = discountPercent * invoiceSubtotal;
+      invoiceDiscount = discountPercent * subTotal;
     } else if(discountPercent > 0) {
       invoiceDiscount = discountAmount;
     }
     
-    const invoiceTotal = invoiceSubtotal + gstInvoiceTaxes + pstInvoiceTaxes - invoiceDiscount;
+    // const invoiceTotal = subTotal + gstInvoiceTaxes + pstInvoiceTaxes - invoiceDiscount;
 
     return (
     <Paper className={classes.root}>
@@ -151,35 +149,30 @@ export class OrderTable extends React.Component {
           <TableRow>
             <TableCell rowSpan={5} />
             <TableCell colSpan={2}>Subtotal</TableCell>
-            <TableCell numeric>{this.ccyFormat(invoiceSubtotal)}</TableCell>
+            <TableCell numeric>{this.ccyFormat(subTotal)}</TableCell>
           </TableRow>
-          <TableRow>
-            <TableCell>GST Tax</TableCell>
-            <TableCell numeric>{`${(gstTax * 100).toFixed(0)} %`}</TableCell>
-            <TableCell numeric>{this.ccyFormat(gstInvoiceTaxes)}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>PST Tax</TableCell>
-            <TableCell numeric>{`${(pstTax * 100).toFixed(0)} %`}</TableCell>
-            <TableCell numeric>{this.ccyFormat(pstInvoiceTaxes)}</TableCell>
-          </TableRow>
+          {taxes.map((tax) =>
+            <TableRow>
+              <TableCell>{tax.taxName}</TableCell>
+              <TableCell numeric>{`${(tax.percentage * 100).toFixed(0)} %`}</TableCell>
+              <TableCell numeric>{this.ccyFormat(tax * subTotal)}</TableCell>
+            </TableRow>
+          )}
           <TableRow>
             <TableCell>Discount</TableCell>
             <TableCell numeric> 
-              {/* {`${(TAX_RATE * 100).toFixed(0)} %`} */}
             </TableCell>
             <TableCell numeric>{this.ccyFormat(invoiceDiscount)}</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell colSpan={2}>Total</TableCell>
-            <TableCell numeric>{this.ccyFormat(invoiceTotal)}</TableCell>
+            <TableCell colSpan={2}><h3>Total</h3></TableCell>
+            <TableCell numeric><Success><h3>{this.ccyFormat(total)}</h3></Success></TableCell>
           </TableRow>
         </TableBody>
       </Table>
     </Paper>
     );
   }
-
 }
 
 OrderTable.propTypes = {

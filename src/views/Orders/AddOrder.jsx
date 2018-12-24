@@ -15,6 +15,7 @@ import CustomerSearch from "./CustomerSearch";
 import OrderTable from "./OrderTable";
 import CustomInput from "components/CustomInput/CustomInput.jsx";
 import OrderService from "../../services/OrderService";
+import TaxService from "../../services/TaxService";
 
 let orderService = new OrderService();
 
@@ -63,12 +64,17 @@ export class AddOrder extends React.Component {
     this.saveAsAccount = this.saveAsAccount.bind(this);
   }
 
+  async componentDidMount() {
+    const taxes = await TaxService.getTaxes("Canada", "BC");
+    this.setState({ taxes: taxes });
+  }
+
   priceRow(qty, unit) {
     return qty * unit;
   }
 
   createRow(productId, productName, salesPrice) {
-    let qty = 2;
+    let qty = 1;
     const price = this.priceRow(qty, salesPrice);
     return { productId, productName, qty, salesPrice, price };
   }
@@ -143,7 +149,7 @@ export class AddOrder extends React.Component {
 
   render() {
     const { classes, note, poNumber } = this.props;
-    const { rows, gstTax, pstTax, discountAmount, discountPercent, customer } = this.state;
+    const { rows, taxes, discountAmount, discountPercent, customer } = this.state;
 
     return (
       <div>
@@ -259,9 +265,10 @@ export class AddOrder extends React.Component {
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={12}>
                     <OrderTable 
-                      rows={rows} 
-                      gstTax={gstTax}
-                      pstTax={pstTax}
+                      rows={rows}
+                      taxes={taxes}
+                      //gstTax={gstTax}
+                      //pstTax={pstTax}
                       discountAmount={discountAmount}
                       discountPercent={discountPercent}
                       priceChanged={this.priceChanged}
