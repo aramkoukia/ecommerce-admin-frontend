@@ -12,7 +12,7 @@ import CardBody from "components/Card/CardBody.jsx";
 import MUIDataTable from "mui-datatables";
 // import AddLocation from "views/Locations/AddLocation";
 
-export default class Locations extends React.Component {
+export default class Products extends React.Component {
   constructor(props) {
     super(props);
 
@@ -20,10 +20,10 @@ export default class Locations extends React.Component {
   }
 
   componentDidMount() {
-    this.LocationsList();
+    this.productsList();
   }
 
-  LocationsList() {
+  productsList() {
     const columns = ["productCode", "productName", "salesPrice"];
     fetch("https://lightsandpartsapi.azurewebsites.net/api/products")
       .then(response => response.json())
@@ -100,4 +100,4 @@ export default class Locations extends React.Component {
   }
 }
 
-// export default withStyles(styles)(Locations);
+// export default withStyles(styles)(Products);
