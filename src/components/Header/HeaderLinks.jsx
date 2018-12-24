@@ -57,7 +57,7 @@ class HeaderLinks extends React.Component {
           </Select>
         </FormControl>
         &nbsp;&nbsp;&nbsp;&nbsp;
-        { AuthService.getUser() }
+        Hello { AuthService.getUser() }!
         &nbsp;&nbsp;&nbsp;&nbsp;
         <Button onClick={this.signOut}>
           <Person />

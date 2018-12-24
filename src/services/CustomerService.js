@@ -4,7 +4,7 @@ export default class CustomerService {
   static async getCustomers() {
     try {
       const response = await RestUtilities.get(
-        "https://lightsandpartsapi.azurewebsites.net/api/customers"
+        "customers"
       );
       return response.content;
     } catch (err) {

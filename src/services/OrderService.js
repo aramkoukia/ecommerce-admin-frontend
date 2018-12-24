@@ -4,7 +4,7 @@ export default class OrderService {
   async saveOrder(order) {
     try {
       const response = await RestUtilities.post(
-        "https://lightsandpartsapi.azurewebsites.net/api/orders",  
+        "orders",  
         order
       );
       return response.content;
@@ -17,7 +17,7 @@ export default class OrderService {
   async getOrders() {
     try {
       const response = await RestUtilities.get(
-        "https://lightsandpartsapi.azurewebsites.net/api/orders"
+        "orders"
       );
       return response.content;
     } catch (err) {

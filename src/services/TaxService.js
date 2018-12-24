@@ -4,7 +4,7 @@ export default class TaxService {
   static async getTaxes(country, province) {
     try {
       const response = await RestUtilities.get(
-        `https://lightsandpartsapi.azurewebsites.net/api/taxes?country=${country}&province=${province}`
+        `taxes?country=${country}&province=${province}`
       );
       return response.content;
     } catch (err) {
@@ -16,7 +16,7 @@ export default class TaxService {
   static async getAllTaxes() {
     try {
       const response = await RestUtilities.get(
-        `https://lightsandpartsapi.azurewebsites.net/api/taxes`
+        `taxes`
       );
       return response.content;
     } catch (err) {

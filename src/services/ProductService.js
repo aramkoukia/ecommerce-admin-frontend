@@ -4,7 +4,7 @@ export default class ProductService {
   static async getProducts() {
     try {
       const response = await RestUtilities.get(
-        "https://lightsandpartsapi.azurewebsites.net/api/products"
+        "products"
       );
       return response.content;
     } catch (err) {

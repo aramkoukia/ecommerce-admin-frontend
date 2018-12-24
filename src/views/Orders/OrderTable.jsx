@@ -57,7 +57,7 @@ export class OrderTable extends React.Component {
 
   handleQuantityChanged(event) {
     let { discountAmount, discountPercentage } = this.state;
-    let { taxes } = this.props;
+    let { taxes, priceChanged } = this.props;
     let orderRows = this.state.orderRows.slice();
     for(let i in orderRows) {
         if(orderRows[i].productId == event.target.name){
@@ -77,6 +77,8 @@ export class OrderTable extends React.Component {
         discount: discount,
       }
     )
+
+    priceChanged(subTotal, total, discount, discountPercentage, discountAmount);
   }
 
   handleChange = name => event => {
@@ -112,7 +114,7 @@ export class OrderTable extends React.Component {
   }
 
   render() {
-    const { classes, discountPercent, discountAmount, taxes } = this.props;
+    const { classes, taxes } = this.props;
     const { orderRows, total, subTotal, discount } = this.state;
 
     return (

@@ -86,12 +86,13 @@ export class AddOrder extends React.Component {
     }))
   }
 
-  priceChanged(subTotal, total, discountPercent, discountAmount) {
+  priceChanged(subTotal, total, discount, discountPercent, discountAmount) {
     this.setState({ 
       subTotal: subTotal,
       total: total,
       discountPercent: discountPercent,
-      discountAmount: discountAmount
+      discountAmount: discountAmount,
+      discount: discount,
     });
   }
 
@@ -114,19 +115,33 @@ export class AddOrder extends React.Component {
   saveAsPaid() {
     const { customer, rows, total, subTotal, discountPercent, discountAmount, note, taxes } = this.state;
     const status = "Paid";
-    const orderDetails = rows.map((row) => {row.productId, row.qty, row.salesPrice});
-    const orderTaxes = taxes.map((tax) => { tax.taxId, tax.percentage });
-
+    const orderDetails = rows.map(row => (
+      { 
+        orderId: 0,
+        orderDetailId: 0,
+        productId: row.productId, 
+        amount: row.qty, 
+        unitPrice: row.salesPrice,
+        totalPrice: row.qty * row.salesPrice,
+      })
+    );
+    const orderTaxes = taxes.map(tax => (
+      { 
+        taxId: tax.taxId, 
+        percentage: tax.percentage, 
+      })
+    );
+    
     const order = {
       subTotal: subTotal,
       total: total,
       discountPercent: discountPercent,
       discountAmount: discountAmount,
-      customerId: customer.customerId,
+      customerId: customer !== null ? customer.customerId : null,
       status: status,
       note: note,
-      orderTaxes: orderTaxes,
-      orderDetails: orderDetails,
+      orderTax: orderTaxes,
+      orderDetail: orderDetails,
     };
 
     orderService.saveOrder(order);

@@ -1,6 +1,8 @@
 import AuthStore from "../stores/Auth";
+import Api from "./ApiConfig";
 
 export default class RestUtilities {
+
   static get(url) {
     return RestUtilities.request("GET", url);
   }
@@ -35,7 +37,7 @@ export default class RestUtilities {
       }
     }
 
-    return fetch(url, {
+    return fetch(`${Api.baseUrl}/${url}`, {
       method: method,
       headers: headers,
       body: body
