@@ -10,6 +10,7 @@ import CardBody from "components/Card/CardBody.jsx";
 // import Button from "components/CustomButtons/Button.jsx";
 
 import MUIDataTable from "mui-datatables";
+import CustomerService from "../../services/CustomerService";
 // import AddLocation from "views/Locations/AddLocation";
 
 export default class Customers extends React.Component {
@@ -25,8 +26,7 @@ export default class Customers extends React.Component {
 
   customersList() {
     const columns = ["customerCode", "firstName", "lastName", "email", "creditLimit", "pstNumber"];
-    fetch("https://lightsandpartsapi.azurewebsites.net/api/customers")
-      .then(response => response.json())
+    CustomerService.getCustomers()
       .then(results => {
         return results.map(row => {
           return columns.map(column => {

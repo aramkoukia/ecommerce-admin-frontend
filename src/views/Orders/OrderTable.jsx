@@ -8,7 +8,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import TextField from '@material-ui/core/TextField';
-import RestoreFromTrash from "@material-ui/icons/RestoreFromTrash";
 // import Checkbox from "@material-ui/core/Checkbox";
 
 const styles = theme => ({
