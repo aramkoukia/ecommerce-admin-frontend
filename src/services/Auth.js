@@ -47,5 +47,6 @@ export default class Auth {
   signOut() {
     AuthStore.removeToken();
     AuthStore.removeUser();
+    window.location.replace(`/?expired=1`);
   }
 }

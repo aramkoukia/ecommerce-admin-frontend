@@ -127,9 +127,8 @@ export class SignIn extends React.Component {
     }
     return (
       <div>
-        <GridContainer>
-          <GridItem xs={4} sm={4} md={4} />
-          <GridItem xs={4} sm={4} md={4}>
+        <GridContainer justify="center" alignItems="center">
+          <GridItem >
             <Card>
               <CardHeader color="primary">
                 <h4 className={styles.cardTitleWhite}>
@@ -181,7 +180,6 @@ export class SignIn extends React.Component {
               </CardBody>
             </Card>
           </GridItem>
-          <GridItem xs={4} sm={4} md={4} />
         </GridContainer>
       </div>
     );

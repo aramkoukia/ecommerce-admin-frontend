@@ -11,6 +11,7 @@ import CardBody from "components/Card/CardBody.jsx";
 
 import MUIDataTable from "mui-datatables";
 // import AddLocation from "views/Locations/AddLocation";
+import ProductService from "../../services/ProductService";
 
 export default class Products extends React.Component {
   constructor(props) {
@@ -25,8 +26,7 @@ export default class Products extends React.Component {
 
   productsList() {
     const columns = ["productCode", "productName", "salesPrice"];
-    fetch("https://lightsandpartsapi.azurewebsites.net/api/products")
-      .then(response => response.json())
+    ProductService.getProducts()
       .then(results => {
         return results.map(row => {
           return columns.map(column => {

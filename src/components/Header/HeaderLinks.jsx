@@ -13,6 +13,8 @@ import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
 import AuthService from "../../services/Auth";
 
+const authService = new AuthService();
+
 class HeaderLinks extends React.Component {
   state = {
     location: 'Vancouver',
@@ -27,6 +29,10 @@ class HeaderLinks extends React.Component {
   handleChange = event => {
     this.setState({ [event.target.name]: event.target.value });
   };
+
+  signOut() {
+    authService.signOut();
+  }
 
   render() {
     const { classes } = this.props;
@@ -53,7 +59,7 @@ class HeaderLinks extends React.Component {
         &nbsp;&nbsp;&nbsp;&nbsp;
         { AuthService.getUser() }
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <Button>
+        <Button onClick={this.signOut}>
           <Person />
           Sign out
         </Button>
