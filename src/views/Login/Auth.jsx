@@ -167,7 +167,8 @@ export class SignIn extends React.Component {
                       }}
                       inputProps={{
                         onChange: this.handleInputChange,
-                        name: "password"
+                        name: "password",
+                        type: "password"
                       }}
                     />
                   </GridItem>
