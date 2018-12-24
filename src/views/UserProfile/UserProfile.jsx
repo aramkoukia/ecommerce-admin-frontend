@@ -55,7 +55,7 @@ function UserProfile(props) {
                       fullWidth: true
                     }}
                     inputProps={{
-                      disabled: true
+                      disabled: true,
                     }}
                   />
                 </GridItem>

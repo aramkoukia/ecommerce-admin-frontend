@@ -27,6 +27,10 @@ export class OrderTable extends React.Component {
     super(props);
     this.state = {
       orderRows: [],
+      subTotal: 0,
+      total: 0,
+      discountAmount: 0,
+      discountPercentage: 0,
     };
   }
 
@@ -59,6 +63,15 @@ export class OrderTable extends React.Component {
           break;
         }
     }
+
+    const subtotal = this.subtotal(orderRows);
+
+    this.setState(
+      {
+        subTotal: subtotal,
+        total: subtotal,  // TODO, calculate tax and discount
+      }
+    )
   }
 
   handleChange = name => event => {
@@ -171,7 +184,8 @@ export class OrderTable extends React.Component {
 }
 
 OrderTable.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  priceChanged: PropTypes.func,
 };
 
 export default withStyles(styles)(OrderTable);
