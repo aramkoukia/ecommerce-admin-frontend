@@ -68,7 +68,7 @@ export default class Customers extends React.Component {
       }
     };
 
-    const columns = ["customerCode", "firstName", "lastName", "email", "creditLimit", "pstNumber"];
+    const columns = ["Customer Code", "First Name", "Last Name", "Email", "Credit Limit ($)", "PST Number"];
 
     const options = {
       filterType: "checkbox",

@@ -11,6 +11,10 @@ import AuthService from "./services/Auth";
 
 const hist = createBrowserHistory();
 
+// const appInsights = require("applicationinsights");
+// appInsights.setup("877ac590-4d9c-4864-a6ac-4c414c501ac0");
+// appInsights.start();
+
 ReactDOM.render(
   <Router history={hist}>
     <Switch>

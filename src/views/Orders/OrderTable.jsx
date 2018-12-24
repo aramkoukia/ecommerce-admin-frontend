@@ -29,6 +29,8 @@ export class OrderTable extends React.Component {
       orderRows: [],
       subTotal: 0,
       total: 0,
+      taxes: [],
+      discount: 0,
       discountAmount: 0,
       discountPercentage: 0,
     };
@@ -54,7 +56,8 @@ export class OrderTable extends React.Component {
   }
 
   handleQuantityChanged(event) {
-    // let { orderRows } = this.state;
+    let { discountAmount, discountPercentage } = this.state;
+    let { taxes } = this.props;
     let orderRows = this.state.orderRows.slice();
     for(let i in orderRows) {
         if(orderRows[i].productId == event.target.name){
@@ -64,12 +67,14 @@ export class OrderTable extends React.Component {
         }
     }
 
-    const subtotal = this.subtotal(orderRows);
-
+    const subTotal = this.subtotal(orderRows);
+    const discount = this.discount(subTotal, discountAmount, discountPercentage);
+    const total = this.total(subTotal, discount, taxes);
     this.setState(
       {
-        subTotal: subtotal,
-        total: subtotal,  // TODO, calculate tax and discount
+        subTotal: subTotal,
+        total: total,  
+        discount: discount,
       }
     )
   }
@@ -85,22 +90,30 @@ export class OrderTable extends React.Component {
   }
 
   subtotal(items) {
+    if(items.length === 0) {
+      return 0;
+    }
     return items.map(({ salesPrice, qty }) => salesPrice * qty).reduce((sum, i) => sum + i, 0);
+  }
+
+  discount(subtotal, discountAmount, discountPercentage) {
+    let invoiceDiscount= 0;
+    if(discountPercentage > 0) {
+      invoiceDiscount = (discountPercentage / 100) * subtotal;
+    } else if(discountAmount > 0) {
+      invoiceDiscount = discountAmount;
+    }
+    return invoiceDiscount;
+  }
+
+  total(subTotal, discount, taxes) {
+    const totalTax = taxes.map(({ percentage }) => (percentage / 100) * subTotal).reduce((sum, i) => sum + i, 0);
+    return subTotal + totalTax - discount;
   }
 
   render() {
     const { classes, discountPercent, discountAmount, taxes } = this.props;
-
-    const { orderRows, total, subTotal } = this.state;
-
-    let invoiceDiscount = 0; 
-    if(discountPercent > 0) {
-      invoiceDiscount = discountPercent * subTotal;
-    } else if(discountPercent > 0) {
-      invoiceDiscount = discountAmount;
-    }
-    
-    // const invoiceTotal = subTotal + gstInvoiceTaxes + pstInvoiceTaxes - invoiceDiscount;
+    const { orderRows, total, subTotal, discount } = this.state;
 
     return (
     <Paper className={classes.root}>
@@ -154,15 +167,15 @@ export class OrderTable extends React.Component {
           {taxes.map((tax) =>
             <TableRow>
               <TableCell>{tax.taxName}</TableCell>
-              <TableCell numeric>{`${(tax.percentage * 100).toFixed(0)} %`}</TableCell>
-              <TableCell numeric>{this.ccyFormat(tax * subTotal)}</TableCell>
+              <TableCell numeric>{`${(tax.percentage).toFixed(0)} %`}</TableCell>
+              <TableCell numeric>{this.ccyFormat((tax.percentage / 100) * subTotal)}</TableCell>
             </TableRow>
           )}
           <TableRow>
             <TableCell>Discount</TableCell>
             <TableCell numeric> 
             </TableCell>
-            <TableCell numeric>{this.ccyFormat(invoiceDiscount)}</TableCell>
+            <TableCell numeric>{this.ccyFormat(discount)}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell colSpan={2}><h3>Total</h3></TableCell>

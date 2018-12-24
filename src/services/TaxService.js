@@ -12,4 +12,17 @@ export default class TaxService {
       return false;
     }
   }
+
+  static async getAllTaxes() {
+    try {
+      const response = await RestUtilities.get(
+        `https://lightsandpartsapi.azurewebsites.net/api/taxes`
+      );
+      return response.content;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  }
+
 }
