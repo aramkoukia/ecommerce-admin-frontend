@@ -56,6 +56,7 @@ export class AddOrder extends React.Component {
       notes: "",
       poNumber: "",
       taxes: [],
+      allTaxes: [],
       openSnackbar: false,
     };
 
@@ -72,7 +73,10 @@ export class AddOrder extends React.Component {
 
   async componentDidMount() {
     const taxes = await TaxService.getTaxes("Canada", "BC");
-    this.setState({ taxes: taxes });
+    this.setState({ 
+      taxes: taxes,
+      allTaxes: taxes 
+    });
   }
 
   priceRow(qty, unit) {
@@ -107,6 +111,29 @@ export class AddOrder extends React.Component {
   }
 
   customerChanged(customer) {
+    const { allTaxes } = this.state;
+    if(customer && customer.pstNumber) { // removing taxes with name like "pst" from the list if the selected customer has PST number in their profile
+      const filterTaxes = allTaxes.reduce((filterTaxes, tax) => {
+        if(!tax.taxName.toLowerCase().includes("pst")) {
+          filterTaxes.push(tax);
+        }
+        return filterTaxes;
+      }, []);
+
+      this.setState({
+        taxes: filterTaxes,
+      });
+      this.setState({ 
+        openSnackbar: true,
+        snackbarMessage: "PST Tax not charged for this customer!",
+        snackbarColor: "warning",
+      });
+    } else {
+      this.setState({
+        taxes: allTaxes,
+      });
+    }
+
     this.setState({
       customer: customer
     });
@@ -318,7 +345,7 @@ export class AddOrder extends React.Component {
                               }}
                               inputProps={{
                                 disabled: true,
-                                value: customer.pstNumber  + ' '
+                                value: customer.pstNumber === null ? 'Not Provided' : customer.pstNumber + ' '
                               }}                            
                             />
                           </GridItem>
