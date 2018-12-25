@@ -26,7 +26,7 @@ export default class Orders extends React.Component {
   }
 
   ordersList() {
-    const columns = ["orderDate", "subTotal", "total", "status", "poNumber", "pstNumber", "createdByUserId"];
+    const columns = ["location.LocationName", "orderDate", "subTotal", "total", "status", "poNumber", "pstNumber", "createdByUserId"];
     orderService.getOrders()
       .then(results => {
         return results.map(row => {
@@ -69,7 +69,7 @@ export default class Orders extends React.Component {
       }
     };
 
-    const columns = ["Order Date", "Sub Total", "Total", "Status", "PO Number", "PST Number", "Created By"];
+    const columns = ["Location", "Order Date", "Sub Total", "Total", "Status", "PO Number", "PST Number", "Created By"];
 
     const options = {
       // filterType: "checkbox",

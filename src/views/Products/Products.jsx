@@ -25,12 +25,12 @@ export default class Products extends React.Component {
   }
 
   productsList() {
-    const columns = ["productCode", "productName", "salesPrice"];
+    const columns = ["productTypeName", "productCode", "productName", "salesPrice", "vancouverBalance", "abbotsfordBalance"];
     ProductService.getProducts()
       .then(results => {
         return results.map(row => {
           return columns.map(column => {
-            return row[column] || "";
+            return row[column] === null ? "" : row[column];
           });
         });
       })
@@ -68,7 +68,7 @@ export default class Products extends React.Component {
       }
     };
 
-    const columns = ["Code", "Name", "Price", "Type", "Total Inventory"];
+    const columns = ["Type", "Product Code", "Product Name", "Sales Price ($)", "Vanvouver  Balance", "Abbotsford Balance"];
 
     const options = {
       filterType: "checkbox",
