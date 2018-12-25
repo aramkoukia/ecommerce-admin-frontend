@@ -27,7 +27,7 @@ export default class Orders extends React.Component {
   }
 
   ordersList() {
-    const columns = ["locationName", "orderDate", "subTotal", "total", "status", "poNumber", "pstNumber", "paidAmount", "createdByUserId"];
+    const columns = ["locationName", "orderDate", "subTotal", "total", "status", "poNumber", "paidAmount", "createdByUserId"];
     const locationId = Location.getStoreLocation();
     orderService.getOrdersByLocation(locationId)
       .then(results => {
@@ -71,7 +71,7 @@ export default class Orders extends React.Component {
       }
     };
 
-    const columns = ["Location", "Order Date", "Sub Total", "Total", "Status", "PO Number", "PST Number", "Paid Amount", "Created By"];
+    const columns = ["Location", "Order Date", "Sub Total", "Total", "Status", "PO Number", "Paid Amount", "Created By"];
 
     const options = {
       // filterType: "checkbox",

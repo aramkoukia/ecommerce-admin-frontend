@@ -53,7 +53,8 @@ export class AddOrder extends React.Component {
       discountAmount:0,
       gstTax: 0.05,
       pstTax: 0.07,
-      note: "",
+      notes: "",
+      poNumber: "",
       taxes: [],
       openSnackbar: false,
     };
@@ -62,7 +63,7 @@ export class AddOrder extends React.Component {
     this.priceChanged = this.priceChanged.bind(this);
     this.customerChanged = this.customerChanged.bind(this);
     this.clearCustomer = this.clearCustomer.bind(this);
-    //this.noteChanged = this.noteChanged.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.saveAsPaid =  this.saveAsPaid.bind(this);
     this.saveAsDraft = this.saveAsDraft.bind(this);
     this.saveAsHold = this.saveAsHold.bind(this);
@@ -111,14 +112,22 @@ export class AddOrder extends React.Component {
     });
   }
 
-  // noteChanged(note) {
-  //   this.setState({
-  //     note: note
-  //   });
-  // }
+  handleChange(event) {
+    this.setState({[event.target.name]: event.target.value});
+  }
+
+  validateCustomerCredit()
+  {
+    const { customer, total } = this.state;
+    if(customer && customer.creditLimit > customer.accountBalance + total) {
+      return false;
+    }
+
+    return true;
+  }
 
   saveOrder(orderStatus) {
-    const { customer, rows, total, subTotal, discountPercent, discountAmount, note, taxes } = this.state;
+    const { customer, rows, total, subTotal, discountPercent, discountAmount, notes, taxes, poNumber } = this.state;
     const status = orderStatus;
     const orderDetails = rows.map(row => (
       { 
@@ -145,7 +154,9 @@ export class AddOrder extends React.Component {
       discountAmount: discountAmount,
       customerId: customer !== null ? customer.customerId : null,
       status: status,
-      note: note,
+      notes: notes,
+      poNumber: poNumber,
+      pstNumber: customer !== null ? customer.pstNumber : null,
       orderTax: orderTaxes,
       orderDetail: orderDetails,
     };
@@ -186,13 +197,26 @@ export class AddOrder extends React.Component {
   }
 
   saveAsAccount() {
-    const order = null;
-    orderService.saveOrder(order);
+    if(this.validateCustomerCredit()){
+      this.setState({ 
+        openSnackbar: true,
+        snackbarMessage: "Customer is exceeding the credit limit!",
+        snackbarColor: "danger",
+      });      
+      return;
+    }
+
+    this.saveOrder("Account")
+    this.setState({ 
+      openSnackbar: true,
+      snackbarMessage: "Order was Saved and Added to customer's Credit successfully!",
+      snackbarColor: "info",
+    });
   }
 
   render() {
-    const { classes, note, poNumber } = this.props;
-    const { rows, taxes, discountAmount, discountPercent, customer, openSnackbar, snackbarMessage, snackbarColor } = this.state;
+    const { classes } = this.props;
+    const { rows, taxes, discountAmount, discountPercent, customer, openSnackbar, snackbarMessage, snackbarColor, notes, poNumber } = this.state;
 
     return (
       <div>
@@ -273,7 +297,7 @@ export class AddOrder extends React.Component {
                               }}
                               inputProps={{
                                 disabled: true,
-                                value: 0 + " $",
+                                value: customer.accountBalance + " $",
                                 error: "error"
                               }}
                             />
@@ -310,8 +334,6 @@ export class AddOrder extends React.Component {
                     <OrderTable 
                       rows={rows}
                       taxes={taxes}
-                      //gstTax={gstTax}
-                      //pstTax={pstTax}
                       discountAmount={discountAmount}
                       discountPercent={discountPercent}
                       priceChanged={this.priceChanged}
@@ -327,7 +349,8 @@ export class AddOrder extends React.Component {
                         }}
                         inputProps={{
                           value: poNumber,
-                          // onChange: this.noteChanged(note)
+                          name: "poNumber",
+                          onChange: this.handleChange
                         }}                            
                     />
                   </GridItem>
@@ -340,8 +363,9 @@ export class AddOrder extends React.Component {
                         inputProps={{
                           multiline:true,
                           rows:1,
-                          value: note,
-                          // onChange: this.noteChanged(note)
+                          value: notes,
+                          name: "notes",
+                          onChange: this.handleChange
                         }}                            
                     />
                   </GridItem>
@@ -355,18 +379,28 @@ export class AddOrder extends React.Component {
                   <GridItem xs>
                     <Button color="info" onClick={this.saveAsDraft}>Save As Draft</Button>
                   </GridItem>
-                  { customer ? (
-                    <GridItem xs>
-                      <Button color="info" onClick={this.saveAsHold}>Put On Hold</Button>                  
-                    </GridItem>
-                    ) : ( <div></div> )
-                  }
+                  <GridItem xs>
+                    <Button color="info" onClick={this.print}>Print</Button>
+                  </GridItem>                  
                   { customer ? (                  
                     <GridItem xs>
                       <Button color="info" onClick={this.saveAsAccount}>Use Customers Account</Button>
                     </GridItem>
                     ) : ( <div></div> )
                   }
+                  { customer ? (
+                    <GridItem xs>
+                      <Button color="info" onClick={this.saveAsHold}>Put On Hold</Button>                  
+                    </GridItem>
+                    ) : ( <div></div> )
+                  }                  
+                  { customer ? (
+                    <GridItem xs>
+                      <Button color="warning" onClick={this.email}>Email</Button>                  
+                    </GridItem>
+                    ) : ( <div></div> )
+                  }
+
                 </GridContainer> 
               </CardFooter>
             </Card>
@@ -379,31 +413,6 @@ export class AddOrder extends React.Component {
                     closeNotification={() => this.setState({ openSnackbar: false })}
                     close
                   />
-
-            {/* <Snackbar
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left',
-                }}
-                open={openSnackbar}
-                autoHideDuration={6000}
-                onClose={this.handleClose}
-                ContentProps={{
-                  'aria-describedby': 'message-id',
-                }}
-                message={<span id="message-id">{ snackbarMessage }</span>}
-                action={[
-                  <IconButton
-                    key="close"
-                    aria-label="Close"
-                    color="inherit"
-                    className={classes.close}
-                    onClick={this.handleClose}
-                  >
-                    <CloseIcon />
-                  </IconButton>,
-                ]}
-              /> */}
           </GridItem>
         </GridContainer>
       </div>
