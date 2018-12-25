@@ -137,6 +137,7 @@ export class AddOrder extends React.Component {
     );
     
     const order = {
+      locationId: 1,
       subTotal: subTotal,
       total: total,
       discountPercent: discountPercent,

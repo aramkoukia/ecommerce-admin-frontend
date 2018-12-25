@@ -184,7 +184,7 @@ export class SignIn extends React.Component {
                 </GridContainer>
               </CardBody>
             </Card>
-            { loading && ( <LinearProgress show={loading}/> ) }
+            { loading && ( <LinearProgress /> ) }
           </GridItem>
         </GridContainer>
       </div>
