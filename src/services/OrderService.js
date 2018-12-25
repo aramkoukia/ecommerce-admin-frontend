@@ -26,4 +26,16 @@ export default class OrderService {
     }
   }
 
+  async getOrdersByLocation(locationId) {
+    try {
+      const response = await RestUtilities.get(
+        `orders/location/${locationId}`
+      );
+      return response.content;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  }
+
 }

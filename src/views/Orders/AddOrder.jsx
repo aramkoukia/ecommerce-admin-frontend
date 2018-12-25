@@ -19,6 +19,7 @@ import CustomInput from "components/CustomInput/CustomInput.jsx";
 import OrderService from "../../services/OrderService";
 import TaxService from "../../services/TaxService";
 import Snackbar from "components/Snackbar/Snackbar.jsx";
+import Location from "../../stores/Location";
 
 let orderService = new OrderService();
 
@@ -116,9 +117,9 @@ export class AddOrder extends React.Component {
   //   });
   // }
 
-  saveAsPaid() {
+  saveOrder(orderStatus) {
     const { customer, rows, total, subTotal, discountPercent, discountAmount, note, taxes } = this.state;
-    const status = "Paid";
+    const status = orderStatus;
     const orderDetails = rows.map(row => (
       { 
         orderId: 0,
@@ -137,7 +138,7 @@ export class AddOrder extends React.Component {
     );
     
     const order = {
-      locationId: 1,
+      locationId: Location.getStoreLocation(),
       subTotal: subTotal,
       total: total,
       discountPercent: discountPercent,
@@ -149,22 +150,39 @@ export class AddOrder extends React.Component {
       orderDetail: orderDetails,
     };
 
-    orderService.saveOrder(order);
+    //if(this.isOrderValid(order)) {
+      orderService.saveOrder(order);
+      return true;
+    // } else {
+    //   return false;
+    // }
+  }
+
+  saveAsPaid() {
+    this.saveOrder("Paid")
     this.setState({ 
       openSnackbar: true,
-      snackbarMessage: "Order was saved successfully!",
+      snackbarMessage: "Order was Saved and marked as Paid successfully!",
       snackbarColor: "success",
     });
   }
 
   saveAsDraft() {
-    const order = null;
-    orderService.saveOrder(order);
+    this.saveOrder("Draft")
+    this.setState({ 
+      openSnackbar: true,
+      snackbarMessage: "Order was Saved as Draft successfully!",
+      snackbarColor: "info",
+    });
   }
 
   saveAsHold() {
-    const order = null;
-    orderService.saveOrder(order);
+    this.saveOrder("OnHold")
+    this.setState({ 
+      openSnackbar: true,
+      snackbarMessage: "Order was Saved and marked as Paid successfully!",
+      snackbarColor: "success",
+    });
   }
 
   saveAsAccount() {

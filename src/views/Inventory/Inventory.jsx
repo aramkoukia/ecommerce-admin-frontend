@@ -7,34 +7,34 @@ import GridContainer from "components/Grid/GridContainer.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
-import Button from "components/CustomButtons/Button.jsx";
+// import Button from "components/CustomButtons/Button.jsx";
 
 import MUIDataTable from "mui-datatables";
-import AddLocation from "views/Locations/AddLocation";
-import LocationService from "../../services/LocationService";
+// import AddLocation from "views/Locations/AddLocation";
+import ProductService from "../../services/ProductService";
 
-export default class Locations extends React.Component {
+export default class Inventory extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { locations: [] };
+    this.state = { products: [] };
   }
 
   componentDidMount() {
-    this.LocationsList();
+    this.productsList();
   }
 
-  LocationsList() {
-    const columns = ["locationId", "locationName", "locationAddress"];
-    LocationService.getLocations()
+  productsList() {
+    const columns = ["productTypeName", "productCode", "productName", "salesPrice", "vancouverBalance", "abbotsfordBalance"];
+    ProductService.getProducts()
       .then(results => {
         return results.map(row => {
           return columns.map(column => {
-            return row[column] || "";
+            return row[column] === null ? "" : row[column];
           });
         });
       })
-      .then(data => this.setState({ locations: data }));
+      .then(data => this.setState({ products: data }));
   }
 
   render() {
@@ -68,27 +68,26 @@ export default class Locations extends React.Component {
       }
     };
 
-    const columns = ["Location Id", "Location Name", "Location Address"];
+    const columns = ["Type", "Product Code", "Product Name", "Sales Price ($)", "Vanvouver  Balance", "Abbotsford Balance"];
+
     const options = {
       filterType: "checkbox",
     };
 
-    const { locations } = this.state;
+    const { products } = this.state;
 
     return (
       <div>
-        {/* <Button color="primary">Add Location</Button>
-        <AddLocation /> */}
         <GridContainer>
           <GridItem xs={12} sm={12} md={12}>
             <Card>
               <CardHeader color="primary">
-                <h4 className={styles.cardTitleWhite}>Locations List</h4>
+                <h4 className={styles.cardTitleWhite}>Inventory List</h4>
               </CardHeader>
               <CardBody>
                 <MUIDataTable
                   // title={"Employee List"}
-                  data={locations}
+                  data={products}
                   columns={columns}
                   options={options}
                 />
@@ -101,4 +100,4 @@ export default class Locations extends React.Component {
   }
 }
 
-// export default withStyles(styles)(Locations);
+// export default withStyles(styles)(Products);

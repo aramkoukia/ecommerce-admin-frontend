@@ -23,7 +23,7 @@ import Orders from "../views/Orders/Orders";
 import Discounts from "../views/Discounts/Discounts";
 import Taxes from "../views/Taxes/Taxes";
 import Users from "../views/Users/Users";
-import Transfers from "../views/Transfers/Transfers";
+import Inventory from "../views/Inventory/Inventory";
 // import Purchases from "../views/Purchases/Purchases";
 import { SignIn } from "../views/Login/Auth";
 
@@ -57,11 +57,11 @@ const dashboardRoutes = [
     component: Products
   },
   {
-    path: "/transfers",
-    sidebarName: "Transfers",
+    path: "/inventory",
+    sidebarName: "Inventory",
     navbarName: "",
     icon: Highlight,
-    component: Transfers
+    component: Inventory
   },
   // {
   //   path: "/purchases",

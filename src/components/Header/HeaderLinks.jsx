@@ -12,25 +12,29 @@ import Select from '@material-ui/core/Select';
 // import ReactDOM from 'react-dom';
 import FormControl from '@material-ui/core/FormControl';
 import AuthService from "../../services/Auth";
+import Location from "../../stores/Location";
 
 const authService = new AuthService();
 
 class HeaderLinks extends React.Component {
   state = {
-    location: 'Vancouver',
+    location: '1',
   };
 
   componentDidMount() {
     this.setState({
-       location: "Vancouver",
+       location: "1",
     });
+    Location.setStoreLocation("1");
   }
 
   handleChange = event => {
     this.setState({ [event.target.name]: event.target.value });
+    Location.setStoreLocation(event.target.value);
   };
 
   signOut() {
+    Location.removeStoreLocation();
     authService.signOut();
   }
 
@@ -52,8 +56,8 @@ class HeaderLinks extends React.Component {
               id: 'location',
             }}
           >
-            <MenuItem value="Vancouver">Vancouver</MenuItem>
-            <MenuItem value="Abbotsford">Abbotsford</MenuItem>
+            <MenuItem value="1">Vancouver</MenuItem>
+            <MenuItem value="2">Abbotsford</MenuItem>
           </Select>
         </FormControl>
         &nbsp;&nbsp;&nbsp;&nbsp;

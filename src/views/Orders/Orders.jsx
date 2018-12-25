@@ -11,6 +11,7 @@ import CardBody from "components/Card/CardBody.jsx";
 
 import MUIDataTable from "mui-datatables";
 import OrderService from "../../services/OrderService";
+import Location from "../../stores/Location";
 
 let orderService = new OrderService();
 
@@ -26,8 +27,9 @@ export default class Orders extends React.Component {
   }
 
   ordersList() {
-    const columns = ["location.LocationName", "orderDate", "subTotal", "total", "status", "poNumber", "pstNumber", "createdByUserId"];
-    orderService.getOrders()
+    const columns = ["locationName", "orderDate", "subTotal", "total", "status", "poNumber", "pstNumber", "paidAmount", "createdByUserId"];
+    const locationId = Location.getStoreLocation();
+    orderService.getOrdersByLocation(locationId)
       .then(results => {
         return results.map(row => {
           return columns.map(column => {
@@ -69,7 +71,7 @@ export default class Orders extends React.Component {
       }
     };
 
-    const columns = ["Location", "Order Date", "Sub Total", "Total", "Status", "PO Number", "PST Number", "Created By"];
+    const columns = ["Location", "Order Date", "Sub Total", "Total", "Status", "PO Number", "PST Number", "Paid Amount", "Created By"];
 
     const options = {
       // filterType: "checkbox",
