@@ -145,7 +145,14 @@ export class AddOrder extends React.Component {
         percentage: tax.percentage, 
       })
     );
-    
+    // let orderPayment = null;
+    // if(status === "Paid") {
+    //   orderPayment = {
+    //     paymentAmount: total,
+    //     paymentTypeId: 1,  // Credit Debit by default for now
+    //   }
+    // }
+
     const order = {
       locationId: Location.getStoreLocation(),
       subTotal: subTotal,
@@ -159,6 +166,7 @@ export class AddOrder extends React.Component {
       pstNumber: customer !== null ? customer.pstNumber : null,
       orderTax: orderTaxes,
       orderDetail: orderDetails,
+      // orderPayment: orderPayment, will set this in the API
     };
 
     //if(this.isOrderValid(order)) {
@@ -183,7 +191,7 @@ export class AddOrder extends React.Component {
     this.setState({ 
       openSnackbar: true,
       snackbarMessage: "Order was Saved as Draft successfully!",
-      snackbarColor: "info",
+      snackbarColor: "warning",
     });
   }
 
@@ -191,8 +199,8 @@ export class AddOrder extends React.Component {
     this.saveOrder("OnHold")
     this.setState({ 
       openSnackbar: true,
-      snackbarMessage: "Order was Saved and marked as Paid successfully!",
-      snackbarColor: "success",
+      snackbarMessage: "Order was Saved and marked as On Hold successfully!",
+      snackbarColor: "warning",
     });
   }
 
