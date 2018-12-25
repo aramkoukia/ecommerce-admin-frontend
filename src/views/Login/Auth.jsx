@@ -11,6 +11,7 @@ import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 // import CardAvatar from "components/Card/CardAvatar.jsx";
 import CardBody from "components/Card/CardBody.jsx";
+import LinearProgress from '@material-ui/core/LinearProgress';
 // import CardFooter from "components/Card/CardFooter.jsx";
 // import dashboardPath from "../../routes/dashboard";
 // let authStyle = require("../../styles/auth.styl");
@@ -26,6 +27,7 @@ export class SignIn extends React.Component {
     super(props);
 
     this.state = {
+      loading: false,
       initialLoad: true,
       userInfo: {
         username: "",
@@ -49,7 +51,7 @@ export class SignIn extends React.Component {
   // }
 
   handleSignIn(event) {
-    this.setState({ errors: null, initialLoad: false });
+    this.setState({ errors: null, initialLoad: false, loading: true });
     authService
       .signIn(this.state.userInfo.username, this.state.userInfo.password)
       .then(response => {
@@ -58,6 +60,7 @@ export class SignIn extends React.Component {
         } else {
           this.setState({ error: response.error_content.error_description });
         }
+        this.setState({ loading: false });
       });
   }
 
@@ -95,7 +98,7 @@ export class SignIn extends React.Component {
     };
     const search = this.props.location.search;
     const params = new URLSearchParams(search);
-
+    const { loading } = this.state;
     let initialLoadContent = null;
     if (this.state.initialLoad) {
       if (params.get("confirmed")) {
@@ -177,9 +180,11 @@ export class SignIn extends React.Component {
                       Sign In
                     </Button>
                   </GridItem>
+                  
                 </GridContainer>
               </CardBody>
             </Card>
+            { loading && ( <LinearProgress show={loading}/> ) }
           </GridItem>
         </GridContainer>
       </div>
