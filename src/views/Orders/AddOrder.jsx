@@ -153,7 +153,7 @@ export class AddOrder extends React.Component {
     return true;
   }
 
-  saveOrder(orderStatus) {
+  async saveOrder(orderStatus) {
     const { customer, rows, total, subTotal, discountPercent, discountAmount, notes, taxes, poNumber } = this.state;
     const status = orderStatus;
     const orderDetails = rows.map(row => (
@@ -196,42 +196,53 @@ export class AddOrder extends React.Component {
       // orderPayment: orderPayment, will set this in the API
     };
 
-    //if(this.isOrderValid(order)) {
-      orderService.saveOrder(order);
+    const result = await orderService.saveOrder(order);
+    if(result === false || result === null || result.StatusCode === 500 || result.StatusCode === 400) {
+      this.setState({ 
+        openSnackbar: true,
+        snackbarMessage: "Oops, looks like something went wrong!",
+        snackbarColor: "danger",
+      });
+      return false;
+    } else {
       return true;
-    // } else {
-    //   return false;
-    // }
+    }
   }
 
-  saveAsPaid() {
-    this.saveOrder("Paid")
-    this.setState({ 
-      openSnackbar: true,
-      snackbarMessage: "Order was Saved and marked as Paid successfully!",
-      snackbarColor: "success",
-    });
+  async saveAsPaid() {
+    const result = await this.saveOrder("Paid")
+    if(result === true) {
+      this.setState({ 
+        openSnackbar: true,
+        snackbarMessage: "Order was Saved and marked as Paid successfully!",
+        snackbarColor: "success",
+      });
+    }
   }
 
-  saveAsDraft() {
-    this.saveOrder("Draft")
-    this.setState({ 
-      openSnackbar: true,
-      snackbarMessage: "Order was Saved as Draft successfully!",
-      snackbarColor: "warning",
-    });
+  async saveAsDraft() {
+    const result = await this.saveOrder("Draft");
+    if(result === true) {
+      this.setState({ 
+        openSnackbar: true,
+        snackbarMessage: "Order was Saved as Draft successfully!",
+        snackbarColor: "warning",
+      });
+    }
   }
 
-  saveAsHold() {
-    this.saveOrder("OnHold")
-    this.setState({ 
-      openSnackbar: true,
-      snackbarMessage: "Order was Saved and marked as On Hold successfully!",
-      snackbarColor: "warning",
-    });
+  async saveAsHold() {
+    const result = await this.saveOrder("OnHold");
+    if(result === true) {
+      this.setState({ 
+        openSnackbar: true,
+        snackbarMessage: "Order was Saved and marked as On Hold successfully!",
+        snackbarColor: "warning",
+      });
+    }
   }
 
-  saveAsAccount() {
+  async saveAsAccount() {
     if(this.validateCustomerCredit()){
       this.setState({ 
         openSnackbar: true,
@@ -241,12 +252,14 @@ export class AddOrder extends React.Component {
       return;
     }
 
-    this.saveOrder("Account")
-    this.setState({ 
-      openSnackbar: true,
-      snackbarMessage: "Order was Saved and Added to customer's Credit successfully!",
-      snackbarColor: "info",
-    });
+    const result = await this.saveOrder("Account");
+    if(result === true) {
+      this.setState({ 
+        openSnackbar: true,
+        snackbarMessage: "Order was Saved and Added to customer's Credit successfully!",
+        snackbarColor: "info",
+      });
+    }
   }
 
   render() {
