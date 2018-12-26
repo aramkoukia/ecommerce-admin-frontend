@@ -45,13 +45,26 @@ export class OrderTable extends React.Component {
     this.handleQuantityChanged = this.handleQuantityChanged.bind(this);
   }
 
+  // updatePrice
+
   componentDidUpdate(prevProps) {
     // Typical usage (don't forget to compare props):
-    const { rows } = this.props;
-    if (this.props.rows.length !== prevProps.rows.length) {
+    const { rows, taxes, priceChanged } = this.props;
+    if (rows.length !== prevProps.rows.length) {
+      // let {  } = this.props;
+      let { discountAmount, discountPercentage } = this.state;
+      let orderRows = rows.slice();
+      const subTotal = this.subtotal(orderRows);
+      const discount = this.discount(subTotal, discountAmount, discountPercentage);
+      const total = this.total(subTotal, discount, taxes);
       this.setState({
-        orderRows: rows
+          orderRows: rows,
+          subTotal: subTotal,
+          total: total,  
+          discount: discount,
       });
+
+      priceChanged(subTotal, total, discount, discountPercentage, discountAmount);
     }
   }
 
@@ -173,12 +186,14 @@ export class OrderTable extends React.Component {
               <TableCell numeric>{this.ccyFormat((tax.percentage / 100) * subTotal)}</TableCell>
             </TableRow>
           )}
-          <TableRow>
+
+          {/* <TableRow>
             <TableCell>Discount</TableCell>
             <TableCell numeric> 
             </TableCell>
             <TableCell numeric>{this.ccyFormat(discount)}</TableCell>
-          </TableRow>
+          </TableRow> */}
+
           <TableRow>
             <TableCell colSpan={2}><h3>Total</h3></TableCell>
             <TableCell numeric><Success><h3>{this.ccyFormat(total)}</h3></Success></TableCell>
