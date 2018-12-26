@@ -428,9 +428,6 @@ export class AddOrder extends React.Component {
                   <GridItem xs>
                     <Button color="info" onClick={this.saveAsDraft}>Save As Draft</Button>
                   </GridItem>
-                  <GridItem xs>
-                    <Button color="info" onClick={this.print}>Print</Button>
-                  </GridItem>                  
                   { customer ? (                  
                     <GridItem xs>
                       <Button color="info" onClick={this.saveAsAccount}>Use Customers Account</Button>
@@ -443,13 +440,6 @@ export class AddOrder extends React.Component {
                     </GridItem>
                     ) : ( <div></div> )
                   }                  
-                  { customer ? (
-                    <GridItem xs>
-                      <Button color="warning" onClick={this.email}>Email</Button>                  
-                    </GridItem>
-                    ) : ( <div></div> )
-                  }
-
                 </GridContainer> 
               </CardFooter>
             </Card>
