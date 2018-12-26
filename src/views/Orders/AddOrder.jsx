@@ -205,41 +205,43 @@ export class AddOrder extends React.Component {
       });
       return false;
     } else {
-      return true;
+      return result;
     }
   }
 
   async saveAsPaid() {
     const result = await this.saveOrder("Paid")
-    if(result === true) {
+    if(result && result.orderId) {
       this.setState({ 
         openSnackbar: true,
         snackbarMessage: "Order was Saved and marked as Paid successfully!",
         snackbarColor: "success",
       });
-      this.props.history.push('/order/38')
+      this.props.history.push(`/order/${result.orderId}`);
     }
   }
 
   async saveAsDraft() {
     const result = await this.saveOrder("Draft");
-    if(result === true) {
+    if(result && result.orderId) {
       this.setState({ 
         openSnackbar: true,
         snackbarMessage: "Order was Saved as Draft successfully!",
         snackbarColor: "warning",
       });
+      this.props.history.push(`/order/${result.orderId}`);      
     }
   }
 
   async saveAsHold() {
     const result = await this.saveOrder("OnHold");
-    if(result === true) {
+    if(result && result.orderId) {
       this.setState({ 
         openSnackbar: true,
         snackbarMessage: "Order was Saved and marked as On Hold successfully!",
         snackbarColor: "warning",
       });
+      this.props.history.push(`/order/${result.orderId}`);      
     }
   }
 
@@ -254,12 +256,13 @@ export class AddOrder extends React.Component {
     }
 
     const result = await this.saveOrder("Account");
-    if(result === true) {
+    if(result && result.orderId) {
       this.setState({ 
         openSnackbar: true,
         snackbarMessage: "Order was Saved and Added to customer's Credit successfully!",
         snackbarColor: "info",
       });
+      this.props.history.push(`/order/${result.orderId}`);      
     }
   }
 
