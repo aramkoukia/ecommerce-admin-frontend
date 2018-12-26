@@ -72,6 +72,10 @@ export default class Customers extends React.Component {
 
     const options = {
       filterType: "checkbox",
+      // onRowClick: this.rowClicked,
+      rowHover: true,
+      resizableColumns: true,
+      selectableRows: false,
     };
 
     const { customers } = this.state;

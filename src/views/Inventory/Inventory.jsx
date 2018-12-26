@@ -25,7 +25,7 @@ export default class Inventory extends React.Component {
   }
 
   productsList() {
-    const columns = ["productCode", "productName", "salesPrice", "vancouverBalance", "abbotsfordBalance" , "VancouverBinCode", "AbbotsfordBinCode"];
+    const columns = ["productCode", "productName", "salesPrice", "vancouverBalance", "abbotsfordBalance" , "vancouverBinCode", "abbotsfordBinCode"];
     ProductService.getProducts()
       .then(results => {
         return results.map(row => {
@@ -72,6 +72,10 @@ export default class Inventory extends React.Component {
 
     const options = {
       filterType: "checkbox",
+      // onRowClick: this.rowClicked,
+      rowHover: true,
+      resizableColumns: true,
+      selectableRows: false,
     };
 
     const { products } = this.state;

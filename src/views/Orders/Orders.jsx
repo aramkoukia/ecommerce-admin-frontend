@@ -132,7 +132,6 @@ export default class Orders extends React.Component {
       rowHover: true,
       resizableColumns: true,
       selectableRows: false,
-
     };
 
     const { orders } = this.state;

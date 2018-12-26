@@ -72,6 +72,10 @@ export default class Products extends React.Component {
 
     const options = {
       filterType: "checkbox",
+      // onRowClick: this.rowClicked,
+      rowHover: true,
+      resizableColumns: true,
+      selectableRows: false,
     };
 
     const { products } = this.state;
