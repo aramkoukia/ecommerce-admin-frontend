@@ -118,15 +118,17 @@ const dashboardRoutes = [
     sidebarName: "",
     navbarName: "",
     icon: Person,
-    component: SignIn
+    component: SignIn,
   },
   {
     path: "/order/:id",
     sidebarName: "",
     navbarName: "",
     icon: Person,
-    component: Order
+    component: Order,
   },
+  { redirect: true, path: "/", to: "/login", navbarName: "Redirect" },
+  // { redirect: true, path: "/", to: "/order/:id", navbarName: "Redirect" }
   // {
   //   path: "/table",
   //   sidebarName: "Table List",
@@ -169,7 +171,6 @@ const dashboardRoutes = [
   //   icon: Unarchive,
   //   component: UpgradeToPro
   // },
-  { redirect: true, path: "/", to: "/login", navbarName: "Redirect" }
 ];
 
 export default dashboardRoutes;

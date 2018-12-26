@@ -12,7 +12,7 @@ export class RoutePaths {
   static ContactEdit = "/contacts/edit/:id";
   static ContactNew = "/contacts/new";
   static SignIn = "/";
-  // static OrderDetail = "/order/:id";
+  static Order = "/order/:id";
   // static Register = "/register/";
 }
 
@@ -21,7 +21,7 @@ export default class Routes extends React.Component {
     return (
       <Switch>
         <Route exact path={RoutePaths.SignIn} component={SignIn} />
-        {/* <Route path={RoutePaths.OrderDetail} component={OrderDetail} />  */}
+        <Route path={RoutePaths.Order} component={Order} />
         {/*<Route path={RoutePaths.Register} component={Register} />
         <DefaultLayout exact path={RoutePaths.Contacts} component={Contacts} />
         <DefaultLayout path={RoutePaths.ContactNew} component={ContactForm} /> */}
