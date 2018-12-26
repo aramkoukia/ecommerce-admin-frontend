@@ -38,4 +38,18 @@ export default class OrderService {
     }
   }
 
+  async getOrderDetail(orderId) {
+    try {
+      const response = await RestUtilities.get(
+        `orders/${orderId}`
+      );
+      return response.content;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  }
+
+  
+
 }

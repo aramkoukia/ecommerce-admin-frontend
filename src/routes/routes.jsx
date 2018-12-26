@@ -5,13 +5,14 @@ import { SignIn } from "../views/Login/Auth";
 //import AuthService from "../services/Auth.js";
 import { ErrorPage } from "../views/Error/Error";
 // import { Contacts } from "./Contacts";
-// import { ContactForm } from "./ContactForm";
+import { Order } from "../views/Orders/Order";
 
 export class RoutePaths {
   static Contacts = "/contacts";
   static ContactEdit = "/contacts/edit/:id";
   static ContactNew = "/contacts/new";
   static SignIn = "/";
+  // static OrderDetail = "/order/:id";
   // static Register = "/register/";
 }
 
@@ -20,10 +21,11 @@ export default class Routes extends React.Component {
     return (
       <Switch>
         <Route exact path={RoutePaths.SignIn} component={SignIn} />
+        {/* <Route path={RoutePaths.OrderDetail} component={OrderDetail} />  */}
         {/*<Route path={RoutePaths.Register} component={Register} />
         <DefaultLayout exact path={RoutePaths.Contacts} component={Contacts} />
-        <DefaultLayout path={RoutePaths.ContactNew} component={ContactForm} />
-        <DefaultLayout path={RoutePaths.ContactEdit} component={ContactForm} /> */}
+        <DefaultLayout path={RoutePaths.ContactNew} component={ContactForm} /> */}
+        
         <Route path="/error/:code?" component={ErrorPage} />
       </Switch>
     );

@@ -217,6 +217,7 @@ export class AddOrder extends React.Component {
         snackbarMessage: "Order was Saved and marked as Paid successfully!",
         snackbarColor: "success",
       });
+      this.props.history.push('/order/38')
     }
   }
 

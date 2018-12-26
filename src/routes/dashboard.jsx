@@ -26,6 +26,7 @@ import Users from "../views/Users/Users";
 import Inventory from "../views/Inventory/Inventory";
 // import Purchases from "../views/Purchases/Purchases";
 import { SignIn } from "../views/Login/Auth";
+import { Order } from "../views/Orders/Order";
 
 const dashboardRoutes = [
   // {
@@ -118,6 +119,13 @@ const dashboardRoutes = [
     navbarName: "",
     icon: Person,
     component: SignIn
+  },
+  {
+    path: "/order/:id",
+    sidebarName: "",
+    navbarName: "",
+    icon: Person,
+    component: Order
   },
   // {
   //   path: "/table",
