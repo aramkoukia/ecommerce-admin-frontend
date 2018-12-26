@@ -3,9 +3,11 @@ import React from "react";
 import withStyles from "@material-ui/core/styles/withStyles";
 // core components
 import Primary from "components/Typography/Primary.jsx";
+import Danger from "components/Typography/Danger";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
+import Table from "components/Table/Table.jsx";
 
 const style = {
   cardTitleWhite: {
@@ -26,11 +28,21 @@ function OrderCustomer(props) {
         <h4 className={classes.cardTitleWhite}>Customer</h4>
       </CardHeader>
       <CardBody>
-       <h6>Notes:</h6>
-        <Primary> { order.notes } </Primary>
-
-        <h6>PO Number:</h6>
-        <Primary> { order.poNumber } </Primary>
+        { order.customer.firstName && (
+            <Table
+              tableHeaderColor="primary"
+              tableHead={["Email", "Name", "Company Name", "Credit Limit", "PST Number"]}
+              tableData={[
+                [order.customer.email, 
+                 order.customer.firstName + ' ' + order.customer.lastName, 
+                 order.customer.companyName, 
+                 order.customer.creditLimit , 
+                 order.customer.pstNumber],
+              ]}
+            />  ) }
+        { !order.customer.firstName && (
+          <Danger>This Order has no customer</Danger> )
+        }
       </CardBody>
     </Card>
   );

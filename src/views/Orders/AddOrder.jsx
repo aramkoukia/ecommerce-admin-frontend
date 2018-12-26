@@ -169,7 +169,7 @@ export class AddOrder extends React.Component {
     const orderTaxes = taxes.map(tax => (
       { 
         taxId: tax.taxId, 
-        percentage: tax.percentage, 
+        taxAmount: (tax.percentage / 100) * subTotal, 
       })
     );
     // let orderPayment = null;

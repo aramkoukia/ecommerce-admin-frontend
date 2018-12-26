@@ -50,10 +50,10 @@ function OrderItems(props) {
             {order.orderDetail.map(row => {
               return (
                 <TableRow key={row.productId}>
-                  <TableCell>{row.productName}</TableCell>
-                  <TableCell numeric align="right">{row.qty}</TableCell>
-                  <TableCell numeric>{ccyFormat(row.salesPrice)}</TableCell>
-                  <TableCell numeric>{ccyFormat(row.salesPrice * row.qty)}</TableCell>
+                  <TableCell>{row.product.productName}</TableCell>
+                  <TableCell numeric align="right">{row.amount}</TableCell>
+                  <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
+                  <TableCell numeric>{ccyFormat(row.totalPrice)}</TableCell>
                 </TableRow>
               );
             })}
@@ -64,9 +64,9 @@ function OrderItems(props) {
             </TableRow>
             {order.orderTax.map((tax) =>
               <TableRow>
-                <TableCell>{tax.taxName}</TableCell>
-                <TableCell numeric>{`${(tax.percentage).toFixed(0)} %`}</TableCell>
-                <TableCell numeric>{ccyFormat((tax.percentage / 100) * order.subTotal)}</TableCell>
+                <TableCell>{tax.tax.taxName}</TableCell>
+                <TableCell numeric>{`${(tax.tax.percentage).toFixed(0)} %`}</TableCell>
+                <TableCell numeric>{ccyFormat(tax.taxAmount)}</TableCell>
               </TableRow>
             )}
             <TableRow>

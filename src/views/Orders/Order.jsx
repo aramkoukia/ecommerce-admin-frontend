@@ -25,6 +25,8 @@ import Paper from '@material-ui/core/Paper';
 import OrderNotes from "./OrderNotes";
 import OrderItems from "./OrderItems";
 import OrderCustomer from "./OrderCustomer";
+import Print from "@material-ui/icons/Print";
+import Email from "@material-ui/icons/Email";
 
 let orderService = new OrderService();
 
@@ -49,6 +51,11 @@ const styles = {
     margin: 5,
   },
 };
+
+function dateFormat(dateString) {
+  const date = new Date(dateString);
+  return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+}
 
 export class Order extends React.Component {
   constructor(props) {
@@ -120,7 +127,6 @@ export class Order extends React.Component {
   render() {
     const { classes } = this.props;
     const { order, openSnackbar, snackbarMessage, snackbarColor } = this.state;
-    const { id } = this.props;
 
     return (
       <div>
@@ -130,21 +136,45 @@ export class Order extends React.Component {
             <Card>
               <CardHeader color="primary">
                 <h4>
-                  Order # {order.orderId} - {order.orderDate}
+                  Order # <b>{order.orderId}</b> 
+                  &nbsp;&nbsp; {dateFormat(order.orderDate)} 
                   &nbsp;&nbsp; <Chip label={order.status} color="primary" />
                 </h4>
               </CardHeader>
               <CardBody>
                 <GridContainer>
-                  <GridItem xs={8}>
-                    <OrderItems order={order} />
+                  <GridItem>
+                    <GridContainer>
+                    <GridItem>
+                      <Button color="warning" onClick={this.email}> <Email /> Email</Button>                  
+                    </GridItem>
+                    <GridItem>
+                      <Button color="warning" onClick={this.print}><Print /> Print</Button>
+                    </GridItem>
+                    {/* <GridItem xs>
+                      <Button color="info" onClick={this.saveAsPaid}>Mark As Paid</Button>
+                    </GridItem>
+                    <GridItem xs>
+                      <Button color="info" onClick={this.saveAsHold}>Put On Hold</Button>                  
+                    </GridItem> 
+                    <GridItem xs>
+                      <Button color="info" onClick={this.refundOrder}>Refund</Button>                  
+                    </GridItem>                     
+                    <GridItem xs>
+                      <Button color="info" onClick={this.cancelHold}>Cancel On Hold</Button>                  
+                    </GridItem>                     
+                    */}
+                    </GridContainer>                  
                   </GridItem>
-                  <GridItem xs={4}>
-                    <OrderNotes order={order} />
+                  <GridItem xs={12}>
+                    <OrderItems order={order} />
                   </GridItem>
                   <GridItem xs={8}>
                     <OrderCustomer order={order} />
                   </GridItem>                  
+                  <GridItem xs={4}>
+                    <OrderNotes order={order} />
+                  </GridItem>
                 </GridContainer>
               </CardBody>
               <CardFooter>
