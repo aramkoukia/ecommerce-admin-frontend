@@ -15,6 +15,12 @@ import Location from "../../stores/Location";
 
 let orderService = new OrderService();
 
+
+function dateFormat(dateString) {
+  const date = new Date(dateString);
+  return `${date.toLocaleDateString()}`;
+}
+
 export default class Orders extends React.Component {
   constructor(props) {
     super(props);
@@ -27,12 +33,15 @@ export default class Orders extends React.Component {
   }
 
   ordersList() {
-    const columns = ["locationName", "orderDate", "subTotal", "total", "status", "poNumber", "paidAmount", "createdByUserId"];
+    const columns = ["locationName", "orderId", "orderDate", "subTotal", "total", "status", "poNumber", "paidAmount", "createdByUserId"];
     const locationId = Location.getStoreLocation();
     orderService.getOrdersByLocation(locationId)
       .then(results => {
         return results.map(row => {
           return columns.map(column => {
+            if(column === "orderDate") {
+              return dateFormat(row[column]);
+            }
             return row[column] || "";
           });
         });
@@ -71,7 +80,7 @@ export default class Orders extends React.Component {
       }
     };
 
-    const columns = ["Location", "Order Date", "Sub Total", "Total", "Status", "PO Number", "Paid Amount", "Created By"];
+    const columns = ["Location", "Order Number", "Order Date", "Sub Total", "Total", "Status", "PO Number", "Paid Amount", "Created By"];
 
     const options = {
       // filterType: "checkbox",
