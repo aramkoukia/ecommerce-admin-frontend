@@ -7,7 +7,6 @@ import GridContainer from "components/Grid/GridContainer.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
-// import Button from "components/CustomButtons/Button.jsx";
 
 import MUIDataTable from "mui-datatables";
 import OrderService from "../../services/OrderService";
@@ -26,6 +25,7 @@ export default class Orders extends React.Component {
     super(props);
 
     this.state = { orders: [] };
+    this.rowClicked = this.rowClicked.bind(this);
   }
 
   componentDidMount() {
@@ -47,6 +47,10 @@ export default class Orders extends React.Component {
         });
       })
       .then(data => this.setState({ orders: data }));
+  }
+
+  rowClicked(rowData, _rowMeta) {
+    this.props.history.push(`/order/${rowData[1]}`);
   }
 
   render() {
@@ -80,10 +84,55 @@ export default class Orders extends React.Component {
       }
     };
 
-    const columns = ["Location", "Order Number", "Order Date", "Sub Total", "Total", "Status", "PO Number", "Paid Amount", "Created By"];
+    const columns = 
+    [
+    "Location", 
+    {
+      name: "Order Number", 
+      options: {
+        filter: false,
+      }
+    }, 
+    {
+      name: "Order Date", 
+      options: {
+        filter: false,
+      }
+    },     
+    {
+      name: "Sub Total", 
+      options: {
+        filter: false,
+      }
+    },         
+    {
+      name: "Total", 
+      options: {
+        filter: false,
+      }
+    },             
+    "Status", 
+    {
+      name: "PO Number", 
+      options: {
+        filter: false,
+      }
+    },             
+    {
+      name: "Paid Amount", 
+      options: {
+        filter: false,
+      }
+    },             
+    "Created By"];
 
     const options = {
-      // filterType: "checkbox",
+      filterType: "checkbox",
+      onRowClick: this.rowClicked,
+      rowHover: true,
+      resizableColumns: true,
+      selectableRows: false,
+
     };
 
     const { orders } = this.state;
@@ -98,9 +147,10 @@ export default class Orders extends React.Component {
               </CardHeader>
               <CardBody>
                 <MUIDataTable
+                  title="Click on each order to navigate to the order details"
                   data={orders}
                   columns={columns}
-                  // options={options}
+                  options={options}
                 />
               </CardBody>
             </Card>

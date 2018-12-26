@@ -25,7 +25,7 @@ export default class Inventory extends React.Component {
   }
 
   productsList() {
-    const columns = ["productTypeName", "productCode", "productName", "salesPrice", "vancouverBalance", "abbotsfordBalance"];
+    const columns = ["productCode", "productName", "salesPrice", "vancouverBalance", "abbotsfordBalance" , "VancouverBinCode", "AbbotsfordBinCode"];
     ProductService.getProducts()
       .then(results => {
         return results.map(row => {
@@ -68,7 +68,7 @@ export default class Inventory extends React.Component {
       }
     };
 
-    const columns = ["Type", "Product Code", "Product Name", "Sales Price ($)", "Vanvouver  Balance", "Abbotsford Balance"];
+    const columns = ["Product Code", "Product Name", "Sales Price ($)", "Van  Balance", "Abb Balance", "Van Storage", "Abb Location"];
 
     const options = {
       filterType: "checkbox",
@@ -86,7 +86,6 @@ export default class Inventory extends React.Component {
               </CardHeader>
               <CardBody>
                 <MUIDataTable
-                  // title={"Employee List"}
                   data={products}
                   columns={columns}
                   options={options}
