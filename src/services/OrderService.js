@@ -63,6 +63,25 @@ export default class OrderService {
     }
   }
 
+  async emailOrder(orderId) {
+    try {
+      const response = await RestUtilities.get(
+        `orders/${orderId}/email`
+      );
+      return response.content;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  }
   
+  async printOrder(orderId) {
+    try {
+      await RestUtilities.getBlob(`orders/${orderId}/print`);
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  }
 
 }

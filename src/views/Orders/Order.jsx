@@ -86,11 +86,13 @@ export class Order extends React.Component {
   }
 
   async emailOrder() {
-
+    const { order } = this.state;
+    orderService.emailOrder(order.orderId);
   }
 
   async printOrder() {
-
+    const { order } = this.state;
+    orderService.printOrder(order.orderId);
   }
 
   async saveAsPaid() {

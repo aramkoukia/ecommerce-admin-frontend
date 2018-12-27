@@ -1,10 +1,15 @@
 import AuthStore from "../stores/Auth";
 import Api from "./ApiConfig";
+import axios from "axios";
 
 export default class RestUtilities {
 
   static get(url) {
     return RestUtilities.request("GET", url);
+  }
+
+  static getBlob(url) {
+    return RestUtilities.requestBlob("GET", url);
   }
 
   static delete(url) {
@@ -70,5 +75,54 @@ export default class RestUtilities {
         };
         return response;
       });
+  }
+
+  static requestBlob(method, url) {
+    let headers = new Headers();
+    headers.set("Authorization", `Bearer ${AuthStore.getToken()}`);    
+    axios(`${Api.baseUrl}/${url}`, {
+      method: 'GET',
+      responseType: 'blob', //Force to receive data in a Blob Format
+      headers: headers
+    })
+    .then(response => {
+    //Create a Blob from the PDF Stream
+        const file = new Blob(
+          [response.data], 
+          {type: 'application/pdf'});
+    //Build a URL from the file
+        const fileURL = URL.createObjectURL(file);
+    //Open the URL on new Window
+        window.open(fileURL);
+    })
+    .catch(error => {
+        console.log(error);
+    });    
+    // let headers = new Headers();
+    // headers.set("Authorization", `Bearer ${AuthStore.getToken()}`);
+    // headers.set("Accept", "application/pdf");
+
+    // return fetch(`${Api.baseUrl}/${url}`, {
+    //   method: method,
+    //   headers: headers,
+    // })
+    //   .then(response => {
+    //     if (response.status === 401) {
+    //       // Unauthorized; redirect to sign-in
+    //       AuthStore.removeToken();
+    //       window.location.replace(`/?expired=1`);
+    //     }
+    //     let responseContentType = response.headers.get("content-type");
+    //     if (responseContentType && responseContentType.indexOf("application/pdf") === 0) {
+    //       return response.text();
+    //     }
+    //   })
+    //   .then(responseContent => {
+    //     const file = new Blob(
+    //       [responseContent], 
+    //       {type: 'application/pdf'});
+    //     const fileURL = URL.createObjectURL(file);
+    //     window.open(fileURL);
+    //   });
   }
 }
