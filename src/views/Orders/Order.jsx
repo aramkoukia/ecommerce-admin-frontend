@@ -1,6 +1,5 @@
 import React from "react";
 import Check from "@material-ui/icons/Check";
-import Error from "@material-ui/icons/Error";
 // @material-ui/core components
 import { withStyles } from "@material-ui/core/styles";
 // core components
@@ -12,16 +11,9 @@ import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 import PropTypes from "prop-types";
-import ProductSearch from "./ProductSearch";
-import CustomerSearch from "./CustomerSearch";
-import OrderTable from "./OrderTable";
-import CustomInput from "components/CustomInput/CustomInput.jsx";
 import OrderService from "../../services/OrderService";
-import TaxService from "../../services/TaxService";
 import Snackbar from "components/Snackbar/Snackbar.jsx";
-import Location from "../../stores/Location";
 import Chip from '@material-ui/core/Chip';
-import Paper from '@material-ui/core/Paper';
 import OrderNotes from "./OrderNotes";
 import OrderItems from "./OrderItems";
 import OrderCustomer from "./OrderCustomer";
@@ -31,22 +23,6 @@ import Email from "@material-ui/icons/Email";
 let orderService = new OrderService();
 
 const styles = {
-  cardCategoryWhite: {
-    color: "rgba(255,255,255,.62)",
-    margin: "0",
-    fontSize: "14px",
-    marginTop: "0",
-    marginBottom: "0"
-  },
-  cardTitleWhite: {
-    color: "#FFFFFF",
-    marginTop: "0px",
-    minHeight: "auto",
-    fontWeight: "300",
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-    marginBottom: "3px",
-    textDecoration: "none"
-  },
   chip: {
     margin: 5,
   },
@@ -70,8 +46,12 @@ export class Order extends React.Component {
       snackbarColor: "",
     };
 
-    // this.saveAsPaid =  this.saveAsPaid.bind(this);
-    // this.saveAsHold = this.saveAsHold.bind(this);
+    this.saveAsPaid =  this.saveAsPaid.bind(this);
+    this.saveAsHold = this.saveAsHold.bind(this);
+    this.refundOrder = this.refundOrder.bind(this);
+    this.emailOrder = this.emailOrder.bind(this);
+    this.printOrder = this.printOrder.bind(this);
+    this.cancelHold = this.cancelHold.bind(this);
   }
 
   async componentDidMount() {
@@ -86,9 +66,9 @@ export class Order extends React.Component {
     this.setState({[event.target.name]: event.target.value});
   }
 
-  async saveOrder(orderStatus) {
-    const order = null;
-    const result = await orderService.saveOrder(order);
+  async updateOrderStatus(orderStatus) {
+    const { order } = this.state;
+    const result = await orderService.updateOrderStatus(order.orderId,  { orderStatus: orderStatus });
     if(result === false || result === null || result.StatusCode === 500 || result.StatusCode === 400) {
       this.setState({ 
         openSnackbar: true,
@@ -97,34 +77,75 @@ export class Order extends React.Component {
       });
       return false;
     } else {
-      return true;
+      return result;
     }
   }
 
+  async refundOrder() {
+
+  }
+
+  async emailOrder() {
+
+  }
+
+  async printOrder() {
+
+  }
+
   async saveAsPaid() {
-    const result = await this.saveOrder("Paid")
-    if(result === true) {
+    const status = "Paid"
+    const result = await this.updateOrderStatus(status)
+    if(result && result.orderId) {
       this.setState({ 
         openSnackbar: true,
-        snackbarMessage: "Order was Saved and marked as Paid successfully!",
+        snackbarMessage: "Order was marked as Paid successfully!",
         snackbarColor: "success",
+      });
+
+      const { order } = this.state;
+      order.status = status;
+      this.setState({ 
+        order: order,
       });
     }
   }
 
   async saveAsHold() {
-    const result = await this.saveOrder("OnHold");
-    if(result === true) {
+    const status = "OnHold"
+    const result = await this.updateOrderStatus(status)
+    if(result && result.orderId) {
       this.setState({ 
         openSnackbar: true,
-        snackbarMessage: "Order was Saved and marked as On Hold successfully!",
-        snackbarColor: "warning",
+        snackbarMessage: "Order was marked as On-Hold successfully!",
+        snackbarColor: "success",
       });
+      const { order } = this.state;
+      order.status = status;
+      this.setState({ 
+        order: order,
+      });   
+    }
+  }
+
+  async cancelHold() {
+    const status = "Draft"
+    const result = await this.updateOrderStatus(status)
+    if(result && result.orderId) {
+      this.setState({ 
+        openSnackbar: true,
+        snackbarMessage: "Order was marked as Draft and not On-Hold any more!",
+        snackbarColor: "success",
+      });
+      const { order } = this.state;
+      order.status = status;
+      this.setState({ 
+        order: order,
+      });      
     }
   }
 
   render() {
-    const { classes } = this.props;
     const { order, openSnackbar, snackbarMessage, snackbarColor } = this.state;
 
     return (
@@ -145,13 +166,13 @@ export class Order extends React.Component {
                   <GridItem>
                     <GridContainer>
                     <GridItem>
-                      <Button color="warning" onClick={this.email}> <Email /> Email</Button>                  
+                      <Button color="warning" onClick={this.emailOrder}> <Email /> Email</Button>                  
                     </GridItem>
                     <GridItem>
-                      <Button color="warning" onClick={this.print}><Print /> Print</Button>
+                      <Button color="warning" onClick={this.printOrder}><Print /> Print</Button>
                     </GridItem>
                     
-                    { order.status === "Draft" || order.status === "OnHold" ? 
+                    { order.status === "Draft" || order.status === "OnHold" || order.status === "Account" ? 
                     <GridItem xs>
                       <Button color="info" onClick={this.saveAsPaid}>Mark As Paid</Button>
                     </GridItem> : <div></div>}
@@ -163,7 +184,7 @@ export class Order extends React.Component {
 
                     { order.status === "Paid" && (
                     <GridItem xs>
-                      <Button color="info" onClick={this.refundOrder}>Return</Button>
+                      <Button disabled color="info" onClick={this.refundOrder}>Return</Button>
                     </GridItem> )}
 
                     { order.status === "OnHold" && (                                         
