@@ -70,7 +70,6 @@ export class Order extends React.Component {
       snackbarColor: "",
     };
 
-    // this.handleChange = this.handleChange.bind(this);
     // this.saveAsPaid =  this.saveAsPaid.bind(this);
     // this.saveAsHold = this.saveAsHold.bind(this);
   }
@@ -151,19 +150,27 @@ export class Order extends React.Component {
                     <GridItem>
                       <Button color="warning" onClick={this.print}><Print /> Print</Button>
                     </GridItem>
-                    {/* <GridItem xs>
+                    
+                    { order.status === "Draft" || order.status === "OnHold" ? 
+                    <GridItem xs>
                       <Button color="info" onClick={this.saveAsPaid}>Mark As Paid</Button>
-                    </GridItem>
+                    </GridItem> : <div></div>}
+
+                    { order.status === "Draft" && (
                     <GridItem xs>
                       <Button color="info" onClick={this.saveAsHold}>Put On Hold</Button>                  
-                    </GridItem> 
+                    </GridItem> )}
+
+                    { order.status === "Paid" && (
                     <GridItem xs>
-                      <Button color="info" onClick={this.refundOrder}>Refund</Button>                  
-                    </GridItem>                     
+                      <Button color="info" onClick={this.refundOrder}>Return</Button>
+                    </GridItem> )}
+
+                    { order.status === "OnHold" && (                                         
                     <GridItem xs>
-                      <Button color="info" onClick={this.cancelHold}>Cancel On Hold</Button>                  
-                    </GridItem>                     
-                    */}
+                      <Button color="info" onClick={this.cancelHold}>Cancel On Hold</Button>
+                    </GridItem> )}                    
+                    
                     </GridContainer>                  
                   </GridItem>
                   <GridItem xs={12}>
