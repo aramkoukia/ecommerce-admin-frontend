@@ -1,19 +1,22 @@
 module.exports = {
-  parser: "babel-eslint",
+  parser: 'babel-eslint',
   env: {
     es6: true,
     node: true,
-    browser: true
+    browser: true,
   },
   parserOptions: {
     ecmaVersion: 6,
-    sourceType: "module",
+    sourceType: 'module',
     ecmaFeatures: {
-      jsx: true
-    }
+      jsx: true,
+    },
   },
-  plugins: ["react"],
+  plugins: ['react'],
   extends: [
-    "airbnb",
-  ]
+    'airbnb',
+  ],
+  rules: {
+    'linebreak-style': 0,
+  },
 };
