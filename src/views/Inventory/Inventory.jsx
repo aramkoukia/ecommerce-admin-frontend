@@ -1,15 +1,10 @@
-import React from "react";
+import React from 'react';
 // @material-ui/core components
 // import withStyles from "@material-ui/core/styles/withStyles";
-import Check from "@material-ui/icons/Check";
+import Check from '@material-ui/icons/Check';
 // core components
-import GridItem from "components/Grid/GridItem.jsx";
-import GridContainer from "components/Grid/GridContainer.jsx";
-import Card from "components/Card/Card.jsx";
-import CardHeader from "components/Card/CardHeader.jsx";
-import CardBody from "components/Card/CardBody.jsx";
 
-import MUIDataTable from "mui-datatables";
+import MUIDataTable from 'mui-datatables';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -17,29 +12,34 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import Snackbar from "components/Snackbar/Snackbar.jsx";
+import CardBody from '../../components/Card/CardBody';
+import CardHeader from '../../components/Card/CardHeader';
+import GridContainer from '../../components/Grid/GridContainer';
+import GridItem from '../../components/Grid/GridItem';
+import Snackbar from '../../components/Snackbar/Snackbar';
+import Card from '../../components/Card/Card';
 
-import ProductService from "../../services/ProductService";
+import ProductService from '../../services/ProductService';
 
-let productService = new ProductService();
+const productService = new ProductService();
 
 export default class Inventory extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { 
+    this.state = {
       products: [],
       openDialog: false,
       selectedRow: null,
       vancouverQuantity: 0,
-      vancouverStorageCode: "",
-      vancouverNotes: "",
+      vancouverStorageCode: '',
+      vancouverNotes: '',
       abbotsfordQuantity: 0,
-      abbotsfordStorageCode: "",
-      abbotsfordNotes: "",
+      abbotsfordStorageCode: '',
+      abbotsfordNotes: '',
       openSnackbar: false,
-      snackbarMessage: "",
-      snackbarColor: "",      
+      snackbarMessage: '',
+      snackbarColor: '',
     };
     this.rowClicked = this.rowClicked.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -50,28 +50,35 @@ export default class Inventory extends React.Component {
     this.productsList();
   }
 
-  rowClicked(rowData, _rowMeta) {
-    this.setState({ 
+  handleClose = () => {
+    this.setState({
+      openDialog: false,
+      selectedRow: null,
+      vancouverQuantity: 0,
+      vancouverStorageCode: '',
+      vancouverNotes: '',
+      abbotsfordQuantity: 0,
+      abbotsfordStorageCode: '',
+      abbotsfordNotes: '',
+    });
+  };
+
+  rowClicked(rowData) {
+    this.setState({
       openDialog: true,
       selectedRow: rowData,
     });
   }
 
-  handleClose = () => {
-    this.setState({ 
-      openDialog: false,
-      selectedRow: null,
-      vancouverQuantity: 0,
-      vancouverStorageCode: "",
-      vancouverNotes: "",
-      abbotsfordQuantity: 0,
-      abbotsfordStorageCode: "",
-      abbotsfordNotes: "",      
-    });
-  };
-
   async handleUpdate() {
-    const { vancouverQuantity, vancouverStorageCode, vancouverNotes, abbotsfordQuantity, abbotsfordStorageCode, abbotsfordNotes } = this.state;
+    const {
+      vancouverQuantity,
+      vancouverStorageCode,
+      vancouverNotes,
+      abbotsfordQuantity,
+      abbotsfordStorageCode,
+      abbotsfordNotes,
+    } = this.state;
 
     // TODO: only call the ones that has changed compared to the original selection
     // API Call here.. 2 API calls?
@@ -81,139 +88,135 @@ export default class Inventory extends React.Component {
       amount: vancouverQuantity,
       binCode: vancouverStorageCode,
       notes: vancouverNotes,
-    }
+    };
     await productService.updateInventory(vancouverInventory);
 
-    
+
     const abbotsfordInventory = {
       locationId: 2, // vancouver
       productId: 1, // todo, add productid as hidden to grid?,
       amount: abbotsfordQuantity,
       binCode: abbotsfordStorageCode,
       notes: abbotsfordNotes,
-    }
+    };
     await productService.updateInventory(abbotsfordInventory);
-       
-    this.setState({ 
+
+    this.setState({
       openSnackbar: true,
-      snackbarMessage: "Inventory and Storage location was successfully updated!",
-      snackbarColor: "success",
+      snackbarMessage: 'Inventory and Storage location was successfully updated!',
+      snackbarColor: 'success',
     });
 
-    this.setState({ 
+    this.setState({
       openDialog: false,
       selectedRow: null,
       vancouverQuantity: 0,
-      vancouverStorageCode: "",
-      vancouverNotes: "",
+      vancouverStorageCode: '',
+      vancouverNotes: '',
       abbotsfordQuantity: 0,
-      abbotsfordStorageCode: "",
-      abbotsfordNotes: "",      
+      abbotsfordStorageCode: '',
+      abbotsfordNotes: '',
     });
-  };
+  }
 
   handleChange(event) {
-    this.setState({[event.target.name]: event.target.value});
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   productsList() {
-    const columns = ["productCode", "productName", "salesPrice", "vancouverBalance", "abbotsfordBalance" , "vancouverBinCode", "abbotsfordBinCode"];
+    const columns = ['productCode', 'productName', 'salesPrice', 'vancouverBalance', 'abbotsfordBalance', 'vancouverBinCode', 'abbotsfordBinCode'];
     ProductService.getProducts()
-      .then(results => {
-        return results.map(row => {
-          return columns.map(column => {
-            return row[column] === null ? "" : row[column];
-          });
-        });
-      })
+      .then(results => results.map(row => columns.map(column => (row[column] === null ? '' : row[column]))))
       .then(data => this.setState({ products: data }));
   }
 
   render() {
     const styles = {
       cardCategoryWhite: {
-        "&,& a,& a:hover,& a:focus": {
-          color: "rgba(255,255,255,.62)",
-          margin: "0",
-          fontSize: "14px",
-          marginTop: "0",
-          marginBottom: "0"
+        '&,& a,& a:hover,& a:focus': {
+          color: 'rgba(255,255,255,.62)',
+          margin: '0',
+          fontSize: '14px',
+          marginTop: '0',
+          marginBottom: '0',
         },
-        "& a,& a:hover,& a:focus": {
-          color: "#FFFFFF"
-        }
+        '& a,& a:hover,& a:focus': {
+          color: '#FFFFFF',
+        },
       },
       cardTitleWhite: {
-        color: "#FFFFFF",
-        marginTop: "0px",
-        minHeight: "auto",
-        fontWeight: "300",
+        color: '#FFFFFF',
+        marginTop: '0px',
+        minHeight: 'auto',
+        fontWeight: '300',
         fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-        marginBottom: "3px",
-        textDecoration: "none",
-        "& small": {
-          color: "#777",
-          fontSize: "65%",
-          fontWeight: "400",
-          lineHeight: "1"
-        }
-      }
+        marginBottom: '3px',
+        textDecoration: 'none',
+        '& small': {
+          color: '#777',
+          fontSize: '65%',
+          fontWeight: '400',
+          lineHeight: '1',
+        },
+      },
     };
 
     const columns = [
       {
-        name: "Product Code", 
+        name: 'Product Code',
         options: {
           filter: false,
-        }
+        },
       },
       {
-        name: "Product Name", 
+        name: 'Product Name',
         options: {
           filter: false,
-        }
+        },
       },
       {
-        name: "Sales Price ($)", 
+        name: 'Sales Price ($)',
         options: {
           filter: false,
-        }
+        },
       },
       {
-        name: "Van  Balance", 
+        name: 'Van  Balance',
         options: {
           filter: false,
-        }
+        },
       },
       {
-        name: "Abb Balance", 
+        name: 'Abb Balance',
         options: {
           filter: false,
-        }
+        },
       },
       {
-        name: "Van Storage", 
+        name: 'Van Storage',
         options: {
           filter: false,
-        }
+        },
       },
       {
-        name: "Abb Storage", 
+        name: 'Abb Storage',
         options: {
           filter: false,
-        }
+        },
       },
     ];
 
     const options = {
-      filterType: "checkbox",
+      filterType: 'checkbox',
       onRowClick: this.rowClicked,
       rowHover: true,
       resizableColumns: true,
       selectableRows: false,
     };
 
-    const { products, selectedRow, openSnackbar, snackbarMessage, snackbarColor } = this.state;
+    const {
+      products, selectedRow, openSnackbar, snackbarMessage, snackbarColor, openDialog,
+    } = this.state;
 
     return (
       <div>
@@ -236,15 +239,23 @@ export default class Inventory extends React.Component {
         </GridContainer>
 
         <Dialog
-          open={this.state.openDialog}
+          open={openDialog}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
         >
           <DialogTitle id="form-dialog-title">Inventory Update</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Code: { selectedRow && (selectedRow[0]) } <br />
-              Name: { selectedRow && (selectedRow[1]) } <br />
+              Code:
+              {' '}
+              { selectedRow && (selectedRow[0]) }
+              {' '}
+              <br />
+              Name:
+              {' '}
+              { selectedRow && (selectedRow[1]) }
+              {' '}
+              <br />
             </DialogContentText>
 
             <Card>
@@ -263,7 +274,7 @@ export default class Inventory extends React.Component {
                   name="vancouverStorageCode"
                   label="Storage Code"
                   type="text"
-                  value={selectedRow && (selectedRow[5]) }
+                  value={selectedRow && (selectedRow[5])}
                 />
                 &nbsp;
                 <TextField
@@ -272,7 +283,7 @@ export default class Inventory extends React.Component {
                   label="Notes"
                   type="text"
                   fullWidth
-                />                
+                />
               </CardBody>
             </Card>
             <Card>
@@ -284,14 +295,14 @@ export default class Inventory extends React.Component {
                   name="abbotsfordQuantity"
                   label="Quantity"
                   type="number"
-                  value={selectedRow && (selectedRow[4]) }
-                /> 
+                  value={selectedRow && (selectedRow[4])}
+                />
                 &nbsp;
                 <TextField
                   name="abbotsfordStorageCode"
                   label="Storage Code"
                   type="text"
-                  value={selectedRow && (selectedRow[6]) }
+                  value={selectedRow && (selectedRow[6])}
                 />
                 &nbsp;
                 <TextField
@@ -300,7 +311,7 @@ export default class Inventory extends React.Component {
                   label="Notes"
                   type="text"
                   fullWidth
-                />                            
+                />
               </CardBody>
             </Card>
           </DialogContent>
