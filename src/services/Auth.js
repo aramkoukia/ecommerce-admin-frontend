@@ -1,3 +1,4 @@
+import UserService from './UserService';
 import RestUtilities from './RestUtilities';
 import AuthStore from '../stores/Auth';
 
@@ -10,7 +11,7 @@ export default class Auth {
     return AuthStore.getUser();
   }
 
-  signInOrRegister(email, password, isRegister) {
+  static signInOrRegister(email, password, isRegister) {
     return RestUtilities.post(
       `auth/${isRegister ? 'register' : 'login'}`,
       `username=${email}&password=${password}${
@@ -20,29 +21,34 @@ export default class Auth {
       if (!response.is_error) {
         AuthStore.setToken(response.content.token);
         AuthStore.setUser(email);
+        UserService.getUserRoles(email).then((roles) => {
+          AuthStore.setUserRoles(roles);
+        });
       }
       return response;
     });
   }
 
-  signIn(email, password) {
-    return this.signInOrRegister(email, password, false);
+  static signIn(email, password) {
+    return Auth.signInOrRegister(email, password, false);
   }
 
-  register(email, password) {
-    return this.signInOrRegister(email, password, true);
+  static register(email, password) {
+    return Auth.signInOrRegister(email, password, true);
   }
 
-  confirm(token) {
+  static userHasRole(role) {
+    const roles = AuthStore.getUserRoles();
+    return roles.includes(role);
+  }
+
+  static confirm(token) {
     return RestUtilities.post('auth/confirm', { token })
-      .then(response => true)
-      .catch((err) => {
-        console.log(err);
-        return false;
-      });
+      .then(true)
+      .catch(false);
   }
 
-  signOut() {
+  static signOut() {
     AuthStore.removeToken();
     AuthStore.removeUser();
     window.location.replace('/?expired=1');

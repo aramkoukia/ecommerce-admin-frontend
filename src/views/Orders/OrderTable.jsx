@@ -11,18 +11,7 @@ import TextField from '@material-ui/core/TextField';
 // import Checkbox from "@material-ui/core/Checkbox";
 import Success from "components/Typography/Success.jsx";
 
-const styles = theme => ({
-  root: {
-    width: "100%",
-    marginTop: theme.spacing.unit * 3,
-    overflowX: "auto",
-  },
-  table: {
-    minWidth: 700
-  }
-});
-
-export class OrderTable extends React.Component {  
+export default class OrderTable extends React.Component {  
   constructor(props) {
     super(props);
     this.state = {
@@ -127,12 +116,12 @@ export class OrderTable extends React.Component {
   }
 
   render() {
-    const { classes, taxes } = this.props;
+    const { taxes } = this.props;
     const { orderRows, total, subTotal, discount } = this.state;
 
     return (
-    <Paper className={classes.root}>
-      <Table className={classes.table}>
+    <Paper>
+      <Table>
         <TableHead>
           <TableRow>
             {/* <TableCell padding="checkbox">
@@ -204,10 +193,3 @@ export class OrderTable extends React.Component {
     );
   }
 }
-
-OrderTable.propTypes = {
-  classes: PropTypes.object.isRequired,
-  priceChanged: PropTypes.func,
-};
-
-export default withStyles(styles)(OrderTable);

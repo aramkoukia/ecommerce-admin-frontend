@@ -1,16 +1,10 @@
 import React from "react";
-// @material-ui/core components
-// import withStyles from "@material-ui/core/styles/withStyles";
-// core components
 import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
-// import Button from "components/CustomButtons/Button.jsx";
-
 import MUIDataTable from "mui-datatables";
-// import AddLocation from "views/Locations/AddLocation";
 import ProductService from "../../services/ProductService";
 
 export default class Products extends React.Component {
@@ -27,13 +21,7 @@ export default class Products extends React.Component {
   productsList() {
     const columns = ["productTypeName", "productCode", "productName", "salesPrice", "vancouverBalance", "abbotsfordBalance"];
     ProductService.getProducts()
-      .then(results => {
-        return results.map(row => {
-          return columns.map(column => {
-            return row[column] === null ? "" : row[column];
-          });
-        });
-      })
+      .then(results => results.map(row => columns.map(column => (row[column] === null ? '' : row[column]))))
       .then(data => this.setState({ products: data }));
   }
 

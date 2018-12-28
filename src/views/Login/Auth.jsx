@@ -15,14 +15,9 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 // import CardFooter from "components/Card/CardFooter.jsx";
 // import dashboardPath from "../../routes/dashboard";
 // let authStyle = require("../../styles/auth.styl");
-let authService = new AuthService();
+
 
 export class SignIn extends React.Component {
-  // refs: {
-  //   username;
-  //   password;
-  // };
-
   constructor(props) {
     super(props);
 
@@ -52,7 +47,7 @@ export class SignIn extends React.Component {
 
   handleSignIn(event) {
     this.setState({ errors: null, initialLoad: false, loading: true });
-    authService
+    AuthService
       .signIn(this.state.userInfo.username, this.state.userInfo.password)
       .then(response => {
         if (!response.is_error) {

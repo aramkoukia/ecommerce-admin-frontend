@@ -14,8 +14,6 @@ import FormControl from '@material-ui/core/FormControl';
 import AuthService from "../../services/Auth";
 import Location from "../../stores/Location";
 
-const authService = new AuthService();
-
 class HeaderLinks extends React.Component {
   state = {
     location: '1',
@@ -35,7 +33,7 @@ class HeaderLinks extends React.Component {
 
   signOut() {
     Location.removeStoreLocation();
-    authService.signOut();
+    AuthService.signOut();
   }
 
   render() {

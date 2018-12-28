@@ -1,6 +1,9 @@
 export default class Auth {
-  static STORAGE_KEY = "token";
-  static USER_KEY = "user";
+  static STORAGE_KEY = 'token';
+
+  static USER_KEY = 'user';
+
+  static ROLES = 'roles';
 
   static getToken() {
     return window.localStorage.getItem(Auth.STORAGE_KEY);
@@ -24,5 +27,17 @@ export default class Auth {
 
   static removeUser() {
     window.localStorage.removeItem(Auth.USER_KEY);
-  }  
+  }
+
+  static setUserRoles(roles) {
+    window.localStorage.setItem(Auth.ROLES, JSON.stringify(roles));
+  }
+
+  static getUserRoles() {
+    JSON.parse(window.localStorage.getItem(Auth.ROLES));
+  }
+
+  static removeUserRoles() {
+    window.localStorage.removeItem(Auth.ROLES);
+  }
 }

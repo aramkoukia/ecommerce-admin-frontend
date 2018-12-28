@@ -53,7 +53,7 @@ function createRow(productId, productName, salesPrice) {
   };
 }
 
-export class AddOrder extends React.Component {
+export default class AddOrder extends React.Component {
   constructor(props) {
     super(props);
 
@@ -266,7 +266,6 @@ export class AddOrder extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
     const {
       rows,
       taxes,
@@ -280,7 +279,7 @@ export class AddOrder extends React.Component {
           <GridItem xs={12} sm={12} md={12}>
             <Card>
               <CardHeader color="primary">
-                <h4 className={classes.cardTitleWhite}>New Order</h4>
+                <div className={styles.cardTitleWhite}>New Order</div>
               </CardHeader>
               <CardBody>
                 <GridContainer>
@@ -466,8 +465,6 @@ export class AddOrder extends React.Component {
   }
 }
 
-export default withStyles(styles)(AddOrder);
-
-AddOrder.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
+// AddOrder.propTypes = {
+//   classes: PropTypes.object.isRequired,
+// };
