@@ -34,7 +34,7 @@ function OrderItems(props) {
   return (
     <Card>
       <CardHeader color="info">
-        <h4 className={classes.cardTitleWhite}>Order Items</h4>
+        <div className={classes.cardTitleWhite}>Order Items</div>
       </CardHeader>
       <CardBody>
         <Table className={classes.table}>

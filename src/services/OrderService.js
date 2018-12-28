@@ -77,7 +77,8 @@ export default class OrderService {
   
   async printOrder(orderId) {
     try {
-      await RestUtilities.getBlob(`orders/${orderId}/print`);
+      const response = await RestUtilities.getBlob(`orders/${orderId}/print`);
+      return response;
     } catch (err) {
       console.log(err);
       return false;

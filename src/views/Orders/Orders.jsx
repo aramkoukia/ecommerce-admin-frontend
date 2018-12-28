@@ -142,7 +142,7 @@ export default class Orders extends React.Component {
           <GridItem xs={12} sm={12} md={12}>
             <Card>
               <CardHeader color="primary">
-                <h4 className={styles.cardTitleWhite}>Orders List</h4>
+                <div className={styles.cardTitleWhite}>Orders List</div>
               </CardHeader>
               <CardBody>
                 <MUIDataTable

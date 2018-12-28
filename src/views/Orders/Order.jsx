@@ -19,6 +19,7 @@ import OrderItems from "./OrderItems";
 import OrderCustomer from "./OrderCustomer";
 import Print from "@material-ui/icons/Print";
 import Email from "@material-ui/icons/Email";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 let orderService = new OrderService();
 
@@ -44,6 +45,7 @@ export class Order extends React.Component {
       openSnackbar: false,
       snackbarMessage: "",
       snackbarColor: "",
+      loading: false,
     };
 
     this.saveAsPaid =  this.saveAsPaid.bind(this);
@@ -87,12 +89,24 @@ export class Order extends React.Component {
 
   async emailOrder() {
     const { order } = this.state;
-    orderService.emailOrder(order.orderId);
+    this.setState({ 
+      loading: true,
+    });
+    await orderService.emailOrder(order.orderId);
+    this.setState({ 
+      loading: false,
+    });
   }
 
   async printOrder() {
     const { order } = this.state;
-    orderService.printOrder(order.orderId);
+    this.setState({ 
+      loading: true,
+    });
+    await orderService.printOrder(order.orderId);
+    this.setState({ 
+      loading: false,
+    });
   }
 
   async saveAsPaid() {
@@ -148,7 +162,7 @@ export class Order extends React.Component {
   }
 
   render() {
-    const { order, openSnackbar, snackbarMessage, snackbarColor } = this.state;
+    const { order, openSnackbar, snackbarMessage, snackbarColor, loading } = this.state;
 
     return (
       <div>
@@ -157,11 +171,11 @@ export class Order extends React.Component {
           <GridItem xs={12} sm={12} md={12}>
             <Card>
               <CardHeader color="primary">
-                <h4>
+                <div>
                   Order # <b>{order.orderId}</b> 
                   &nbsp;&nbsp; {dateFormat(order.orderDate)} 
                   &nbsp;&nbsp; <Chip label={order.status} color="primary" />
-                </h4>
+                </div>
               </CardHeader>
               <CardBody>
                 <GridContainer>
@@ -193,7 +207,9 @@ export class Order extends React.Component {
                     <GridItem xs>
                       <Button color="info" onClick={this.cancelHold}>Cancel On Hold</Button>
                     </GridItem> )}                    
-                    
+                    <GridItem xs>
+                      { loading && <CircularProgress /> }
+                    </GridItem>
                     </GridContainer>                  
                   </GridItem>
                   <GridItem xs={12}>

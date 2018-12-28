@@ -24,7 +24,7 @@ function OrderCustomer(props) {
   return (
     <Card>
       <CardHeader color="info">
-        <h4 className={classes.cardTitleWhite}>Customer</h4>
+        <div className={classes.cardTitleWhite}>Customer</div>
       </CardHeader>
       <CardBody>
         { order.customer.firstName && (

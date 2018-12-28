@@ -7,22 +7,44 @@ import GridContainer from "components/Grid/GridContainer.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
-// import Button from "components/CustomButtons/Button.jsx";
 
 import MUIDataTable from "mui-datatables";
-// import AddLocation from "views/Locations/AddLocation";
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+
 import ProductService from "../../services/ProductService";
 
 export default class Inventory extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { products: [] };
+    this.state = { 
+      products: [],
+      openDialog: false,
+      selectedRow: null,
+    };
+    this.rowClicked = this.rowClicked.bind(this);
   }
 
   componentDidMount() {
     this.productsList();
   }
+
+  rowClicked(rowData, _rowMeta) {
+    this.setState({ 
+      openDialog: true,
+      selectedRow: rowData,
+    });
+  }
+
+  handleClose = () => {
+    this.setState({ openDialog: false });
+  };
 
   productsList() {
     const columns = ["productCode", "productName", "salesPrice", "vancouverBalance", "abbotsfordBalance" , "vancouverBinCode", "abbotsfordBinCode"];
@@ -68,17 +90,60 @@ export default class Inventory extends React.Component {
       }
     };
 
-    const columns = ["Product Code", "Product Name", "Sales Price ($)", "Van  Balance", "Abb Balance", "Van Storage", "Abb Location"];
+    const columns = [
+      {
+        name: "Product Code", 
+        options: {
+          filter: false,
+        }
+      },
+      {
+        name: "Product Name", 
+        options: {
+          filter: false,
+        }
+      },
+      {
+        name: "Sales Price ($)", 
+        options: {
+          filter: false,
+        }
+      },
+      {
+        name: "Van  Balance", 
+        options: {
+          filter: false,
+        }
+      },
+      {
+        name: "Abb Balance", 
+        options: {
+          filter: false,
+        }
+      },
+      {
+        name: "Van Storage", 
+        options: {
+          filter: false,
+        }
+      },
+      {
+        name: "Abb Storage", 
+        options: {
+          filter: false,
+        }
+      },
+    ];
 
     const options = {
       filterType: "checkbox",
-      // onRowClick: this.rowClicked,
+      onRowClick: this.rowClicked,
       rowHover: true,
       resizableColumns: true,
       selectableRows: false,
     };
 
-    const { products } = this.state;
+    const { products, selectedRow } = this.state;
 
     return (
       <div>
@@ -86,10 +151,11 @@ export default class Inventory extends React.Component {
           <GridItem xs={12} sm={12} md={12}>
             <Card>
               <CardHeader color="primary">
-                <h4 className={styles.cardTitleWhite}>Inventory List</h4>
+                <div className={styles.cardTitleWhite}>Inventory List</div>
               </CardHeader>
               <CardBody>
                 <MUIDataTable
+                  title="To update the inventory or storage code click on the product record bellow."
                   data={products}
                   columns={columns}
                   options={options}
@@ -98,6 +164,79 @@ export default class Inventory extends React.Component {
             </Card>
           </GridItem>
         </GridContainer>
+
+        <Dialog
+          open={this.state.openDialog}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">Inventory Update</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Code: { selectedRow && (selectedRow[0]) } <br />
+              Name: { selectedRow && (selectedRow[1]) } <br />
+            </DialogContentText>
+
+            <Card>
+              <CardHeader color="info">
+                <div>Vancouver</div>
+              </CardHeader>
+              <CardBody>
+                <TextField
+                  label="Quantity"
+                  type="number"
+                  value={selectedRow && (selectedRow[3])}
+                />
+                &nbsp;
+                <TextField
+                  label="Storage Code"
+                  type="text"
+                  value={selectedRow && (selectedRow[5]) }
+                />
+                &nbsp;
+                <TextField
+                  required
+                  label="Notes"
+                  type="text"
+                  fullWidth
+                />                
+              </CardBody>
+            </Card>
+            <Card>
+              <CardHeader color="info">
+                <div>Abbotsford</div>
+              </CardHeader>
+              <CardBody>
+                <TextField
+                  label="Quantity"
+                  type="number"
+                  value={selectedRow && (selectedRow[4]) }
+                /> 
+                &nbsp;
+                <TextField
+                  label="Storage Code"
+                  type="text"
+                  value={selectedRow && (selectedRow[6]) }
+                />
+                &nbsp;
+                <TextField
+                  required
+                  label="Notes"
+                  type="text"
+                  fullWidth
+                />                            
+              </CardBody>
+            </Card>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={this.handleClose} color="primary">
+              Update
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }

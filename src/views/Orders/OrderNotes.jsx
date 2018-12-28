@@ -23,7 +23,7 @@ function OrderNotes(props) {
   return (
     <Card>
       <CardHeader color="info">
-        <h4 className={classes.cardTitleWhite}>Order Info</h4>
+        <div className={classes.cardTitleWhite}>Order Info</div>
       </CardHeader>
       <CardBody>
        <h6>Notes:</h6>
