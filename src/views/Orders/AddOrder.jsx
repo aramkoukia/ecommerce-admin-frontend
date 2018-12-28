@@ -1,6 +1,5 @@
 import React from "react";
 import Check from "@material-ui/icons/Check";
-import Error from "@material-ui/icons/Error";
 // @material-ui/core components
 import { withStyles } from "@material-ui/core/styles";
 // core components

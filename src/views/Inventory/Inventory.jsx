@@ -1,6 +1,7 @@
 import React from "react";
 // @material-ui/core components
 // import withStyles from "@material-ui/core/styles/withStyles";
+import Check from "@material-ui/icons/Check";
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
@@ -16,8 +17,11 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Snackbar from "components/Snackbar/Snackbar.jsx";
 
 import ProductService from "../../services/ProductService";
+
+let productService = new ProductService();
 
 export default class Inventory extends React.Component {
   constructor(props) {
@@ -27,8 +31,19 @@ export default class Inventory extends React.Component {
       products: [],
       openDialog: false,
       selectedRow: null,
+      vancouverQuantity: 0,
+      vancouverStorageCode: "",
+      vancouverNotes: "",
+      abbotsfordQuantity: 0,
+      abbotsfordStorageCode: "",
+      abbotsfordNotes: "",
+      openSnackbar: false,
+      snackbarMessage: "",
+      snackbarColor: "",      
     };
     this.rowClicked = this.rowClicked.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleUpdate = this.handleUpdate.bind(this);
   }
 
   componentDidMount() {
@@ -43,8 +58,63 @@ export default class Inventory extends React.Component {
   }
 
   handleClose = () => {
-    this.setState({ openDialog: false });
+    this.setState({ 
+      openDialog: false,
+      selectedRow: null,
+      vancouverQuantity: 0,
+      vancouverStorageCode: "",
+      vancouverNotes: "",
+      abbotsfordQuantity: 0,
+      abbotsfordStorageCode: "",
+      abbotsfordNotes: "",      
+    });
   };
+
+  async handleUpdate() {
+    const { vancouverQuantity, vancouverStorageCode, vancouverNotes, abbotsfordQuantity, abbotsfordStorageCode, abbotsfordNotes } = this.state;
+
+    // TODO: only call the ones that has changed compared to the original selection
+    // API Call here.. 2 API calls?
+    const vancouverInventory = {
+      locationId: 1, // vancouver
+      productId: 1, // todo, add productid as hidden to grid?,
+      amount: vancouverQuantity,
+      binCode: vancouverStorageCode,
+      notes: vancouverNotes,
+    }
+    await productService.updateInventory(vancouverInventory);
+
+    
+    const abbotsfordInventory = {
+      locationId: 2, // vancouver
+      productId: 1, // todo, add productid as hidden to grid?,
+      amount: abbotsfordQuantity,
+      binCode: abbotsfordStorageCode,
+      notes: abbotsfordNotes,
+    }
+    await productService.updateInventory(abbotsfordInventory);
+       
+    this.setState({ 
+      openSnackbar: true,
+      snackbarMessage: "Inventory and Storage location was successfully updated!",
+      snackbarColor: "success",
+    });
+
+    this.setState({ 
+      openDialog: false,
+      selectedRow: null,
+      vancouverQuantity: 0,
+      vancouverStorageCode: "",
+      vancouverNotes: "",
+      abbotsfordQuantity: 0,
+      abbotsfordStorageCode: "",
+      abbotsfordNotes: "",      
+    });
+  };
+
+  handleChange(event) {
+    this.setState({[event.target.name]: event.target.value});
+  }
 
   productsList() {
     const columns = ["productCode", "productName", "salesPrice", "vancouverBalance", "abbotsfordBalance" , "vancouverBinCode", "abbotsfordBinCode"];
@@ -143,7 +213,7 @@ export default class Inventory extends React.Component {
       selectableRows: false,
     };
 
-    const { products, selectedRow } = this.state;
+    const { products, selectedRow, openSnackbar, snackbarMessage, snackbarColor } = this.state;
 
     return (
       <div>
@@ -183,12 +253,14 @@ export default class Inventory extends React.Component {
               </CardHeader>
               <CardBody>
                 <TextField
+                  name="vancouverQuantity"
                   label="Quantity"
                   type="number"
                   value={selectedRow && (selectedRow[3])}
                 />
                 &nbsp;
                 <TextField
+                  name="vancouverStorageCode"
                   label="Storage Code"
                   type="text"
                   value={selectedRow && (selectedRow[5]) }
@@ -196,6 +268,7 @@ export default class Inventory extends React.Component {
                 &nbsp;
                 <TextField
                   required
+                  name="vancouverNotes"
                   label="Notes"
                   type="text"
                   fullWidth
@@ -208,12 +281,14 @@ export default class Inventory extends React.Component {
               </CardHeader>
               <CardBody>
                 <TextField
+                  name="abbotsfordQuantity"
                   label="Quantity"
                   type="number"
                   value={selectedRow && (selectedRow[4]) }
                 /> 
                 &nbsp;
                 <TextField
+                  name="abbotsfordStorageCode"
                   label="Storage Code"
                   type="text"
                   value={selectedRow && (selectedRow[6]) }
@@ -221,6 +296,7 @@ export default class Inventory extends React.Component {
                 &nbsp;
                 <TextField
                   required
+                  name="abbotsfordNotes"
                   label="Notes"
                   type="text"
                   fullWidth
@@ -229,14 +305,23 @@ export default class Inventory extends React.Component {
             </Card>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
+            <Button onClick={this.handleClose} color="info">
               Cancel
             </Button>
-            <Button onClick={this.handleClose} color="primary">
+            <Button onClick={this.handleUpdate} color="primary">
               Update
             </Button>
           </DialogActions>
         </Dialog>
+        <Snackbar
+          place="tl"
+          color={snackbarColor}
+          icon={Check}
+          message={snackbarMessage}
+          open={openSnackbar}
+          closeNotification={() => this.setState({ openSnackbar: false })}
+          close
+        />
       </div>
     );
   }

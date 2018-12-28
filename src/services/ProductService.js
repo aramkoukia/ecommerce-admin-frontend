@@ -12,4 +12,17 @@ export default class ProductService {
       return false;
     }
   }
+
+  async updateInventory(inventory) {
+    try {
+      const response = await RestUtilities.put(
+        "products/inventory",
+        inventory
+      );
+      return response.content;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  }
 }
