@@ -21,8 +21,6 @@ import Card from '../../components/Card/Card';
 
 import ProductService from '../../services/ProductService';
 
-const productService = new ProductService();
-
 export default class Inventory extends React.Component {
   constructor(props) {
     super(props);
@@ -67,6 +65,12 @@ export default class Inventory extends React.Component {
     this.setState({
       openDialog: true,
       selectedRow: rowData,
+      vancouverQuantity: rowData[3],
+      vancouverStorageCode: rowData[5],
+      vancouverNotes: '',
+      abbotsfordQuantity: rowData[4],
+      abbotsfordStorageCode: rowData[6],
+      abbotsfordNotes: '',
     });
   }
 
@@ -78,34 +82,44 @@ export default class Inventory extends React.Component {
       abbotsfordQuantity,
       abbotsfordStorageCode,
       abbotsfordNotes,
+      selectedRow,
     } = this.state;
 
-    // TODO: only call the ones that has changed compared to the original selection
-    // API Call here.. 2 API calls?
-    const vancouverInventory = {
-      locationId: 1, // vancouver
-      productId: 1, // todo, add productid as hidden to grid?,
-      amount: vancouverQuantity,
-      binCode: vancouverStorageCode,
-      notes: vancouverNotes,
-    };
-    await productService.updateInventory(vancouverInventory);
+    if (vancouverQuantity !== selectedRow[3] || vancouverStorageCode !== selectedRow[5]) {
+      const productInventoryHistory = {
+        locationId: 1, // vancouver
+        productId: 1, // todo, add productid as hidden to grid?,
+        balance: vancouverQuantity,
+        binCode: vancouverStorageCode,
+        notes: vancouverNotes,
+      };
+      const result = await ProductService.updateInventory(productInventoryHistory);
+      if (result && result.orderId) {
+        this.setState({
+          openSnackbar: true,
+          snackbarMessage: 'Vancouver\'s Inventory and Storage location was successfully updated!',
+          snackbarColor: 'success',
+        });
+      }
+    }
 
-
-    const abbotsfordInventory = {
-      locationId: 2, // vancouver
-      productId: 1, // todo, add productid as hidden to grid?,
-      amount: abbotsfordQuantity,
-      binCode: abbotsfordStorageCode,
-      notes: abbotsfordNotes,
-    };
-    await productService.updateInventory(abbotsfordInventory);
-
-    this.setState({
-      openSnackbar: true,
-      snackbarMessage: 'Inventory and Storage location was successfully updated!',
-      snackbarColor: 'success',
-    });
+    if (abbotsfordQuantity !== selectedRow[4] || abbotsfordStorageCode !== selectedRow[6]) {
+      const productInventoryHistory = {
+        locationId: 2, // abbotsford
+        productId: 1, // todo, add productid as hidden to grid?,
+        balance: abbotsfordQuantity,
+        binCode: abbotsfordStorageCode,
+        notes: abbotsfordNotes,
+      };
+      const result = await ProductService.updateInventory(productInventoryHistory);
+      if (result && result.orderId) {
+        this.setState({
+          openSnackbar: true,
+          snackbarMessage: 'Abbotsford\'s Inventory and Storage location was successfully updated!',
+          snackbarColor: 'success',
+        });
+      }
+    }
 
     this.setState({
       openDialog: false,
@@ -215,7 +229,18 @@ export default class Inventory extends React.Component {
     };
 
     const {
-      products, selectedRow, openSnackbar, snackbarMessage, snackbarColor, openDialog,
+      products,
+      selectedRow,
+      openSnackbar,
+      snackbarMessage,
+      snackbarColor,
+      openDialog,
+      vancouverQuantity,
+      vancouverStorageCode,
+      vancouverNotes,
+      abbotsfordQuantity,
+      abbotsfordStorageCode,
+      abbotsfordNotes,
     } = this.state;
 
     return (
@@ -267,14 +292,16 @@ export default class Inventory extends React.Component {
                   name="vancouverQuantity"
                   label="Quantity"
                   type="number"
-                  value={selectedRow && (selectedRow[3])}
+                  onChange={this.handleChange}
+                  value={vancouverQuantity}
                 />
                 &nbsp;
                 <TextField
                   name="vancouverStorageCode"
                   label="Storage Code"
                   type="text"
-                  value={selectedRow && (selectedRow[5])}
+                  onChange={this.handleChange}
+                  value={vancouverStorageCode}
                 />
                 &nbsp;
                 <TextField
@@ -282,6 +309,8 @@ export default class Inventory extends React.Component {
                   name="vancouverNotes"
                   label="Notes"
                   type="text"
+                  onChange={this.handleChange}
+                  value={vancouverNotes}
                   fullWidth
                 />
               </CardBody>
@@ -295,14 +324,16 @@ export default class Inventory extends React.Component {
                   name="abbotsfordQuantity"
                   label="Quantity"
                   type="number"
-                  value={selectedRow && (selectedRow[4])}
+                  onChange={this.handleChange}
+                  value={abbotsfordQuantity}
                 />
                 &nbsp;
                 <TextField
                   name="abbotsfordStorageCode"
                   label="Storage Code"
                   type="text"
-                  value={selectedRow && (selectedRow[6])}
+                  onChange={this.handleChange}
+                  value={abbotsfordStorageCode}
                 />
                 &nbsp;
                 <TextField
@@ -310,7 +341,9 @@ export default class Inventory extends React.Component {
                   name="abbotsfordNotes"
                   label="Notes"
                   type="text"
+                  onChange={this.handleChange}
                   fullWidth
+                  value={abbotsfordNotes}
                 />
               </CardBody>
             </Card>

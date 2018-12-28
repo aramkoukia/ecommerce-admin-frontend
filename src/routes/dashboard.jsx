@@ -1,7 +1,7 @@
 // @material-ui/icons
 // import Dashboard from "@material-ui/icons/Dashboard";
-import Person from "@material-ui/icons/Person";
-import Highlight from "@material-ui/icons/Highlight";
+import Person from '@material-ui/icons/Person';
+import Highlight from '@material-ui/icons/Highlight';
 // import ContentPaste from "@material-ui/icons/ContentPaste";
 // import LibraryBooks from "@material-ui/icons/LibraryBooks";
 // import BubbleChart from "@material-ui/icons/BubbleChart";
@@ -9,24 +9,24 @@ import Highlight from "@material-ui/icons/Highlight";
 // import Notifications from "@material-ui/icons/Notifications";
 // import Unarchive from "@material-ui/icons/Unarchive";
 // core components/views
-import Reports from "views/Reports/Reports.jsx";
 // import TableList from "views/TableList/TableList.jsx";
 // import Typography from "views/Typography/Typography.jsx";
 // import Icons from "views/Icons/Icons.jsx";
 // import Maps from "views/Maps/Maps.jsx";
 // import NotificationsPage from "views/Notifications/Notifications.jsx";
-import Customers from "views/Customers/Customers.jsx";
-import Products from "views/Products/Products.jsx";
-import Locations from "views/Locations/Locations.jsx";
-import AddOrder from "../views/Orders/AddOrder";
-import Orders from "../views/Orders/Orders";
-import Discounts from "../views/Discounts/Discounts";
-import Taxes from "../views/Taxes/Taxes";
-import Users from "../views/Users/Users";
-import Inventory from "../views/Inventory/Inventory";
+import Products from '../views/Products/Products';
+import Locations from '../views/Locations/Locations';
+import Customers from '../views/Customers/Customers';
+import Reports from '../views/Reports/Reports';
+import AddOrder from '../views/Orders/AddOrder';
+import Orders from '../views/Orders/Orders';
+import Discounts from '../views/Discounts/Discounts';
+import Taxes from '../views/Taxes/Taxes';
+import Users from '../views/Users/Users';
+import Inventory from '../views/Inventory/Inventory';
 // import Purchases from "../views/Purchases/Purchases";
-import { SignIn } from "../views/Login/Auth";
-import { Order } from "../views/Orders/Order";
+import { SignIn } from '../views/Login/Auth';
+import { Order } from '../views/Orders/Order';
 
 const dashboardRoutes = [
   // {
@@ -37,32 +37,32 @@ const dashboardRoutes = [
   //   component: DashboardPage
   // },
   {
-    path: "/neworder",
-    sidebarName: "New Order",
-    navbarName: "",
+    path: '/neworder',
+    sidebarName: 'New Order',
+    navbarName: '',
     icon: Person,
-    component: AddOrder
+    component: AddOrder,
   },
   {
-    path: "/orders",
-    sidebarName: "Orders",
-    navbarName: "",
+    path: '/orders',
+    sidebarName: 'Orders',
+    navbarName: '',
     icon: Person,
-    component: Orders
+    component: Orders,
   },
   {
-    path: "/products",
-    sidebarName: "Products",
-    navbarName: "",
+    path: '/products',
+    sidebarName: 'Products',
+    navbarName: '',
     icon: Highlight,
-    component: Products
+    component: Products,
   },
   {
-    path: "/inventory",
-    sidebarName: "Inventory",
-    navbarName: "",
+    path: '/inventory',
+    sidebarName: 'Inventory',
+    navbarName: '',
     icon: Highlight,
-    component: Inventory
+    component: Inventory,
   },
   // {
   //   path: "/purchases",
@@ -72,62 +72,64 @@ const dashboardRoutes = [
   //   component: Purchases
   // },
   {
-    path: "/customers",
-    sidebarName: "Customers",
-    navbarName: "",
+    path: '/customers',
+    sidebarName: 'Customers',
+    navbarName: '',
     icon: Person,
-    component: Customers
+    component: Customers,
   },
   {
-    path: "/discounts",
-    sidebarName: "Discounts",
-    navbarName: "",
+    path: '/discounts',
+    sidebarName: 'Discounts',
+    navbarName: '',
     icon: Person,
-    component: Discounts
+    component: Discounts,
   },
   {
-    path: "/locations",
-    sidebarName: "Locations",
-    navbarName: "",
+    path: '/locations',
+    sidebarName: 'Locations',
+    navbarName: '',
     icon: Person,
-    component: Locations
+    component: Locations,
   },
   {
-    path: "/taxes",
-    sidebarName: "Taxes",
-    navbarName: "",
+    path: '/taxes',
+    sidebarName: 'Taxes',
+    navbarName: '',
     icon: Person,
-    component: Taxes
+    component: Taxes,
   },
   {
-    path: "/users",
-    sidebarName: "Users",
-    navbarName: "",
+    path: '/users',
+    sidebarName: 'Users',
+    navbarName: '',
     icon: Person,
-    component: Users
+    component: Users,
   },
   {
-    path: "/reports",
-    sidebarName: "Reports",
-    navbarName: "",
+    path: '/reports',
+    sidebarName: 'Reports',
+    navbarName: '',
     icon: Person,
-    component: Reports
+    component: Reports,
   },
   {
-    path: "/login",
-    sidebarName: "",
-    navbarName: "",
+    path: '/login',
+    sidebarName: '',
+    navbarName: '',
     icon: Person,
     component: SignIn,
   },
   {
-    path: "/order/:id",
-    sidebarName: "",
-    navbarName: "",
+    path: '/order/:id',
+    sidebarName: '',
+    navbarName: '',
     icon: Person,
     component: Order,
   },
-  { redirect: true, path: "/", to: "/login", navbarName: "Redirect" },
+  {
+    redirect: true, path: '/', to: '/login', navbarName: 'Redirect',
+  },
   // { redirect: true, path: "/", to: "/order/:id", navbarName: "Redirect" }
   // {
   //   path: "/table",
