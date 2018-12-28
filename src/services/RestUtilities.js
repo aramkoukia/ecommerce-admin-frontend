@@ -1,103 +1,101 @@
-import AuthStore from "../stores/Auth";
-import Api from "./ApiConfig";
-import axios from "axios";
+import axios from 'axios';
+import AuthStore from '../stores/Auth';
+import Api from './ApiConfig';
 
 export default class RestUtilities {
-
   static get(url) {
-    return RestUtilities.request("GET", url);
+    return RestUtilities.request('GET', url);
   }
 
   static getBlob(url) {
-    return RestUtilities.requestBlob("GET", url);
+    return RestUtilities.requestBlob('GET', url);
   }
 
   static delete(url) {
-    return RestUtilities.request("DELETE", url);
+    return RestUtilities.request('DELETE', url);
   }
 
   static put(url, data) {
-    return RestUtilities.request("PUT", url, data);
+    return RestUtilities.request('PUT', url, data);
   }
 
   static post(url, data) {
-    return RestUtilities.request("POST", url, data);
+    return RestUtilities.request('POST', url, data);
   }
 
   static request(method, url, data) {
     // let isJsonResponse = false;
     let isBadRequest = false;
     let body = data;
-    let headers = new Headers();
+    const headers = new Headers();
 
-    headers.set("Authorization", `Bearer ${AuthStore.getToken()}`);
-    headers.set("Accept", "application/json");
+    headers.set('Authorization', `Bearer ${AuthStore.getToken()}`);
+    headers.set('Accept', 'application/json');
 
     if (data) {
-      if (typeof data === "object") {
-        headers.set("Content-Type", "application/json");
+      if (typeof data === 'object') {
+        headers.set('Content-Type', 'application/json');
         body = JSON.stringify(data);
       } else {
-        headers.set("Content-Type", "application/x-www-form-urlencoded");
+        headers.set('Content-Type', 'application/x-www-form-urlencoded');
       }
     }
 
     return fetch(`${Api.baseUrl}/${url}`, {
-      method: method,
-      headers: headers,
-      body: body
+      method,
+      headers,
+      body,
     })
-      .then(response => {
+      .then((response) => {
         if (response.status === 401) {
           // Unauthorized; redirect to sign-in
           AuthStore.removeToken();
-          window.location.replace(`/?expired=1`);
+          window.location.replace('/?expired=1');
         }
 
         isBadRequest = response.status === 400;
 
-        let responseContentType = response.headers.get("content-type");
+        const responseContentType = response.headers.get('content-type');
         if (
-          responseContentType &&
-          responseContentType.indexOf("application/json") !== -1
+          responseContentType
+          && responseContentType.indexOf('application/json') !== -1
         ) {
           // isJsonResponse = true;
           return response.json();
-        } else {
-          return response.text();
         }
+        return response.text();
       })
-      .then(responseContent => {
-        let response = {
+      .then((responseContent) => {
+        const response = {
           is_error: isBadRequest,
           error_content: isBadRequest ? responseContent : null,
-          content: isBadRequest ? null : responseContent
+          content: isBadRequest ? null : responseContent,
         };
         return response;
       });
   }
 
   static requestBlob(method, url) {
-    let headers = new Headers();
-    headers.set("Authorization", `Bearer ${AuthStore.getToken()}`);    
+    const headers = new Headers();
+    headers.set('Authorization', `Bearer ${AuthStore.getToken()}`);
     axios(`${Api.baseUrl}/${url}`, {
       method: 'GET',
-      responseType: 'blob', //Force to receive data in a Blob Format
-      headers: headers
+      responseType: 'blob', // Force to receive data in a Blob Format
+      headers,
     })
-    .then(response => {
-    //Create a Blob from the PDF Stream
+      .then((response) => {
+        // Create a Blob from the PDF Stream
         const file = new Blob(
-          [response.data], 
-          {type: 'application/pdf'});
-    //Build a URL from the file
+          [response.data],
+          { type: 'application/pdf' },
+        );
+        // Build a URL from the file
         const fileURL = URL.createObjectURL(file);
-    //Open the URL on new Window
+        // Open the URL on new Window
         window.open(fileURL);
-    })
-    .catch(error => {
-        console.log(error);
-    });    
+      })
+      .catch(() => {
+      });
     // let headers = new Headers();
     // headers.set("Authorization", `Bearer ${AuthStore.getToken()}`);
     // headers.set("Accept", "application/pdf");
@@ -119,7 +117,7 @@ export default class RestUtilities {
     //   })
     //   .then(responseContent => {
     //     const file = new Blob(
-    //       [responseContent], 
+    //       [responseContent],
     //       {type: 'application/pdf'});
     //     const fileURL = URL.createObjectURL(file);
     //     window.open(fileURL);

@@ -1,5 +1,5 @@
-import RestUtilities from "./RestUtilities";
-import AuthStore from "../stores/Auth";
+import RestUtilities from './RestUtilities';
+import AuthStore from '../stores/Auth';
 
 export default class Auth {
   static isSignedIn() {
@@ -12,11 +12,11 @@ export default class Auth {
 
   signInOrRegister(email, password, isRegister) {
     return RestUtilities.post(
-      `auth/${isRegister ? "register" : "login"}`,
+      `auth/${isRegister ? 'register' : 'login'}`,
       `username=${email}&password=${password}${
-        !isRegister ? "&grant_type=password" : ""
-      }`
-    ).then(response => {
+        !isRegister ? '&grant_type=password' : ''
+      }`,
+    ).then((response) => {
       if (!response.is_error) {
         AuthStore.setToken(response.content.token);
         AuthStore.setUser(email);
@@ -34,11 +34,9 @@ export default class Auth {
   }
 
   confirm(token) {
-    return RestUtilities.post("auth/confirm", { token: token })
-      .then(response => {
-        return true;
-      })
-      .catch(err => {
+    return RestUtilities.post('auth/confirm', { token })
+      .then(response => true)
+      .catch((err) => {
         console.log(err);
         return false;
       });
@@ -47,6 +45,6 @@ export default class Auth {
   signOut() {
     AuthStore.removeToken();
     AuthStore.removeUser();
-    window.location.replace(`/?expired=1`);
+    window.location.replace('/?expired=1');
   }
 }

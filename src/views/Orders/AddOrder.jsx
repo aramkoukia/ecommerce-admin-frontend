@@ -3,16 +3,16 @@ import Check from '@material-ui/icons/Check';
 // @material-ui/core components
 import { withStyles } from '@material-ui/core/styles';
 // core components
-import GridItem from 'components/Grid/GridItem';
-import GridContainer from 'components/Grid/GridContainer';
-import Button from 'components/CustomButtons/Button';
-import Card from 'components/Card/Card';
-import CardHeader from 'components/Card/CardHeader';
-import CardBody from 'components/Card/CardBody';
-import CardFooter from 'components/Card/CardFooter';
 import PropTypes from 'prop-types';
-import CustomInput from 'components/CustomInput/CustomInput';
-import Snackbar from 'components/Snackbar/Snackbar';
+import GridItem from '../../components/Grid/GridItem';
+import GridContainer from '../../components/Grid/GridContainer';
+import Button from '../../components/CustomButtons/Button';
+import Card from '../../components/Card/Card';
+import CardHeader from '../../components/Card/CardHeader';
+import CardBody from '../../components/Card/CardBody';
+import CardFooter from '../../components/Card/CardFooter';
+import CustomInput from '../../components/CustomInput/CustomInput';
+import Snackbar from '../../components/Snackbar/Snackbar';
 import ProductSearch from './ProductSearch';
 import CustomerSearch from './CustomerSearch';
 import OrderTable from './OrderTable';
@@ -40,6 +40,18 @@ const styles = {
     textDecoration: 'none',
   },
 };
+
+function priceRow(qty, unit) {
+  return qty * unit;
+}
+
+function createRow(productId, productName, salesPrice) {
+  const qty = 1;
+  const price = priceRow(qty, salesPrice);
+  return {
+    productId, productName, qty, salesPrice, price,
+  };
+}
 
 export class AddOrder extends React.Component {
   constructor(props) {
@@ -76,20 +88,8 @@ export class AddOrder extends React.Component {
     });
   }
 
-  priceRow(qty, unit) {
-    return qty * unit;
-  }
-
-  createRow(productId, productName, salesPrice) {
-    const qty = 1;
-    const price = this.priceRow(qty, salesPrice);
-    return {
-      productId, productName, qty, salesPrice, price,
-    };
-  }
-
   productChanged(product) {
-    const newRow = this.createRow(product.productId, product.productName, product.salesPrice);
+    const newRow = createRow(product.productId, product.productName, product.salesPrice);
     this.setState(prevState => ({
       rows: [...prevState.rows, newRow],
     }));
@@ -111,7 +111,9 @@ export class AddOrder extends React.Component {
 
   customerChanged(customer) {
     const { allTaxes } = this.state;
-    if (customer && customer.pstNumber) { // removing taxes with name like "pst" from the list if the selected customer has PST number in their profile
+    // removing taxes with name like "pst" from the list
+    // if the selected customer has PST number in their profile
+    if (customer && customer.pstNumber) {
       const filterTaxes = allTaxes.reduce((filterTaxes, tax) => {
         if (!tax.taxName.toLowerCase().includes('pst')) {
           filterTaxes.push(tax);
@@ -266,7 +268,10 @@ export class AddOrder extends React.Component {
   render() {
     const { classes } = this.props;
     const {
-      rows, taxes, discountAmount, discountPercent, customer, openSnackbar, snackbarMessage, snackbarColor, notes, poNumber,
+      rows,
+      taxes,
+      discountAmount,
+      discountPercent, customer, openSnackbar, snackbarMessage, snackbarColor, notes, poNumber,
     } = this.state;
 
     return (
@@ -293,36 +298,36 @@ export class AddOrder extends React.Component {
                               <CustomInput
                                 labelText="Full Name"
                                 formControlProps={{
-                                fullWidth: true,
-                              }}
+                                  fullWidth: true,
+                                }}
                                 inputProps={{
-                                disabled: true,
-                                value: `${customer.firstName} ${customer.firstName}`,
-                              }}
+                                  disabled: true,
+                                  value: `${customer.firstName} ${customer.firstName}`,
+                                }}
                               />
                             </GridItem>
                             <GridItem xs={12} sm={12} md={3}>
                               <CustomInput
                                 labelText="User Name"
                                 formControlProps={{
-                                fullWidth: true,
-                              }}
+                                  fullWidth: true,
+                                }}
                                 inputProps={{
-                                disabled: true,
-                                value: `${customer.userName} `,
-                              }}
+                                  disabled: true,
+                                  value: `${customer.userName} `,
+                                }}
                               />
                             </GridItem>
                             <GridItem xs={12} sm={12} md={3}>
                               <CustomInput
                                 labelText="Email"
                                 formControlProps={{
-                                fullWidth: true,
-                              }}
+                                  fullWidth: true,
+                                }}
                                 inputProps={{
-                                disabled: true,
-                                value: `${customer.userName} `,
-                              }}
+                                  disabled: true,
+                                  value: `${customer.userName} `,
+                                }}
                               />
                             </GridItem>
                           </GridContainer>
@@ -331,38 +336,38 @@ export class AddOrder extends React.Component {
                               <CustomInput
                                 labelText="Credit Limit"
                                 formControlProps={{
-                                fullWidth: true,
-                              }}
+                                  fullWidth: true,
+                                }}
                                 inputProps={{
-                                disabled: true,
-                                value: `${customer.creditLimit} $`,
-                                error: 'error',
-                              }}
+                                  disabled: true,
+                                  value: `${customer.creditLimit} $`,
+                                  error: 'error',
+                                }}
                               />
                             </GridItem>
                             <GridItem xs={12} sm={12} md={3}>
                               <CustomInput
                                 labelText="Unpaid Orders Amount"
                                 formControlProps={{
-                                fullWidth: true,
-                              }}
+                                  fullWidth: true,
+                                }}
                                 inputProps={{
-                                disabled: true,
-                                value: `${customer.accountBalance} $`,
-                                error: 'error',
-                              }}
+                                  disabled: true,
+                                  value: `${customer.accountBalance} $`,
+                                  error: 'error',
+                                }}
                               />
                             </GridItem>
                             <GridItem xs={12} sm={12} md={3}>
                               <CustomInput
                                 labelText="PST Number"
                                 formControlProps={{
-                                fullWidth: true,
-                              }}
+                                  fullWidth: true,
+                                }}
                                 inputProps={{
-                                disabled: true,
-                                value: customer.pstNumber === null ? 'Not Provided' : `${customer.pstNumber} `,
-                              }}
+                                  disabled: true,
+                                  value: customer.pstNumber === null ? 'Not Provided' : `${customer.pstNumber} `,
+                                }}
                               />
                             </GridItem>
                             <GridItem xs={12} sm={12} md={3}>

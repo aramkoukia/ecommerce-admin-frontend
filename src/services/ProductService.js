@@ -1,27 +1,25 @@
-import RestUtilities from "./RestUtilities";
+import RestUtilities from './RestUtilities';
 
 export default class ProductService {
   static async getProducts() {
     try {
       const response = await RestUtilities.get(
-        "products"
+        'products',
       );
       return response.content;
     } catch (err) {
-      console.log(err);
       return false;
     }
   }
 
-  async updateInventory(inventory) {
+  static async updateInventory(inventory) {
     try {
-      const response = await RestUtilities.put(
-        "products/inventory",
-        inventory
+      const response = await RestUtilities.post(
+        'ProductInventory',
+        inventory,
       );
       return response.content;
     } catch (err) {
-      console.log(err);
       return false;
     }
   }

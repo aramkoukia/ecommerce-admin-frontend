@@ -1,15 +1,14 @@
-import RestUtilities from "./RestUtilities";
+import RestUtilities from './RestUtilities';
 
 export default class OrderService {
   async saveOrder(order) {
     try {
       const response = await RestUtilities.post(
-        "orders",  
-        order
+        'orders',
+        order,
       );
       return response.content;
     } catch (err) {
-      console.log(err);
       return false;
     }
   }
@@ -17,12 +16,11 @@ export default class OrderService {
   async updateOrderStatus(orderId, orderStatus) {
     try {
       const response = await RestUtilities.put(
-        `orders/${orderId}/status`,  
-        orderStatus
+        `orders/${orderId}/status`,
+        orderStatus,
       );
       return response.content;
     } catch (err) {
-      console.log(err);
       return false;
     }
   }
@@ -30,11 +28,10 @@ export default class OrderService {
   async getOrders() {
     try {
       const response = await RestUtilities.get(
-        "orders"
+        'orders',
       );
       return response.content;
     } catch (err) {
-      console.log(err);
       return false;
     }
   }
@@ -42,11 +39,10 @@ export default class OrderService {
   async getOrdersByLocation(locationId) {
     try {
       const response = await RestUtilities.get(
-        `orders/location/${locationId}`
+        `orders/location/${locationId}`,
       );
       return response.content;
     } catch (err) {
-      console.log(err);
       return false;
     }
   }
@@ -54,11 +50,10 @@ export default class OrderService {
   async getOrderDetail(orderId) {
     try {
       const response = await RestUtilities.get(
-        `orders/${orderId}`
+        `orders/${orderId}`,
       );
       return response.content;
     } catch (err) {
-      console.log(err);
       return false;
     }
   }
@@ -66,23 +61,20 @@ export default class OrderService {
   async emailOrder(orderId) {
     try {
       const response = await RestUtilities.get(
-        `orders/${orderId}/email`
+        `orders/${orderId}/email`,
       );
       return response.content;
     } catch (err) {
-      console.log(err);
       return false;
     }
   }
-  
+
   async printOrder(orderId) {
     try {
       const response = await RestUtilities.getBlob(`orders/${orderId}/print`);
       return response;
     } catch (err) {
-      console.log(err);
       return false;
     }
   }
-
 }
