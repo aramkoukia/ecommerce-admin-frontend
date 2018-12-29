@@ -34,9 +34,9 @@ export default class Auth {
     return Auth.signInOrRegister(email, password, true);
   }
 
-  static userHasRole(role) {
-    const roles = AuthStore.getUserRoles();
-    return roles.includes(role);
+  static userHasPermission(permission) {
+    const permissions = AuthStore.getUserPermissions();
+    return permissions ? permissions.includes(permission) : false;
   }
 
   static confirm(token) {

@@ -1,23 +1,23 @@
-import React from "react";
+import React from 'react';
 // @material-ui/core components
-import withStyles from "@material-ui/core/styles/withStyles";
+import withStyles from '@material-ui/core/styles/withStyles';
 // core components
-import Danger from "components/Typography/Danger";
-import Card from "components/Card/Card.jsx";
-import CardHeader from "components/Card/CardHeader.jsx";
-import CardBody from "components/Card/CardBody.jsx";
-import Table from "components/Table/Table.jsx";
+import Danger from 'components/Typography/Danger';
+import Card from 'components/Card/Card.jsx';
+import CardHeader from 'components/Card/CardHeader.jsx';
+import CardBody from 'components/Card/CardBody.jsx';
+import Table from 'components/Table/Table.jsx';
 
 const style = {
   cardTitleWhite: {
-    color: "#FFFFFF",
-    marginTop: "0px",
-    minHeight: "auto",
-    fontWeight: "300",
+    color: '#FFFFFF',
+    marginTop: '0px',
+    minHeight: 'auto',
+    fontWeight: '300',
     fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-    marginBottom: "3px",
-    textDecoration: "none"
-  }
+    marginBottom: '3px',
+    textDecoration: 'none',
+  },
 };
 function OrderCustomer(props) {
   const { classes, order } = props;
@@ -28,19 +28,20 @@ function OrderCustomer(props) {
       </CardHeader>
       <CardBody>
         { order.customer.firstName && (
-            <Table
-              tableHeaderColor="primary"
-              tableHead={["Email", "Name", "Company Name", "Credit Limit", "PST Number"]}
-              tableData={[
-                [order.customer.email, 
-                 order.customer.firstName + ' ' + order.customer.lastName, 
-                 order.customer.companyName, 
-                 order.customer.creditLimit , 
-                 order.customer.pstNumber],
+        <Table
+          tableHeaderColor="primary"
+          tableHead={['Email', 'Name', 'Company Name', 'Credit Limit', 'PST Number']}
+          tableData={[
+                [order.customer.email,
+                  `${order.customer.firstName  } ${  order.customer.lastName}`,
+                  order.customer.companyName,
+                  order.customer.creditLimit,
+                  order.customer.pstNumber],
               ]}
-            />  ) }
+        />
+        ) }
         { !order.customer.firstName && (
-          <Danger>This Order has no customer</Danger> )
+          <Danger>This Order has no customer</Danger>)
         }
       </CardBody>
     </Card>
@@ -48,4 +49,3 @@ function OrderCustomer(props) {
 }
 
 export default withStyles(style)(OrderCustomer);
-

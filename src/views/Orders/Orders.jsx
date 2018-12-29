@@ -1,18 +1,18 @@
-import React from "react";
+import React from 'react';
 // @material-ui/core components
 // import withStyles from "@material-ui/core/styles/withStyles";
 // core components
-import GridItem from "components/Grid/GridItem.jsx";
-import GridContainer from "components/Grid/GridContainer.jsx";
-import Card from "components/Card/Card.jsx";
-import CardHeader from "components/Card/CardHeader.jsx";
-import CardBody from "components/Card/CardBody.jsx";
+import GridItem from 'components/Grid/GridItem.jsx';
+import GridContainer from 'components/Grid/GridContainer.jsx';
+import Card from 'components/Card/Card.jsx';
+import CardHeader from 'components/Card/CardHeader.jsx';
+import CardBody from 'components/Card/CardBody.jsx';
 
-import MUIDataTable from "mui-datatables";
-import OrderService from "../../services/OrderService";
-import Location from "../../stores/Location";
+import MUIDataTable from 'mui-datatables';
+import OrderService from '../../services/OrderService';
+import Location from '../../stores/Location';
 
-let orderService = new OrderService();
+const orderService = new OrderService();
 
 
 function dateFormat(dateString) {
@@ -33,19 +33,17 @@ export default class Orders extends React.Component {
   }
 
   ordersList() {
-    const columns = ["locationName", "orderId", "orderDate", "subTotal", "total", "status", "poNumber", "paidAmount", "createdByUserId"];
+    const columns = ['locationName', 'orderId', 'orderDate', 'subTotal', 'total', 'status', 'poNumber', 'paidAmount', 'createdByUserId'];
     const locationId = Location.getStoreLocation();
     orderService.getOrdersByLocation(locationId)
-      .then(results => {
-        return results.map(row => {
+      .then((results) => results.map(row => {
           return columns.map(column => {
             if(column === "orderDate") {
               return dateFormat(row[column]);
             }
             return row[column] || "";
           });
-        });
-      })
+        }))
       .then(data => this.setState({ orders: data }));
   }
 
@@ -56,78 +54,77 @@ export default class Orders extends React.Component {
   render() {
     const styles = {
       cardCategoryWhite: {
-        "&,& a,& a:hover,& a:focus": {
-          color: "rgba(255,255,255,.62)",
-          margin: "0",
-          fontSize: "14px",
-          marginTop: "0",
-          marginBottom: "0"
+        '&,& a,& a:hover,& a:focus': {
+          color: 'rgba(255,255,255,.62)',
+          margin: '0',
+          fontSize: '14px',
+          marginTop: '0',
+          marginBottom: '0',
         },
-        "& a,& a:hover,& a:focus": {
-          color: "#FFFFFF"
-        }
+        '& a,& a:hover,& a:focus': {
+          color: '#FFFFFF',
+        },
       },
       cardTitleWhite: {
-        color: "#FFFFFF",
-        marginTop: "0px",
-        minHeight: "auto",
-        fontWeight: "300",
+        color: '#FFFFFF',
+        marginTop: '0px',
+        minHeight: 'auto',
+        fontWeight: '300',
         fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-        marginBottom: "3px",
-        textDecoration: "none",
-        "& small": {
-          color: "#777",
-          fontSize: "65%",
-          fontWeight: "400",
-          lineHeight: "1"
-        }
-      }
+        marginBottom: '3px',
+        textDecoration: 'none',
+        '& small': {
+          color: '#777',
+          fontSize: '65%',
+          fontWeight: '400',
+          lineHeight: '1',
+        },
+      },
     };
 
-    const columns = 
-    [
-    "Location", 
-    {
-      name: "Order Number", 
-      options: {
-        filter: false,
-      }
-    }, 
-    {
-      name: "Order Date", 
-      options: {
-        filter: false,
-      }
-    },     
-    {
-      name: "Sub Total", 
-      options: {
-        filter: false,
-      }
-    },         
-    {
-      name: "Total", 
-      options: {
-        filter: false,
-      }
-    },             
-    "Status", 
-    {
-      name: "PO Number", 
-      options: {
-        filter: false,
-      }
-    },             
-    {
-      name: "Paid Amount", 
-      options: {
-        filter: false,
-      }
-    },             
-    "Created By"];
+    const columns =     [
+      'Location',
+      {
+        name: 'Order Number',
+        options: {
+          filter: false,
+        },
+      },
+      {
+        name: 'Order Date',
+        options: {
+          filter: false,
+        },
+      },
+      {
+        name: 'Sub Total',
+        options: {
+          filter: false,
+        },
+      },
+      {
+        name: 'Total',
+        options: {
+          filter: false,
+        },
+      },
+      'Status',
+      {
+        name: 'PO Number',
+        options: {
+          filter: false,
+        },
+      },
+      {
+        name: 'Paid Amount',
+        options: {
+          filter: false,
+        },
+      },
+      'Created By'];
 
     const options = {
-      filterType: "checkbox",
+      filterType: 'checkbox',
       onRowClick: this.rowClicked,
       rowHover: true,
       resizableColumns: true,

@@ -1,11 +1,11 @@
 import React from 'react';
 import MUIDataTable from 'mui-datatables';
+import AddLocation from 'views/Locations/AddLocation';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
-import AddLocation from 'views/Locations/AddLocation';
 import LocationService from '../../services/LocationService';
 
 export default class Locations extends React.Component {

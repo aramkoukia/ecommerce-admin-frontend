@@ -1,17 +1,17 @@
-import * as React from "react";
+import * as React from 'react';
 // import { Link, Redirect, RouteComponentProps } from "react-router-dom";
 // import { RoutePaths } from "../../routes/routes";
 // import { PropTypes } from "proprtypes";
-import AuthService from "../../services/Auth";
-import CustomInput from "components/CustomInput/CustomInput.jsx";
-import Button from "components/CustomButtons/Button.jsx";
-import GridItem from "components/Grid/GridItem.jsx";
-import GridContainer from "components/Grid/GridContainer.jsx";
-import Card from "components/Card/Card.jsx";
-import CardHeader from "components/Card/CardHeader.jsx";
+import CustomInput from 'components/CustomInput/CustomInput.jsx';
+import Button from 'components/CustomButtons/Button.jsx';
+import GridItem from 'components/Grid/GridItem.jsx';
+import GridContainer from 'components/Grid/GridContainer.jsx';
+import Card from 'components/Card/Card.jsx';
+import CardHeader from 'components/Card/CardHeader.jsx';
 // import CardAvatar from "components/Card/CardAvatar.jsx";
-import CardBody from "components/Card/CardBody.jsx";
+import CardBody from 'components/Card/CardBody.jsx';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import AuthService from '../../services/Auth';
 // import CardFooter from "components/Card/CardFooter.jsx";
 // import dashboardPath from "../../routes/dashboard";
 // let authStyle = require("../../styles/auth.styl");
@@ -25,17 +25,17 @@ export class SignIn extends React.Component {
       loading: false,
       initialLoad: true,
       userInfo: {
-        username: "",
-        password: ""
+        username: '',
+        password: '',
       },
-      error: null
+      error: null,
     };
 
     this.handleSignIn = this.handleSignIn.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
 
     if (AuthService.isSignedIn()) {
-      return this.props.history.push("reports");
+      return this.props.history.push('reports');
     }
   }
 
@@ -49,9 +49,9 @@ export class SignIn extends React.Component {
     this.setState({ errors: null, initialLoad: false, loading: true });
     AuthService
       .signIn(this.state.userInfo.username, this.state.userInfo.password)
-      .then(response => {
+      .then((response) => {
         if (!response.is_error) {
-          this.props.history.push("reports");
+          this.props.history.push('reports');
         } else {
           this.setState({ error: response.error_content.error_description });
         }
@@ -63,40 +63,40 @@ export class SignIn extends React.Component {
     const target = event.target;
     const name = target.name;
     const value = target.value;
-    let userInfoUpdates = {
-      [name]: value
+    const userInfoUpdates = {
+      [name]: value,
     };
-    //const { state } = this.state.userInfo;
+    // const { state } = this.state.userInfo;
     this.setState({
-      userInfo: Object.assign(this.state.userInfo, userInfoUpdates)
+      userInfo: Object.assign(this.state.userInfo, userInfoUpdates),
     });
   }
 
   render() {
     const styles = {
       cardCategoryWhite: {
-        color: "rgba(255,255,255,.62)",
-        margin: "0",
-        fontSize: "14px",
-        marginTop: "0",
-        marginBottom: "0"
+        color: 'rgba(255,255,255,.62)',
+        margin: '0',
+        fontSize: '14px',
+        marginTop: '0',
+        marginBottom: '0',
       },
       cardTitleWhite: {
-        color: "#FFFFFF",
-        marginTop: "0px",
-        minHeight: "auto",
-        fontWeight: "300",
+        color: '#FFFFFF',
+        marginTop: '0px',
+        minHeight: 'auto',
+        fontWeight: '300',
         fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-        marginBottom: "3px",
-        textDecoration: "none"
-      }
+        marginBottom: '3px',
+        textDecoration: 'none',
+      },
     };
     const search = this.props.location.search;
     const params = new URLSearchParams(search);
     const { loading } = this.state;
     let initialLoadContent = null;
     if (this.state.initialLoad) {
-      if (params.get("confirmed")) {
+      if (params.get('confirmed')) {
         initialLoadContent = (
           <div className="alert alert-success" role="alert">
             Your email address has been successfully confirmed.
@@ -104,17 +104,19 @@ export class SignIn extends React.Component {
         );
       }
 
-      if (params.get("expired")) {
+      if (params.get('expired')) {
         initialLoadContent = (
           <div className="alert alert-info" role="alert">
-            <strong>Sesion Expired</strong> You need to sign in again.
-          </div>
+            <strong>Sesion Expired</strong>
+            {' '}
+You need to sign in again.
+                    </div>
         );
       }
 
       if (
-        this.props.history.location.state &&
-        this.props.history.location.state.signedOut
+        this.props.history.location.state
+        && this.props.history.location.state.signedOut
       ) {
         initialLoadContent = (
           <div className="alert alert-info" role="alert">
@@ -126,7 +128,7 @@ export class SignIn extends React.Component {
     return (
       <div>
         <GridContainer justify="center" alignItems="center">
-          <GridItem >
+          <GridItem>
             <Card>
               <CardHeader color="primary">
                 <h4 className={styles.cardTitleWhite}>
@@ -147,11 +149,11 @@ export class SignIn extends React.Component {
                       labelText="User Name"
                       id="username"
                       formControlProps={{
-                        fullWidth: true
+                        fullWidth: true,
                       }}
                       inputProps={{
                         onChange: this.handleInputChange,
-                        name: "username"
+                        name: 'username',
                       }}
                     />
                   </GridItem>
@@ -161,12 +163,12 @@ export class SignIn extends React.Component {
                       labelText="Password"
                       id="password"
                       formControlProps={{
-                        fullWidth: true
+                        fullWidth: true,
                       }}
                       inputProps={{
                         onChange: this.handleInputChange,
-                        name: "password",
-                        type: "password"
+                        name: 'password',
+                        type: 'password',
                       }}
                     />
                   </GridItem>
@@ -175,11 +177,11 @@ export class SignIn extends React.Component {
                       Sign In
                     </Button>
                   </GridItem>
-                  
+
                 </GridContainer>
               </CardBody>
             </Card>
-            { loading && ( <LinearProgress /> ) }
+            { loading && (<LinearProgress />) }
           </GridItem>
         </GridContainer>
       </div>

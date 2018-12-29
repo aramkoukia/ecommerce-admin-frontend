@@ -1,5 +1,5 @@
 export default class Location {
-  static STORE_LOCATION_KEY = "storeLocation";
+  static STORE_LOCATION_KEY = 'storeLocation';
 
   static getStoreLocation() {
     return window.localStorage.getItem(Location.STORE_LOCATION_KEY);
