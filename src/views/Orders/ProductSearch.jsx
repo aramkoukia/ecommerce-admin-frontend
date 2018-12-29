@@ -1,30 +1,32 @@
-import React from "react";
-import PropTypes from "prop-types";
-import deburr from "lodash/deburr";
-import Autosuggest from "react-autosuggest";
-import match from "autosuggest-highlight/match";
-import parse from "autosuggest-highlight/parse";
-import TextField from "@material-ui/core/TextField";
-import Paper from "@material-ui/core/Paper";
-import MenuItem from "@material-ui/core/MenuItem";
-import Popper from "@material-ui/core/Popper";
-import { withStyles } from "@material-ui/core/styles";
-import ProductService from "../../services/ProductService.js";
+import React from 'react';
+import PropTypes from 'prop-types';
+import deburr from 'lodash/deburr';
+import Autosuggest from 'react-autosuggest';
+import match from 'autosuggest-highlight/match';
+import parse from 'autosuggest-highlight/parse';
+import TextField from '@material-ui/core/TextField';
+import Paper from '@material-ui/core/Paper';
+import MenuItem from '@material-ui/core/MenuItem';
+import Popper from '@material-ui/core/Popper';
+import { withStyles } from '@material-ui/core/styles';
+import ProductService from '../../services/ProductService';
 
 function renderInputComponent(inputProps) {
-  const { classes, inputRef = () => {}, ref, ...other } = inputProps;
+  const {
+    classes, inputRef = () => {}, ref, ...other
+  } = inputProps;
 
   return (
     <TextField
       fullWidth
       InputProps={{
-        inputRef: node => {
+        inputRef: (node) => {
           ref(node);
           inputRef(node);
         },
         classes: {
-          input: classes.input
-        }
+          input: classes.input,
+        },
       }}
       {...other}
     />
@@ -38,17 +40,15 @@ function renderSuggestion(suggestion, { query, isHighlighted }) {
   return (
     <MenuItem selected={isHighlighted} component="div">
       <div>
-        {parts.map((part, index) => {
-          return part.highlight ? (
-            <span key={String(index)} style={{ fontWeight: 500 }}>
-              {part.text}
-            </span>
-          ) : (
-            <strong key={String(index)} style={{ fontWeight: 300 }}>
+        {parts.map((part, index) => (part.highlight ? (
+          <span key={String(index)} style={{ fontWeight: 500 }}>
+            {part.text}
+          </span>
+        ) : (
+          <strong key={String(index)} style={{ fontWeight: 300 }}>
               {part.text}
             </strong>
-          );
-        })}
+        )))}
       </div>
     </MenuItem>
   );
@@ -57,29 +57,29 @@ function renderSuggestion(suggestion, { query, isHighlighted }) {
 const styles = theme => ({
   root: {
     height: 80,
-    flexGrow: 1
+    flexGrow: 1,
   },
   container: {
-    position: "relative"
+    position: 'relative',
   },
   suggestionsContainerOpen: {
-    position: "absolute",
+    position: 'absolute',
     zIndex: 1,
     marginTop: theme.spacing.unit,
     left: 0,
-    right: 0
+    right: 0,
   },
   suggestion: {
-    display: "block"
+    display: 'block',
   },
   suggestionsList: {
     margin: 0,
     padding: 0,
-    listStyleType: "none"
+    listStyleType: 'none',
   },
   divider: {
-    height: theme.spacing.unit * 2
-  }
+    height: theme.spacing.unit * 2,
+  },
 });
 
 class ProductSearch extends React.Component {
@@ -87,17 +87,17 @@ class ProductSearch extends React.Component {
     super(props);
 
     this.state = {
-      single: "",
-      popper: "",
+      single: '',
+      popper: '',
       suggestions: [],
-      filteredSuggestions: []
+      filteredSuggestions: [],
     };
 
     this.handleSuggestionsFetchRequested = this.handleSuggestionsFetchRequested.bind(
-      this
+      this,
     );
     this.handleSuggestionsClearRequested = this.handleSuggestionsClearRequested.bind(
-      this
+      this,
     );
 
     this.getSuggestionValue = this.getSuggestionValue.bind(this);
@@ -105,7 +105,7 @@ class ProductSearch extends React.Component {
 
   async componentDidMount() {
     const suggestions = await ProductService.getProducts();
-    this.setState({ suggestions: suggestions });
+    this.setState({ suggestions });
   }
 
   getSuggestionValue = (suggestion) => {
@@ -121,36 +121,35 @@ class ProductSearch extends React.Component {
 
     return inputLength === 0
       ? []
-      : suggestions.filter(suggestion => {
-          const keep =
-            count < 5 &&
-            (suggestion.productName.toLowerCase().includes(inputValue) ||
-              suggestion.productCode.toLowerCase().includes(inputValue));
+      : suggestions.filter((suggestion) => {
+        const keep = count < 5
+            && (suggestion.productName.toLowerCase().includes(inputValue)
+              || suggestion.productCode.toLowerCase().includes(inputValue));
 
-          if (keep) {
-            count += 1;
-          }
+        if (keep) {
+          count += 1;
+        }
 
-          return keep;
-        });
+        return keep;
+      });
   }
 
   handleSuggestionsFetchRequested = ({ value }) => {
     this.setState({
-      filteredSuggestions: this.getSuggestions(value)
+      filteredSuggestions: this.getSuggestions(value),
     });
   };
 
   handleSuggestionsClearRequested = () => {
     this.setState({
-      filteredSuggestions: []
+      filteredSuggestions: [],
     });
   };
 
   handleChange = name => (event, { newValue }) => {
     // this.props.productChanged(newValue);
     this.setState({
-      [name]: newValue
+      [name]: newValue,
     });
   };
 
@@ -163,7 +162,7 @@ class ProductSearch extends React.Component {
       onSuggestionsFetchRequested: this.handleSuggestionsFetchRequested,
       onSuggestionsClearRequested: this.handleSuggestionsClearRequested,
       getSuggestionValue: this.getSuggestionValue,
-      renderSuggestion
+      renderSuggestion,
     };
 
     return (
@@ -172,20 +171,20 @@ class ProductSearch extends React.Component {
           {...autosuggestProps}
           inputProps={{
             classes,
-            label: "",
-            placeholder: "Search Products",
+            label: '',
+            placeholder: 'Search Products',
             value: this.state.popper,
-            onChange: this.handleChange("popper"),
-            inputRef: node => {
+            onChange: this.handleChange('popper'),
+            inputRef: (node) => {
               this.popperNode = node;
             },
             InputLabelProps: {
-              shrink: true
-            }
+              shrink: true,
+            },
           }}
           theme={{
             suggestionsList: classes.suggestionsList,
-            suggestion: classes.suggestion
+            suggestion: classes.suggestion,
           }}
           renderSuggestionsContainer={options => (
             <Popper anchorEl={this.popperNode} open={Boolean(options.children)}>
@@ -193,7 +192,7 @@ class ProductSearch extends React.Component {
                 square
                 {...options.containerProps}
                 style={{
-                  width: this.popperNode ? this.popperNode.clientWidth : null
+                  width: this.popperNode ? this.popperNode.clientWidth : null,
                 }}
               >
                 {options.children}

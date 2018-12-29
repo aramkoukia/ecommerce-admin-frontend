@@ -25,11 +25,13 @@ export class ErrorPage extends React.Component {
       <div>
         <h1>Error</h1>
         <p>{this.getErrorMessage()}</p>
-        {code && <p>
+        {code && (
+        <p>
 Code:
-{' '}
-{code}
-</p>}
+          {' '}
+          {code}
+        </p>
+        )}
       </div>
     );
   }

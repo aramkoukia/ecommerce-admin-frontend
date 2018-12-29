@@ -13,6 +13,7 @@ import Inventory from '../views/Inventory/Inventory';
 // import Purchases from "../views/Purchases/Purchases";
 import { SignIn } from '../views/Login/Auth';
 import { Order } from '../views/Orders/Order';
+import Permissions from '../stores/Permissions';
 
 const dashboardRoutes = [
   {
@@ -21,6 +22,7 @@ const dashboardRoutes = [
     navbarName: '',
     icon: Person,
     component: AddOrder,
+    permission: Permissions.ViewNewOrder,
   },
   {
     path: '/orders',
@@ -28,6 +30,7 @@ const dashboardRoutes = [
     navbarName: '',
     icon: Person,
     component: Orders,
+    permission: Permissions.ViewOrders,
   },
   {
     path: '/products',
@@ -35,6 +38,7 @@ const dashboardRoutes = [
     navbarName: '',
     icon: Highlight,
     component: Products,
+    permission: Permissions.ViewProducts,
   },
   {
     path: '/inventory',
@@ -42,13 +46,15 @@ const dashboardRoutes = [
     navbarName: '',
     icon: Highlight,
     component: Inventory,
+    permission: Permissions.ViewInventory,
   },
   // {
   //   path: "/purchases",
   //   sidebarName: "Purchases",
   //   navbarName: "Purchases",
   //   icon: Highlight,
-  //   component: Purchases
+  //   component: Purchases,
+  //   permission: Permissions.ViewPurchases,
   // },
   {
     path: '/customers',
@@ -56,6 +62,7 @@ const dashboardRoutes = [
     navbarName: '',
     icon: Person,
     component: Customers,
+    permission: Permissions.ViewCustomers,
   },
   {
     path: '/discounts',
@@ -63,6 +70,7 @@ const dashboardRoutes = [
     navbarName: '',
     icon: Person,
     component: Discounts,
+    permission: Permissions.ViewDiscounts,
   },
   {
     path: '/locations',
@@ -70,6 +78,7 @@ const dashboardRoutes = [
     navbarName: '',
     icon: Person,
     component: Locations,
+    permission: Permissions.ViewLocations,
   },
   {
     path: '/taxes',
@@ -77,6 +86,7 @@ const dashboardRoutes = [
     navbarName: '',
     icon: Person,
     component: Taxes,
+    permission: Permissions.ViewTaxes,
   },
   {
     path: '/users',
@@ -84,6 +94,7 @@ const dashboardRoutes = [
     navbarName: '',
     icon: Person,
     component: Users,
+    permission: Permissions.ViewUsers,
   },
   {
     path: '/reports',
@@ -91,6 +102,7 @@ const dashboardRoutes = [
     navbarName: '',
     icon: Person,
     component: Reports,
+    permission: Permissions.ViewReports,
   },
   {
     path: '/login',

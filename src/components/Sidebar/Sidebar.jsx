@@ -12,9 +12,10 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Icon from '@material-ui/core/Icon';
 // core components
-import HeaderLinks from 'components/Header/HeaderLinks';
+import sidebarStyle from '../../assets/jss/material-dashboard-react/components/sidebarStyle';
+import HeaderLinks from '../Header/HeaderLinks';
+import Auth from '../../services/Auth';
 
-import sidebarStyle from 'assets/jss/material-dashboard-react/components/sidebarStyle';
 
 const Sidebar = ({ ...props }) => {
   // verifies if routeName is the one active (in browser input)
@@ -22,8 +23,9 @@ const Sidebar = ({ ...props }) => {
     return props.location.pathname.indexOf(routeName) > -1;
   }
   const {
-    classes, color, logo, image, logoText, routes,
+    classes, color, logo, image, logoText, routes, open, handleDrawerToggle,
   } = props;
+
   const links = (
     <List className={classes.list}>
       {routes.map((prop, key) => {
@@ -31,9 +33,11 @@ const Sidebar = ({ ...props }) => {
         if (prop.redirect || prop.sidebarName === '') {
           return null;
         }
+        if (!Auth.userHasPermission(prop.permission)) {
+          return null;
+        }
         const activePro = ' ';
-        let listItemClasses;
-        listItemClasses = classNames({
+        const listItemClasses = classNames({
           [` ${classes[color]}`]: activeRoute(prop.path),
         });
         const whiteFontClasses = classNames({
@@ -75,17 +79,18 @@ const Sidebar = ({ ...props }) => {
       </a>
     </div>
   );
+
   return (
     <div>
       <Hidden mdUp implementation="css">
         <Drawer
           variant="temporary"
           anchor="right"
-          open={props.open}
+          open={open}
           classes={{
             paper: classes.drawerPaper,
           }}
-          onClose={props.handleDrawerToggle}
+          onClose={handleDrawerToggle}
           ModalProps={{
             keepMounted: true, // Better open performance on mobile.
           }}
@@ -126,8 +131,8 @@ const Sidebar = ({ ...props }) => {
   );
 };
 
-Sidebar.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
+// Sidebar.propTypes = {
+//   classes: PropTypes.object.isRequired,
+// };
 
 export default withStyles(sidebarStyle)(Sidebar);

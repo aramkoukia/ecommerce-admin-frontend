@@ -34,7 +34,7 @@ export default class Auth {
   }
 
   static getUserPermissions() {
-    JSON.parse(window.localStorage.getItem(Auth.PERMISSIONS_KEY));
+    return JSON.parse(window.localStorage.getItem(Auth.PERMISSIONS_KEY));
   }
 
   static removeUserPermissions() {
