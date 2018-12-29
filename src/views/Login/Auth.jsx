@@ -2,22 +2,22 @@ import * as React from 'react';
 // import { Link, Redirect, RouteComponentProps } from "react-router-dom";
 // import { RoutePaths } from "../../routes/routes";
 // import { PropTypes } from "proprtypes";
-import CustomInput from 'components/CustomInput/CustomInput.jsx';
-import Button from 'components/CustomButtons/Button.jsx';
-import GridItem from 'components/Grid/GridItem.jsx';
-import GridContainer from 'components/Grid/GridContainer.jsx';
-import Card from 'components/Card/Card.jsx';
-import CardHeader from 'components/Card/CardHeader.jsx';
-// import CardAvatar from "components/Card/CardAvatar.jsx";
-import CardBody from 'components/Card/CardBody.jsx';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import CustomInput from '../../components/CustomInput/CustomInput';
+import Button from '../../components/CustomButtons/Button';
+import GridItem from '../../components/Grid/GridItem';
+import GridContainer from '../../components/Grid/GridContainer';
+import Card from '../../components/Card/Card';
+import CardHeader from '../../components/Card/CardHeader';
+// import CardAvatar from "components/Card/CardAvatar.jsx";
+import CardBody from '../../components/Card/CardBody';
 import AuthService from '../../services/Auth';
 // import CardFooter from "components/Card/CardFooter.jsx";
 // import dashboardPath from "../../routes/dashboard";
 // let authStyle = require("../../styles/auth.styl");
 
 
-export class SignIn extends React.Component {
+export default class SignIn extends React.Component {
   constructor(props) {
     super(props);
 
@@ -110,7 +110,7 @@ export class SignIn extends React.Component {
             <strong>Sesion Expired</strong>
             {' '}
 You need to sign in again.
-                    </div>
+          </div>
         );
       }
 

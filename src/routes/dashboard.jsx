@@ -11,7 +11,7 @@ import Taxes from '../views/Taxes/Taxes';
 import Users from '../views/Users/Users';
 import Inventory from '../views/Inventory/Inventory';
 // import Purchases from "../views/Purchases/Purchases";
-import { SignIn } from '../views/Login/Auth';
+import SignIn from '../views/Login/Auth';
 import { Order } from '../views/Orders/Order';
 import Permissions from '../stores/Permissions';
 
