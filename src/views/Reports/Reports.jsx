@@ -19,7 +19,7 @@ import {
   emailsSubscriptionChart,
   completedTasksChart,
 } from 'variables/charts';
-import dashboardStyle from '../../assets/jss/material-dashboard-react/views/dashboardStyle';
+import dashboardStyle from 'assets/jss/material-dashboard-react/views/dashboardStyle.jsx';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
