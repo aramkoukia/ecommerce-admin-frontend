@@ -15,11 +15,11 @@ export default class Users extends React.Component {
   }
 
   componentDidMount() {
-    this.productsList();
+    this.usersList();
   }
 
-  productsList() {
-    const columns = ['givenName', 'email', 'userName'];
+  usersList() {
+    const columns = ['givenName', 'email', 'userName', 'roles'];
     UserService.getUsers()
       .then(results => results.map(row => columns.map(column => (row[column] === null ? '' : row[column]))))
       .then(data => this.setState({ users: data }));
@@ -56,7 +56,7 @@ export default class Users extends React.Component {
       },
     };
 
-    const columns = ['Given Name', 'Email', 'User Name'];
+    const columns = ['Given Name', 'Email', 'User Name', 'Roles'];
 
     const options = {
       filterType: 'checkbox',
