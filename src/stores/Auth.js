@@ -3,7 +3,7 @@ export default class Auth {
 
   static USER_KEY = 'user';
 
-  static ROLES = 'roles';
+  static PERMISSIONS_KEY = 'permissions';
 
   static getToken() {
     return window.localStorage.getItem(Auth.STORAGE_KEY);
@@ -29,15 +29,15 @@ export default class Auth {
     window.localStorage.removeItem(Auth.USER_KEY);
   }
 
-  static setUserRoles(roles) {
-    window.localStorage.setItem(Auth.ROLES, JSON.stringify(roles));
+  static setUserPermissions(permissions) {
+    window.localStorage.setItem(Auth.PERMISSIONS_KEY, JSON.stringify(permissions));
   }
 
-  static getUserRoles() {
-    JSON.parse(window.localStorage.getItem(Auth.ROLES));
+  static getUserPermissions() {
+    JSON.parse(window.localStorage.getItem(Auth.PERMISSIONS_KEY));
   }
 
-  static removeUserRoles() {
-    window.localStorage.removeItem(Auth.ROLES);
+  static removeUserPermissions() {
+    window.localStorage.removeItem(Auth.PERMISSIONS_KEY);
   }
 }

@@ -18,16 +18,26 @@ import dashboardStyle from "assets/jss/material-dashboard-react/layouts/dashboar
 
 import image from "assets/img/sidebar-2.jpg";
 import logo from "assets/img/logo.png";
+import Auth from '../../services/Auth';
 
 const switchRoutes = (
   <Switch>
     {dashboardRoutes.map((prop, key) => {
       if (prop.redirect)
         return <Redirect from={prop.path} to={prop.to} key={key} />;
-      return <Route path={prop.path} component={prop.component} key={key} />;
+      return <Route path={prop.path} component={prop.component} key={key} onEnter={requireAuth} />;
     })}
   </Switch>
 );
+
+function requireAuth(nextState, replace) {  
+  if (!Auth.isSignedIn) {
+    replace({
+      pathname: '/login',
+      state: { nextPathname: nextState.location.pathname }
+    })
+  }
+}
 
 class App extends React.Component {
   constructor(props) {

@@ -1,4 +1,3 @@
-import UserService from './UserService';
 import RestUtilities from './RestUtilities';
 import AuthStore from '../stores/Auth';
 
@@ -21,9 +20,7 @@ export default class Auth {
       if (!response.is_error) {
         AuthStore.setToken(response.content.token);
         AuthStore.setUser(email);
-        UserService.getUserRoles(email).then((roles) => {
-          AuthStore.setUserRoles(roles);
-        });
+        AuthStore.setUserPermissions(response.content.permissions);
       }
       return response;
     });
