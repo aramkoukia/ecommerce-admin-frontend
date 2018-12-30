@@ -10,7 +10,8 @@ import Discounts from '../views/Discounts/Discounts';
 import Taxes from '../views/Taxes/Taxes';
 import Users from '../views/Users/Users';
 import Inventory from '../views/Inventory/Inventory';
-// import Purchases from "../views/Purchases/Purchases";
+import Purchases from '../views/Purchases/Purchases';
+import AddPurchase from '../views/Purchases/AddPurchase';
 import SignIn from '../views/Login/Auth';
 import { Order } from '../views/Orders/Order';
 import Permissions from '../stores/Permissions';
@@ -48,14 +49,6 @@ const dashboardRoutes = [
     component: Inventory,
     permission: Permissions.ViewInventory,
   },
-  // {
-  //   path: "/purchases",
-  //   sidebarName: "Purchases",
-  //   navbarName: "Purchases",
-  //   icon: Highlight,
-  //   component: Purchases,
-  //   permission: Permissions.ViewPurchases,
-  // },
   {
     path: '/customers',
     sidebarName: 'Customers',
@@ -63,6 +56,30 @@ const dashboardRoutes = [
     icon: Person,
     component: Customers,
     permission: Permissions.ViewCustomers,
+  },
+  {
+    path: '/reports',
+    sidebarName: 'Reports',
+    navbarName: '',
+    icon: Person,
+    component: Reports,
+    permission: Permissions.ViewReports,
+  },
+  {
+    path: '/addpurchase',
+    sidebarName: 'New Purchase',
+    navbarName: '',
+    icon: Highlight,
+    component: AddPurchase,
+    permission: Permissions.ViewNewPurchase,
+  },
+  {
+    path: '/purchases',
+    sidebarName: 'Purchases',
+    navbarName: '',
+    icon: Highlight,
+    component: Purchases,
+    permission: Permissions.ViewPurchases,
   },
   {
     path: '/discounts',
@@ -95,14 +112,6 @@ const dashboardRoutes = [
     icon: Person,
     component: Users,
     permission: Permissions.ViewUsers,
-  },
-  {
-    path: '/reports',
-    sidebarName: 'Reports',
-    navbarName: '',
-    icon: Person,
-    component: Reports,
-    permission: Permissions.ViewReports,
   },
   {
     path: '/login',
