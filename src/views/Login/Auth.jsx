@@ -11,7 +11,7 @@ import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 // import CardAvatar from "components/Card/CardAvatar.jsx";
 import CardBody from '../../components/Card/CardBody';
-import AuthService from '../../services/Auth';
+import Auth from '../../services/Auth';
 // import CardFooter from "components/Card/CardFooter.jsx";
 // import dashboardPath from "../../routes/dashboard";
 // let authStyle = require("../../styles/auth.styl");
@@ -34,7 +34,7 @@ export default class SignIn extends React.Component {
     this.handleSignIn = this.handleSignIn.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
 
-    if (AuthService.isSignedIn()) {
+    if (Auth.isSignedIn()) {
       return this.props.history.push('reports');
     }
   }
@@ -47,7 +47,7 @@ export default class SignIn extends React.Component {
 
   handleSignIn(event) {
     this.setState({ errors: null, initialLoad: false, loading: true });
-    AuthService
+    Auth
       .signIn(this.state.userInfo.username, this.state.userInfo.password)
       .then((response) => {
         if (!response.is_error) {

@@ -15,7 +15,7 @@ import Icon from '@material-ui/core/Icon';
 import sidebarStyle from '../../assets/jss/material-dashboard-react/components/sidebarStyle';
 import HeaderLinks from '../Header/HeaderLinks';
 import Auth from '../../services/Auth';
-
+import LocationService from '../../services/LocationService';
 
 const Sidebar = ({ ...props }) => {
   // verifies if routeName is the one active (in browser input)
@@ -25,6 +25,20 @@ const Sidebar = ({ ...props }) => {
   const {
     classes, color, logo, image, logoText, routes, open, handleDrawerToggle,
   } = props;
+
+  function getLocations() {
+    return [
+      {
+        locationId: 1,
+        locationName: 'Vancouver',
+      },
+      {
+        locationId: 2,
+        locationName: 'Abbotsford',
+      },
+    ];
+    // return LocationService.getLocations();
+  }
 
   const links = (
     <List className={classes.list}>
@@ -79,6 +93,7 @@ const Sidebar = ({ ...props }) => {
       </a>
     </div>
   );
+  const locations = getLocations();
 
   return (
     <div>
@@ -97,7 +112,9 @@ const Sidebar = ({ ...props }) => {
         >
           {brand}
           <div className={classes.sidebarWrapper}>
-            <HeaderLinks />
+            {locations
+            && (<HeaderLinks locations={locations} location={locations[0]} />)
+            }
             {links}
           </div>
           {image !== undefined ? (

@@ -10,55 +10,96 @@ import Hidden from '@material-ui/core/Hidden';
 // @material-ui/icons
 import Menu from '@material-ui/icons/Menu';
 // core components
-import Button from "components/CustomButtons/Button.jsx";
+import Button from '../CustomButtons/Button';
+import headerStyle from '../../assets/jss/material-dashboard-react/components/headerStyle';
+import HeaderLinks from './HeaderLinks';
+import LocationService from '../../services/LocationService';
+import Auth from '../../services/Auth';
+import Location from '../../stores/Location';
 
-import headerStyle from "assets/jss/material-dashboard-react/components/headerStyle.jsx";
-import HeaderLinks from "./HeaderLinks.jsx";
+class Header extends React.Component {
+  constructor(props) {
+    super(props);
 
-function Header({ ...props }) {
-  function makeBrand() {
+    this.state = {
+      locations: [
+        {
+          locationId: 1,
+          locationName: 'Vancouver',
+        },
+        {
+          locationId: 2,
+          locationName: 'Abbotsford',
+        },
+      ],
+      isLoading: true,
+    };
+  }
+
+  componentDidMount() {
+    // this.getLocations();
+  }
+
+  getLocations() {
+    if (Auth.isSignedIn()) {
+      LocationService.getLocations()
+        .then(results => this.setState({
+          locations: results.content,
+          isLoading: false,
+        }));
+    }
+  }
+
+  makeBrand() {
+    const { routes, location } = this.props;
     let name;
-    props.routes.map((prop, key) => {
-      if (prop.path === props.location.pathname) {
+    routes.map((prop, key) => {
+      if (prop.path === location.pathname) {
         name = prop.navbarName;
       }
       return null;
     });
     return name;
   }
-  const { classes, color } = props;
-  const appBarClasses = classNames({
-    [' ' + classes[color]]: color,
-  });
-  return (
-    <AppBar className={classes.appBar + appBarClasses}>
-      <Toolbar className={classes.container}>
-        <div className={classes.flex}>
-          {/* Here we create navbar brand, based on route name */}
-          <Button color="transparent" href="#" className={classes.title}>
-            {makeBrand()}
-          </Button>
-        </div>
-        <Hidden smDown implementation="css">
-          <HeaderLinks />
-        </Hidden>
-        <Hidden mdUp implementation="css">
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={props.handleDrawerToggle}
-          >
-            <Menu />
-          </IconButton>
-        </Hidden>
-      </Toolbar>
-    </AppBar>
-  );
+
+  render() {
+    const { classes, color, handleDrawerToggle } = this.props;
+    const { locations, isLoading } = this.state;
+    const appBarClasses = classNames({
+      [` ${classes[color]}`]: color,
+    });
+
+    return (
+      <AppBar className={classes.appBar + appBarClasses}>
+        <Toolbar className={classes.container}>
+          <div className={classes.flex}>
+            {/* Here we create navbar brand, based on route name */}
+            <Button color="transparent" href="#" className={classes.title}>
+              {this.makeBrand()}
+            </Button>
+          </div>
+          <Hidden smDown implementation="css">
+            <HeaderLinks locations={locations} location={locations[0].locationId} />
+          </Hidden>
+          <Hidden mdUp implementation="css">
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerToggle}
+            >
+              <Menu />
+            </IconButton>
+          </Hidden>
+        </Toolbar>
+      </AppBar>
+    );
+  }
 }
 
 Header.propTypes = {
   classes: PropTypes.object.isRequired,
   color: PropTypes.oneOf(['primary', 'info', 'success', 'warning', 'danger']),
+  handleDrawerToggle: PropTypes.func,
 };
 
 export default withStyles(headerStyle)(Header);
