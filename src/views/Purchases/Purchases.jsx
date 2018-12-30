@@ -26,7 +26,7 @@ export default class Purchases extends React.Component {
   }
 
   purchasesList() {
-    const columns = ['purchaseId', 'purchaseDate', 'subTotal', 'total', 'createdByUserId'];
+    const columns = ['purchaseId', 'purchaseDate', 'supplier', 'deliveryDate', 'subTotal', 'total', 'createdByUserId'];
     PurchaseService.getPurchases()
       .then((results) => results.map(row => {
           return columns.map(column => {
@@ -40,7 +40,7 @@ export default class Purchases extends React.Component {
   }
 
   rowClicked(rowData, _rowMeta) {
-    this.props.history.push(`/purchase/${rowData[1]}`);
+    this.props.history.push(`/purchase/${rowData[0]}`);
   }
 
   render() {
@@ -88,6 +88,18 @@ export default class Purchases extends React.Component {
         },
       },
       {
+        name: 'Supplier',
+        options: {
+          filter: true,
+        },
+      },
+      {
+        name: 'Delivery Date',
+        options: {
+          filter: false,
+        },
+      },
+      {
         name: 'Sub Total',
         options: {
           filter: false,
@@ -117,7 +129,7 @@ export default class Purchases extends React.Component {
           <GridItem xs={12} sm={12} md={12}>
             <Card>
               <CardHeader color="primary">
-                <div className={styles.cardTitleWhite}>Purchases List</div>
+                <div className={styles.cardTitleWhite}>Purchases</div>
               </CardHeader>
               <CardBody>
                 <MUIDataTable

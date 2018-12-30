@@ -28,13 +28,13 @@ function ccyFormat(num) {
   return `${num.toFixed(2)} $`;
 }
 
-function OrderItems(props) {
-  const { classes, order } = props;
+function PurchaseItems(props) {
+  const { classes, purchase } = props;
 
   return (
     <Card>
       <CardHeader color="info">
-        <div className={classes.cardTitleWhite}>Order Items</div>
+        <div className={classes.cardTitleWhite}>Purchase Items</div>
       </CardHeader>
       <CardBody>
         <Table className={classes.table}>
@@ -47,7 +47,7 @@ function OrderItems(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {order.orderDetail.map(row => (
+            {purchase.purchaseDetail.map(row => (
               <TableRow key={row.productId}>
                 <TableCell>{row.product.productName}</TableCell>
                 <TableCell numeric align="right">{row.amount}</TableCell>
@@ -58,18 +58,11 @@ function OrderItems(props) {
             <TableRow>
               <TableCell rowSpan={5} />
               <TableCell colSpan={2}>Subtotal</TableCell>
-              <TableCell numeric>{ccyFormat(order.subTotal)}</TableCell>
+              <TableCell numeric>{ccyFormat(purchase.subTotal)}</TableCell>
             </TableRow>
-            {order.orderTax.map(tax => (
-              <TableRow>
-                <TableCell>{tax.tax.taxName}</TableCell>
-                <TableCell numeric>{`${(tax.tax.percentage).toFixed(0)} %`}</TableCell>
-                <TableCell numeric>{ccyFormat(tax.taxAmount)}</TableCell>
-              </TableRow>
-            ))}
             <TableRow>
               <TableCell colSpan={2}><h3>Total</h3></TableCell>
-              <TableCell numeric><Success><h3>{ccyFormat(order.total)}</h3></Success></TableCell>
+              <TableCell numeric><Success><h3>{ccyFormat(purchase.total)}</h3></Success></TableCell>
             </TableRow>
           </TableBody>
         </Table>
@@ -78,4 +71,4 @@ function OrderItems(props) {
   );
 }
 
-export default withStyles(style)(OrderItems);
+export default withStyles(style)(PurchaseItems);

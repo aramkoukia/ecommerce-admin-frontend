@@ -18,25 +18,38 @@ const style = {
     textDecoration: 'none',
   },
 };
+
+function dateFormat(dateString) {
+  const date = new Date(dateString);
+  return `${date.toLocaleDateString()}`;
+}
+
 function OrderNotes(props) {
-  const { classes, order } = props;
+  const { classes, purchase } = props;
   return (
     <Card>
       <CardHeader color="info">
-        <div className={classes.cardTitleWhite}>Order Info</div>
+        <div className={classes.cardTitleWhite}>Purchase Info</div>
       </CardHeader>
       <CardBody>
         <h6>Notes:</h6>
         <Primary>
           {' '}
-          { order.notes }
+          { purchase.notes }
           {' '}
         </Primary>
 
-        <h6>PO Number:</h6>
+        <h6>Supplier:</h6>
         <Primary>
           {' '}
-          { order.poNumber }
+          { purchase.supplier }
+          {' '}
+        </Primary>
+
+        <h6>Delivery Date:</h6>
+        <Primary>
+          {' '}
+          { dateFormat(purchase.deliveryDate) }
           {' '}
         </Primary>
       </CardBody>
