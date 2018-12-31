@@ -12,10 +12,21 @@ export default class UserService {
     }
   }
 
-  static async getUserRoles(userId) {
+  static async getUserRoles(email) {
     try {
       const response = await RestUtilities.get(
-        `users/${userId}/roles`,
+        `users/${email}/roles`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async getUserLocations(email) {
+    try {
+      const response = await RestUtilities.get(
+        `users/${email}/locations`,
       );
       return response.content;
     } catch (err) {

@@ -50,8 +50,27 @@ export default class Users extends React.Component {
     this.rolesList();
   }
 
-  handleChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
+  getUserRoles(email) {
+    const { roles } = this.state;
+    const assignedRoles = [];
+    UserService.getUserRoles(email)
+      .then((data) => {
+        data.forEach((item) => {
+          roles.forEach((r) => {
+            if (r.name === item) {
+              assignedRoles.push(r.id);
+            }
+          });
+        });
+        this.setState({ roleChecked: assignedRoles });
+      });
+  }
+
+  getUserLocations(email) {
+    UserService.getUserLocations(email)
+      .then((data) => {
+        this.setState({ locationChecked: data.map(l => l.locationId) });
+      });
   }
 
   handleRoleToggle = value => () => {
@@ -86,6 +105,15 @@ export default class Users extends React.Component {
     });
   }
 
+  handleClose = () => {
+    this.setState({
+      openDialog: false,
+      selectedRow: null,
+      roleChecked: [0],
+      locationChecked: [0],
+    });
+  };
+
   async handleUpdate() {
     const {
       selectedRow,
@@ -114,20 +142,19 @@ export default class Users extends React.Component {
     });
   }
 
-  handleClose = () => {
-    this.setState({
-      openDialog: false,
-      selectedRow: null,
-      roleChecked: [0],
-      locationChecked: [0],
-    });
-  };
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
+  }
 
   rowClicked(rowData) {
-    this.setState({
-      openDialog: true,
-      selectedRow: rowData,
-    });
+    this.getUserRoles(rowData[1]);
+    this.getUserLocations(rowData[1]);
+    setTimeout(() => {
+      this.setState({
+        openDialog: true,
+        selectedRow: rowData,
+      });
+    }, 1000);
   }
 
   usersList() {
@@ -215,6 +242,7 @@ export default class Users extends React.Component {
             </Card>
           </GridItem>
         </GridContainer>
+        { roleChecked && locationChecked && (
         <Dialog
           open={openDialog}
           onClose={this.handleClose}
@@ -237,48 +265,48 @@ export default class Users extends React.Component {
             <GridContainer>
               <GridItem xs={6}>
                 <Card>
-                <CardHeader color="info">
-                <div>Roles</div>
-              </CardHeader>
-                <CardBody>
-                { roles && (
-                <List>
-                 {roles.map(role => (
-                      <ListItem key={role.id} role={undefined} dense button onClick={this.handleRoleToggle(role.id)}>
-                        <Checkbox
-                          checked={roleChecked.indexOf(role.id) !== -1}
-                          tabIndex={-1}
-                          disableRipple
-                        />
-                        <ListItemText primary={role.name} />
-                      </ListItem>
-                    ))}
-               </List>
-                )}
-              </CardBody>
-              </Card>
+                  <CardHeader color="info">
+                    <div>Roles</div>
+                  </CardHeader>
+                  <CardBody>
+                    { roles && (
+                    <List>
+                      {roles.map(role => (
+                        <ListItem key={role.id} role={undefined} dense button onClick={this.handleRoleToggle(role.id)}>
+                          <Checkbox
+                            checked={roleChecked.indexOf(role.id) !== -1}
+                            tabIndex={-1}
+                            disableRipple
+                          />
+                          <ListItemText primary={role.name} />
+                        </ListItem>
+                      ))}
+                    </List>
+                    )}
+                  </CardBody>
+                </Card>
 
               </GridItem>
               <GridItem xs={6}>
                 <Card>
-                <CardHeader color="info">
-                <div>Location</div>
-              </CardHeader>
-                <CardBody>
-                <List>
-                  {locations.map(location => (
-                    <ListItem key={location.locationId} role={undefined} dense button onClick={this.handleLocationToggle(location.locationId)}>
-                      <Checkbox
-                        checked={locationChecked.indexOf(location.locationId) !== -1}
-                        tabIndex={-1}
-                        disableRipple
-                      />
-                      <ListItemText primary={location.locationName} />
-                    </ListItem>
-                  ))}
-                </List>
-              </CardBody>
-              </Card>
+                  <CardHeader color="info">
+                    <div>Location</div>
+                  </CardHeader>
+                  <CardBody>
+                    <List>
+                      {locations.map(location => (
+                        <ListItem key={location.locationId} role={undefined} dense button onClick={this.handleLocationToggle(location.locationId)}>
+                          <Checkbox
+                            checked={locationChecked.indexOf(location.locationId) !== -1}
+                            tabIndex={-1}
+                            disableRipple
+                          />
+                          <ListItemText primary={location.locationName} />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </CardBody>
+                </Card>
               </GridItem>
             </GridContainer>
           </DialogContent>
@@ -291,6 +319,7 @@ export default class Users extends React.Component {
             </Button>
           </DialogActions>
         </Dialog>
+        )}
         <Snackbar
           place="tl"
           color={snackbarColor}
