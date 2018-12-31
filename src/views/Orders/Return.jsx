@@ -149,7 +149,10 @@ export class Return extends React.Component {
                   <GridItem xs={12}>
                     { order && (
                       <ReturnOrderItems
-                        order={order}
+                        rows={order.orderDetail}
+                        taxes={order.orderTax}
+                        discountAmount={order.discountAmount}
+                        discountPercent={order.discountPercent}
                         priceChanged={this.priceChanged}
                       />
                     )}

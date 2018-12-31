@@ -11,18 +11,6 @@ import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import Success from '../../components/Typography/Success';
 
-const style = {
-  cardTitleWhite: {
-    color: '#FFFFFF',
-    marginTop: '0px',
-    minHeight: 'auto',
-    fontWeight: '300',
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-    marginBottom: '3px',
-    textDecoration: 'none',
-  },
-};
-
 function ccyFormat(num) {
   return `${num.toFixed(2)} $`;
 }
@@ -30,14 +18,23 @@ function ccyFormat(num) {
 export default class ReturnOrderItems extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      order: {},
+      orderRows: [],
+      subTotal: 0,
+      total: 0,
+      taxes: [],
+      discount: 0,
+      discountAmount: 0,
+      discountPercentage: 0,
     };
   }
 
   componentDidMount() {
-    const { order } = this.props;
-    this.setState({ originalOrder: order });
+    const { rows } = this.props;
+    this.setState({
+      orderRows: rows
+    });
 
     this.handleQuantityChanged = this.handleQuantityChanged.bind(this);
   }
@@ -49,28 +46,27 @@ export default class ReturnOrderItems extends React.Component {
   };
 
   handleQuantityChanged(event) {
-    const { originalOrder, discountAmount, discountPercentage } = this.state;
-    const { priceChanged } = this.props;
-
-    const orderRows = originalOrder.orderDetail.slice();
-    for (const i in orderRows) {
-      if (orderRows[i].productId == event.target.name) {
-        orderRows[i].qty = event.target.value;
-        this.setState({ orderRows });
-        break;
-      }
+    let { discountAmount, discountPercentage } = this.state;
+    let { taxes, priceChanged } = this.props;
+    let orderRows = this.state.orderRows.slice();
+    for(let i in orderRows) {
+        if(orderRows[i].productId == event.target.name){
+          orderRows[i].amount = event.target.value;
+          this.setState ({orderRows});
+          break;
+        }
     }
 
     const subTotal = this.subtotal(orderRows);
     const discount = this.discount(subTotal, discountAmount, discountPercentage);
-    const total = this.total(subTotal, discount, originalOrder.orderTax);
+    const total = this.total(subTotal, discount, taxes);
     this.setState(
       {
-        subTotal,
-        total,
-        discount,
-      },
-    );
+        subTotal: subTotal,
+        total: total,  
+        discount: discount,
+      }
+    )
 
     priceChanged(subTotal, total, discount, discountPercentage, discountAmount);
   }
@@ -98,7 +94,8 @@ export default class ReturnOrderItems extends React.Component {
   }
 
   render() {
-    const { originalOrder } = this.state;
+    const { taxes } = this.props;
+    const { orderRows, total, subTotal, discount } = this.state;
     return (
       <Card>
         <CardHeader color="info">
@@ -114,9 +111,9 @@ export default class ReturnOrderItems extends React.Component {
                 <TableCell numeric>Total Price</TableCell>
               </TableRow>
             </TableHead>
-            {originalOrder && (
+            {orderRows && taxes && (
             <TableBody>
-              {originalOrder.orderDetail.map(row => (
+              {orderRows.map(row => (
                 <TableRow key={row.productId}>
                   <TableCell>{row.product.productName}</TableCell>
                   <TableCell numeric align="right">
@@ -134,9 +131,9 @@ export default class ReturnOrderItems extends React.Component {
               <TableRow>
                 <TableCell rowSpan={5} />
                 <TableCell colSpan={2}>Subtotal</TableCell>
-                <TableCell numeric>{ccyFormat(originalOrder.subTotal)}</TableCell>
+                <TableCell numeric>{ccyFormat(subTotal)}</TableCell>
               </TableRow>
-              {originalOrder.orderTax.map(tax => (
+              {taxes.map(tax => (
                 <TableRow>
                   <TableCell>{tax.tax.taxName}</TableCell>
                   <TableCell numeric>{`${(tax.tax.percentage).toFixed(0)} %`}</TableCell>
@@ -145,7 +142,7 @@ export default class ReturnOrderItems extends React.Component {
               ))}
               <TableRow>
                 <TableCell colSpan={2}><h3>Total</h3></TableCell>
-                <TableCell numeric><Success><h3>{ccyFormat(originalOrder.total)}</h3></Success></TableCell>
+                <TableCell numeric><Success><h3>{ccyFormat(total)}</h3></Success></TableCell>
               </TableRow>
             </TableBody>
             )}
