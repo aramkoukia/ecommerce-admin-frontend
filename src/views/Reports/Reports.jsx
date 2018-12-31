@@ -19,7 +19,7 @@ import {
   emailsSubscriptionChart,
   completedTasksChart,
 } from 'variables/charts';
-import dashboardStyle from 'assets/jss/material-dashboard-react/views/dashboardStyle.jsx';
+import dashboardStyle from '../../assets/jss/material-dashboard-react/views/dashboardStyle';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
@@ -27,25 +27,56 @@ import CardHeader from '../../components/Card/CardHeader';
 import CardIcon from '../../components/Card/CardIcon';
 import CardBody from '../../components/Card/CardBody';
 import CardFooter from '../../components/Card/CardFooter';
-
+import ReportService from '../../services/ReportService';
 
 class Reports extends React.Component {
-  state = {
-    value: 0,
-  };
+  constructor(props) {
+    super(props);
 
-  handleChange = (event, value) => {
-    this.setState({ value });
-  };
+    this.state = { monthlySummary: {} };
+  }
 
-  handleChangeIndex = (index) => {
-    this.setState({ value: index });
-  };
+  componentDidMount() {
+    ReportService.getMonthlySummary()
+      .then(result => this.setState({ monthlySummary: result[0] }));
+
+
+    ReportService.getMonthlySales()
+      .then((result) => {
+        const monthlySalesData = {
+          labels: result.map(item => item.label),
+          series: [result.map(item => item.value)],
+        };
+        this.setState({ monthlySalesData });
+      });
+
+    ReportService.getMonthlyPurchases()
+      .then((result) => {
+        const monthlyPurchaseData = {
+          labels: result.map(item => item.label),
+          series: [result.map(item => item.value)],
+        };
+        this.setState({ monthlyPurchaseData });
+      });
+
+    ReportService.getDailySales()
+      .then((result) => {
+        const dailySalesData = {
+          labels: result.map(item => item.label),
+          series: [result.map(item => item.value)],
+        };
+        this.setState({ dailySalesData });
+      });
+  }
 
   render() {
     const { classes } = this.props;
+    const {
+      monthlySummary, dailySalesData, monthlySalesData, monthlyPurchaseData,
+    } = this.state;
     return (
       <div>
+        { monthlySummary && (
         <GridContainer>
           <GridItem xs={12} sm={6} md={3}>
             <Card>
@@ -53,8 +84,31 @@ class Reports extends React.Component {
                 <CardIcon color="success">
                   <Store />
                 </CardIcon>
-                <p className={classes.cardCategory}>Monthly Revenue</p>
-                <h3 className={classes.cardTitle}>$34,245</h3>
+                <p className={classes.cardCategory}>Monthly Orders (Paid only)</p>
+                <h3 className={classes.cardTitle}>
+$
+                  {monthlySummary.monthlyPaidOrders}
+                                </h3>
+              </CardHeader>
+              <CardFooter stats>
+                <div className={classes.stats}>
+                  <DateRange />
+                  This Month
+                </div>
+              </CardFooter>
+            </Card>
+          </GridItem>
+          <GridItem xs={12} sm={6} md={3}>
+            <Card>
+              <CardHeader color="success" stats icon>
+                <CardIcon color="success">
+                  <Store />
+                </CardIcon>
+                <p className={classes.cardCategory}>Monthly Orders (Paid/Account)</p>
+                <h3 className={classes.cardTitle}>
+$
+                  {monthlySummary.monthlyPaidAccountOrders}
+                                </h3>
               </CardHeader>
               <CardFooter stats>
                 <div className={classes.stats}>
@@ -71,7 +125,10 @@ class Reports extends React.Component {
                   <Icon>info_outline</Icon>
                 </CardIcon>
                 <p className={classes.cardCategory}>Monthly Purchases</p>
-                <h3 className={classes.cardTitle}>$34,245</h3>
+                <h3 className={classes.cardTitle}>
+$
+                  {monthlySummary.monthlyPurchases}
+                                </h3>
               </CardHeader>
               <CardFooter stats>
                 <div className={classes.stats}>
@@ -81,7 +138,8 @@ class Reports extends React.Component {
               </CardFooter>
             </Card>
           </GridItem>
-          <GridItem xs={12} sm={6} md={3}>
+
+          {/* <GridItem xs={12} sm={6} md={3}>
             <Card>
               <CardHeader color="info" stats icon>
                 <CardIcon color="info">
@@ -97,39 +155,34 @@ class Reports extends React.Component {
                 </div>
               </CardFooter>
             </Card>
-          </GridItem>
+          </GridItem> */}
         </GridContainer>
+        )}
         <GridContainer>
           <GridItem xs={12} sm={12} md={4}>
             <Card chart>
               <CardHeader color="success">
                 <ChartistGraph
                   className="ct-chart"
-                  data={dailySalesChart.data}
+                  data={dailySalesData}
                   type="Line"
                   options={dailySalesChart.options}
                   listener={dailySalesChart.animation}
                 />
               </CardHeader>
               <CardBody>
-                <h4 className={classes.cardTitle}>Daily Sales</h4>
+                <h4 className={classes.cardTitle}>Daily Sales (/1000$)</h4>
                 <p className={classes.cardCategory}>
-                  <span className={classes.successText}>
-                    <ArrowUpward className={classes.upArrowCardCategory} />
+                  {/* <span className={classes.successText}>
+                     <ArrowUpward className={classes.upArrowCardCategory} />
                     {' '}
-55%
-                  </span>
+                    55%
+
                   {' '}
-                  increase in today sales.
+                  increase in today sales. */}
+                  Paid and Account order statuses (all locations)
                 </p>
               </CardBody>
-              <CardFooter chart>
-                <div className={classes.stats}>
-                  <AccessTime />
-                  {' '}
-updated 4 minutes ago
-                </div>
-              </CardFooter>
             </Card>
           </GridItem>
           <GridItem xs={12} sm={12} md={4}>
@@ -137,7 +190,7 @@ updated 4 minutes ago
               <CardHeader color="warning">
                 <ChartistGraph
                   className="ct-chart"
-                  data={emailsSubscriptionChart.data}
+                  data={monthlySalesData}
                   type="Bar"
                   options={emailsSubscriptionChart.options}
                   responsiveOptions={emailsSubscriptionChart.responsiveOptions}
@@ -145,18 +198,11 @@ updated 4 minutes ago
                 />
               </CardHeader>
               <CardBody>
-                <h4 className={classes.cardTitle}>Sales by Month</h4>
+                <h4 className={classes.cardTitle}>Sales by Month (/1000$)</h4>
                 <p className={classes.cardCategory}>
-                  Sales by month
+                  Paid and Account order statuses (all locations)
                 </p>
               </CardBody>
-              <CardFooter chart>
-                <div className={classes.stats}>
-                  <AccessTime />
-                  {' '}
-Updated 4 minutes ago
-                </div>
-              </CardFooter>
             </Card>
           </GridItem>
           <GridItem xs={12} sm={12} md={4}>
@@ -164,25 +210,18 @@ Updated 4 minutes ago
               <CardHeader color="danger">
                 <ChartistGraph
                   className="ct-chart"
-                  data={completedTasksChart.data}
-                  type="Line"
+                  data={monthlyPurchaseData}
+                  type="Bar"
                   options={completedTasksChart.options}
                   listener={completedTasksChart.animation}
                 />
               </CardHeader>
               <CardBody>
-                <h4 className={classes.cardTitle}>Available Inventory ($)</h4>
+                <h4 className={classes.cardTitle}>Purchase by Month (/1000$)</h4>
                 <p className={classes.cardCategory}>
-                  Available Inventory ($)
+                  All purchase statuses
                 </p>
               </CardBody>
-              <CardFooter chart>
-                <div className={classes.stats}>
-                  <AccessTime />
-                  {' '}
-Updated 4 minutes ago
-                </div>
-              </CardFooter>
             </Card>
           </GridItem>
         </GridContainer>
