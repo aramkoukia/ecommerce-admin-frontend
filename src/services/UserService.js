@@ -22,4 +22,16 @@ export default class UserService {
       return false;
     }
   }
+
+  static async UpdateUserRolesAndLocations(userInfo) {
+    try {
+      const response = await RestUtilities.put(
+        'users/permissions',
+        userInfo,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }
