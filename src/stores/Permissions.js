@@ -17,6 +17,8 @@ export default class Permissions {
 
   static ViewUsers = 'View Users';
 
+  static ViewRoles = 'View Roles';
+
   static ViewReports = 'View Reports';
 
   static ViewNewPurchase = 'View New Purchase';

@@ -15,6 +15,7 @@ import AddPurchase from '../views/Purchases/AddPurchase';
 import Purchase from '../views/Purchases/Purchase';
 import SignIn from '../views/Login/Auth';
 import { Order } from '../views/Orders/Order';
+import Roles from '../views/Roles/Roles';
 import Permissions from '../stores/Permissions';
 
 const dashboardRoutes = [
@@ -115,6 +116,14 @@ const dashboardRoutes = [
     permission: Permissions.ViewUsers,
   },
   {
+    path: '/roles',
+    sidebarName: 'Roles',
+    navbarName: '',
+    icon: Person,
+    component: Roles,
+    permission: Permissions.ViewRoles,
+  },
+  {
     path: '/login',
     sidebarName: '',
     navbarName: '',
@@ -134,7 +143,7 @@ const dashboardRoutes = [
     navbarName: '',
     icon: Person,
     component: Purchase,
-  },  
+  },
   {
     redirect: true, path: '/', to: '/login', navbarName: 'Redirect',
   },
