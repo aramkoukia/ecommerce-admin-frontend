@@ -13,12 +13,12 @@ import CardFooter from 'components/Card/CardFooter.jsx';
 import PropTypes from 'prop-types';
 import Snackbar from 'components/Snackbar/Snackbar.jsx';
 import Chip from '@material-ui/core/Chip';
-import Print from "@material-ui/icons/Print";
-import OrderNotes from "./OrderNotes";
-import OrderItems from "./OrderItems";
-import OrderCustomer from "./OrderCustomer";
+import Print from '@material-ui/icons/Print';
 import Email from '@material-ui/icons/Email';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import OrderNotes from './OrderNotes';
+import OrderItems from './OrderItems';
+import OrderCustomer from './OrderCustomer';
 import OrderService from '../../services/OrderService';
 
 const orderService = new OrderService();
@@ -83,7 +83,9 @@ export class Order extends React.Component {
   }
 
   async refundOrder() {
-
+    const { match, history } = this.props;
+    const orderId = match.params.id;
+    history.push(`/return/${orderId}`);
   }
 
   async emailOrder() {
@@ -174,7 +176,7 @@ export class Order extends React.Component {
               <CardHeader color="primary">
                 <div>
                   Order #
-                  {' '}
+                  &nbsp;
                   <b>{order.orderId}</b>
                   &nbsp;&nbsp; {dateFormat(order.orderDate)}
                   &nbsp;&nbsp; <Chip label={order.status} color="primary" />
@@ -186,41 +188,43 @@ export class Order extends React.Component {
                     <GridContainer>
                       <GridItem>
                         <Button color="warning" onClick={this.emailOrder}>
-                        {' '}
-                        <Email />
-                        {' '}
-Email
-                                            </Button>
+                          <Email />
+                          &nbsp;
+                          Email
+                        </Button>
                       </GridItem>
                       <GridItem>
                         <Button color="warning" onClick={this.printOrder}>
-                        <Print />
-                        {' '}
-Print
-                                            </Button>
+                          <Print />
+                          &nbsp;
+                          Print
+                        </Button>
                       </GridItem>
 
                       { order.status === 'Draft' || order.status === 'OnHold' || order.status === 'Account'
                         ? (
-<GridItem xs>
-                      <Button color="info" onClick={this.saveAsPaid}>Mark As Paid</Button>
-                    </GridItem>
-) : <div />}
+                          <GridItem xs>
+                            <Button color="info" onClick={this.saveAsPaid}>Mark As Paid</Button>
+                          </GridItem>
+                        ) : <div />}
 
                       { order.status === 'Draft' && (
                       <GridItem xs>
-                      <Button color="info" onClick={this.saveAsHold}>Put On Hold</Button>
-                    </GridItem>)}
+                        <Button color="info" onClick={this.saveAsHold}>Put On Hold</Button>
+                      </GridItem>
+                      )}
 
                       { order.status === 'Paid' && (
                       <GridItem xs>
-                      <Button disabled color="info" onClick={this.refundOrder}>Return</Button>
-                    </GridItem>)}
+                        <Button color="info" onClick={this.refundOrder}>Return</Button>
+                      </GridItem>
+                      )}
 
                       { order.status === 'OnHold' && (
                       <GridItem xs>
-                      <Button color="info" onClick={this.cancelHold}>Cancel On Hold</Button>
-                    </GridItem>)}
+                        <Button color="info" onClick={this.cancelHold}>Cancel On Hold</Button>
+                      </GridItem>
+                      )}
                       <GridItem xs>
                         { loading && <CircularProgress /> }
                       </GridItem>
@@ -249,7 +253,8 @@ Print
               close
             />
           </GridItem>
-        </GridContainer>) }
+        </GridContainer>
+        ) }
       </div>
     );
   }

@@ -15,6 +15,7 @@ import AddPurchase from '../views/Purchases/AddPurchase';
 import Purchase from '../views/Purchases/Purchase';
 import SignIn from '../views/Login/Auth';
 import { Order } from '../views/Orders/Order';
+import { Return } from '../views/Orders/Return';
 import Roles from '../views/Roles/Roles';
 import Permissions from '../stores/Permissions';
 
@@ -137,6 +138,13 @@ const dashboardRoutes = [
     icon: Person,
     component: Order,
   },
+  {
+    path: '/return/:id',
+    sidebarName: '',
+    navbarName: '',
+    icon: Person,
+    component: Return,
+  },  
   {
     path: '/purchase/:id',
     sidebarName: '',
