@@ -33,10 +33,19 @@ export default class ReturnOrderItems extends React.Component {
   componentDidMount() {
     const { rows } = this.props;
     this.setState({
-      orderRows: rows
+      orderRows: rows,
     });
 
     this.handleQuantityChanged = this.handleQuantityChanged.bind(this);
+
+    // const subTotal = this.subtotal(orderRows);
+    // const discount = this.discount(subTotal, discountAmount, discountPercentage);
+    // const total = this.total(subTotal, discount, taxes);
+    // this.setState({
+    //   subTotal,
+    //   total,
+    //   discount,
+    // });
   }
 
   handleChange = name => (event) => {
@@ -46,27 +55,25 @@ export default class ReturnOrderItems extends React.Component {
   };
 
   handleQuantityChanged(event) {
-    let { discountAmount, discountPercentage } = this.state;
-    let { taxes, priceChanged } = this.props;
-    let orderRows = this.state.orderRows.slice();
-    for(let i in orderRows) {
-        if(orderRows[i].productId == event.target.name){
-          orderRows[i].amount = event.target.value;
-          this.setState ({orderRows});
-          break;
-        }
+    const { discountAmount, discountPercentage } = this.state;
+    const { taxes, priceChanged } = this.props;
+    const orderRows = this.state.orderRows.slice();
+    for (const i in orderRows) {
+      if (orderRows[i].productId == event.target.name) {
+        orderRows[i].amount = event.target.value;
+        this.setState({ orderRows });
+        break;
+      }
     }
 
     const subTotal = this.subtotal(orderRows);
     const discount = this.discount(subTotal, discountAmount, discountPercentage);
     const total = this.total(subTotal, discount, taxes);
-    this.setState(
-      {
-        subTotal: subTotal,
-        total: total,  
-        discount: discount,
-      }
-    )
+    this.setState({
+      subTotal,
+      total,
+      discount,
+    });
 
     priceChanged(subTotal, total, discount, discountPercentage, discountAmount);
   }
@@ -75,7 +82,7 @@ export default class ReturnOrderItems extends React.Component {
     if (items.length === 0) {
       return 0;
     }
-    return items.map(({ salesPrice, qty }) => salesPrice * qty).reduce((sum, i) => sum + i, 0);
+    return items.map(({ unitPrice, amount }) => unitPrice * amount).reduce((sum, i) => sum + i, 0);
   }
 
   discount(subtotal, discountAmount, discountPercentage) {
@@ -89,13 +96,15 @@ export default class ReturnOrderItems extends React.Component {
   }
 
   total(subTotal, discount, taxes) {
-    const totalTax = taxes.map(({ percentage }) => (percentage / 100) * subTotal).reduce((sum, i) => sum + i, 0);
+    const totalTax = taxes.map((tax => (tax.tax.percentage / 100) * subTotal)).reduce((sum, i) => sum + i, 0);
     return subTotal + totalTax - discount;
   }
 
   render() {
     const { taxes } = this.props;
-    const { orderRows, total, subTotal, discount } = this.state;
+    const {
+ orderRows, total, subTotal, discount 
+} = this.state;
     return (
       <Card>
         <CardHeader color="info">
@@ -137,11 +146,11 @@ export default class ReturnOrderItems extends React.Component {
                 <TableRow>
                   <TableCell>{tax.tax.taxName}</TableCell>
                   <TableCell numeric>{`${(tax.tax.percentage).toFixed(0)} %`}</TableCell>
-                  <TableCell numeric>{ccyFormat(tax.taxAmount)}</TableCell>
+                  <TableCell numeric>{ccyFormat((tax.tax.percentage / 100) * subTotal)}</TableCell>
                 </TableRow>
               ))}
               <TableRow>
-                <TableCell colSpan={2}><h3>Total</h3></TableCell>
+                <TableCell colSpan={2}><h3>Refund Total</h3></TableCell>
                 <TableCell numeric><Success><h3>{ccyFormat(total)}</h3></Success></TableCell>
               </TableRow>
             </TableBody>
