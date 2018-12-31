@@ -74,7 +74,7 @@ export default class Products extends React.Component {
           <GridItem xs={12} sm={12} md={12}>
             <Card>
               <CardHeader color="primary">
-                <h4 className={styles.cardTitleWhite}>Products List</h4>
+                <div className={styles.cardTitleWhite}>Products List</div>
               </CardHeader>
               <CardBody>
                 <MUIDataTable
