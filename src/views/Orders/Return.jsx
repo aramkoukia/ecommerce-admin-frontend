@@ -79,7 +79,7 @@ export class Return extends React.Component {
 
   async saveOrder(orderStatus) {
     const {
-      rows, total, subTotal, discountPercent, discountAmount, notes, taxes, poNumber, order,
+      rows, total, subTotal, discountPercent, discountAmount, notes, poNumber, order,
     } = this.state;
     const originalOrderId = this.props.match.params.id;
     const status = orderStatus;
@@ -91,7 +91,6 @@ export class Return extends React.Component {
         amount: row.amount,
         unitPrice: row.unitPrice,
         totalPrice: row.amount * row.unitPrice,
-        originalOrderId,
       }));
     const orderTaxes = order.orderTax.map(tax => (
       {
@@ -112,6 +111,7 @@ export class Return extends React.Component {
       pstNumber: order.customer !== null ? order.customer.pstNumber : null,
       orderTax: orderTaxes,
       orderDetail: orderDetails,
+      originalOrderId,
     };
 
     const result = await orderService.saveOrder(returnOrder);
