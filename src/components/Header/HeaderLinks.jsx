@@ -1,16 +1,12 @@
 import React from 'react';
-// @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
-// @material-ui/icons
-import Person from '@material-ui/icons/Person';
-// core components
-import Button from 'components/CustomButtons/Button';
-import headerLinksStyle from 'assets/jss/material-dashboard-react/components/headerLinksStyle.jsx';
+import PowerSettingsNew from '@material-ui/icons/PowerSettingsNew';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-// import ReactDOM from 'react-dom';
 import FormControl from '@material-ui/core/FormControl';
+import headerLinksStyle from '../../assets/jss/material-dashboard-react/components/headerLinksStyle';
+import Button from '../CustomButtons/Button';
 import Auth from '../../services/Auth';
 import Location from '../../stores/Location';
 // import LocationService from '../../services/LocationService';
@@ -70,7 +66,8 @@ class HeaderLinks extends React.Component {
               !
         &nbsp;&nbsp;&nbsp;&nbsp;
             <Button onClick={signOut}>
-              <Person />
+              <PowerSettingsNew />
+              &nbsp;
               Sign out
             </Button>
           </div>

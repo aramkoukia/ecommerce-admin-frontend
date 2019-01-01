@@ -1,5 +1,15 @@
 import Person from '@material-ui/icons/Person';
+import NewReleases from '@material-ui/icons/NewReleases';
 import Highlight from '@material-ui/icons/Highlight';
+import List from '@material-ui/icons/List';
+import ListAlt from '@material-ui/icons/ListAlt';
+import Money from '@material-ui/icons/Money';
+import PlaylistPlay from '@material-ui/icons/PlaylistPlay';
+import ContactMail from '@material-ui/icons/ContactMail';
+import InsertChart from '@material-ui/icons/InsertChart';
+import MoneyOff from '@material-ui/icons/MoneyOff';
+import LocationOn from '@material-ui/icons/LocationOn';
+import ScreenLockLandscape from '@material-ui/icons/ScreenLockLandscape';
 import Products from '../views/Products/Products';
 import Locations from '../views/Locations/Locations';
 import Customers from '../views/Customers/Customers';
@@ -24,7 +34,7 @@ const dashboardRoutes = [
     path: '/neworder',
     sidebarName: 'New Order',
     navbarName: '',
-    icon: Person,
+    icon: NewReleases,
     component: AddOrder,
     permission: Permissions.ViewNewOrder,
   },
@@ -32,7 +42,7 @@ const dashboardRoutes = [
     path: '/orders',
     sidebarName: 'Orders',
     navbarName: '',
-    icon: Person,
+    icon: List,
     component: Orders,
     permission: Permissions.ViewOrders,
   },
@@ -48,7 +58,7 @@ const dashboardRoutes = [
     path: '/inventory',
     sidebarName: 'Inventory',
     navbarName: '',
-    icon: Highlight,
+    icon: PlaylistPlay,
     component: Inventory,
     permission: Permissions.ViewInventory,
   },
@@ -56,7 +66,7 @@ const dashboardRoutes = [
     path: '/customers',
     sidebarName: 'Customers',
     navbarName: '',
-    icon: Person,
+    icon: ContactMail,
     component: Customers,
     permission: Permissions.ViewCustomers,
   },
@@ -64,7 +74,7 @@ const dashboardRoutes = [
     path: '/reports',
     sidebarName: 'Reports',
     navbarName: '',
-    icon: Person,
+    icon: InsertChart,
     component: Reports,
     permission: Permissions.ViewReports,
   },
@@ -80,7 +90,7 @@ const dashboardRoutes = [
     path: '/purchases',
     sidebarName: 'Purchases',
     navbarName: '',
-    icon: Highlight,
+    icon: ListAlt,
     component: Purchases,
     permission: Permissions.ViewPurchases,
   },
@@ -88,7 +98,7 @@ const dashboardRoutes = [
     path: '/discounts',
     sidebarName: 'Discounts',
     navbarName: '',
-    icon: Person,
+    icon: MoneyOff,
     component: Discounts,
     permission: Permissions.ViewDiscounts,
   },
@@ -96,7 +106,7 @@ const dashboardRoutes = [
     path: '/locations',
     sidebarName: 'Locations',
     navbarName: '',
-    icon: Person,
+    icon: LocationOn,
     component: Locations,
     permission: Permissions.ViewLocations,
   },
@@ -104,7 +114,7 @@ const dashboardRoutes = [
     path: '/taxes',
     sidebarName: 'Taxes',
     navbarName: '',
-    icon: Person,
+    icon: Money,
     component: Taxes,
     permission: Permissions.ViewTaxes,
   },
@@ -120,7 +130,7 @@ const dashboardRoutes = [
     path: '/roles',
     sidebarName: 'Roles',
     navbarName: '',
-    icon: Person,
+    icon: ScreenLockLandscape,
     component: Roles,
     permission: Permissions.ViewRoles,
   },
@@ -144,7 +154,7 @@ const dashboardRoutes = [
     navbarName: '',
     icon: Person,
     component: Return,
-  },  
+  },
   {
     path: '/purchase/:id',
     sidebarName: '',
