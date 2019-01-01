@@ -11,4 +11,15 @@ export default class CustomerService {
       return false;
     }
   }
+
+  static async getCustomer(customerId) {
+    try {
+      const response = await RestUtilities.get(
+        `customers/${customerId}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }

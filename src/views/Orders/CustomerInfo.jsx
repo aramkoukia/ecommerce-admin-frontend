@@ -19,33 +19,33 @@ const style = {
     textDecoration: 'none',
   },
 };
-function OrderCustomer(props) {
-  const { classes, order } = props;
+function CustomerInfo(props) {
+  const { classes, customer } = props;
   return (
     <Card>
       <CardHeader color="info">
         <div className={classes.cardTitleWhite}>Customer</div>
       </CardHeader>
       <CardBody>
-        { order.customer.firstName && (
+        { customer && customer.firstName && (
         <Table
           tableHeaderColor="primary"
           tableHead={['Email', 'Name', 'Company Name', 'Credit Limit', 'PST Number']}
           tableData={[
-                [order.customer.email,
-                  `${order.customer.firstName  } ${  order.customer.lastName}`,
-                  order.customer.companyName,
-                  order.customer.creditLimit,
-                  order.customer.pstNumber],
-              ]}
+            [customer.email,
+              `${customer.firstName} ${customer.lastName}`,
+              customer.companyName,
+              customer.creditLimit,
+              customer.pstNumber],
+          ]}
         />
         ) }
-        { !order.customer.firstName && (
-          <Danger>This Order has no customer</Danger>)
+        { (customer === undefined || !customer.firstName) && (
+          <Danger>no customer info available</Danger>)
         }
       </CardBody>
     </Card>
   );
 }
 
-export default withStyles(style)(OrderCustomer);
+export default withStyles(style)(CustomerInfo);

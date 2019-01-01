@@ -16,7 +16,7 @@ import CardFooter from '../../components/Card/CardFooter';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import OrderNotes from './OrderNotes';
 import ReturnOrderItems from './ReturnOrderItems';
-import OrderCustomer from './OrderCustomer';
+import CustomerInfo from './CustomerInfo';
 import OrderService from '../../services/OrderService';
 import Location from '../../stores/Location';
 
@@ -214,7 +214,7 @@ export class Return extends React.Component {
                     />
                   </GridItem>
                   <GridItem xs={8}>
-                    <OrderCustomer order={order} />
+                    <CustomerInfo customer={order.customer} />
                   </GridItem>
                   <GridItem xs={4}>
                     <OrderNotes order={order} />

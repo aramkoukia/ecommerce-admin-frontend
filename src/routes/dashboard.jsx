@@ -13,6 +13,7 @@ import ScreenLockLandscape from '@material-ui/icons/ScreenLockLandscape';
 import Products from '../views/Products/Products';
 import Locations from '../views/Locations/Locations';
 import Customers from '../views/Customers/Customers';
+import Customer from '../views/Customers/Customer';
 import Reports from '../views/Reports/Reports';
 import AddOrder from '../views/Orders/AddOrder';
 import Orders from '../views/Orders/Orders';
@@ -161,6 +162,13 @@ const dashboardRoutes = [
     navbarName: '',
     icon: Person,
     component: Purchase,
+  },
+  {
+    path: '/customer/:id',
+    sidebarName: '',
+    navbarName: '',
+    icon: Person,
+    component: Customer,
   },
   {
     redirect: true, path: '/', to: '/login', navbarName: 'Redirect',

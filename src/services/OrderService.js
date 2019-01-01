@@ -47,6 +47,17 @@ export default class OrderService {
     }
   }
 
+  async getCustomerOrders(customerId) {
+    try {
+      const response = await RestUtilities.get(
+        `orders/customer/${customerId}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   async getOrderDetail(orderId) {
     try {
       const response = await RestUtilities.get(

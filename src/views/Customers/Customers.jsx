@@ -12,6 +12,7 @@ export default class Customers extends React.Component {
     super(props);
 
     this.state = { customers: [] };
+    this.rowClicked = this.rowClicked.bind(this);
   }
 
   componentDidMount() {
@@ -23,6 +24,11 @@ export default class Customers extends React.Component {
     CustomerService.getCustomers()
       .then(results => results.map(row => columns.map(column => row[column] || '')))
       .then(data => this.setState({ customers: data }));
+  }
+
+  rowClicked(rowData) {
+    const { history } = this.props;
+    history.push(`/customer/${rowData[0]}`);
   }
 
   render() {
@@ -60,7 +66,7 @@ export default class Customers extends React.Component {
 
     const options = {
       filterType: 'checkbox',
-      // onRowClick: this.rowClicked,
+      onRowClick: this.rowClicked,
       rowHover: true,
       resizableColumns: true,
       selectableRows: false,
@@ -78,6 +84,7 @@ export default class Customers extends React.Component {
               </CardHeader>
               <CardBody>
                 <MUIDataTable
+                  title="Click on each customer record below to see their previous orders."
                   data={customers}
                   columns={columns}
                   options={options}
