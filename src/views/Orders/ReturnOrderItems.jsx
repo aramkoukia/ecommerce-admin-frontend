@@ -23,7 +23,6 @@ export default class ReturnOrderItems extends React.Component {
       orderRows: [],
       subTotal: 0,
       total: 0,
-      taxes: [],
       discount: 0,
       discountAmount: 0,
       discountPercentage: 0,
@@ -31,21 +30,24 @@ export default class ReturnOrderItems extends React.Component {
   }
 
   componentDidMount() {
-    const { rows } = this.props;
+    const {
+      rows, discountAmount, discountPercentage, taxes, priceChanged,
+    } = this.props;
     this.setState({
       orderRows: rows,
     });
 
     this.handleQuantityChanged = this.handleQuantityChanged.bind(this);
 
-    // const subTotal = this.subtotal(orderRows);
-    // const discount = this.discount(subTotal, discountAmount, discountPercentage);
-    // const total = this.total(subTotal, discount, taxes);
-    // this.setState({
-    //   subTotal,
-    //   total,
-    //   discount,
-    // });
+    const subTotal = this.subtotal(rows);
+    const discount = this.discount(subTotal, discountAmount, discountPercentage);
+    const total = this.total(subTotal, discount, taxes);
+    this.setState({
+      subTotal,
+      total,
+      discount,
+    });
+    priceChanged(rows, subTotal, total, discount, discountPercentage, discountAmount);
   }
 
   handleChange = name => (event) => {
@@ -75,7 +77,7 @@ export default class ReturnOrderItems extends React.Component {
       discount,
     });
 
-    priceChanged(subTotal, total, discount, discountPercentage, discountAmount);
+    priceChanged(orderRows, subTotal, total, discount, discountPercentage, discountAmount);
   }
 
   subtotal(items) {
@@ -103,8 +105,8 @@ export default class ReturnOrderItems extends React.Component {
   render() {
     const { taxes } = this.props;
     const {
- orderRows, total, subTotal, discount 
-} = this.state;
+      orderRows, total, subTotal, discount,
+    } = this.state;
     return (
       <Card>
         <CardHeader color="info">

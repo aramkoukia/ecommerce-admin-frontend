@@ -18,7 +18,7 @@ import OrderNotes from './OrderNotes';
 import ReturnOrderItems from './ReturnOrderItems';
 import OrderCustomer from './OrderCustomer';
 import OrderService from '../../services/OrderService';
-
+import Location from '../../stores/Location';
 
 const orderService = new OrderService();
 
@@ -43,6 +43,7 @@ export class Return extends React.Component {
       snackbarMessage: '',
       snackbarColor: '',
       loading: false,
+      rows: [],
     };
 
     this.saveReturn = this.saveReturn.bind(this);
@@ -54,6 +55,7 @@ export class Return extends React.Component {
     const order = await orderService.getOrderDetail(orderId);
     this.setState({
       order,
+      rows: order.orderDetail,
     });
   }
 
@@ -75,36 +77,75 @@ export class Return extends React.Component {
     return result;
   }
 
-  async refundOrder() {
-    const { match, history } = this.props;
-    const orderId = match.params.id;
-    history.push(`/return/${orderId}`);
+  async saveOrder(orderStatus) {
+    const {
+      rows, total, subTotal, discountPercent, discountAmount, notes, taxes, poNumber, order,
+    } = this.state;
+    const originalOrderId = this.props.match.params.id;
+    const status = orderStatus;
+    const orderDetails = rows.map(row => (
+      {
+        orderId: 0,
+        orderDetailId: 0,
+        productId: row.productId,
+        amount: row.amount,
+        unitPrice: row.unitPrice,
+        totalPrice: row.amount * row.unitPrice,
+        originalOrderId,
+      }));
+    const orderTaxes = order.orderTax.map(tax => (
+      {
+        taxId: tax.taxId,
+        taxAmount: (tax.tax.percentage / 100) * subTotal,
+      }));
+
+    const returnOrder = {
+      locationId: Location.getStoreLocation(),
+      subTotal,
+      total,
+      discountPercent,
+      discountAmount,
+      customerId: order.customer !== null ? order.customer.customerId : null,
+      status,
+      notes,
+      poNumber,
+      pstNumber: order.customer !== null ? order.customer.pstNumber : null,
+      orderTax: orderTaxes,
+      orderDetail: orderDetails,
+    };
+
+    const result = await orderService.saveOrder(returnOrder);
+    if (result === false || result === null || result.StatusCode === 500 || result.StatusCode === 400) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Oops, looks like something went wrong!',
+        snackbarColor: 'danger',
+      });
+      return false;
+    }
+    return result;
   }
 
   async saveReturn() {
-    const status = 'OnHold';
-    const result = await this.saveOrderReturn();
+    const result = await this.saveOrder('Return');
     if (result && result.orderId) {
       this.setState({
         openSnackbar: true,
-        snackbarMessage: 'Order was successfully returned!',
+        snackbarMessage: 'Order was returned successfully!',
         snackbarColor: 'success',
       });
-      const { order } = this.state;
-      order.status = status;
-      this.setState({
-        order,
-      });
+      this.props.history.push(`/order/${result.orderId}`);
     }
   }
 
-  priceChanged(subTotal, total, discount, discountPercent, discountAmount) {
+  priceChanged(rows, subTotal, total, discount, discountPercent, discountAmount) {
     this.setState({
       subTotal,
       total,
       discountPercent,
       discountAmount,
       discount,
+      rows,
     });
   }
 
@@ -135,7 +176,7 @@ export class Return extends React.Component {
                   <GridItem>
                     <GridContainer>
                       <GridItem>
-                        <Button color="primary" onClick={this.returnOrder}>
+                        <Button color="primary" onClick={this.saveReturn}>
                           <Save />
                           &nbsp;
                           Save
