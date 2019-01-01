@@ -11,7 +11,10 @@ export default class Products extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { products: [] };
+    this.state = {
+      products: [],
+    };
+    this.rowClicked = this.rowClicked.bind(this);
   }
 
   componentDidMount() {
@@ -19,10 +22,15 @@ export default class Products extends React.Component {
   }
 
   productsList() {
-    const columns = ['productTypeName', 'productCode', 'productName', 'salesPrice', 'vancouverBalance', 'abbotsfordBalance'];
+    const columns = ['productTypeName', 'productCode', 'productName', 'salesPrice', 'vancouverBalance', 'abbotsfordBalance', 'productId'];
     ProductService.getProducts()
       .then(results => results.map(row => columns.map(column => (row[column] === null ? '' : row[column]))))
       .then(data => this.setState({ products: data }));
+  }
+
+  rowClicked(rowData) {
+    const { history } = this.props;
+    history.push(`/product/${rowData[6]}`);
   }
 
   render() {
@@ -56,11 +64,18 @@ export default class Products extends React.Component {
       },
     };
 
-    const columns = ['Type', 'Product Code', 'Product Name', 'Sales Price ($)', 'Vanvouver  Balance', 'Abbotsford Balance'];
+    const columns = ['Type', 'Product Code', 'Product Name', 'Sales Price ($)', 'Vanvouver  Balance', 'Abbotsford Balance',
+      {
+        name: 'productId',
+        options: {
+          display: false,
+        },
+      },
+    ];
 
     const options = {
       filterType: 'checkbox',
-      // onRowClick: this.rowClicked,
+      onRowClick: this.rowClicked,
       rowHover: true,
       resizableColumns: true,
       selectableRows: false,
@@ -78,7 +93,7 @@ export default class Products extends React.Component {
               </CardHeader>
               <CardBody>
                 <MUIDataTable
-                  // title={"Employee List"}
+                  title="Click on each product to see all the transactions for that product."
                   data={products}
                   columns={columns}
                   options={options}

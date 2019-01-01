@@ -12,6 +12,29 @@ export default class ProductService {
     }
   }
 
+  static async getProduct(productId) {
+    try {
+      const response = await RestUtilities.get(
+        `products/${productId}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async getProductTransactions(productId) {
+    try {
+      const response = await RestUtilities.get(
+        `products/${productId}/transactions`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+
   static async updateInventory(inventory) {
     try {
       const response = await RestUtilities.post(

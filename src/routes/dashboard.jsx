@@ -11,6 +11,7 @@ import MoneyOff from '@material-ui/icons/MoneyOff';
 import LocationOn from '@material-ui/icons/LocationOn';
 import ScreenLockLandscape from '@material-ui/icons/ScreenLockLandscape';
 import Products from '../views/Products/Products';
+import Product from '../views/Products/Product';
 import Locations from '../views/Locations/Locations';
 import Customers from '../views/Customers/Customers';
 import Customer from '../views/Customers/Customer';
@@ -169,6 +170,13 @@ const dashboardRoutes = [
     navbarName: '',
     icon: Person,
     component: Customer,
+  },
+  {
+    path: '/product/:id',
+    sidebarName: '',
+    navbarName: '',
+    icon: Person,
+    component: Product,
   },
   {
     redirect: true, path: '/', to: '/login', navbarName: 'Redirect',
