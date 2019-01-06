@@ -34,8 +34,8 @@ function renderInputComponent(inputProps) {
 }
 
 function renderSuggestion(suggestion, { query, isHighlighted }) {
-  const matches = match(suggestion.productName, query);
-  const parts = parse(suggestion.productName, matches);
+  const matches = match(`${suggestion.productCode} - ${suggestion.productName} - (Price: $${suggestion.salesPrice}) - (Van: ${suggestion.vancouverBalance}) - (Abb: ${suggestion.abbotsfordBalance})`, query);
+  const parts = parse(`${suggestion.productCode} - ${suggestion.productName} - (Price: $${suggestion.salesPrice}) - (Van: ${suggestion.vancouverBalance}) - (Abb: ${suggestion.abbotsfordBalance})`, matches);
 
   return (
     <MenuItem selected={isHighlighted} component="div">
@@ -46,8 +46,8 @@ function renderSuggestion(suggestion, { query, isHighlighted }) {
           </span>
         ) : (
           <strong key={String(index)} style={{ fontWeight: 300 }}>
-              {part.text}
-            </strong>
+            {part.text}
+          </strong>
         )))}
       </div>
     </MenuItem>

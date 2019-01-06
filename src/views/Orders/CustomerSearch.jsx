@@ -34,21 +34,21 @@ function renderInputComponent(inputProps) {
 }
 
 function renderSuggestion(suggestion, { query, isHighlighted }) {
-  const matches = match(suggestion.email, query);
-  const parts = parse(suggestion.email, matches);
+  const matches = match(`${suggestion.companyName} - ${suggestion.email} - ${suggestion.firstName} ${suggestion.lastName}`, query);
+  const parts = parse(`${suggestion.companyName} - ${suggestion.email} - ${suggestion.firstName} ${suggestion.lastName}`, matches);
 
   return (
     <MenuItem selected={isHighlighted} component="div">
       <div>
         {parts.map((part, index) => (part.highlight ? (
-            <span key={String(index)} style={{ fontWeight: 500 }}>
-              {part.text}
-            </span>
-          ) : (
-            <strong key={String(index)} style={{ fontWeight: 300 }}>
-              {part.text}
-            </strong>
-          )))}
+          <span key={String(index)} style={{ fontWeight: 500 }}>
+            {part.text}
+          </span>
+        ) : (
+          <strong key={String(index)} style={{ fontWeight: 300 }}>
+            {part.text}
+          </strong>
+        )))}
       </div>
     </MenuItem>
   );
