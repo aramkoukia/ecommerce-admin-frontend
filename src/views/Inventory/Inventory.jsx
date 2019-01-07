@@ -1,9 +1,6 @@
 import React from 'react';
-// @material-ui/core components
-// import withStyles from "@material-ui/core/styles/withStyles";
 import Check from '@material-ui/icons/Check';
-// core components
-
+import LinearProgress from '@material-ui/core/LinearProgress';
 import MUIDataTable from 'mui-datatables';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -38,6 +35,7 @@ export default class Inventory extends React.Component {
       openSnackbar: false,
       snackbarMessage: '',
       snackbarColor: '',
+      loading: false,
     };
     this.rowClicked = this.rowClicked.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -138,10 +136,11 @@ export default class Inventory extends React.Component {
   }
 
   productsList() {
+    this.setState({ loading: true });
     const columns = ['productCode', 'productName', 'salesPrice', 'vancouverBalance', 'abbotsfordBalance', 'vancouverBinCode', 'abbotsfordBinCode'];
     ProductService.getProducts()
       .then(results => results.map(row => columns.map(column => (row[column] === null ? '' : row[column]))))
-      .then(data => this.setState({ products: data }));
+      .then(data => this.setState({ products: data, loading: false }));
   }
 
   render() {
@@ -241,6 +240,7 @@ export default class Inventory extends React.Component {
       abbotsfordQuantity,
       abbotsfordStorageCode,
       abbotsfordNotes,
+      loading,
     } = this.state;
 
     return (
@@ -347,6 +347,7 @@ export default class Inventory extends React.Component {
                 />
               </CardBody>
             </Card>
+            { loading && (<LinearProgress />) }
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="info">

@@ -1,19 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// react plugin for creating charts
 import ChartistGraph from 'react-chartist';
-// @material-ui/core
+import LinearProgress from '@material-ui/core/LinearProgress';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Icon from '@material-ui/core/Icon';
-// @material-ui/icons
 import Store from '@material-ui/icons/Store';
 import DateRange from '@material-ui/icons/DateRange';
 import LocalOffer from '@material-ui/icons/LocalOffer';
-import Update from '@material-ui/icons/Update';
-import ArrowUpward from '@material-ui/icons/ArrowUpward';
-import AccessTime from '@material-ui/icons/AccessTime';
-import Accessibility from '@material-ui/icons/Accessibility';
-// core components
 import {
   dailySalesChart,
   emailsSubscriptionChart,
@@ -33,10 +26,13 @@ class Reports extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { monthlySummary: {} };
+    this.state = { monthlySummary: {}, loading: false };
   }
 
   componentDidMount() {
+
+    this.setState({ loading: true });
+
     ReportService.getMonthlySummary()
       .then(result => this.setState({ monthlySummary: result[0] }));
 
@@ -47,7 +43,7 @@ class Reports extends React.Component {
           labels: result.map(item => item.label),
           series: [result.map(item => item.value)],
         };
-        this.setState({ monthlySalesData });
+        this.setState({ monthlySalesData, loading: false });
       });
 
     ReportService.getMonthlyPurchases()
@@ -72,7 +68,7 @@ class Reports extends React.Component {
   render() {
     const { classes } = this.props;
     const {
-      monthlySummary, dailySalesData, monthlySalesData, monthlyPurchaseData,
+      monthlySummary, dailySalesData, monthlySalesData, monthlyPurchaseData, loading,
     } = this.state;
     return (
       <div>
@@ -223,6 +219,7 @@ $
                 </p>
               </CardBody>
             </Card>
+            { loading && (<LinearProgress />) }
           </GridItem>
         </GridContainer>
       </div>

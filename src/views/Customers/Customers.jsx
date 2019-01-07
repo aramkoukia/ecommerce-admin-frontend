@@ -1,5 +1,6 @@
 import React from 'react';
 import MUIDataTable from 'mui-datatables';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
 import CardHeader from '../../components/Card/CardHeader';
@@ -11,7 +12,10 @@ export default class Customers extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { customers: [] };
+    this.state = {
+      customers: [],
+      loading: false,
+    };
     this.rowClicked = this.rowClicked.bind(this);
   }
 
@@ -20,10 +24,11 @@ export default class Customers extends React.Component {
   }
 
   customersList() {
+    this.setState({ loading: true });
     const columns = ['customerCode', 'companyName', 'firstName', 'lastName', 'email', 'creditLimit', 'pstNumber'];
     CustomerService.getCustomers()
       .then(results => results.map(row => columns.map(column => row[column] || '')))
-      .then(data => this.setState({ customers: data }));
+      .then(data => this.setState({ customers: data, loading: false }));
   }
 
   rowClicked(rowData) {
@@ -72,7 +77,7 @@ export default class Customers extends React.Component {
       selectableRows: false,
     };
 
-    const { customers } = this.state;
+    const { customers, loading } = this.state;
 
     return (
       <div>
@@ -91,6 +96,7 @@ export default class Customers extends React.Component {
                 />
               </CardBody>
             </Card>
+            { loading && (<LinearProgress />) }
           </GridItem>
         </GridContainer>
       </div>

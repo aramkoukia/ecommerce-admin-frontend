@@ -1,4 +1,7 @@
 import React from 'react';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import MUIDataTable from 'mui-datatables';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -20,7 +23,12 @@ export default class Orders extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { orders: [] };
+    this.state = {
+      orders: [],
+      showAllOrders: false,
+      loading: false,
+     };
+
     this.rowClicked = this.rowClicked.bind(this);
   }
 
@@ -28,17 +36,25 @@ export default class Orders extends React.Component {
     this.ordersList();
   }
 
+  handleChange = name => event => {
+    this.setState({ [name]: event.target.checked });
+    this.ordersList();
+  };
+
   ordersList() {
     const columns = ['locationName', 'orderId', 'orderDate', 'subTotal', 'total', 'status', 'poNumber', 'paidAmount', 'createdByUserId'];
     const locationId = Location.getStoreLocation();
-    orderService.getOrdersByLocation(locationId)
+    const { showAllOrders } = this.state;
+    this.setState({ loading: true });
+
+    orderService.getOrdersByLocation(locationId, showAllOrders)
       .then(results => results.map(row => columns.map((column) => {
         if (column === 'orderDate') {
           return dateFormat(row[column]);
         }
         return row[column] || '';
       })))
-      .then(data => this.setState({ orders: data }));
+      .then(data => this.setState({ orders: data, loading: false }));
   }
 
   rowClicked(rowData) {
@@ -126,7 +142,7 @@ export default class Orders extends React.Component {
       selectableRows: false,
     };
 
-    const { orders } = this.state;
+    const { orders, showAllOrders, loading } = this.state;
 
     return (
       <div>
@@ -137,6 +153,18 @@ export default class Orders extends React.Component {
                 <div className={styles.cardTitleWhite}>Orders List</div>
               </CardHeader>
               <CardBody>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={showAllOrders}
+                    onChange={this.handleChange('showAllOrders')}
+                    name= "showAllOrders"
+                    value= "showAllOrders"
+                    color="primary"
+                  />
+                  }
+                  label="Load orders older than 6 month"
+                />
                 <MUIDataTable
                   title="Click on each order to navigate to the order details"
                   data={orders}
@@ -145,6 +173,7 @@ export default class Orders extends React.Component {
                 />
               </CardBody>
             </Card>
+            { loading && (<LinearProgress />) }
           </GridItem>
         </GridContainer>
       </div>

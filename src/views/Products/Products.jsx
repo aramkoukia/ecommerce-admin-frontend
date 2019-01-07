@@ -1,5 +1,6 @@
 import React from 'react';
 import MUIDataTable from 'mui-datatables';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
@@ -13,6 +14,7 @@ export default class Products extends React.Component {
 
     this.state = {
       products: [],
+      loading: false,
     };
     this.rowClicked = this.rowClicked.bind(this);
   }
@@ -22,10 +24,11 @@ export default class Products extends React.Component {
   }
 
   productsList() {
+    this.setState({ loading: true });
     const columns = ['productTypeName', 'productCode', 'productName', 'salesPrice', 'vancouverBalance', 'abbotsfordBalance', 'productId'];
     ProductService.getProducts()
       .then(results => results.map(row => columns.map(column => (row[column] === null ? '' : row[column]))))
-      .then(data => this.setState({ products: data }));
+      .then(data => this.setState({ products: data, loading: false }));
   }
 
   rowClicked(rowData) {
@@ -81,7 +84,7 @@ export default class Products extends React.Component {
       selectableRows: false,
     };
 
-    const { products } = this.state;
+    const { products, loading } = this.state;
 
     return (
       <div>
@@ -100,6 +103,7 @@ export default class Products extends React.Component {
                 />
               </CardBody>
             </Card>
+            { loading && (<LinearProgress />) }
           </GridItem>
         </GridContainer>
       </div>
