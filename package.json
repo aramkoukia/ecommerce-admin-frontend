@@ -9,6 +9,7 @@
     "@casl/react": "^0.8.1",
     "@material-ui/core": "3.1.0",
     "@material-ui/icons": "3.0.1",
+    "@material-ui/lab": "^3.0.0-alpha.28",
     "@types/googlemaps": "3.30.13",
     "@types/markerclustererplus": "2.1.33",
     "ajv": "^5.0.0",

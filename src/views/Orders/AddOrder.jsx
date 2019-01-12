@@ -47,9 +47,12 @@ function priceRow(qty, unit) {
 
 function createRow(productId, productName, salesPrice) {
   const qty = 1;
+  const discountPercent = 0;
+  const discountAmount = 0;
+
   const price = priceRow(qty, salesPrice);
   return {
-    productId, productName, qty, salesPrice, price,
+    productId, productName, qty, salesPrice, price, discountPercent, discountAmount,
   };
 }
 
@@ -165,6 +168,9 @@ export default class AddOrder extends React.Component {
         productId: row.productId,
         amount: row.qty,
         unitPrice: row.salesPrice,
+        discountPercent: row.discountPercent,
+        discountAmount: row.discountAmount,
+        discountType: row.discountType,
         totalPrice: row.qty * row.salesPrice,
       }));
     const orderTaxes = taxes.map(tax => (

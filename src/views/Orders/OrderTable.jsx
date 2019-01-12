@@ -10,8 +10,10 @@ import Paper from "@material-ui/core/Paper";
 import TextField from '@material-ui/core/TextField';
 // import Checkbox from "@material-ui/core/Checkbox";
 import Success from "components/Typography/Success.jsx";
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
-export default class OrderTable extends React.Component {  
+export default class OrderTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -22,6 +24,8 @@ export default class OrderTable extends React.Component {
       discount: 0,
       discountAmount: 0,
       discountPercentage: 0,
+      totalDicount: 0,
+      discountType: "percent",
     };
   }
 
@@ -32,15 +36,14 @@ export default class OrderTable extends React.Component {
     });
 
     this.handleQuantityChanged = this.handleQuantityChanged.bind(this);
+    this.handleDiscountChanged = this.handleDiscountChanged.bind(this);
+    this.handleDiscountTypeChanged = this.handleDiscountTypeChanged.bind(this);
   }
-
-  // updatePrice
 
   componentDidUpdate(prevProps) {
     // Typical usage (don't forget to compare props):
     const { rows, taxes, priceChanged } = this.props;
     if (rows.length !== prevProps.rows.length) {
-      // let {  } = this.props;
       let { discountAmount, discountPercentage } = this.state;
       let orderRows = rows.slice();
       const subTotal = this.subtotal(orderRows);
@@ -57,7 +60,37 @@ export default class OrderTable extends React.Component {
     }
   }
 
+  handleDiscountTypeChanged(event, discountType) {
+    this.setState({ discountType });
+  } 
+
   handleQuantityChanged(event) {
+    let { discountAmount, discountPercentage, discountType } = this.state;
+    let { taxes, priceChanged } = this.props;
+    let orderRows = this.state.orderRows.slice();
+    for(let i in orderRows) {
+        if(orderRows[i].productId == event.target.name){
+          orderRows[i].qty = event.target.value;
+          this.setState ({orderRows});
+          break;
+        }
+    }
+
+    const subTotal = this.subtotal(orderRows);
+    const discount = this.discount(subTotal, discountAmount, discountPercentage);
+    const total = this.total(subTotal, discount, taxes);
+    this.setState(
+      {
+        subTotal: subTotal,
+        total: total,  
+        discount: discount,
+      }
+    )
+
+    priceChanged(subTotal, total, discount, discountPercentage, discountAmount);
+  }
+
+  handleDiscountChanged(event) {
     let { discountAmount, discountPercentage } = this.state;
     let { taxes, priceChanged } = this.props;
     let orderRows = this.state.orderRows.slice();
@@ -117,23 +150,17 @@ export default class OrderTable extends React.Component {
 
   render() {
     const { taxes } = this.props;
-    const { orderRows, total, subTotal, discount } = this.state;
+    const { orderRows, total, subTotal, totalDicount, discountType } = this.state;
 
     return (
     <Paper>
       <Table>
         <TableHead>
           <TableRow>
-            {/* <TableCell padding="checkbox">
-              <Checkbox
-              // indeterminate={numSelected > 0 && numSelected < rowCount}
-              // checked={numSelected === rowCount}
-              // onChange={onSelectAllClick}
-              />
-            </TableCell> */}
             <TableCell>Product</TableCell>
             <TableCell numeric>Amount</TableCell>
             <TableCell numeric>Unit Price</TableCell>
+            <TableCell numeric>Discount</TableCell>
             <TableCell numeric>Total Price</TableCell>
           </TableRow>
         </TableHead>
@@ -141,13 +168,6 @@ export default class OrderTable extends React.Component {
           {orderRows.map(row => {
             return (
               <TableRow key={row.productId}>
-                {/* <TableCell padding="checkbox">
-                  <Checkbox
-                  // indeterminate={numSelected > 0 && numSelected < rowCount}
-                  // checked={numSelected === rowCount}
-                  // onChange={onSelectAllClick}
-                  />
-                </TableCell> */}
                 <TableCell>{row.productName}</TableCell>
                 <TableCell numeric align="right">
                 <TextField
@@ -155,17 +175,42 @@ export default class OrderTable extends React.Component {
                       value={row.qty}
                       onChange={this.handleQuantityChanged}
                       type="number"
+                      style = {{width: 100}}
                     />
-                </TableCell>
+                </TableCell>                
                 <TableCell numeric>{this.ccyFormat(row.salesPrice)}</TableCell>
+                <TableCell numeric align="right">
+                  <ToggleButtonGroup 
+                    value={discountType} 
+                    exclusive 
+                    onChange={this.handleDiscountTypeChanged}
+                    style = {{width: 100}}>
+                    <ToggleButton value="percent">
+                      %
+                    </ToggleButton>
+                    <ToggleButton value="amount">
+                      $
+                    </ToggleButton>
+                  </ToggleButtonGroup>
+                  <TextField
+                    name={row.productId}
+                    value={row.discount}
+                    onChange={this.handleDiscountChanged}
+                    type="number"
+                    style = {{width: 100}}
+                  />                  
+                </TableCell>                
                 <TableCell numeric>{this.ccyFormat(row.salesPrice * row.qty)}</TableCell>
-                {/* <RestoreFromTrash /> */}
               </TableRow>
             );
           })}
           <TableRow>
-            <TableCell rowSpan={5} />
-            <TableCell colSpan={2}>Subtotal</TableCell>
+            <TableCell rowSpan={4} />
+            <TableCell colSpan={3}>Total Discount</TableCell>
+            <TableCell numeric>{this.ccyFormat(totalDicount)}</TableCell>
+          </TableRow>          
+          <TableRow>
+            <TableCell colSpan={3}>Subtotal</TableCell>
             <TableCell numeric>{this.ccyFormat(subTotal)}</TableCell>
           </TableRow>
           {taxes.map((tax) =>
@@ -184,7 +229,7 @@ export default class OrderTable extends React.Component {
           </TableRow> */}
 
           <TableRow>
-            <TableCell colSpan={2}><h3>Total</h3></TableCell>
+            <TableCell colSpan={3}><h3>Total</h3></TableCell>
             <TableCell numeric><Success><h3>{this.ccyFormat(total)}</h3></Success></TableCell>
           </TableRow>
         </TableBody>
