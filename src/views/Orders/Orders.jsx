@@ -27,7 +27,7 @@ export default class Orders extends React.Component {
       orders: [],
       showAllOrders: false,
       loading: false,
-     };
+    };
 
     this.rowClicked = this.rowClicked.bind(this);
   }
@@ -36,7 +36,7 @@ export default class Orders extends React.Component {
     this.ordersList();
   }
 
-  handleChange = name => event => {
+  handleChange = name => (event) => {
     this.setState({ [name]: event.target.checked });
     this.ordersList();
   };
@@ -153,16 +153,16 @@ export default class Orders extends React.Component {
                 <div className={styles.cardTitleWhite}>Orders List</div>
               </CardHeader>
               <CardBody>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={showAllOrders}
-                    onChange={this.handleChange('showAllOrders')}
-                    name= "showAllOrders"
-                    value= "showAllOrders"
-                    color="primary"
-                  />
-                  }
+                <FormControlLabel
+                  control={(
+                    <Checkbox
+                      checked={showAllOrders}
+                      onChange={this.handleChange('showAllOrders')}
+                      name="showAllOrders"
+                      value="showAllOrders"
+                      color="primary"
+                    />
+                  )}
                   label="Load orders older than 6 month"
                 />
                 <MUIDataTable
@@ -180,5 +180,3 @@ export default class Orders extends React.Component {
     );
   }
 }
-
-// export default withStyles(styles)(Customers);

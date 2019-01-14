@@ -82,8 +82,8 @@ export default class OrderTable extends React.Component {
   }
 
   handleQuantityChanged(event) {
-    let { discountAmount, discountPercentage, orderRows } = this.state;
     let { taxes, priceChanged } = this.props;
+    let { orderRows } = this.state;    
     for(let i in orderRows) {
         if(orderRows[i].productId == event.target.name){
           orderRows[i].qty = event.target.value;
@@ -94,15 +94,15 @@ export default class OrderTable extends React.Component {
     }
 
     const subTotal = this.subtotal(orderRows);
-    const discount = this.discount(subTotal, discountAmount, discountPercentage);
-    const total = this.total(subTotal, discount, taxes);
+    const totalDiscount = this.discount(orderRows);
+    const total = this.total(subTotal, totalDiscount, taxes);
     this.setState({
         subTotal: subTotal,
         total: total,  
-        discount: discount,
+        totalDiscount: totalDiscount,
     });
 
-    priceChanged(subTotal, total, discount, discountPercentage, discountAmount);
+    priceChanged(subTotal, total, totalDiscount);
   }
 
   handleDiscountAmountChanged(event) {
@@ -180,7 +180,7 @@ export default class OrderTable extends React.Component {
       let discountAmount = orderRows[i].discountAmount === "" ? 0 : orderRows[i].discountAmount;
       let discountPercent = orderRows[i].discountPercent === "" ? 0 : orderRows[i].discountPercent;
       totalDiscount += (orderRows[i].discountType === 'percent') ?
-        (discountPercent / 100) * orderRows[i].total : discountAmount;
+        (discountPercent / 100) * orderRows[i].total : Number(discountAmount);
     }
     return totalDiscount;
   }
