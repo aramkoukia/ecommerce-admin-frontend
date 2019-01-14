@@ -1,8 +1,8 @@
 import React from 'react';
 import Check from '@material-ui/icons/Check';
-// @material-ui/core components
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { withStyles } from '@material-ui/core/styles';
-// core components
 import PropTypes from 'prop-types';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -80,6 +80,7 @@ export default class AddOrder extends React.Component {
       taxes: [],
       allTaxes: [],
       openSnackbar: false,
+      chargePst: true,
     };
 
     this.productChanged = this.productChanged.bind(this);
@@ -153,6 +154,10 @@ export default class AddOrder extends React.Component {
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
   }
+
+  handleCheckChange = name => event => {
+    this.setState({ [name]: event.target.checked });
+  };
 
   validateCustomerCredit() {
     const { customer, total } = this.state;
@@ -277,7 +282,9 @@ export default class AddOrder extends React.Component {
       rows,
       taxes,
       discountAmount,
-      discountPercent, customer, openSnackbar, snackbarMessage, snackbarColor, notes, poNumber,
+      discountPercent,
+      customer, openSnackbar, snackbarMessage, snackbarColor, notes, poNumber,
+      chargePst,
     } = this.state;
 
     return (
@@ -374,6 +381,16 @@ export default class AddOrder extends React.Component {
                                   disabled: true,
                                   value: customer.pstNumber === null ? 'Not Provided' : `${customer.pstNumber} `,
                                 }}
+                              />
+                              <FormControlLabel
+                                control={(
+                                  <Checkbox
+                                    checked={chargePst}
+                                    onChange={this.handleCheckChange('chargePst')}
+                                    value="chargePst"
+                                  />
+                                )}
+                                label="Charge PST"
                               />
                             </GridItem>
                             <GridItem xs={12} sm={12} md={3}>
