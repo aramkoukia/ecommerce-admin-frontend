@@ -49,10 +49,20 @@ function createRow(productId, productName, salesPrice) {
   const qty = 1;
   const discountPercent = 0;
   const discountAmount = 0;
+  const discountType = 'percent';
 
   const price = priceRow(qty, salesPrice);
+  const total = qty * price;
   return {
-    productId, productName, qty, salesPrice, price, discountPercent, discountAmount,
+    productId,
+    productName,
+    qty,
+    salesPrice,
+    price,
+    discountPercent,
+    discountAmount,
+    discountType,
+    total,
   };
 }
 
@@ -98,13 +108,10 @@ export default class AddOrder extends React.Component {
     }));
   }
 
-  priceChanged(subTotal, total, discount, discountPercent, discountAmount) {
+  priceChanged(subTotal, total) {
     this.setState({
       subTotal,
       total,
-      discountPercent,
-      discountAmount,
-      discount,
     });
   }
 
@@ -171,20 +178,14 @@ export default class AddOrder extends React.Component {
         discountPercent: row.discountPercent,
         discountAmount: row.discountAmount,
         discountType: row.discountType,
-        totalPrice: row.qty * row.salesPrice,
+        subTotal: row.total,
+        total: row.total - (row.discountType === 'percent' ? (row.discountPercent / 100) * row.total : row.discountAmount),
       }));
     const orderTaxes = taxes.map(tax => (
       {
         taxId: tax.taxId,
         taxAmount: (tax.percentage / 100) * subTotal,
       }));
-    // let orderPayment = null;
-    // if(status === "Paid") {
-    //   orderPayment = {
-    //     paymentAmount: total,
-    //     paymentTypeId: 1,  // Credit Debit by default for now
-    //   }
-    // }
 
     const order = {
       locationId: Location.getStoreLocation(),
