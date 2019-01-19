@@ -267,7 +267,7 @@ export default class OrderTable extends React.Component {
           </TableRow>
           {taxes.map((tax) =>
             <TableRow>
-              <TableCell>{tax.taxName}</TableCell>
+              <TableCell >{tax.taxName}</TableCell>
               <TableCell numeric>{`${(tax.percentage).toFixed(0)} %`}</TableCell>
               <TableCell numeric>{this.ccyFormat((tax.percentage / 100) * subTotal)}</TableCell>
             </TableRow>

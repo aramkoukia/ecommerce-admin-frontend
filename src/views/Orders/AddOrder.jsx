@@ -71,8 +71,8 @@ export default class AddOrder extends React.Component {
     this.state = {
       customer: null,
       rows: [],
-      discountPercent: 0.08,
-      discountAmount: 0,
+      discountPercent: 0.00,
+      discountAmount: 0.00,
       notes: '',
       poNumber: '',
       taxes: [],
@@ -90,6 +90,7 @@ export default class AddOrder extends React.Component {
     this.saveAsDraft = this.saveAsDraft.bind(this);
     this.saveAsHold = this.saveAsHold.bind(this);
     this.saveAsAccount = this.saveAsAccount.bind(this);
+    this.handleCheckChange = this.handleCheckChange.bind(this);
   }
 
   async componentDidMount() {
@@ -97,6 +98,7 @@ export default class AddOrder extends React.Component {
     this.setState({
       taxes,
       allTaxes: taxes,
+      chargePst: true,
     });
   }
 
@@ -118,11 +120,11 @@ export default class AddOrder extends React.Component {
     this.setState({ customer: null });
   }
 
-  customerChanged(customer) {
+  updateTaxes(customer, chargePst) {
     const { allTaxes } = this.state;
     // removing taxes with name like "pst" from the list
     // if the selected customer has PST number in their profile
-    if (customer && customer.pstNumber) {
+    if (customer && customer.pstNumber && !chargePst) {
       const filterTaxes = allTaxes.reduce((filterTaxes, tax) => {
         if (!tax.taxName.toLowerCase().includes('pst')) {
           filterTaxes.push(tax);
@@ -143,7 +145,11 @@ export default class AddOrder extends React.Component {
         taxes: allTaxes,
       });
     }
+  }
 
+  customerChanged(customer) {
+    const { chargePst } = this.state;
+    this.updateTaxes(customer, chargePst);
     this.setState({
       customer,
     });
@@ -153,9 +159,11 @@ export default class AddOrder extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
   }
 
-  handleCheckChange = name => event => {
-    this.setState({ [name]: event.target.checked });
-  };
+  handleCheckChange(event) {
+    this.setState({ chargePst: event.target.checked });
+    const { customer } = this.state;
+    this.updateTaxes(customer, event.target.checked);
+  }
 
   validateCustomerCredit() {
     const { customer, total } = this.state;
@@ -194,8 +202,6 @@ export default class AddOrder extends React.Component {
       locationId: Location.getStoreLocation(),
       subTotal,
       total,
-      discountPercent,
-      discountAmount,
       customerId: customer !== null ? customer.customerId : null,
       status,
       notes,
@@ -384,7 +390,7 @@ export default class AddOrder extends React.Component {
                                 control={(
                                   <Checkbox
                                     checked={chargePst}
-                                    onChange={this.handleCheckChange('chargePst')}
+                                    onChange={this.handleCheckChange}
                                     value="chargePst"
                                   />
                                 )}

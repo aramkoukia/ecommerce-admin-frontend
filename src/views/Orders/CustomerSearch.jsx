@@ -157,10 +157,11 @@ class CustomerSearch extends React.Component {
 
   render() {
     const { classes } = this.props;
+    const { filteredSuggestions , popper } = this.state;
 
     const autosuggestProps = {
       renderInputComponent,
-      suggestions: this.state.filteredSuggestions,
+      suggestions: filteredSuggestions,
       onSuggestionsFetchRequested: this.handleSuggestionsFetchRequested,
       onSuggestionsClearRequested: this.handleSuggestionsClearRequested,
       getSuggestionValue: this.getSuggestionValue,
@@ -175,7 +176,7 @@ class CustomerSearch extends React.Component {
             classes,
             label: '',
             placeholder: 'Search Customers',
-            value: this.state.popper,
+            value: popper,
             onChange: this.handleChange('popper'),
             inputRef: (node) => {
               this.popperNode = node;

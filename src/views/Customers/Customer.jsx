@@ -14,8 +14,6 @@ import Location from '../../stores/Location';
 import CustomerInfo from '../Orders/CustomerInfo';
 import CustomerService from '../../services/CustomerService';
 
-const orderService = new OrderService();
-
 function dateFormat(dateString) {
   const date = new Date(dateString);
   return `${date.toLocaleDateString()}`;
@@ -45,7 +43,7 @@ export default class Customer extends React.Component {
 
   ordersList(customerId) {
     const columns = ['locationName', 'orderId', 'orderDate', 'subTotal', 'total', 'status', 'poNumber', 'paidAmount', 'createdByUserId'];
-    orderService.getCustomerOrders(customerId)
+    OrderService.getCustomerOrders(customerId)
       .then(results => results.map(row => columns.map((column) => {
         if (column === 'orderDate') {
           return dateFormat(row[column]);
