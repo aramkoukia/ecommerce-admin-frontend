@@ -52,7 +52,7 @@ function OrderItems(props) {
                 <TableCell>{row.product.productName}</TableCell>
                 <TableCell numeric align="right">{row.amount}</TableCell>
                 <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
-                <TableCell numeric>{ccyFormat(row.totalPrice)}</TableCell>
+                <TableCell numeric>{ccyFormat(row.total)}</TableCell>
               </TableRow>
             ))}
             <TableRow>

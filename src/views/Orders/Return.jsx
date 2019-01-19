@@ -88,7 +88,7 @@ export class Return extends React.Component {
         productId: row.productId,
         amount: row.amount,
         unitPrice: row.unitPrice,
-        totalPrice: row.amount * row.unitPrice,
+        total: row.amount * row.unitPrice,
       }));
     const orderTaxes = order.orderTax.map(tax => (
       {

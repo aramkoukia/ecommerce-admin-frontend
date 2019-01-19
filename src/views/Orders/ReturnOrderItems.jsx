@@ -136,7 +136,7 @@ export default class ReturnOrderItems extends React.Component {
                     />
                   </TableCell>
                   <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
-                  <TableCell numeric>{ccyFormat(row.totalPrice)}</TableCell>
+                  <TableCell numeric>{ccyFormat(row.total)}</TableCell>
                 </TableRow>
               ))}
               <TableRow>
