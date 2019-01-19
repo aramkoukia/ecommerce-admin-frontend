@@ -87,8 +87,7 @@ class ProductSearch extends React.Component {
     super(props);
 
     this.state = {
-      single: '',
-      popper: '',
+      value: '',
       suggestions: [],
       filteredSuggestions: [],
     };
@@ -100,12 +99,20 @@ class ProductSearch extends React.Component {
       this,
     );
 
+    this.onChange = this.onChange.bind(this);
+
     this.getSuggestionValue = this.getSuggestionValue.bind(this);
   }
 
   async componentDidMount() {
     const suggestions = await ProductService.getProducts();
     this.setState({ suggestions });
+  }
+
+  onChange(event, { newValue, method }) {
+    this.setState({
+      value: (method === 'click' || method === 'enter') ? '' : newValue,
+    });
   }
 
   getSuggestionValue = (suggestion) => {
@@ -146,19 +153,13 @@ class ProductSearch extends React.Component {
     });
   };
 
-  handleChange = name => (event, { newValue }) => {
-    // this.props.productChanged(newValue);
-    this.setState({
-      [name]: newValue,
-    });
-  };
-
   render() {
     const { classes } = this.props;
+    const { filteredSuggestions, value } = this.state;
 
     const autosuggestProps = {
       renderInputComponent,
-      suggestions: this.state.filteredSuggestions,
+      suggestions: filteredSuggestions,
       onSuggestionsFetchRequested: this.handleSuggestionsFetchRequested,
       onSuggestionsClearRequested: this.handleSuggestionsClearRequested,
       getSuggestionValue: this.getSuggestionValue,
@@ -173,8 +174,8 @@ class ProductSearch extends React.Component {
             classes,
             label: '',
             placeholder: 'Search Products',
-            value: this.state.popper,
-            onChange: this.handleChange('popper'),
+            value,
+            onChange: this.onChange,
             inputRef: (node) => {
               this.popperNode = node;
             },
