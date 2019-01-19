@@ -19,8 +19,6 @@ import OrderItems from './OrderItems';
 import CustomerInfo from './CustomerInfo';
 import OrderService from '../../services/OrderService';
 
-const orderService = new OrderService();
-
 const styles = {
   chip: {
     margin: 5,
@@ -56,7 +54,7 @@ export class Order extends React.Component {
 
   async componentDidMount() {
     const orderId = this.props.match.params.id;
-    const order = await orderService.getOrderDetail(orderId);
+    const order = await OrderService.getOrderDetail(orderId);
     this.setState({
       order,
     });
@@ -68,7 +66,7 @@ export class Order extends React.Component {
 
   async updateOrderStatus(orderStatus) {
     const { order } = this.state;
-    const result = await orderService.updateOrderStatus(order.orderId, { orderStatus });
+    const result = await OrderService.updateOrderStatus(order.orderId, { orderStatus });
     if (result === false || result === null || result.StatusCode === 500 || result.StatusCode === 400) {
       this.setState({
         openSnackbar: true,
@@ -91,7 +89,7 @@ export class Order extends React.Component {
     this.setState({
       loading: true,
     });
-    await orderService.emailOrder(order.orderId);
+    await OrderService.emailOrder(order.orderId);
     this.setState({
       loading: false,
     });
@@ -102,7 +100,7 @@ export class Order extends React.Component {
     this.setState({
       loading: true,
     });
-    await orderService.printOrder(order.orderId);
+    await OrderService.printOrder(order.orderId);
     this.setState({
       loading: false,
     });

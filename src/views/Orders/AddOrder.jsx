@@ -20,8 +20,6 @@ import OrderService from '../../services/OrderService';
 import TaxService from '../../services/TaxService';
 import Location from '../../stores/Location';
 
-const orderService = new OrderService();
-
 const styles = {
   cardCategoryWhite: {
     color: 'rgba(255,255,255,.62)',
@@ -208,7 +206,7 @@ export default class AddOrder extends React.Component {
       // orderPayment: orderPayment, will set this in the API
     };
 
-    const result = await orderService.saveOrder(order);
+    const result = await OrderService.saveOrder(order);
     if (result === false || result === null || result.StatusCode === 500 || result.StatusCode === 400) {
       this.setState({
         openSnackbar: true,

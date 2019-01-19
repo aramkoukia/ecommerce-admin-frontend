@@ -11,9 +11,6 @@ import CardBody from '../../components/Card/CardBody';
 import OrderService from '../../services/OrderService';
 import Location from '../../stores/Location';
 
-const orderService = new OrderService();
-
-
 function dateFormat(dateString) {
   const date = new Date(dateString);
   return `${date.toLocaleDateString()}`;
@@ -47,7 +44,7 @@ export default class Orders extends React.Component {
     const { showAllOrders } = this.state;
     this.setState({ loading: true });
 
-    orderService.getOrdersByLocation(locationId, showAllOrders)
+    OrderService.getOrdersByLocation(locationId, showAllOrders)
       .then(results => results.map(row => columns.map((column) => {
         if (column === 'orderDate') {
           return dateFormat(row[column]);

@@ -20,8 +20,6 @@ import CustomerInfo from './CustomerInfo';
 import OrderService from '../../services/OrderService';
 import Location from '../../stores/Location';
 
-const orderService = new OrderService();
-
 const styles = {
   chip: {
     margin: 5,
@@ -52,7 +50,7 @@ export class Return extends React.Component {
 
   async componentDidMount() {
     const orderId = this.props.match.params.id;
-    const order = await orderService.getOrderDetail(orderId);
+    const order = await OrderService.getOrderDetail(orderId);
     this.setState({
       order,
       rows: order.orderDetail,
@@ -65,7 +63,7 @@ export class Return extends React.Component {
 
   async saveOrderReturn() {
     const { order } = this.state;
-    const result = await orderService.returnOrder(order);
+    const result = await OrderService.returnOrder(order);
     if (result === false || result === null || result.StatusCode === 500 || result.StatusCode === 400) {
       this.setState({
         openSnackbar: true,
@@ -114,7 +112,7 @@ export class Return extends React.Component {
       originalOrderId,
     };
 
-    const result = await orderService.saveOrder(returnOrder);
+    const result = await OrderService.saveOrder(returnOrder);
     if (result === false || result === null || result.StatusCode === 500 || result.StatusCode === 400) {
       this.setState({
         openSnackbar: true,
