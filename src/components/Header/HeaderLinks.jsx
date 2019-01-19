@@ -27,8 +27,8 @@ class HeaderLinks extends React.Component {
 
   componentDidMount() {
     const { locations } = this.props;
-    this.setState({ location: locations[0].locationId });
-    Location.setStoreLocation(locations[0].locationId);
+    this.setState({ location: locations[0] && locations[0].locationId });
+    Location.setStoreLocation(locations[0] && locations[0].locationId);
   }
 
   handleChange = (event) => {

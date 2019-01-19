@@ -28,10 +28,10 @@ const Sidebar = ({ ...props }) => {
 
   function getLocations() {
     return [
-      {
-        locationId: 1,
-        locationName: 'Vancouver',
-      },
+      // {
+      //   locationId: 1,
+      //   locationName: 'Vancouver',
+      // },
       {
         locationId: 2,
         locationName: 'Abbotsford',

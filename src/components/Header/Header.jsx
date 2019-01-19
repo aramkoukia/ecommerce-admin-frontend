@@ -22,6 +22,13 @@ class Header extends React.Component {
     super(props);
 
     this.state = {
+      locations: [],
+      isLoading: true,
+    };
+  }
+
+  async componentDidMount() {
+    this.setState({
       locations: [
         {
           locationId: 1,
@@ -33,14 +40,11 @@ class Header extends React.Component {
         },
       ],
       isLoading: true,
-    };
+    });
+    await this.getLocations();
   }
 
-  componentDidMount() {
-    // this.getLocations();
-  }
-
-  getLocations() {
+  async getLocations() {
     if (Auth.isSignedIn()) {
       LocationService.getLocationsForUser()
         .then(results => this.setState({
@@ -79,7 +83,9 @@ class Header extends React.Component {
             </Button>
           </div>
           <Hidden smDown implementation="css">
-            <HeaderLinks locations={locations} location={locations[0].locationId} />
+            { !isLoading && (
+              <HeaderLinks locations={locations} location={locations[0] && locations[0].locationId} />
+            )}
           </Hidden>
           <Hidden mdUp implementation="css">
             <IconButton
