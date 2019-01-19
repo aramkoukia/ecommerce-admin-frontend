@@ -42,7 +42,7 @@ class Header extends React.Component {
 
   getLocations() {
     if (Auth.isSignedIn()) {
-      LocationService.getLocations()
+      LocationService.getLocationsForUser()
         .then(results => this.setState({
           locations: results.content,
           isLoading: false,

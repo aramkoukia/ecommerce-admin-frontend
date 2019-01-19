@@ -37,8 +37,18 @@ const Sidebar = ({ ...props }) => {
         locationName: 'Abbotsford',
       },
     ];
-    // return LocationService.getLocations();
+    // return LocationService.getLocationsForUser();
   }
+
+  // async function getLocations() {
+  //   if (Auth.isSignedIn()) {
+  //     LocationService.getLocationsForUser()
+  //       .then(results => this.setState({
+  //         locations: results.content,
+  //         isLoading: false,
+  //       }));
+  //   }
+  // }
 
   const links = (
     <List className={classes.list}>

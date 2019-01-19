@@ -11,4 +11,15 @@ export default class LocationService {
       return false;
     }
   }
+
+  static getLocationsForUser() {
+    try {
+      const response = RestUtilities.get(
+        'locations/foruser',
+      );
+      return response;
+    } catch (err) {
+      return false;
+    }
+  }
 }

@@ -176,7 +176,7 @@ export default class AddOrder extends React.Component {
 
   async saveOrder(orderStatus) {
     const {
-      customer, rows, total, subTotal, discountPercent, discountAmount, notes, taxes, poNumber,
+      customer, rows, total, subTotal, notes, taxes, poNumber,
     } = this.state;
     const status = orderStatus;
     const orderDetails = rows.map(row => (

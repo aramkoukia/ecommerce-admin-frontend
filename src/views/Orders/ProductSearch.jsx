@@ -105,7 +105,7 @@ class ProductSearch extends React.Component {
   }
 
   async componentDidMount() {
-    const suggestions = await ProductService.getProducts();
+    const suggestions = await ProductService.getProductsForSales();
     this.setState({ suggestions });
   }
 
@@ -116,7 +116,8 @@ class ProductSearch extends React.Component {
   }
 
   getSuggestionValue = (suggestion) => {
-    this.props.productChanged(suggestion);
+    const { productChanged } = this.props;
+    productChanged(suggestion);
     return suggestion.productName;
   }
 

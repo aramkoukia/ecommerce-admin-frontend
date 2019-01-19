@@ -1,6 +1,5 @@
 import React from 'react';
 import MUIDataTable from 'mui-datatables';
-import AddLocation from 'views/Locations/AddLocation';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
@@ -66,8 +65,6 @@ export default class Locations extends React.Component {
 
     return (
       <div>
-        {/* <Button color='primary'>Add Location</Button>
-        <AddLocation /> */}
         <GridContainer>
           <GridItem xs={12} sm={12} md={12}>
             <Card>
