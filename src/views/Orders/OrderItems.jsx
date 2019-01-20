@@ -43,6 +43,7 @@ function OrderItems(props) {
               <TableCell>Product</TableCell>
               <TableCell numeric>Amount</TableCell>
               <TableCell numeric>Unit Price</TableCell>
+              <TableCell numeric>Discount</TableCell>
               <TableCell numeric>Total Price</TableCell>
             </TableRow>
           </TableHead>
@@ -52,6 +53,7 @@ function OrderItems(props) {
                 <TableCell>{row.product.productName}</TableCell>
                 <TableCell numeric align="right">{row.amount}</TableCell>
                 <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
+                <TableCell numeric>{ccyFormat(row.totalDiscount)}</TableCell>
                 <TableCell numeric>{ccyFormat(row.total)}</TableCell>
               </TableRow>
             ))}
@@ -59,6 +61,10 @@ function OrderItems(props) {
               <TableCell rowSpan={5} />
               <TableCell colSpan={2}>Subtotal</TableCell>
               <TableCell numeric>{ccyFormat(order.subTotal)}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell colSpan={2}>Total Discount</TableCell>
+              <TableCell numeric>{ccyFormat(order.totalDiscount)}</TableCell>
             </TableRow>
             {order.orderTax.map(tax => (
               <TableRow>
