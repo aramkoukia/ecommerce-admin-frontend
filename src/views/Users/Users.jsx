@@ -17,7 +17,7 @@ import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import GridItem from '../../components/Grid/GridItem';
 import Snackbar from '../../components/Snackbar/Snackbar';
-
+import CustomInput from '../../components/CustomInput/CustomInput';
 import UserService from '../../services/UserService';
 import RoleService from '../../services/RoleService';
 
@@ -32,6 +32,7 @@ export default class Users extends React.Component {
       openSnackbar: false,
       snackbarMessage: '',
       snackbarColor: '',
+      newPassword: '',
       locations: [
         { locationId: 1, locationName: 'Vancouver' },
         { locationId: 2, locationName: 'Abbotsford' },
@@ -43,6 +44,8 @@ export default class Users extends React.Component {
 
     this.rowClicked = this.rowClicked.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
+    this.handleResetPassword = this.handleResetPassword.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
@@ -142,6 +145,45 @@ export default class Users extends React.Component {
     });
   }
 
+  async handleResetPassword() {
+    const {
+      selectedRow,
+      newPassword,
+    } = this.state;
+
+    if (newPassword === '') {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Password cannot be empty!',
+        snackbarColor: 'danger',
+      });
+    }
+
+    const passwordResetInfo = {
+      email: selectedRow[1],
+      newPassword,
+    };
+
+    const result = await UserService.ResetPassword(passwordResetInfo);
+    if (result && result.succeeded) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Users\'s password was successfully updated!',
+        snackbarColor: 'success',
+      });
+    } else {
+      const message = result.errors.map((error) => {
+        return error.description;
+      }).join('. ');
+
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: message,
+        snackbarColor: 'danger',
+      });
+    }
+  }
+
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
   }
@@ -221,6 +263,7 @@ export default class Users extends React.Component {
       openDialog,
       locationChecked,
       roleChecked,
+      newPassword,
     } = this.state;
 
     return (
@@ -305,6 +348,27 @@ export default class Users extends React.Component {
                         </ListItem>
                       ))}
                     </List>
+                  </CardBody>
+                </Card>
+                <Card>
+                  <CardHeader color="info">
+                    <div>Reset Password</div>
+                  </CardHeader>
+                  <CardBody>
+                    <CustomInput
+                      labelText="New Password"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                      inputProps={{
+                        onChange: this.handleChange,
+                        name: 'newPassword',
+                        value: newPassword,
+                      }}
+                    />
+                    <Button onClick={this.handleResetPassword} color="primary">
+                      Reset
+                    </Button>
                   </CardBody>
                 </Card>
               </GridItem>
