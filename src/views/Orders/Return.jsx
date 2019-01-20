@@ -77,7 +77,7 @@ export class Return extends React.Component {
 
   async saveOrder(orderStatus) {
     const {
-      rows, total, subTotal, discountPercent, discountAmount, notes, poNumber, order,
+      rows, total, subTotal, totalDiscount, notes, poNumber, order,
     } = this.state;
     const originalOrderId = this.props.match.params.id;
     const status = orderStatus;
@@ -88,8 +88,14 @@ export class Return extends React.Component {
         productId: row.productId,
         amount: row.amount,
         unitPrice: row.unitPrice,
-        total: row.amount * row.unitPrice,
+        discountPercent: row.discountPercent,
+        discountAmount: row.discountAmount,
+        discountType: row.discountType,
+        total: row.total - (row.discountType === 'percent' ? (row.discountPercent / 100) * row.total : row.discountAmount),
+        totalDiscount: (row.discountType === 'percent' ? (row.discountPercent / 100) * row.total : row.discountAmount),
+        subTotal: row.total,
       }));
+
     const orderTaxes = order.orderTax.map(tax => (
       {
         taxId: tax.taxId,
@@ -100,8 +106,7 @@ export class Return extends React.Component {
       locationId: Location.getStoreLocation(),
       subTotal,
       total,
-      discountPercent,
-      discountAmount,
+      totalDiscount,
       customerId: order.customer !== null ? order.customer.customerId : null,
       status,
       notes,
@@ -136,13 +141,11 @@ export class Return extends React.Component {
     }
   }
 
-  priceChanged(rows, subTotal, total, discount, discountPercent, discountAmount) {
+  priceChanged(rows, subTotal, total, totalDiscount) {
     this.setState({
       subTotal,
       total,
-      discountPercent,
-      discountAmount,
-      discount,
+      totalDiscount,
       rows,
     });
   }

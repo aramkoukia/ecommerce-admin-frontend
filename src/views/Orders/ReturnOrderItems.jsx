@@ -23,15 +23,13 @@ export default class ReturnOrderItems extends React.Component {
       orderRows: [],
       subTotal: 0,
       total: 0,
-      discount: 0,
-      discountAmount: 0,
-      discountPercentage: 0,
+      totalDiscount: 0,
     };
   }
 
   componentDidMount() {
     const {
-      rows, discountAmount, discountPercentage, taxes, priceChanged,
+      rows, taxes, priceChanged,
     } = this.props;
     this.setState({
       orderRows: rows,
@@ -39,15 +37,16 @@ export default class ReturnOrderItems extends React.Component {
 
     this.handleQuantityChanged = this.handleQuantityChanged.bind(this);
 
-    const subTotal = this.subtotal(rows);
-    const discount = this.discount(subTotal, discountAmount, discountPercentage);
-    const total = this.total(subTotal, discount, taxes);
+    const totalDiscount = this.discount(rows);
+    const subTotal = this.subtotal(rows, totalDiscount);
+    const total = this.total(subTotal, totalDiscount, taxes);
+
     this.setState({
       subTotal,
       total,
-      discount,
+      totalDiscount,
     });
-    priceChanged(rows, subTotal, total, discount, discountPercentage, discountAmount);
+    priceChanged(rows, subTotal, total, totalDiscount);
   }
 
   handleChange = name => (event) => {
@@ -57,7 +56,6 @@ export default class ReturnOrderItems extends React.Component {
   };
 
   handleQuantityChanged(event) {
-    const { discountAmount, discountPercentage } = this.state;
     const { taxes, priceChanged } = this.props;
     const orderRows = this.state.orderRows.slice();
     for (const i in orderRows) {
@@ -68,44 +66,41 @@ export default class ReturnOrderItems extends React.Component {
       }
     }
 
-    const subTotal = this.subtotal(orderRows);
-    const discount = this.discount(subTotal, discountAmount, discountPercentage);
-    const total = this.total(subTotal, discount, taxes);
+    const totalDiscount = this.discount(orderRows);
+    const subTotal = this.subtotal(orderRows, totalDiscount);
+    const total = this.total(subTotal, totalDiscount, taxes);
     this.setState({
       subTotal,
       total,
-      discount,
+      totalDiscount,
     });
 
-    priceChanged(orderRows, subTotal, total, discount, discountPercentage, discountAmount);
+    priceChanged(orderRows, subTotal, total, totalDiscount);
   }
 
-  subtotal(items) {
+  subtotal(items, totalDiscount) {
     if (items.length === 0) {
       return 0;
     }
-    return items.map(({ unitPrice, amount }) => unitPrice * amount).reduce((sum, i) => sum + i, 0);
+    return items.map(({ unitPrice, amount }) => unitPrice * amount).reduce((sum, i) => sum + i, 0) - totalDiscount;
   }
 
-  discount(subtotal, discountAmount, discountPercentage) {
-    let invoiceDiscount = 0;
-    if (discountPercentage > 0) {
-      invoiceDiscount = (discountPercentage / 100) * subtotal;
-    } else if (discountAmount > 0) {
-      invoiceDiscount = discountAmount;
+  discount(orderRows) {
+    if (orderRows.length === 0) {
+      return 0;
     }
-    return invoiceDiscount;
+    return orderRows.map(({ totalDiscount }) => totalDiscount).reduce((sum, i) => sum + i, 0);
   }
 
   total(subTotal, discount, taxes) {
-    const totalTax = taxes.map((tax => (tax.tax.percentage / 100) * subTotal)).reduce((sum, i) => sum + i, 0);
+    const totalTax = taxes.map(({ tax }) => (tax.percentage / 100) * subTotal).reduce((sum, i) => sum + i, 0);
     return subTotal + totalTax - discount;
   }
 
   render() {
     const { taxes } = this.props;
     const {
-      orderRows, total, subTotal, discount,
+      orderRows, total, subTotal, totalDiscount,
     } = this.state;
     return (
       <Card>
@@ -119,6 +114,7 @@ export default class ReturnOrderItems extends React.Component {
                 <TableCell>Product</TableCell>
                 <TableCell numeric>Amount</TableCell>
                 <TableCell numeric>Unit Price</TableCell>
+                <TableCell numeric>Discount</TableCell>
                 <TableCell numeric>Total Price</TableCell>
               </TableRow>
             </TableHead>
@@ -136,13 +132,18 @@ export default class ReturnOrderItems extends React.Component {
                     />
                   </TableCell>
                   <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
+                  <TableCell numeric>{ccyFormat(row.totalDiscount)}</TableCell>
                   <TableCell numeric>{ccyFormat(row.total)}</TableCell>
                 </TableRow>
               ))}
               <TableRow>
                 <TableCell rowSpan={5} />
-                <TableCell colSpan={2}>Subtotal</TableCell>
+                <TableCell colSpan={3}>Subtotal</TableCell>
                 <TableCell numeric>{ccyFormat(subTotal)}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell colSpan={3}>Total Discount</TableCell>
+                <TableCell numeric>{ccyFormat(totalDiscount)}</TableCell>
               </TableRow>
               {taxes.map(tax => (
                 <TableRow>
@@ -152,7 +153,7 @@ export default class ReturnOrderItems extends React.Component {
                 </TableRow>
               ))}
               <TableRow>
-                <TableCell colSpan={2}><h3>Refund Total</h3></TableCell>
+                <TableCell colSpan={3}><h3>Refund Total</h3></TableCell>
                 <TableCell numeric><Success><h3>{ccyFormat(total)}</h3></Success></TableCell>
               </TableRow>
             </TableBody>

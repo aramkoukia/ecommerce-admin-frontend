@@ -42,8 +42,8 @@ export default class OrderTable extends React.Component {
     const { rows, taxes, priceChanged } = this.props;
     if (rows.length !== prevProps.rows.length) {
       let orderRows = rows.slice();
-      const subTotal = this.subtotal(orderRows);
       const totalDiscount = this.discount(orderRows);
+      const subTotal = this.subtotal(orderRows, totalDiscount);      
       const total = this.total(subTotal, totalDiscount, taxes);
       this.setState({
           orderRows: rows,
@@ -66,9 +66,8 @@ export default class OrderTable extends React.Component {
           break;
         }
     }
-
-    const subTotal = this.subtotal(orderRows);
     const totalDiscount = this.discount(orderRows);
+    const subTotal = this.subtotal(orderRows, totalDiscount);
     const total = this.total(subTotal, totalDiscount, taxes);
     this.setState(
       {
@@ -93,8 +92,8 @@ export default class OrderTable extends React.Component {
         }
     }
 
-    const subTotal = this.subtotal(orderRows);
     const totalDiscount = this.discount(orderRows);
+    const subTotal = this.subtotal(orderRows, totalDiscount);
     const total = this.total(subTotal, totalDiscount, taxes);
     this.setState({
         subTotal: subTotal,
@@ -117,8 +116,8 @@ export default class OrderTable extends React.Component {
         }
     }
 
-    const subTotal = this.subtotal(orderRows);
     const totalDiscount = this.discount(orderRows);
+    const subTotal = this.subtotal(orderRows, totalDiscount);
     const total = this.total(subTotal, totalDiscount, taxes);
     this.setState(
       {
@@ -142,9 +141,9 @@ export default class OrderTable extends React.Component {
           break;
         }
     }
-
-    const subTotal = this.subtotal(orderRows);
+    
     const totalDiscount = this.discount(orderRows);
+    const subTotal = this.subtotal(orderRows, totalDiscount);
     const total = this.total(subTotal, totalDiscount, taxes);
     this.setState(
       {
@@ -167,11 +166,13 @@ export default class OrderTable extends React.Component {
     return `${num.toFixed(2)} $`;
   }
 
-  subtotal(items) {
+  subtotal(items, totalDiscount) {
     if(items.length === 0) {
       return 0;
     }
-    return items.map(({ salesPrice, qty }) => salesPrice * qty).reduce((sum, i) => sum + i, 0);
+
+    const subTotal = items.map(({ salesPrice, qty }) => salesPrice * qty).reduce((sum, i) => sum + i, 0);
+    return  subTotal - totalDiscount;
   }
 
   discount(orderRows) {

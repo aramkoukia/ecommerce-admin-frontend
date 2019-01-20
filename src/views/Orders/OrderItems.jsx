@@ -58,12 +58,12 @@ function OrderItems(props) {
               </TableRow>
             ))}
             <TableRow>
-              <TableCell rowSpan={5} />
-              <TableCell colSpan={2}>Subtotal</TableCell>
+              <TableCell rowSpan={4} />
+              <TableCell colSpan={3}>Subtotal</TableCell>
               <TableCell numeric>{ccyFormat(order.subTotal)}</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell colSpan={2}>Total Discount</TableCell>
+              <TableCell colSpan={3}>Total Discount</TableCell>
               <TableCell numeric>{ccyFormat(order.totalDiscount)}</TableCell>
             </TableRow>
             {order.orderTax.map(tax => (
@@ -74,7 +74,7 @@ function OrderItems(props) {
               </TableRow>
             ))}
             <TableRow>
-              <TableCell colSpan={2}><h3>Total</h3></TableCell>
+              <TableCell colSpan={4}><h3>Total</h3></TableCell>
               <TableCell numeric><Success><h3>{ccyFormat(order.total)}</h3></Success></TableCell>
             </TableRow>
           </TableBody>
