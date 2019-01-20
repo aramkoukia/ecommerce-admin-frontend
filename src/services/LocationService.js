@@ -1,23 +1,23 @@
 import RestUtilities from './RestUtilities';
 
 export default class LocationService {
-  static getLocations() {
+  static async getLocations() {
     try {
-      const response = RestUtilities.get(
+      const response = await RestUtilities.get(
         'locations',
       );
-      return response;
+      return response.content;
     } catch (err) {
       return false;
     }
   }
 
-  static getLocationsForUser() {
+  static async getLocationsForUser() {
     try {
-      const response = RestUtilities.get(
+      const response = await RestUtilities.get(
         'locations/foruser',
       );
-      return response;
+      return response.content;
     } catch (err) {
       return false;
     }

@@ -44,7 +44,7 @@ const Sidebar = ({ ...props }) => {
   //   if (Auth.isSignedIn()) {
   //     LocationService.getLocationsForUser()
   //       .then(results => this.setState({
-  //         locations: results.content,
+  //         locations: results,
   //         isLoading: false,
   //       }));
   //   }

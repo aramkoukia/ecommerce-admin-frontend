@@ -48,7 +48,7 @@ class Header extends React.Component {
     if (Auth.isSignedIn()) {
       LocationService.getLocationsForUser()
         .then(results => this.setState({
-          locations: results.content,
+          locations: results,
           isLoading: false,
         }));
     }
@@ -83,9 +83,7 @@ class Header extends React.Component {
             </Button>
           </div>
           <Hidden smDown implementation="css">
-            { !isLoading && (
-              <HeaderLinks locations={locations} location={locations[0] && locations[0].locationId} />
-            )}
+            <HeaderLinks locations={locations} location={locations && locations[0] && locations[0].locationId} />
           </Hidden>
           <Hidden mdUp implementation="css">
             <IconButton
