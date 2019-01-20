@@ -5,13 +5,15 @@ import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
+import Button from "@material-ui/core/Button";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import TextField from '@material-ui/core/TextField';
-// import Checkbox from "@material-ui/core/Checkbox";
 import Success from "components/Typography/Success.jsx";
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import DeleteIcon from '@material-ui/icons/Delete';
+import IconButton from '@material-ui/core/IconButton';
 
 export default class OrderTable extends React.Component {
   constructor(props) {
@@ -35,6 +37,7 @@ export default class OrderTable extends React.Component {
     this.handleDiscountAmountChanged = this.handleDiscountAmountChanged.bind(this);
     this.handleDiscountPercentChanged = this.handleDiscountPercentChanged.bind(this);
     this.handleDiscountTypeChanged = this.handleDiscountTypeChanged.bind(this);
+    this.handleProductRemoved = this.handleProductRemoved.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -54,6 +57,11 @@ export default class OrderTable extends React.Component {
 
       priceChanged(subTotal, total, totalDiscount);
     }
+  }
+
+  handleProductRemoved(event, productId) {
+    let { productRemoved } = this.props;
+    productRemoved(productId);
   }
 
   handleDiscountTypeChanged(event, discountType) {
@@ -211,7 +219,12 @@ export default class OrderTable extends React.Component {
           {orderRows.map(row => {
             return (
               <TableRow key={row.productId}>
-                <TableCell>{row.productName}</TableCell>
+                <TableCell>
+                  <IconButton aria-label="Delete" onClick={this.handleProductRemoved}>
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                  {row.productName}
+                </TableCell>
                 <TableCell>
                   <TextField
                     name={row.productId}
@@ -223,7 +236,7 @@ export default class OrderTable extends React.Component {
                 </TableCell>                
                 <TableCell numeric>{this.ccyFormat(row.salesPrice)}</TableCell>
                 <TableCell>
-                  <ToggleButtonGroup 
+                  <ToggleButtonGroup
                     name={row.productId}
                     value={row.discountType} 
                     exclusive 
@@ -274,7 +287,7 @@ export default class OrderTable extends React.Component {
             </TableRow>
           )}
           <TableRow>
-            <TableCell colSpan={3}><h3>Total</h3></TableCell>
+            <TableCell colSpan={4}><h3>Total</h3></TableCell>
             <TableCell numeric><Success><h3>{this.ccyFormat(total)}</h3></Success></TableCell>
           </TableRow>
         </TableBody>

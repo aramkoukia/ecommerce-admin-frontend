@@ -83,6 +83,7 @@ export default class AddOrder extends React.Component {
 
     this.productChanged = this.productChanged.bind(this);
     this.priceChanged = this.priceChanged.bind(this);
+    this.productRemoved = this.productRemoved.bind(this);
     this.customerChanged = this.customerChanged.bind(this);
     this.clearCustomer = this.clearCustomer.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -107,6 +108,9 @@ export default class AddOrder extends React.Component {
     this.setState(prevState => ({
       rows: [...prevState.rows, newRow],
     }));
+  }
+
+  productRemoved(productId) {
   }
 
   priceChanged(subTotal, total) {
@@ -421,6 +425,7 @@ export default class AddOrder extends React.Component {
                       discountAmount={discountAmount}
                       discountPercent={discountPercent}
                       priceChanged={this.priceChanged}
+                      productRemoved={this.productRemoved}
                     />
                   </GridItem>
                 </GridContainer>
