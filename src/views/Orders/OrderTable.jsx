@@ -61,7 +61,7 @@ export default class OrderTable extends React.Component {
 
   handleProductRemoved(event, productId) {
     let { productRemoved } = this.props;
-    productRemoved(productId);
+    productRemoved(Number(event.currentTarget.name));
   }
 
   handleDiscountTypeChanged(event, discountType) {
@@ -220,8 +220,12 @@ export default class OrderTable extends React.Component {
             return (
               <TableRow key={row.productId}>
                 <TableCell>
-                  <IconButton aria-label="Delete" onClick={this.handleProductRemoved}>
-                    <DeleteIcon fontSize="small" />
+                  <IconButton aria-label="Delete" 
+                    name={row.productId}
+                    onClick={this.handleProductRemoved}>
+                    <DeleteIcon 
+                      name={row.productId} 
+                      fontSize="small" />
                   </IconButton>
                   {row.productName}
                 </TableCell>

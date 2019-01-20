@@ -111,6 +111,10 @@ export default class AddOrder extends React.Component {
   }
 
   productRemoved(productId) {
+    this.setState({ rows: this.state.rows.filter((row) => {
+        return row.productId !== productId;
+      })
+    });
   }
 
   priceChanged(subTotal, total) {
