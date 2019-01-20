@@ -9,7 +9,7 @@ import Paper from '@material-ui/core/Paper';
 import MenuItem from '@material-ui/core/MenuItem';
 import Popper from '@material-ui/core/Popper';
 import { withStyles } from '@material-ui/core/styles';
-import CustomerService from '../../services/CustomerService.js';
+import CustomerService from '../../services/CustomerService';
 
 function renderInputComponent(inputProps) {
   const {
@@ -126,6 +126,7 @@ class CustomerSearch extends React.Component {
             && (suggestion.email.toLowerCase().includes(inputValue)
               || suggestion.lastName.toLowerCase().includes(inputValue)
               || suggestion.customerCode.toLowerCase().includes(inputValue)
+              || suggestion.companyName.toLowerCase().includes(inputValue)
               || suggestion.firstName.toLowerCase().includes(inputValue));
 
         if (keep) {
