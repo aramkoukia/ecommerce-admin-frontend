@@ -27,7 +27,7 @@ export default class OrderTable extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentDidMount(prevProps) {
     const { rows } = this.props;
     this.setState({
       orderRows: rows
@@ -43,7 +43,8 @@ export default class OrderTable extends React.Component {
   componentDidUpdate(prevProps) {
     // Typical usage (don't forget to compare props):
     const { rows, taxes, priceChanged } = this.props;
-    if (rows.length !== prevProps.rows.length) {
+    if (rows.length !== prevProps.rows.length
+        || JSON.stringify(prevProps.rows) !== JSON.stringify(rows)) {
       let orderRows = rows.slice();
       const totalDiscount = this.discount(orderRows);
       const subTotal = this.subtotal(orderRows, totalDiscount);      
@@ -59,7 +60,7 @@ export default class OrderTable extends React.Component {
     }
   }
 
-  handleProductRemoved(event, productId) {
+  handleProductRemoved(event) {
     let { productRemoved } = this.props;
     productRemoved(Number(event.currentTarget.name));
   }

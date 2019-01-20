@@ -104,16 +104,25 @@ export default class AddOrder extends React.Component {
   }
 
   productChanged(product) {
-    const newRow = createRow(product.productId, product.productName, product.salesPrice);
-    this.setState(prevState => ({
-      rows: [...prevState.rows, newRow],
-    }));
+    const { rows } = this.state;
+    const newRows = JSON.parse(JSON.stringify(rows));
+    const foundProduct = newRows.find(row => row.productId === product.productId);
+    if (foundProduct) {
+      foundProduct.qty = Number(foundProduct.qty) + 1;
+      foundProduct.total = foundProduct.qty * foundProduct.price;
+      this.setState({ rows: newRows });
+    } else {
+      const newRow = createRow(product.productId, product.productName, product.salesPrice);
+      this.setState(prevState => ({
+        rows: [...prevState.rows, newRow],
+      }));
+    }
   }
 
   productRemoved(productId) {
-    this.setState({ rows: this.state.rows.filter((row) => {
-        return row.productId !== productId;
-      })
+    const { rows } = this.state;
+    this.setState({
+      rows: rows.filter(row => row.productId !== productId),
     });
   }
 
@@ -222,7 +231,10 @@ export default class AddOrder extends React.Component {
     };
 
     const result = await OrderService.saveOrder(order);
-    if (result === false || result === null || result.StatusCode === 500 || result.StatusCode === 400) {
+    if (result === false
+        || result === null
+        || result.StatusCode === 500
+        || result.StatusCode === 400) {
       this.setState({
         openSnackbar: true,
         snackbarMessage: 'Oops, looks like something went wrong!',
@@ -234,6 +246,7 @@ export default class AddOrder extends React.Component {
   }
 
   async saveAsPaid() {
+    const { history } = this.props;
     const result = await this.saveOrder('Paid');
     if (result && result.orderId) {
       this.setState({
@@ -241,31 +254,33 @@ export default class AddOrder extends React.Component {
         snackbarMessage: 'Order was Saved and marked as Paid successfully!',
         snackbarColor: 'success',
       });
-      this.props.history.push(`/order/${result.orderId}`);
+      history.push(`/order/${result.orderId}`);
     }
   }
 
   async saveAsDraft() {
     const result = await this.saveOrder('Draft');
+    const { history } = this.props;
     if (result && result.orderId) {
       this.setState({
         openSnackbar: true,
         snackbarMessage: 'Order was Saved as Draft successfully!',
         snackbarColor: 'warning',
       });
-      this.props.history.push(`/order/${result.orderId}`);
+      history.push(`/order/${result.orderId}`);
     }
   }
 
   async saveAsHold() {
     const result = await this.saveOrder('OnHold');
+    const { history } = this.props;
     if (result && result.orderId) {
       this.setState({
         openSnackbar: true,
         snackbarMessage: 'Order was Saved and marked as On Hold successfully!',
         snackbarColor: 'warning',
       });
-      this.props.history.push(`/order/${result.orderId}`);
+      history.push(`/order/${result.orderId}`);
     }
   }
 
@@ -280,13 +295,15 @@ export default class AddOrder extends React.Component {
     }
 
     const result = await this.saveOrder('Account');
+    const { history } = this.props;
+
     if (result && result.orderId) {
       this.setState({
         openSnackbar: true,
         snackbarMessage: "Order was Saved and Added to customer's Credit successfully!",
         snackbarColor: 'info',
       });
-      this.props.history.push(`/order/${result.orderId}`);
+      history.push(`/order/${result.orderId}`);
     }
   }
 
