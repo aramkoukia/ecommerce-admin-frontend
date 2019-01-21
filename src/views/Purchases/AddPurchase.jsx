@@ -68,10 +68,19 @@ export default class AddPurchase extends React.Component {
   }
 
   productChanged(product) {
-    const newRow = createRow(product.productId, product.productName);
-    this.setState(prevState => ({
-      rows: [...prevState.rows, newRow],
-    }));
+    const { rows } = this.state;
+    const newRows = JSON.parse(JSON.stringify(rows));
+    const foundProduct = newRows.find(row => row.productId === product.productId);
+    if (foundProduct) {
+      foundProduct.qty = Number(foundProduct.qty) + 1;
+      foundProduct.total = foundProduct.qty * foundProduct.unitPrice;
+      this.setState({ rows: newRows });
+    } else {
+      const newRow = createRow(product.productId, product.productName, product.salesPrice);
+      this.setState(prevState => ({
+        rows: [...prevState.rows, newRow],
+      }));
+    }
   }
 
   priceChanged(subTotal, total) {

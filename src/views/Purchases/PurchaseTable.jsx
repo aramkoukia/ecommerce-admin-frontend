@@ -34,7 +34,8 @@ export default class PurchaseTable extends React.Component {
   componentDidUpdate(prevProps) {
     // Typical usage (don't forget to compare props):
     const { rows, taxes, priceChanged } = this.props;
-    if (rows.length !== prevProps.rows.length) {
+    if (rows.length !== prevProps.rows.length
+        || JSON.stringify(prevProps.rows) !== JSON.stringify(rows)) {
       let purchaseRows = rows.slice();
       const subTotal = this.subtotal(purchaseRows);
       const total = this.total(subTotal);
