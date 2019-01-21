@@ -142,7 +142,7 @@ export default class PurchaseTable extends React.Component {
                         type="number"
                       />
                 </TableCell>
-                <TableCell>
+                <TableCell numeric align="right">
                   <TextField
                         name={row.productId}
                         value={row.unitPrice}

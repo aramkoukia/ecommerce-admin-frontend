@@ -1,16 +1,14 @@
 import React from 'react';
-// @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
-// core components
-import Card from 'components/Card/Card.jsx';
-import CardHeader from 'components/Card/CardHeader.jsx';
-import CardBody from 'components/Card/CardBody.jsx';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
-import Success from 'components/Typography/Success.jsx';
 import TableRow from '@material-ui/core/TableRow';
+import Card from 'components/Card/Card';
+import CardHeader from 'components/Card/CardHeader';
+import CardBody from 'components/Card/CardBody';
+import Success from 'components/Typography/Success';
 
 const style = {
   cardTitleWhite: {

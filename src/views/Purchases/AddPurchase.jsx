@@ -105,6 +105,7 @@ export default class AddPurchase extends React.Component {
       total,
       supplier,
       notes,
+      status: 'Purchased',
       purchaseDetail: purchaseDetails,
     };
 

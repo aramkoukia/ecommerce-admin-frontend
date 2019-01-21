@@ -26,7 +26,7 @@ export default class Purchases extends React.Component {
   }
 
   purchasesList() {
-    const columns = ['purchaseId', 'purchaseDate', 'supplier', 'deliveryDate', 'subTotal', 'total', 'createdByUserId'];
+    const columns = ['purchaseId', 'purchaseDate', 'supplier', 'deliveryDate', 'status', 'total', 'createdByUserId'];
     PurchaseService.getPurchases()
       .then((results) => results.map(row => {
           return columns.map(column => {
@@ -100,9 +100,9 @@ export default class Purchases extends React.Component {
         },
       },
       {
-        name: 'Sub Total',
+        name: 'Status',
         options: {
-          filter: false,
+          filter: true,
         },
       },
       {
@@ -146,5 +146,3 @@ export default class Purchases extends React.Component {
     );
   }
 }
-
-// export default withStyles(styles)(Customers);
