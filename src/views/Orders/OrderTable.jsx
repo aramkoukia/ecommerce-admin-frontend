@@ -48,7 +48,7 @@ export default class OrderTable extends React.Component {
       let orderRows = rows.slice();
       const totalDiscount = this.discount(orderRows);
       const subTotal = this.subtotal(orderRows, totalDiscount);      
-      const total = this.total(subTotal, totalDiscount, taxes);
+      const total = this.total(subTotal, taxes);
       this.setState({
           orderRows: rows,
           subTotal: subTotal,
@@ -77,7 +77,7 @@ export default class OrderTable extends React.Component {
     }
     const totalDiscount = this.discount(orderRows);
     const subTotal = this.subtotal(orderRows, totalDiscount);
-    const total = this.total(subTotal, totalDiscount, taxes);
+    const total = this.total(subTotal, taxes);
     this.setState(
       {
         subTotal: subTotal,
@@ -103,7 +103,7 @@ export default class OrderTable extends React.Component {
 
     const totalDiscount = this.discount(orderRows);
     const subTotal = this.subtotal(orderRows, totalDiscount);
-    const total = this.total(subTotal, totalDiscount, taxes);
+    const total = this.total(subTotal, taxes);
     this.setState({
         subTotal: subTotal,
         total: total,  
@@ -127,7 +127,7 @@ export default class OrderTable extends React.Component {
 
     const totalDiscount = this.discount(orderRows);
     const subTotal = this.subtotal(orderRows, totalDiscount);
-    const total = this.total(subTotal, totalDiscount, taxes);
+    const total = this.total(subTotal, taxes);
     this.setState(
       {
         subTotal: subTotal,
@@ -153,7 +153,7 @@ export default class OrderTable extends React.Component {
     
     const totalDiscount = this.discount(orderRows);
     const subTotal = this.subtotal(orderRows, totalDiscount);
-    const total = this.total(subTotal, totalDiscount, taxes);
+    const total = this.total(subTotal, taxes);
     this.setState(
       {
         subTotal: subTotal,
@@ -195,9 +195,9 @@ export default class OrderTable extends React.Component {
     return totalDiscount;
   }
 
-  total(subTotal, discount, taxes) {
+  total(subTotal, taxes) {
     const totalTax = taxes.map(({ percentage }) => (percentage / 100) * subTotal).reduce((sum, i) => sum + i, 0);
-    return subTotal + totalTax - discount;
+    return subTotal + totalTax;
   }
 
   render() {
