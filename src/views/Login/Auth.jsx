@@ -1,7 +1,4 @@
 import * as React from 'react';
-// import { Link, Redirect, RouteComponentProps } from "react-router-dom";
-// import { RoutePaths } from "../../routes/routes";
-// import { PropTypes } from "proprtypes";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import Button from '../../components/CustomButtons/Button';
@@ -9,13 +6,8 @@ import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
-// import CardAvatar from "components/Card/CardAvatar.jsx";
 import CardBody from '../../components/Card/CardBody';
 import Auth from '../../services/Auth';
-// import CardFooter from "components/Card/CardFooter.jsx";
-// import dashboardPath from "../../routes/dashboard";
-// let authStyle = require("../../styles/auth.styl");
-
 
 export default class SignIn extends React.Component {
   constructor(props) {
@@ -32,6 +24,7 @@ export default class SignIn extends React.Component {
     };
 
     this.handleSignIn = this.handleSignIn.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
 
     if (Auth.isSignedIn()) {
@@ -39,13 +32,7 @@ export default class SignIn extends React.Component {
     }
   }
 
-  // static get contextTypes() {
-  //   return {
-  //     router: PropTypes.object.isRequired,
-  //   };
-  // }
-
-  handleSignIn(event) {
+  handleSignIn() {
     this.setState({ errors: null, initialLoad: false, loading: true });
     Auth
       .signIn(this.state.userInfo.username, this.state.userInfo.password)
@@ -57,6 +44,12 @@ export default class SignIn extends React.Component {
         }
         this.setState({ loading: false });
       });
+  }
+
+  handleKeyPress(event) {
+    if(event.key == 'Enter'){
+      this.handleSignIn();
+    }
   }
 
   handleInputChange(event) {
@@ -108,8 +101,7 @@ export default class SignIn extends React.Component {
         initialLoadContent = (
           <div className="alert alert-info" role="alert">
             <strong>Sesion Expired</strong>
-            {' '}
-You need to sign in again.
+            You need to sign in again.
           </div>
         );
       }
@@ -167,6 +159,7 @@ You need to sign in again.
                       }}
                       inputProps={{
                         onChange: this.handleInputChange,
+                        onKeyPress: this.handleKeyPress,
                         name: 'password',
                         type: 'password',
                       }}

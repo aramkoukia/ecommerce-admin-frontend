@@ -26,7 +26,7 @@ export default class Customers extends React.Component {
   customersList() {
     this.setState({ loading: true });
     const columns = ['customerCode', 'companyName', 'firstName', 'lastName', 'email', 'creditLimit', 'pstNumber'];
-    CustomerService.getCustomers()
+    CustomerService.getCustomersWithBalance()
       .then(results => results.map(row => columns.map(column => row[column] || '')))
       .then(data => this.setState({ customers: data, loading: false }));
   }

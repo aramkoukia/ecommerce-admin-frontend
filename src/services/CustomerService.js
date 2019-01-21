@@ -12,6 +12,17 @@ export default class CustomerService {
     }
   }
 
+  static async getCustomersWithBalance() {
+    try {
+      const response = await RestUtilities.get(
+        'customers/withbalance',
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getCustomer(customerId) {
     try {
       const response = await RestUtilities.get(
