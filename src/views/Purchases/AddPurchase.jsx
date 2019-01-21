@@ -118,6 +118,15 @@ export default class AddPurchase extends React.Component {
       purchaseDetail: purchaseDetails,
     };
 
+    // if (!(deliveryDate instanceof Date)) {
+    //   this.setState({
+    //     openSnackbar: true,
+    //     snackbarMessage: 'Enter a valid Delivery Date!',
+    //     snackbarColor: 'danger',
+    //   });
+    //   return false;
+    // }
+
     const result = await PurchaseService.savePurchase(purchase);
     if (result === false || result === null || result.StatusCode === 500 || result.StatusCode === 400) {
       this.setState({
@@ -189,6 +198,7 @@ export default class AddPurchase extends React.Component {
                     <CustomInput
                       labelText="Delivery Date"
                       formControlProps={{
+                        required: 'required',
                       }}
                       inputProps={{
                         value: deliveryDate,
