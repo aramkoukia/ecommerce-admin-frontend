@@ -242,19 +242,20 @@ export default class OrderTable extends React.Component {
                 <TableCell numeric>{this.ccyFormat(row.salesPrice)}</TableCell>
                 <TableCell>
                   <ToggleButtonGroup
+                    hidden
                     name={row.productId}
                     value={row.discountType} 
                     exclusive 
                     onChange={this.handleDiscountTypeChanged}
-                    style = {{width: 100}}>
+                    style = {{width: 50}}>
                     <ToggleButton value="percent" name={row.productId}>
                       %
                     </ToggleButton>
-                    <ToggleButton value="amount" name={row.productId}>
+                    {/* <ToggleButton value="amount" name={row.productId}>
                       $
-                    </ToggleButton>
+                    </ToggleButton> */}
                   </ToggleButtonGroup>
-                  { row.discountType == "amount" &&
+                   { row.discountType == "amount" &&
                   ( <TextField
                       name={row.productId}
                       value={row.discountAmount}
@@ -269,7 +270,7 @@ export default class OrderTable extends React.Component {
                       onChange={this.handleDiscountPercentChanged}
                       type="number"
                       style = {{width: 100}}
-                    /> )}
+                    /> )} %
                 </TableCell>                
                 <TableCell numeric>{this.ccyFormat(row.salesPrice * row.qty)}</TableCell>
               </TableRow>
