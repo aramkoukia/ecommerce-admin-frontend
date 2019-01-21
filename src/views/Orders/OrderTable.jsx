@@ -43,7 +43,8 @@ export default class OrderTable extends React.Component {
     // Typical usage (don't forget to compare props):
     const { rows, taxes, priceChanged } = this.props;
     if (rows.length !== prevProps.rows.length
-        || JSON.stringify(prevProps.rows) !== JSON.stringify(rows)) {
+        || JSON.stringify(prevProps.rows) !== JSON.stringify(rows)
+        || taxes.length !== prevProps.taxes.length) {
       let orderRows = rows.slice();
       const totalDiscount = this.discount(orderRows);
       const subTotal = this.subtotal(orderRows, totalDiscount);      
