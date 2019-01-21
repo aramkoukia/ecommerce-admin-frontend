@@ -5,7 +5,6 @@ import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
-import Button from "@material-ui/core/Button";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import TextField from '@material-ui/core/TextField';
@@ -27,7 +26,7 @@ export default class OrderTable extends React.Component {
     };
   }
 
-  componentDidMount(prevProps) {
+  componentDidMount() {
     const { rows } = this.props;
     this.setState({
       orderRows: rows
@@ -276,24 +275,34 @@ export default class OrderTable extends React.Component {
               </TableRow>
             );
           })}
-          <TableRow>
-            <TableCell rowSpan={4} />
-            <TableCell colSpan={3}>Total Discount</TableCell>
+          <TableRow style={{'background-color': 'lightgray'}}>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell>Total Discount</TableCell>
+            <TableCell></TableCell>
             <TableCell numeric>{this.ccyFormat(totalDiscount)}</TableCell>
           </TableRow>          
-          <TableRow>
-            <TableCell colSpan={3}>Subtotal</TableCell>
+          <TableRow style={{'background-color': 'lightgray'}}>
+            <TableCell></TableCell>
+            <TableCell></TableCell>            
+            <TableCell>Subtotal</TableCell>
+            <TableCell></TableCell>
             <TableCell numeric>{this.ccyFormat(subTotal)}</TableCell>
           </TableRow>
           {taxes.map((tax) =>
             <TableRow>
-              <TableCell >{tax.taxName}</TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell>{tax.taxName}</TableCell>
               <TableCell numeric>{`${(tax.percentage).toFixed(0)} %`}</TableCell>
               <TableCell numeric>{this.ccyFormat((tax.percentage / 100) * subTotal)}</TableCell>
             </TableRow>
           )}
           <TableRow>
-            <TableCell colSpan={4}><h3>Total</h3></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell><h3>Total</h3></TableCell>
+            <TableCell></TableCell>
             <TableCell numeric><Success><h3>{this.ccyFormat(total)}</h3></Success></TableCell>
           </TableRow>
         </TableBody>
