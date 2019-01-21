@@ -96,14 +96,14 @@ const dashboardRoutes = [
     component: Purchases,
     permission: Permissions.ViewPurchases,
   },
-  {
-    path: '/discounts',
-    sidebarName: 'Discounts',
-    navbarName: '',
-    icon: MoneyOff,
-    component: Discounts,
-    permission: Permissions.ViewDiscounts,
-  },
+  // {
+  //   path: '/discounts',
+  //   sidebarName: 'Discounts',
+  //   navbarName: '',
+  //   icon: MoneyOff,
+  //   component: Discounts,
+  //   permission: Permissions.ViewDiscounts,
+  // },
   {
     path: '/locations',
     sidebarName: 'Locations',
