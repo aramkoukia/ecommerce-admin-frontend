@@ -83,7 +83,7 @@ class Header extends React.Component {
             </Button>
           </div>
           <Hidden smDown implementation="css">
-            <HeaderLinks locations={locations} location={locations && locations[0] && locations[0].locationId} />
+            <HeaderLinks locations={locations} />
           </Hidden>
           <Hidden mdUp implementation="css">
             <IconButton

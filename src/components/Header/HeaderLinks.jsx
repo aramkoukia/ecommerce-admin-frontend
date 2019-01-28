@@ -4,6 +4,7 @@ import PowerSettingsNew from '@material-ui/icons/PowerSettingsNew';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
 import FormControl from '@material-ui/core/FormControl';
 import headerLinksStyle from '../../assets/jss/material-dashboard-react/components/headerLinksStyle';
 import Button from '../CustomButtons/Button';
@@ -21,39 +22,49 @@ class HeaderLinks extends React.Component {
     super(props);
 
     this.state = {
-      location: 1,
+      locationId: 1,
     };
   }
 
   componentDidMount() {
-    const { locations } = this.props;
-    this.setState({ location: locations[0] && locations[0].locationId });
-    Location.setStoreLocation(locations[0] && locations[0].locationId);
+    const currentLocationId = Location.getStoreLocation();
+    const { locationId } = this.state;
+    if (currentLocationId && locationId && Number(currentLocationId) !== locationId) {
+      this.setState({ locationId: Number(currentLocationId) });
+    }
   }
 
   handleChange = (event) => {
-    this.setState({ [event.target.name]: event.target.value });
     Location.setStoreLocation(event.target.value);
+    this.setState({ locationId: event.target.value });
+    window.location.reload();
   };
 
   render() {
     const { classes, locations } = this.props;
-    const { location } = this.state;
+    const { locationId } = this.state;
 
     return (
       <div>
         {
         Auth.isSignedIn() ? (
           <div>
-            <FormControl className={classes.formControl}>
+            <FormControl className={classes.formControl} variant="outlined">
               <InputLabel htmlFor="location">Location</InputLabel>
               <Select
-                value={location}
+                value={locationId}
                 onChange={this.handleChange}
                 inputProps={{
                   name: 'location',
                   id: 'location',
                 }}
+                input={
+                  <OutlinedInput
+                    labelWidth="70px"
+                    name="location"
+                    id="location"
+                  />
+                }                
               >
                 { locations && (
                   locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))
