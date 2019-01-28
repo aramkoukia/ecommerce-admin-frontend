@@ -39,7 +39,7 @@ export default class Orders extends React.Component {
   };
 
   ordersList() {
-    const columns = ['locationName', 'orderId', 'orderDate', 'subTotal', 'total', 'status', 'poNumber', 'paidAmount', 'createdByUserId'];
+    const columns = ['locationName', 'orderId', 'orderDate', 'subTotal', 'total', 'status', 'poNumber', 'paidAmount', 'createdByUserId', 'paymentTypeName'];
     const locationId = Location.getStoreLocation();
     const { showAllOrders } = this.state;
     this.setState({ loading: true });
@@ -108,6 +108,7 @@ export default class Orders extends React.Component {
         name: 'Sub Total',
         options: {
           filter: false,
+          display: false,
         },
       },
       {
@@ -129,7 +130,14 @@ export default class Orders extends React.Component {
           filter: false,
         },
       },
-      'Created By'];
+      'Created By',
+      {
+        name: 'Payment Type',
+        options: {
+          display: false,
+        },
+      },
+    ];
 
     const options = {
       filterType: 'checkbox',

@@ -5,6 +5,13 @@ import PropTypes from 'prop-types';
 import Chip from '@material-ui/core/Chip';
 import Print from '@material-ui/icons/Print';
 import Email from '@material-ui/icons/Email';
+import Radio from '@material-ui/core/Radio';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControl from '@material-ui/core/FormControl';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import GridContainer from '../../components/Grid/GridContainer';
 import Button from '../../components/CustomButtons/Button';
@@ -42,6 +49,8 @@ export class Order extends React.Component {
       snackbarMessage: '',
       snackbarColor: '',
       loading: false,
+      openDialog: false,
+      paymentTypeId: '23',
     };
 
     this.saveAsPaid = this.saveAsPaid.bind(this);
@@ -50,6 +59,9 @@ export class Order extends React.Component {
     this.emailOrder = this.emailOrder.bind(this);
     this.printOrder = this.printOrder.bind(this);
     this.cancelHold = this.cancelHold.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.pay = this.pay.bind(this);
+    this.handlePaymentTypeChange = this.handlePaymentTypeChange.bind(this);
   }
 
   async componentDidMount() {
@@ -57,7 +69,19 @@ export class Order extends React.Component {
     const order = await OrderService.getOrderDetail(orderId);
     this.setState({
       order,
+      openDialog: false,
+      paymentTypeId: '23',
     });
+  }
+
+  handleClose = () => {
+    this.setState({
+      openDialog: false,
+    });
+  };
+
+  handlePaymentTypeChange = (event) => {
+    this.setState({ paymentTypeId: event.target.value });
   }
 
   handleChange(event) {
@@ -65,8 +89,8 @@ export class Order extends React.Component {
   }
 
   async updateOrderStatus(orderStatus) {
-    const { order } = this.state;
-    const result = await OrderService.updateOrderStatus(order.orderId, { orderStatus });
+    const { order, paymentTypeId } = this.state;
+    const result = await OrderService.updateOrderStatus(order.orderId, { orderStatus, paymentTypeId });
     if (result === false || result === null || result.StatusCode === 500 || result.StatusCode === 400) {
       this.setState({
         openSnackbar: true,
@@ -107,6 +131,12 @@ export class Order extends React.Component {
   }
 
   async saveAsPaid() {
+    this.setState({
+      openDialog: true,
+    });
+  }
+
+  async pay() {
     const status = 'Paid';
     const result = await this.updateOrderStatus(status);
     if (result && result.orderId) {
@@ -114,6 +144,7 @@ export class Order extends React.Component {
         openSnackbar: true,
         snackbarMessage: 'Order was marked as Paid successfully!',
         snackbarColor: 'success',
+        openDialog: false,
       });
 
       const { order } = this.state;
@@ -160,13 +191,14 @@ export class Order extends React.Component {
 
   render() {
     const {
-      order, openSnackbar, snackbarMessage, snackbarColor, loading,
+      order, openSnackbar, snackbarMessage, snackbarColor, loading, openDialog, paymentTypeId,
     } = this.state;
 
     return (
       <div>
         { order && (
-        <GridContainer>
+        <div>
+         <GridContainer>
           <GridItem xs={12} sm={12} md={12}>
             <Card>
               <CardHeader color="primary">
@@ -250,6 +282,43 @@ export class Order extends React.Component {
             />
           </GridItem>
         </GridContainer>
+         <Dialog
+          open={openDialog}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <Card>
+              <CardHeader color="info">
+                <div>Select Payment Option</div>
+              </CardHeader>
+              <CardBody>
+                <FormControl component="fieldset">
+                  <RadioGroup
+                    aria-label="Payment Type"
+                    name="paymentType"
+                    value={paymentTypeId}
+                    onChange={this.handlePaymentTypeChange}
+                  >
+                    <FormControlLabel value="22" control={<Radio />} label="Cash" />
+                    <FormControlLabel value="23" control={<Radio />} label="Credit Card / Debit" />
+                    <FormControlLabel value="24" control={<Radio />} label="Cheque" />
+                    <FormControlLabel value="25" control={<Radio />} label="Paypal and Amazon + USD Account" />
+                  </RadioGroup>
+                </FormControl>
+              </CardBody>
+            </Card>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+            <Button onClick={this.pay} color="primary">
+              Pay
+            </Button>
+          </DialogActions>
+        </Dialog>
+       </div>
         ) }
       </div>
     );

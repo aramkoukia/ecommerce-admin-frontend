@@ -2,6 +2,12 @@ import React from 'react';
 import Check from '@material-ui/icons/Check';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControl from '@material-ui/core/FormControl';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import GridItem from '../../components/Grid/GridItem';
@@ -79,6 +85,8 @@ export default class AddOrder extends React.Component {
       allTaxes: [],
       openSnackbar: false,
       chargePst: true,
+      openDialog: false,
+      paymentTypeId: '23',
     };
 
     this.productChanged = this.productChanged.bind(this);
@@ -92,6 +100,9 @@ export default class AddOrder extends React.Component {
     this.saveAsHold = this.saveAsHold.bind(this);
     this.saveAsAccount = this.saveAsAccount.bind(this);
     this.handleCheckChange = this.handleCheckChange.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.pay = this.pay.bind(this);
+    this.handlePaymentTypeChange = this.handlePaymentTypeChange.bind(this);
   }
 
   async componentDidMount() {
@@ -100,41 +111,18 @@ export default class AddOrder extends React.Component {
       taxes,
       allTaxes: taxes,
       chargePst: true,
+      paymentTypeId: '23',
     });
   }
 
-  productChanged(product) {
-    const { rows } = this.state;
-    const newRows = JSON.parse(JSON.stringify(rows));
-    const foundProduct = newRows.find(row => row.productId === product.productId);
-    if (foundProduct) {
-      foundProduct.qty = Number(foundProduct.qty) + 1;
-      foundProduct.total = foundProduct.qty * foundProduct.price;
-      this.setState({ rows: newRows });
-    } else {
-      const newRow = createRow(product.productId, product.productName, product.salesPrice);
-      this.setState(prevState => ({
-        rows: [...prevState.rows, newRow],
-      }));
-    }
-  }
-
-  productRemoved(productId) {
-    const { rows } = this.state;
+  handleClose = () => {
     this.setState({
-      rows: rows.filter(row => row.productId !== productId),
+      openDialog: false,
     });
-  }
+  };
 
-  priceChanged(subTotal, total) {
-    this.setState({
-      subTotal,
-      total,
-    });
-  }
-
-  clearCustomer() {
-    this.setState({ customer: null });
+  handlePaymentTypeChange = event => {
+    this.setState({ paymentTypeId: event.target.value });
   }
 
   updateTaxes(customer, chargePst) {
@@ -193,7 +181,7 @@ export default class AddOrder extends React.Component {
 
   async saveOrder(orderStatus) {
     const {
-      customer, rows, total, subTotal, notes, taxes, poNumber,
+      customer, rows, total, subTotal, notes, taxes, poNumber, paymentTypeId,
     } = this.state;
     const status = orderStatus;
     const orderDetails = rows.map(row => (
@@ -224,6 +212,7 @@ export default class AddOrder extends React.Component {
       status,
       notes,
       poNumber,
+      paymentTypeId: Number(paymentTypeId),
       pstNumber: customer !== null ? customer.pstNumber : null,
       orderTax: orderTaxes,
       orderDetail: orderDetails,
@@ -245,7 +234,7 @@ export default class AddOrder extends React.Component {
     return result;
   }
 
-  async saveAsPaid() {
+  async pay() {
     const { history } = this.props;
     const result = await this.saveOrder('Paid');
     if (result && result.orderId) {
@@ -255,6 +244,46 @@ export default class AddOrder extends React.Component {
         snackbarColor: 'success',
       });
       history.push(`/order/${result.orderId}`);
+    }
+  }
+
+  async saveAsPaid() {
+    this.setState({
+      openDialog: true,
+    });
+  }
+
+  clearCustomer() {
+    this.setState({ customer: null });
+  }
+
+  priceChanged(subTotal, total) {
+    this.setState({
+      subTotal,
+      total,
+    });
+  }
+
+  productRemoved(productId) {
+    const { rows } = this.state;
+    this.setState({
+      rows: rows.filter(row => row.productId !== productId),
+    });
+  }
+
+  productChanged(product) {
+    const { rows } = this.state;
+    const newRows = JSON.parse(JSON.stringify(rows));
+    const foundProduct = newRows.find(row => row.productId === product.productId);
+    if (foundProduct) {
+      foundProduct.qty = Number(foundProduct.qty) + 1;
+      foundProduct.total = foundProduct.qty * foundProduct.price;
+      this.setState({ rows: newRows });
+    } else {
+      const newRow = createRow(product.productId, product.productName, product.salesPrice);
+      this.setState(prevState => ({
+        rows: [...prevState.rows, newRow],
+      }));
     }
   }
 
@@ -315,6 +344,8 @@ export default class AddOrder extends React.Component {
       discountPercent,
       customer, openSnackbar, snackbarMessage, snackbarColor, notes, poNumber,
       chargePst,
+      openDialog,
+      paymentTypeId,
     } = this.state;
 
     return (
@@ -515,11 +546,43 @@ export default class AddOrder extends React.Component {
             />
           </GridItem>
         </GridContainer>
+        <Dialog
+          open={openDialog}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <Card>
+              <CardHeader color="info">
+                <div>Select Payment Option</div>
+              </CardHeader>
+              <CardBody>
+                <FormControl component="fieldset">
+                  <RadioGroup
+                    aria-label="Payment Type"
+                    name="paymentType"
+                    value={paymentTypeId}
+                    onChange={this.handlePaymentTypeChange}
+                  >
+                    <FormControlLabel value="22" control={<Radio />} label="Cash" />
+                    <FormControlLabel value="23" control={<Radio />} label="Credit Card / Debit" />
+                    <FormControlLabel value="24" control={<Radio />} label="Cheque" />
+                    <FormControlLabel value="25" control={<Radio />} label="Paypal and Amazon + USD Account" />
+                  </RadioGroup>
+                </FormControl>
+              </CardBody>
+            </Card>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+            <Button onClick={this.pay} color="primary">
+              Pay
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }
 }
-
-// AddOrder.propTypes = {
-//   classes: PropTypes.object.isRequired,
-// };
