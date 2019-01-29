@@ -1,5 +1,6 @@
 import React from 'react';
 import MUIDataTable from 'mui-datatables';
+import TextField from '@material-ui/core/TextField';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
@@ -134,34 +135,24 @@ export default class ProductReport extends React.Component {
               <CardBody>
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={3}>
-                    <CustomInput
-                      labelText="From Date"
-                      formControlProps={{
-                        required: 'required',
-                      }}
-                      inputProps={{
-                        // value: deliveryDate,
-                        name: 'fromDate',
-                        onChange: this.handleChange,
-                        type: 'date',
+                    <TextField
+                      id="date"
+                      label="From Date"
+                      type="date"
+                      InputLabelProps={{
+                        shrink: true,
                       }}
                     />
                   </GridItem>
                   <GridItem xs={12} sm={12} md={3}>
-                    <CustomInput
-                      labelText="To Date"
-                      formControlProps={{
-                        required: 'required',
-                      }}
-                      inputProps={{
-                        // value: deliveryDate,
-                        name: 'toDate',
-                        onChange: this.handleChange,
-                        type: 'date',
+                    <TextField
+                      id="date"
+                      label="To Date"
+                      type="date"
+                      InputLabelProps={{
+                        shrink: true,
                       }}
                     />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={3}>
                   </GridItem>
                 </GridContainer>
                 {/* <MUIDataTable
