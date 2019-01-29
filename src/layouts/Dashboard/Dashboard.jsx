@@ -1,41 +1,33 @@
-/* eslint-disable */
-import React from "react";
-import PropTypes from "prop-types";
-import { Switch, Route, Redirect } from "react-router-dom";
-// creates a beautiful scrollbar
-import PerfectScrollbar from "perfect-scrollbar";
-import "perfect-scrollbar/css/perfect-scrollbar.css";
-// @material-ui/core components
-import withStyles from "@material-ui/core/styles/withStyles";
-// core components
-import Header from "components/Header/Header.jsx";
-import Footer from "components/Footer/Footer.jsx";
-import Sidebar from "components/Sidebar/Sidebar.jsx";
-
-import dashboardRoutes from "routes/dashboard.jsx";
-
-import dashboardStyle from "assets/jss/material-dashboard-react/layouts/dashboardStyle.jsx";
-
-import image from "assets/img/sidebar-2.jpg";
-import logo from "assets/img/logo.png";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Switch, Route, Redirect } from 'react-router-dom';
+import PerfectScrollbar from 'perfect-scrollbar';
+import 'perfect-scrollbar/css/perfect-scrollbar.css';
+import withStyles from '@material-ui/core/styles/withStyles';
+import Header from 'components/Header/Header';
+import Footer from 'components/Footer/Footer';
+import Sidebar from 'components/Sidebar/Sidebar';
+import dashboardRoutes from 'routes/dashboard';
+import dashboardStyle from 'assets/jss/material-dashboard-react/layouts/dashboardStyle';
+import image from 'assets/img/sidebar-2.jpg';
+import logo from 'assets/img/logo.png';
 import Auth from '../../services/Auth';
 
 const switchRoutes = (
   <Switch>
     {dashboardRoutes.map((prop, key) => {
-      if (prop.redirect)
-        return <Redirect from={prop.path} to={prop.to} key={key} />;
+      if (prop.redirect) {return <Redirect from={prop.path} to={prop.to} key={key} />;}
       return <Route path={prop.path} component={prop.component} key={key} onEnter={requireAuth} />;
     })}
   </Switch>
 );
 
-function requireAuth(nextState, replace) {  
+function requireAuth(nextState, replace) {
   if (!Auth.isSignedIn) {
     replace({
       pathname: '/login',
-      state: { nextPathname: nextState.location.pathname }
-    })
+      state: { nextPathname: nextState.location.pathname },
+    });
   }
 }
 
@@ -43,20 +35,21 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      mobileOpen: false
+      mobileOpen: false,
     };
     this.resizeFunction = this.resizeFunction.bind(this);
   }
+
   handleDrawerToggle = () => {
     this.setState({ mobileOpen: !this.state.mobileOpen });
   };
 
   getRoute() {
-    return this.props.location.pathname !== "/maps";
+    return this.props.location.pathname !== '/maps';
   }
 
   isLogin() {
-    return this.props.location.pathname === "/login";
+    return this.props.location.pathname === '/login';
   }
 
   resizeFunction() {
@@ -64,12 +57,14 @@ class App extends React.Component {
       this.setState({ mobileOpen: false });
     }
   }
+
   componentDidMount() {
-    if (navigator.platform.indexOf("Win") > -1) {
+    if (navigator.platform.indexOf('Win') > -1) {
       const ps = new PerfectScrollbar(this.refs.mainPanel);
     }
-    window.addEventListener("resize", this.resizeFunction);
+    window.addEventListener('resize', this.resizeFunction);
   }
+
   componentDidUpdate(e) {
     if (e.history.location.pathname !== e.location.pathname) {
       this.refs.mainPanel.scrollTop = 0;
@@ -78,14 +73,16 @@ class App extends React.Component {
       }
     }
   }
+
   componentWillUnmount() {
-    window.removeEventListener("resize", this.resizeFunction);
+    window.removeEventListener('resize', this.resizeFunction);
   }
+
   render() {
     const { classes, ...rest } = this.props;
     return (
       <div className={classes.wrapper}>
-      
+
         { !this.isLogin() ? (
           <Sidebar
             routes={dashboardRoutes}
@@ -96,7 +93,8 @@ class App extends React.Component {
             open={this.state.mobileOpen}
             color="blue"
             {...rest}
-          /> ) : <div></div>
+          />
+) : <div />
         }
 
         <div className={classes.mainPanel} ref="mainPanel">
@@ -123,7 +121,7 @@ class App extends React.Component {
 }
 
 App.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(dashboardStyle)(App);

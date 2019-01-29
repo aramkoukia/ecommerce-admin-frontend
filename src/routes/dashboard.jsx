@@ -16,6 +16,11 @@ import Locations from '../views/Locations/Locations';
 import Customers from '../views/Customers/Customers';
 import Customer from '../views/Customers/Customer';
 import Reports from '../views/Reports/Reports';
+import SalesReport from '../views/Reports/SalesReport';
+import ProductReport from '../views/Reports/ProductReport';
+import CustomerReport from '../views/Reports/CustomerReport';
+import PaymentReport from '../views/Reports/PaymentReport';
+import PurchaseReport from '../views/Reports/PurchaseReport';
 import AddOrder from '../views/Orders/AddOrder';
 import Orders from '../views/Orders/Orders';
 import Discounts from '../views/Discounts/Discounts';
@@ -73,14 +78,6 @@ const dashboardRoutes = [
     permission: Permissions.ViewCustomers,
   },
   {
-    path: '/reports',
-    sidebarName: 'Reports',
-    navbarName: '',
-    icon: InsertChart,
-    component: Reports,
-    permission: Permissions.ViewReports,
-  },
-  {
     path: '/addpurchase',
     sidebarName: 'New Purchase',
     navbarName: '',
@@ -104,6 +101,54 @@ const dashboardRoutes = [
   //   component: Discounts,
   //   permission: Permissions.ViewDiscounts,
   // },
+  {
+    path: '/reports',
+    sidebarName: 'Dashboard',
+    navbarName: '',
+    icon: InsertChart,
+    component: Reports,
+    permission: Permissions.ViewReports,
+  },
+  {
+    path: '/salesreport',
+    sidebarName: 'Sales Report',
+    navbarName: '',
+    icon: InsertChart,
+    component: SalesReport,
+    permission: Permissions.ViewReports,
+  },
+  {
+    path: '/productreport',
+    sidebarName: 'Product Report',
+    navbarName: '',
+    icon: InsertChart,
+    component: ProductReport,
+    permission: Permissions.ViewReports,
+  },
+  {
+    path: '/customerreport',
+    sidebarName: 'Customer Report',
+    navbarName: '',
+    icon: InsertChart,
+    component: CustomerReport,
+    permission: Permissions.ViewReports,
+  },
+  {
+    path: '/paymentreport',
+    sidebarName: 'Payment Report',
+    navbarName: '',
+    icon: InsertChart,
+    component: PaymentReport,
+    permission: Permissions.ViewReports,
+  },
+  {
+    path: '/purchasereport',
+    sidebarName: 'Purchase Report',
+    navbarName: '',
+    icon: InsertChart,
+    component: PurchaseReport,
+    permission: Permissions.ViewReports,
+  },
   {
     path: '/locations',
     sidebarName: 'Locations',
