@@ -77,13 +77,13 @@ export default class ProductTypeSalesReport extends React.Component {
         name: 'Category',
       },
       {
-        name: 'Vancouver',
+        name: 'Vancouver Sales($)',
         options: {
           filter: false,
         },
       },
       {
-        name: 'Abbotsford',
+        name: 'Abbotsford Sales($)',
         options: {
           filter: true,
         },

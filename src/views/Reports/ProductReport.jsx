@@ -89,13 +89,13 @@ export default class ProductSalesReport extends React.Component {
         },
       },
       {
-        name: 'Vancouver',
+        name: 'Vancouver Sales ($)',
         options: {
           filter: false,
         },
       },
       {
-        name: 'Abbotsford',
+        name: 'Abbotsford Sales ($)',
         options: {
           filter: true,
         },
