@@ -9,12 +9,6 @@ import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import ReportService from '../../services/ReportService';
 
-
-function dateFormat(dateString) {
-  const date = new Date(dateString);
-  return `${date.toLocaleDateString()}`;
-}
-
 export default class SalesReport extends React.Component {
   constructor(props) {
     super(props);
@@ -41,14 +35,9 @@ export default class SalesReport extends React.Component {
 
   search() {
     const { fromDate, toDate } = this.state;
-    const columns = ['purchaseId', 'purchaseDate', 'supplier', 'deliveryDate', 'status', 'total', 'createdByUserId'];
-    ReportService.getSalesReport(fromDate, toDate)
-      .then(results => results.map(row => columns.map((column) => {
-        if (column === 'purchaseDate') {
-          return dateFormat(row[column]);
-        }
-        return row[column] || '';
-      })))
+    const columns = ['locationName', 'status', 'transactions', 'gst', 'pst', 'otherTax', 'discount', 'subTotal', 'total'];
+    ReportService.getSales(fromDate, toDate)
+      .then(results => results.map(row => columns.map(column => row[column] || '')))
       .then(data => this.setState({ reportData: data }));
   }
 
@@ -85,42 +74,32 @@ export default class SalesReport extends React.Component {
 
     const columns = [
       {
-        name: 'Purchase Number',
-        options: {
-          filter: false,
-        },
-      },
-      {
-        name: 'Purchase Date',
-        options: {
-          filter: false,
-        },
-      },
-      {
-        name: 'Supplier',
-        options: {
-          filter: true,
-        },
-      },
-      {
-        name: 'Delivery Date',
-        options: {
-          filter: false,
-        },
+        name: 'Location',
       },
       {
         name: 'Status',
-        options: {
-          filter: true,
-        },
       },
       {
-        name: 'Total',
-        options: {
-          filter: false,
-        },
+        name: 'Transactions',
       },
-      'Created By'];
+      {
+        name: 'GST ($)',
+      },
+      {
+        name: 'PST ($)',
+      },
+      {
+        name: 'Other Tax ($)',
+      },
+      {
+        name: 'Discount ($)',
+      },
+      {
+        name: 'Sub Total ($)',
+      },
+      {
+        name: 'Total ($)',
+      }];
 
     const options = {
       filterType: 'checkbox',
