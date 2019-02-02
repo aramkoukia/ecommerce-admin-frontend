@@ -404,6 +404,18 @@ export default class AddOrder extends React.Component {
                                 }}
                               />
                             </GridItem>
+                            <GridItem xs={12} sm={12} md={3}>
+                              <CustomInput
+                                labelText="Phone Number"
+                                formControlProps={{
+                                  fullWidth: true,
+                                }}
+                                inputProps={{
+                                  disabled: true,
+                                  value: `${customer.phoneNumber} `,
+                                }}
+                              />
+                            </GridItem>
                           </GridContainer>
                           <GridContainer alignItems="flex-end">
                             <GridItem xs={12} sm={12} md={3}>

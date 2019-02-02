@@ -34,8 +34,8 @@ function renderInputComponent(inputProps) {
 }
 
 function renderSuggestion(suggestion, { query, isHighlighted }) {
-  const matches = match(`${suggestion.companyName} - ${suggestion.email} - ${suggestion.firstName} ${suggestion.lastName}`, query);
-  const parts = parse(`${suggestion.companyName} - ${suggestion.email} - ${suggestion.firstName} ${suggestion.lastName}`, matches);
+  const matches = match(`${suggestion.companyName} - ${suggestion.email} - ${suggestion.firstName} ${suggestion.lastName} - ${suggestion.phoneNumber}`, query);
+  const parts = parse(`${suggestion.companyName} - ${suggestion.email} - ${suggestion.firstName} ${suggestion.lastName} - ${suggestion.phoneNumber}`, matches);
 
   return (
     <MenuItem selected={isHighlighted} component="div">
@@ -87,7 +87,6 @@ class CustomerSearch extends React.Component {
     super(props);
 
     this.state = {
-      single: '',
       popper: '',
       suggestions: [],
       filteredSuggestions: [],
@@ -110,7 +109,7 @@ class CustomerSearch extends React.Component {
 
   getSuggestionValue = (suggestion) => {
     this.props.customerChanged(suggestion);
-    return `${suggestion.email} - ${suggestion.firstName} ${suggestion.lastName} - ${suggestion.companyName}`;
+    return `${suggestion.email} - ${suggestion.firstName} ${suggestion.lastName} - ${suggestion.companyName} - ${suggestion.phoneNumber}`;
   }
 
   getSuggestions(value) {
@@ -122,11 +121,11 @@ class CustomerSearch extends React.Component {
     return inputLength === 0
       ? []
       : suggestions.filter((suggestion) => {
-        const keep = count < 5
+        const keep = count < 10
             && (suggestion.email.toLowerCase().includes(inputValue)
               || suggestion.lastName.toLowerCase().includes(inputValue)
-              || suggestion.customerCode.toLowerCase().includes(inputValue)
               || suggestion.companyName.toLowerCase().includes(inputValue)
+              || suggestion.phoneNumber.toLowerCase().includes(inputValue)
               || suggestion.firstName.toLowerCase().includes(inputValue));
 
         if (keep) {
@@ -158,7 +157,7 @@ class CustomerSearch extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { filteredSuggestions , popper } = this.state;
+    const { filteredSuggestions, popper } = this.state;
 
     const autosuggestProps = {
       renderInputComponent,

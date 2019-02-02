@@ -25,7 +25,7 @@ export default class Customers extends React.Component {
 
   customersList() {
     this.setState({ loading: true });
-    const columns = ['customerCode', 'companyName', 'firstName', 'lastName', 'email', 'creditLimit', 'pstNumber'];
+    const columns = ['customerCode', 'companyName', 'firstName', 'lastName', 'email', 'creditLimit', 'pstNumber', 'phoneNumber'];
     CustomerService.getCustomersWithBalance()
       .then(results => results.map(row => columns.map(column => row[column] || '')))
       .then(data => this.setState({ customers: data, loading: false }));
@@ -67,7 +67,7 @@ export default class Customers extends React.Component {
       },
     };
 
-    const columns = ['Customer Code', 'Company Name', 'First Name', 'Last Name', 'Email', 'Credit Limit ($)', 'PST Number'];
+    const columns = ['Customer Code', 'Company Name', 'First Name', 'Last Name', 'Email', 'Credit Limit ($)', 'PST Number', 'Phone Number'];
 
     const options = {
       filterType: 'checkbox',

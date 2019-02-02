@@ -28,7 +28,7 @@ export default class SignIn extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this);
 
     if (Auth.isSignedIn()) {
-      return this.props.history.push('reports');
+      return this.props.history.push('neworder');
     }
   }
 
@@ -38,7 +38,7 @@ export default class SignIn extends React.Component {
       .signIn(this.state.userInfo.username, this.state.userInfo.password)
       .then((response) => {
         if (!response.is_error) {
-          this.props.history.push('reports');
+          this.props.history.push('neworder');
         } else {
           this.setState({ error: response.error_content.error_description });
         }
@@ -47,7 +47,7 @@ export default class SignIn extends React.Component {
   }
 
   handleKeyPress(event) {
-    if(event.key == 'Enter'){
+    if (event.key == 'Enter') {
       this.handleSignIn();
     }
   }
