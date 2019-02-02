@@ -57,6 +57,7 @@ export default class AddPurchase extends React.Component {
       supplier: '',
       rows: [],
       notes: '',
+      poNumber: '',
       deliveryDate: today.getDate(),
       openSnackbar: false,
     };
@@ -96,7 +97,7 @@ export default class AddPurchase extends React.Component {
 
   async save() {
     const {
-      supplier, rows, total, subTotal, notes, deliveryDate,
+      supplier, rows, total, subTotal, notes, deliveryDate, poNumber,
     } = this.state;
     const purchaseDetails = rows.map(row => (
       {
@@ -114,6 +115,7 @@ export default class AddPurchase extends React.Component {
       total,
       supplier,
       notes,
+      poNumber,
       status: 'Purchased',
       purchaseDetail: purchaseDetails,
     };
@@ -153,7 +155,7 @@ export default class AddPurchase extends React.Component {
 
   render() {
     const {
-      rows, openSnackbar, snackbarMessage, snackbarColor, notes, supplier, deliveryDate,
+      rows, openSnackbar, snackbarMessage, snackbarColor, notes, supplier, deliveryDate, poNumber
     } = this.state;
 
     return (
@@ -208,7 +210,21 @@ export default class AddPurchase extends React.Component {
                       }}
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={12} md={9}>
+                  <GridItem xs={12} sm={12} md={3}>
+                    <CustomInput
+                      labelText="PO Number"
+                      formControlProps={{
+                        required: 'required',
+                      }}
+                      inputProps={{
+                        value: poNumber,
+                        name: 'poNumber',
+                        onChange: this.handleChange,
+                        type: 'text',
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={6}>
                     <CustomInput
                       labelText="Notes"
                       formControlProps={{

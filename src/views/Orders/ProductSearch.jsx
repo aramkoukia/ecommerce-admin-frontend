@@ -34,8 +34,8 @@ function renderInputComponent(inputProps) {
 }
 
 function renderSuggestion(suggestion, { query, isHighlighted }) {
-  const matches = match(`${suggestion.productCode} - ${suggestion.productName} - (Price: $${suggestion.salesPrice}) - (Van: ${suggestion.vancouverBalance}) - (Abb: ${suggestion.abbotsfordBalance})`, query);
-  const parts = parse(`${suggestion.productCode} - ${suggestion.productName} - (Price: $${suggestion.salesPrice}) - (Van: ${suggestion.vancouverBalance}) - (Abb: ${suggestion.abbotsfordBalance})`, matches);
+  const matches = match(`${suggestion.productCode} - ${suggestion.productName} - (Price: $${suggestion.salesPrice}) - (Van: ${suggestion.vancouverBalance} - Abb: ${suggestion.abbotsfordBalance} - Total: ${suggestion.vancouverBalance + suggestion.abbotsfordBalance})`, query);
+  const parts = parse(`${suggestion.productCode} - ${suggestion.productName} - (Price: $${suggestion.salesPrice}) - (Van: ${suggestion.vancouverBalance} - Abb: ${suggestion.abbotsfordBalance} - Total: ${suggestion.vancouverBalance + suggestion.abbotsfordBalance})`, matches);
 
   return (
     <MenuItem selected={isHighlighted} component="div">
@@ -130,7 +130,7 @@ class ProductSearch extends React.Component {
     return inputLength === 0
       ? []
       : suggestions.filter((suggestion) => {
-        const keep = count < 5
+        const keep = count < 10
             && (suggestion.productName.toLowerCase().includes(inputValue)
               || suggestion.productCode.toLowerCase().includes(inputValue));
 
