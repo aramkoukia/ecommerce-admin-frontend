@@ -43,6 +43,71 @@ export default class ReportService {
     } catch (err) {
       return false;
     }
-  }    
+  }
 
+  static async getSalesReport(fromDate, toDate) {
+    try {
+      const response = await RestUtilities.get(
+        `reports/salesreport?fromDate=${fromDate}&toDate=${toDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async getSales(fromDate, toDate) {
+    try {
+      const response = await RestUtilities.get(
+        `reports/sales?fromDate=${fromDate}&toDate=${toDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async getProductSales(fromDate, toDate) {
+    try {
+      const response = await RestUtilities.get(
+        `reports/productsales?fromDate=${fromDate}&toDate=${toDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async getProductTypeSales(fromDate, toDate) {
+    try {
+      const response = await RestUtilities.get(
+        `reports/producttypesales?fromDate=${fromDate}&toDate=${toDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async getPayments(fromDate, toDate) {
+    try {
+      const response = await RestUtilities.get(
+        `reports/payments?fromDate=${fromDate}&toDate=${toDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async getPurchases(fromDate, toDate) {
+    try {
+      const response = await RestUtilities.get(
+        `reports/purchases?fromDate=${fromDate}&toDate=${toDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }

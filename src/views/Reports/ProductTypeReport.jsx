@@ -9,7 +9,7 @@ import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import ReportService from '../../services/ReportService';
 
-export default class ProductSalesReport extends React.Component {
+export default class ProductTypeSalesReport extends React.Component {
   constructor(props) {
     super(props);
 
@@ -35,8 +35,8 @@ export default class ProductSalesReport extends React.Component {
 
   search() {
     const { fromDate, toDate } = this.state;
-    const columns = ['productTypeName', 'productCode', 'productName', 'vanTotalSales', 'abbTotalSales'];
-    ReportService.getProductSales(fromDate, toDate)
+    const columns = ['productTypeName', 'vanTotalSales', 'abbTotalSales'];
+    ReportService.getProductTypeSales(fromDate, toDate)
       .then(results => results.map(row => columns.map(column => row[column] || '')))
       .then(data => this.setState({ reportData: data }));
   }
@@ -77,18 +77,6 @@ export default class ProductSalesReport extends React.Component {
         name: 'Category',
       },
       {
-        name: 'Product Code',
-        options: {
-          filter: false,
-        },
-      },
-      {
-        name: 'Product Name',
-        options: {
-          filter: true,
-        },
-      },
-      {
         name: 'Vancouver',
         options: {
           filter: false,
@@ -116,7 +104,7 @@ export default class ProductSalesReport extends React.Component {
           <GridItem xs={12} sm={12} md={12}>
             <Card>
               <CardHeader color="primary">
-                <div className={styles.cardTitleWhite}>Product Sales Report</div>
+                <div className={styles.cardTitleWhite}>Product Type Sales Report</div>
               </CardHeader>
               <CardBody>
                 <GridContainer>

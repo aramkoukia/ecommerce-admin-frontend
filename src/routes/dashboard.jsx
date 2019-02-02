@@ -18,6 +18,7 @@ import Customer from '../views/Customers/Customer';
 import Reports from '../views/Reports/Reports';
 import SalesReport from '../views/Reports/SalesReport';
 import ProductReport from '../views/Reports/ProductReport';
+import ProductTypeReport from '../views/Reports/ProductTypeReport';
 import CustomerReport from '../views/Reports/CustomerReport';
 import PaymentReport from '../views/Reports/PaymentReport';
 import PurchaseReport from '../views/Reports/PurchaseReport';
@@ -123,6 +124,14 @@ const dashboardRoutes = [
     navbarName: '',
     icon: InsertChart,
     component: ProductReport,
+    permission: Permissions.ViewReports,
+  },
+  {
+    path: '/producttypereport',
+    sidebarName: 'Product Type Report',
+    navbarName: '',
+    icon: InsertChart,
+    component: ProductTypeReport,
     permission: Permissions.ViewReports,
   },
   {
