@@ -1,11 +1,15 @@
 import React from 'react';
 import Check from '@material-ui/icons/Check';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import MUIDataTable from 'mui-datatables';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import FormControl from '@material-ui/core/FormControl';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -17,6 +21,20 @@ import Snackbar from '../../components/Snackbar/Snackbar';
 import Card from '../../components/Card/Card';
 
 import ProductService from '../../services/ProductService';
+
+function getLocations() {
+  return [
+    {
+      locationId: 1,
+      locationName: 'Vancouver',
+    },
+    {
+      locationId: 2,
+      locationName: 'Abbotsford',
+    },
+  ];
+  // return LocationService.getLocationsForUser();
+}
 
 export default class Inventory extends React.Component {
   constructor(props) {
@@ -36,10 +54,15 @@ export default class Inventory extends React.Component {
       snackbarMessage: '',
       snackbarColor: '',
       loading: false,
+      transferNotes: '',
+      transferQuantity: 0,
+      fromLocation: 1,
+      toLocation: 2,
     };
     this.rowClicked = this.rowClicked.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
+    this.handleTransfer = this.handleTransfer.bind(this);
   }
 
   componentDidMount() {
@@ -69,6 +92,72 @@ export default class Inventory extends React.Component {
       abbotsfordQuantity: rowData[5],
       abbotsfordStorageCode: rowData[7],
       abbotsfordNotes: '',
+    });
+  }
+
+  async handleTransfer() {
+    const {
+      selectedRow,
+      transferQuantity,
+      transferNotes,
+      fromLocation,
+      toLocation,
+      vancouverQuantity,
+      abbotsfordQuantity,
+    } = this.state;
+
+    if (fromLocation === toLocation) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Select different locations to transfer!',
+        snackbarColor: 'danger',
+      });
+      return;
+    }
+
+    if (transferNotes === '') {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Please enter some Notes to transfer!',
+        snackbarColor: 'danger',
+      });
+      return;
+    }    
+
+    if ((fromLocation === 1 && vancouverQuantity < transferQuantity)
+        || (fromLocation === 2 && abbotsfordQuantity < transferQuantity)) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'This location doesn\'t have enough inventory to transfer!',
+        snackbarColor: 'danger',
+      });
+      return;
+    }
+
+    if (transferQuantity > 0) {
+      const inventoryTransfer = {
+        fromLocationId: fromLocation,
+        toLocationId: toLocation,
+        productId: selectedRow[0],
+        notes: transferNotes,
+      };
+      const result = await ProductService.transferInventory(inventoryTransfer);
+      if (result && result.orderId) {
+        this.setState({
+          openSnackbar: true,
+          snackbarMessage: 'Inventory was successfully transferred!',
+          snackbarColor: 'success',
+        });
+      }
+    }
+
+    this.setState({
+      openDialog: false,
+      selectedRow: null,
+      transferQuantity: 0,
+      transferNotes: '',
+      fromLocation: 1,
+      toLocation: 2,
     });
   }
 
@@ -104,7 +193,7 @@ export default class Inventory extends React.Component {
     if (abbotsfordQuantity !== selectedRow[4] || abbotsfordStorageCode !== selectedRow[6]) {
       const productInventoryHistory = {
         locationId: 2, // abbotsford
-        productId: selectedRow[0], 
+        productId: selectedRow[0],
         balance: abbotsfordQuantity,
         binCode: abbotsfordStorageCode,
         notes: abbotsfordNotes,
@@ -198,6 +287,7 @@ export default class Inventory extends React.Component {
         name: 'Sales Price ($)',
         options: {
           filter: false,
+          display: false,
         },
       },
       {
@@ -224,6 +314,22 @@ export default class Inventory extends React.Component {
           filter: false,
         },
       },
+      // {
+      //   name: 'Location',
+      //   options: {
+      //     filter: true,
+      //     customBodyRender: (value, tableMeta, updateValue) => {
+      //       return (
+      //         <Button color="primary" onClick={this.newCustomer}>New Customer</Button>
+      //         // <Cities
+      //         //   value={value}
+      //         //   index={tableMeta.columnIndex}
+      //         //   change={event => updateValue(event)}
+      //         // />
+      //       );
+      //     },
+      //   },
+      // },
     ];
 
     const options = {
@@ -248,7 +354,13 @@ export default class Inventory extends React.Component {
       abbotsfordStorageCode,
       abbotsfordNotes,
       loading,
+      transferNotes,
+      transferQuantity,
+      fromLocation,
+      toLocation,
     } = this.state;
+
+    const locations = getLocations();
 
     return (
       <div>
@@ -275,7 +387,6 @@ export default class Inventory extends React.Component {
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
         >
-          <DialogTitle id="form-dialog-title">Inventory Update</DialogTitle>
           <DialogContent>
             <DialogContentText>
               Code:
@@ -289,69 +400,157 @@ export default class Inventory extends React.Component {
               {' '}
               <br />
             </DialogContentText>
+            <Card>
+              <CardHeader color="info">
+                Inventory Transfer
+              </CardHeader>
+              <CardBody>
+              <GridContainer>
+                  <GridItem xs={12} sm={12} md={6}>
+                    <FormControl>
+                      <InputLabel htmlFor="fromLocation">From</InputLabel>
+                      <Select
+                        value={fromLocation}
+                        onChange={this.handleChange}
+                        inputProps={{
+                          name: 'fromLocation',
+                          id: 'fromLocation',
+                        }}
+                      >
+                      { locations && (
+                        locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))
+                      }
+                      </Select>
+                    </FormControl>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={6}>
+                  <FormControl>
+                    <InputLabel htmlFor="toLocation">To</InputLabel>
+                    <Select
+                      value={toLocation}
+                      onChange={this.handleChange}
+                      inputProps={{
+                        name: 'toLocation',
+                        id: 'toLocation',
+                      }}
+                    >
+                    { locations && (
+                      locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))
+                    }
+                    </Select>
+                    </FormControl>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={6}>
+                  <FormControl>
+                    <TextField
+                      name="transferQuantity"
+                      label="Quantity"
+                      type="number"
+                      onChange={this.handleChange}
+                      value={transferQuantity}
+                    />
+                  </FormControl>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={6}>
+                    <TextField
+                      required
+                      name="transferNotes"
+                      label="Notes"
+                      type="text"
+                      onChange={this.handleChange}
+                      fullWidth
+                      value={transferNotes}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={9}>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={2}>
+                    <Button onClick={this.handleTransfer} color="primary">
+                      Transfer
+                    </Button>
+                  </GridItem>
+                  </GridContainer>
+              </CardBody>
+            </Card>
 
             <Card>
               <CardHeader color="info">
-                <div>Vancouver</div>
+                Inventory Update
               </CardHeader>
               <CardBody>
-                <TextField
-                  name="vancouverQuantity"
-                  label="Quantity"
-                  type="number"
-                  onChange={this.handleChange}
-                  value={vancouverQuantity}
-                />
-                &nbsp;
-                <TextField
-                  name="vancouverStorageCode"
-                  label="Storage Codes"
-                  type="text"
-                  onChange={this.handleChange}
-                  value={vancouverStorageCode}
-                />
-                &nbsp;
-                <TextField
-                  required
-                  name="vancouverNotes"
-                  label="Notes"
-                  type="text"
-                  onChange={this.handleChange}
-                  value={vancouverNotes}
-                  fullWidth
-                />
-              </CardBody>
-            </Card>
-            <Card>
-              <CardHeader color="info">
-                <div>Abbotsford</div>
-              </CardHeader>
-              <CardBody>
-                <TextField
-                  name="abbotsfordQuantity"
-                  label="Quantity"
-                  type="number"
-                  onChange={this.handleChange}
-                  value={abbotsfordQuantity}
-                />
-                &nbsp;
-                <TextField
-                  name="abbotsfordStorageCode"
-                  label="Storage Codes"
-                  type="text"
-                  onChange={this.handleChange}
-                  value={abbotsfordStorageCode}
-                />
-                &nbsp;
-                <TextField
-                  required
-                  name="abbotsfordNotes"
-                  label="Notes"
-                  type="text"
-                  onChange={this.handleChange}
-                  fullWidth
-                  value={abbotsfordNotes}
-                />
+                <GridContainer>
+                  <GridItem xs={12} sm={12} md={12}>
+                    <h4><b>Vancouver</b></h4>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={6}>
+                    <TextField
+                      name="vancouverQuantity"
+                      label="Quantity"
+                      type="number"
+                      onChange={this.handleChange}
+                      value={vancouverQuantity}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={6}>
+                    <TextField
+                      name="vancouverStorageCode"
+                      label="Storage Codes"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={vancouverStorageCode}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={11}>
+                    <TextField
+                      required
+                      name="vancouverNotes"
+                      label="Notes"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={vancouverNotes}
+                      fullWidth
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={12}>
+                    <h4><b>Abbotsford</b></h4>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={6}>
+                    <TextField
+                      name="abbotsfordQuantity"
+                      label="Quantity"
+                      type="number"
+                      onChange={this.handleChange}
+                      value={abbotsfordQuantity}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={6}>
+                    <TextField
+                      name="abbotsfordStorageCode"
+                      label="Storage Codes"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={abbotsfordStorageCode}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={11}>
+                    <TextField
+                      required
+                      name="abbotsfordNotes"
+                      label="Notes"
+                      type="text"
+                      onChange={this.handleChange}
+                      fullWidth
+                      value={abbotsfordNotes}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={9}>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={2}>
+                    <Button onClick={this.handleUpdate} color="primary">
+                      Update
+                    </Button>
+                  </GridItem>
+                  </GridContainer>
               </CardBody>
             </Card>
             { loading && (<LinearProgress />) }
@@ -359,9 +558,6 @@ export default class Inventory extends React.Component {
           <DialogActions>
             <Button onClick={this.handleClose} color="info">
               Cancel
-            </Button>
-            <Button onClick={this.handleUpdate} color="primary">
-              Update
             </Button>
           </DialogActions>
         </Dialog>
