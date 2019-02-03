@@ -7,23 +7,14 @@ import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import Card from '../../components/Card/Card';
 import CustomerService from '../../services/CustomerService';
+// import styles from './styles';
 
 const styles = {
-  cardCategoryWhite: {
-    color: 'rgba(255,255,255,.62)',
-    margin: '0',
-    fontSize: '14px',
-    marginTop: '0',
-    marginBottom: '0',
+  field: {
+    display: 'grid',
   },
-  cardTitleWhite: {
-    color: '#FFFFFF',
-    marginTop: '0px',
-    minHeight: 'auto',
-    fontWeight: '300',
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-    marginBottom: '3px',
-    textDecoration: 'none',
+  root: {
+    display: 'grid',
   },
 };
 
@@ -189,23 +180,23 @@ const initialFormData = {
 };
 
 function onSubmit(form) {
-  CustomerService.AddCustomer(form.formData);
+  CustomerService.addCustomer(form.formData);
 }
 
 function AddCustomer(props) {
   return (
     <div>
       <GridContainer>
-      <GridItem xs={12} sm={12} md={12}>
+      <GridItem xs={12} sm={12} md={9}>
         <Card>
           <CardHeader color="primary">
             <div className={styles.cardTitleWhite}>New Customer</div>
           </CardHeader>
           <CardBody>
             <SchemaForm
-            // classes={classes}
+            classes={styles}
             schema={schema}
-            // uiSchema={uiSchema}
+            uiSchema={uiSchema}
             formData={initialFormData}
             // onCancel={this.onCancel}
             onSubmit={onSubmit}
