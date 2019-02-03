@@ -60,7 +60,7 @@ export default class ProductService {
   static async transferInventory(inventory) {
     try {
       const response = await RestUtilities.post(
-        'TransferInventory',
+        'ProductInventory/Transfer',
         inventory,
       );
       return response.content;

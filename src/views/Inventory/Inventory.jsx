@@ -140,6 +140,8 @@ export default class Inventory extends React.Component {
         toLocationId: toLocation,
         productId: selectedRow[0],
         notes: transferNotes,
+        transferQuantity,
+        transferNotes,
       };
       const result = await ProductService.transferInventory(inventoryTransfer);
       if (result && result.orderId) {
@@ -372,7 +374,7 @@ export default class Inventory extends React.Component {
               </CardHeader>
               <CardBody>
                 <MUIDataTable
-                  title="To update the inventory or storage code click on the product record bellow."
+                  title="To Transfer or Update the inventory or Storage Code, click on the product record bellow."
                   data={products}
                   columns={columns}
                   options={options}
