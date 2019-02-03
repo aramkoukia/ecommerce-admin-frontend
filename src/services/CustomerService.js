@@ -46,4 +46,15 @@ export default class CustomerService {
     }
   }
 
+  static async updateCustomer(customer) {
+    try {
+      const response = await RestUtilities.put(
+        `customers/${customer.customerId}`,
+        customer,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }

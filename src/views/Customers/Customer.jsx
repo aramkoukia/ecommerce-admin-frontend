@@ -7,10 +7,9 @@ import GridContainer from 'components/Grid/GridContainer.jsx';
 import Card from 'components/Card/Card.jsx';
 import CardHeader from 'components/Card/CardHeader.jsx';
 import CardBody from 'components/Card/CardBody.jsx';
-
 import MUIDataTable from 'mui-datatables';
+import Button from '../../components/CustomButtons/Button';
 import OrderService from '../../services/OrderService';
-import Location from '../../stores/Location';
 import CustomerInfo from '../Orders/CustomerInfo';
 import CustomerService from '../../services/CustomerService';
 
@@ -28,6 +27,7 @@ export default class Customer extends React.Component {
       customer: {},
     };
     this.rowClicked = this.rowClicked.bind(this);
+    this.editCustomer = this.editCustomer.bind(this);
   }
 
   async componentDidMount() {
@@ -39,6 +39,11 @@ export default class Customer extends React.Component {
     });
 
     this.ordersList(customerId);
+  }
+
+  editCustomer() {
+    const { match } = this.props;
+    return this.props.history.push(`/editcustomer/${match.params.id}`);
   }
 
   ordersList(customerId) {
@@ -145,6 +150,9 @@ export default class Customer extends React.Component {
         <GridContainer>
           <GridItem xs={8}>
             <CustomerInfo customer={customer} />
+          </GridItem>
+          <GridItem xs={4}>
+            <Button color="primary" onClick={this.editCustomer}>Edit</Button>
           </GridItem>
           <GridItem xs={12} sm={12} md={12}>
             <Card>

@@ -10,7 +10,7 @@ import Card from '../../components/Card/Card';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import CustomerService from '../../services/CustomerService';
 
-class AddCustomer extends React.Component {
+class EditCustomer extends React.Component {
   constructor(props) {
     super(props);
 
@@ -20,11 +20,16 @@ class AddCustomer extends React.Component {
       openSnackbar: false,
       snackbarMessage: '',
       snackbarColor: '',
+      customer: {},
     };
   }
 
   async componentDidMount() {
+    const { match } = this.props;
+    const customerId = match.params.id;
+    const customer = await CustomerService.getCustomer(customerId);
     this.setState({
+      customer,
       openSnackbar: false,
       snackbarMessage: '',
       snackbarColor: '',
@@ -32,18 +37,21 @@ class AddCustomer extends React.Component {
   }
 
   async onSubmit(form) {
-    const result = await CustomerService.addCustomer(form.formData);
+    const { match } = this.props;
+    form.formData.customerId = match.params.id;
+    const result = await CustomerService.updateCustomer(form.formData);
     this.setState({
       openSnackbar: true,
-      snackbarMessage: 'New customer is saved!',
+      snackbarMessage: 'Customer information is updated!',
       snackbarColor: 'success',
     });
-
-    return this.props.setTimeout(this.props.history.push(`/customer/${result.customerId}`, 2000));
+    return this.props.setTimeout(this.props.history.push(`/customer/${match.params.id}`, 2000));
   }
 
   render() {
-    const { openSnackbar, snackbarMessage, snackbarColor } = this.state;
+    const {
+      openSnackbar, snackbarMessage, snackbarColor, customer,
+    } = this.state;
     const styles = {
       field: {
         display: 'grid',
@@ -190,22 +198,22 @@ class AddCustomer extends React.Component {
     };
 
     const initialFormData = {
-      firstName: '',
-      lastName: '',
-      companyName: '',
-      phoneNumber: '',
-      mobile: '',
-      country: 'Canada',
-      address: '',
-      city: '',
-      province: 'BC',
-      postalCode: '',
-      pstNumber: '',
-      creditLimit: 0,
-      userName: '',
-      email: '',
-      website: '',
-      segment: 'None',
+      firstName: customer.firstName,
+      lastName: customer.lastName,
+      companyName: customer.companyName,
+      phoneNumber: customer.phoneNumber,
+      mobile: customer.mobile,
+      country: customer.country,
+      address: customer.address,
+      city: customer.city,
+      province: customer.province,
+      postalCode: customer.postalCode,
+      pstNumber: customer.pstNumber,
+      creditLimit: customer.creditLimit,
+      userName: customer.userName,
+      email: customer.email,
+      website: customer.website,
+      segment: customer.segment,
     };
 
     return (
@@ -214,7 +222,7 @@ class AddCustomer extends React.Component {
           <GridItem xs={12} sm={12} md={9}>
             <Card>
               <CardHeader color="primary">
-                <div className={styles.cardTitleWhite}>New Customer</div>
+                <div className={styles.cardTitleWhite}>Update Customer</div>
               </CardHeader>
               <CardBody>
                 <SchemaForm
@@ -224,7 +232,6 @@ class AddCustomer extends React.Component {
                   formData={initialFormData}
                   onSubmit={this.onSubmit}
                 />
-
               </CardBody>
             </Card>
           </GridItem>
@@ -243,4 +250,4 @@ class AddCustomer extends React.Component {
   }
 }
 
-export default ReactTimeout(AddCustomer);
+export default ReactTimeout(EditCustomer);

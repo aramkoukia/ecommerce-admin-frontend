@@ -16,6 +16,7 @@ import Locations from '../views/Locations/Locations';
 import Customers from '../views/Customers/Customers';
 import Customer from '../views/Customers/Customer';
 import AddCustomer from '../views/Customers/AddCustomer';
+import EditCustomer from '../views/Customers/EditCustomer';
 import Reports from '../views/Reports/Reports';
 import SalesReport from '../views/Reports/SalesReport';
 import ProductReport from '../views/Reports/ProductReport';
@@ -78,6 +79,13 @@ const dashboardRoutes = [
     icon: ContactMail,
     component: AddCustomer,
     permission: Permissions.ViewCustomers,
+  },
+  {
+    path: '/editcustomer/:id',
+    sidebarName: '',
+    navbarName: '',
+    icon: Person,
+    component: EditCustomer,
   },
   {
     path: '/customers',
