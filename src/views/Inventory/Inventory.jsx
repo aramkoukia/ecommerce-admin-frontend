@@ -63,11 +63,11 @@ export default class Inventory extends React.Component {
     this.setState({
       openDialog: true,
       selectedRow: rowData,
-      vancouverQuantity: rowData[3],
-      vancouverStorageCode: rowData[5],
+      vancouverQuantity: rowData[4],
+      vancouverStorageCode: rowData[6],
       vancouverNotes: '',
-      abbotsfordQuantity: rowData[4],
-      abbotsfordStorageCode: rowData[6],
+      abbotsfordQuantity: rowData[5],
+      abbotsfordStorageCode: rowData[7],
       abbotsfordNotes: '',
     });
   }
@@ -86,7 +86,7 @@ export default class Inventory extends React.Component {
     if (vancouverQuantity !== selectedRow[3] || vancouverStorageCode !== selectedRow[5]) {
       const productInventoryHistory = {
         locationId: 1, // vancouver
-        productId: 1, // todo, add productid as hidden to grid?,
+        productId: selectedRow[0],
         balance: vancouverQuantity,
         binCode: vancouverStorageCode,
         notes: vancouverNotes,
@@ -104,7 +104,7 @@ export default class Inventory extends React.Component {
     if (abbotsfordQuantity !== selectedRow[4] || abbotsfordStorageCode !== selectedRow[6]) {
       const productInventoryHistory = {
         locationId: 2, // abbotsford
-        productId: 1, // todo, add productid as hidden to grid?,
+        productId: selectedRow[0], 
         balance: abbotsfordQuantity,
         binCode: abbotsfordStorageCode,
         notes: abbotsfordNotes,
@@ -137,7 +137,7 @@ export default class Inventory extends React.Component {
 
   productsList() {
     this.setState({ loading: true });
-    const columns = ['productCode', 'productName', 'salesPrice', 'vancouverBalance', 'abbotsfordBalance', 'vancouverBinCode', 'abbotsfordBinCode'];
+    const columns = ['productId', 'productCode', 'productName', 'salesPrice', 'vancouverBalance', 'abbotsfordBalance', 'vancouverBinCode', 'abbotsfordBinCode'];
     ProductService.getProducts()
       .then(results => results.map(row => columns.map(column => (row[column] === null ? '' : row[column]))))
       .then(data => this.setState({ products: data, loading: false }));
@@ -175,6 +175,13 @@ export default class Inventory extends React.Component {
     };
 
     const columns = [
+      {
+        name: 'product Id',
+        options: {
+          filter: false,
+          display: false,
+        },
+      },
       {
         name: 'Product Code',
         options: {
@@ -273,12 +280,12 @@ export default class Inventory extends React.Component {
             <DialogContentText>
               Code:
               {' '}
-              { selectedRow && (selectedRow[0]) }
+              { selectedRow && (selectedRow[1]) }
               {' '}
               <br />
               Name:
               {' '}
-              { selectedRow && (selectedRow[1]) }
+              { selectedRow && (selectedRow[2]) }
               {' '}
               <br />
             </DialogContentText>
@@ -298,7 +305,7 @@ export default class Inventory extends React.Component {
                 &nbsp;
                 <TextField
                   name="vancouverStorageCode"
-                  label="Storage Code"
+                  label="Storage Codes"
                   type="text"
                   onChange={this.handleChange}
                   value={vancouverStorageCode}
@@ -330,7 +337,7 @@ export default class Inventory extends React.Component {
                 &nbsp;
                 <TextField
                   name="abbotsfordStorageCode"
-                  label="Storage Code"
+                  label="Storage Codes"
                   type="text"
                   onChange={this.handleChange}
                   value={abbotsfordStorageCode}
