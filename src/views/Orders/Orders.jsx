@@ -39,7 +39,7 @@ export default class Orders extends React.Component {
   };
 
   ordersList() {
-    const columns = ['locationName', 'orderId', 'orderDate', 'subTotal', 'total', 'status', 'poNumber', 'paidAmount', 'createdByUserId', 'paymentTypeName'];
+    const columns = ['locationName', 'orderId', 'orderDate', 'subTotal', 'total', 'status', 'poNumber', 'paidAmount', 'givenName', 'paymentTypeName'];
     const locationId = Location.getStoreLocation();
     const { showAllOrders } = this.state;
     this.setState({ loading: true });

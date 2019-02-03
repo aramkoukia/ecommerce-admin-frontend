@@ -42,7 +42,7 @@ export default class Customer extends React.Component {
   }
 
   ordersList(customerId) {
-    const columns = ['locationName', 'orderId', 'orderDate', 'subTotal', 'total', 'status', 'poNumber', 'paidAmount', 'createdByUserId'];
+    const columns = ['locationName', 'orderId', 'orderDate', 'subTotal', 'total', 'status', 'poNumber', 'paidAmount', 'givenName'];
     OrderService.getCustomerOrders(customerId)
       .then(results => results.map(row => columns.map((column) => {
         if (column === 'orderDate') {

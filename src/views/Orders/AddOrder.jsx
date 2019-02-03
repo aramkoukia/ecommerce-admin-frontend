@@ -213,7 +213,7 @@ export default class AddOrder extends React.Component {
 
   async saveOrder(orderStatus) {
     const {
-      customer, rows, total, subTotal, notes, taxes, poNumber, paymentTypeId,
+      customer, rows, total, subTotal, notes, taxes, poNumber, paymentTypeId, authCode,
     } = this.state;
     const status = orderStatus;
     const orderDetails = rows.map(row => (
@@ -248,6 +248,7 @@ export default class AddOrder extends React.Component {
       pstNumber: customer !== null ? customer.pstNumber : null,
       orderTax: orderTaxes,
       orderDetail: orderDetails,
+      authCode,
       // orderPayment: orderPayment, will set this in the API
     };
 
