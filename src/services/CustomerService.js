@@ -33,4 +33,17 @@ export default class CustomerService {
       return false;
     }
   }
+
+  static async addCustomer(customer) {
+    try {
+      const response = await RestUtilities.post(
+        'customers',
+        customer,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
 }

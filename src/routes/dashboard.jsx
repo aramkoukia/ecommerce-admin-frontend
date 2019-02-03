@@ -15,6 +15,7 @@ import Product from '../views/Products/Product';
 import Locations from '../views/Locations/Locations';
 import Customers from '../views/Customers/Customers';
 import Customer from '../views/Customers/Customer';
+import AddCustomer from '../views/Customers/AddCustomer';
 import Reports from '../views/Reports/Reports';
 import SalesReport from '../views/Reports/SalesReport';
 import ProductReport from '../views/Reports/ProductReport';
@@ -69,6 +70,14 @@ const dashboardRoutes = [
     icon: PlaylistPlay,
     component: Inventory,
     permission: Permissions.ViewInventory,
+  },
+  {
+    path: '/newcustomer',
+    sidebarName: 'New Customer',
+    navbarName: '',
+    icon: ContactMail,
+    component: AddCustomer,
+    permission: Permissions.ViewCustomers,
   },
   {
     path: '/customers',

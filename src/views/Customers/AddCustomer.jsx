@@ -1,8 +1,12 @@
 import React from 'react';
-
-// @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
 import SchemaForm from 'jsonschema-form-for-material-ui';
+import GridItem from '../../components/Grid/GridItem';
+import GridContainer from '../../components/Grid/GridContainer';
+import CardHeader from '../../components/Card/CardHeader';
+import CardBody from '../../components/Card/CardBody';
+import Card from '../../components/Card/Card';
+import CustomerService from '../../services/CustomerService';
 
 const styles = {
   cardCategoryWhite: {
@@ -23,12 +27,6 @@ const styles = {
   },
 };
 
-// const styles = theme => ({
-//   field: {},
-//   formButtons: {},
-//   root: {},
-// });
-
 const schema = {
   // "title": "A registration form",
   // "description": "A simple form example.",
@@ -38,12 +36,8 @@ const schema = {
     'lastName',
     'companyName',
     'phoneNumber',
-    'mobile',
     'country',
-    'address',
     'city',
-    'postalCode',
-    'userName',
     'email',
   ],
   properties: {
@@ -70,7 +64,7 @@ const schema = {
     country: {
       type: 'string',
       title: 'Country',
-      enum: ['Canada', 'United States'],
+      enum: ['Canada', 'United States', 'Other'],
     },
     address: {
       type: 'string',
@@ -83,7 +77,7 @@ const schema = {
     province: {
       type: 'string',
       title: 'Province',
-      enum: ['British Columbia', 'Alberta', 'Ontario'],
+      enum: ['BC', 'AB', 'MB', 'NB', 'NL', 'NT', 'NS', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT', 'OTHER'],
     },
     postalCode: {
       type: 'string',
@@ -182,10 +176,10 @@ const initialFormData = {
   companyName: '',
   phoneNumber: '',
   mobile: '',
-  country: '',
+  country: 'Canada',
   address: '',
   city: '',
-  province: '',
+  province: 'BC',
   postalCode: '',
   pstNumber: '',
   creditLimit: 0,
@@ -194,17 +188,35 @@ const initialFormData = {
   website: '',
 };
 
+function onSubmit(form) {
+  CustomerService.AddCustomer(form.formData);
+}
+
 function AddCustomer(props) {
   return (
-    <SchemaForm
-      // classes={classes}
-      schema={schema}
-      uiSchema={uiSchema}
-      formData={initialFormData}
-      // onCancel={this.onCancel}
-      // onSubmit={this.onSubmit}
-      // onChange={this.onFormChanged}
-    />
+    <div>
+      <GridContainer>
+      <GridItem xs={12} sm={12} md={12}>
+        <Card>
+          <CardHeader color="primary">
+            <div className={styles.cardTitleWhite}>New Customer</div>
+          </CardHeader>
+          <CardBody>
+            <SchemaForm
+            // classes={classes}
+            schema={schema}
+            // uiSchema={uiSchema}
+            formData={initialFormData}
+            // onCancel={this.onCancel}
+            onSubmit={onSubmit}
+            // onChange={this.onFormChanged}
+          />
+
+          </CardBody>
+        </Card>
+      </GridItem>
+    </GridContainer>
+    </div>
   );
 }
 

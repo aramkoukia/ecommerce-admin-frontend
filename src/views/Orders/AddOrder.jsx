@@ -109,6 +109,7 @@ export default class AddOrder extends React.Component {
     this.pay = this.pay.bind(this);
     this.handlePaymentTypeChange = this.handlePaymentTypeChange.bind(this);
     this.handleAuthUpdate = this.handleAuthUpdate.bind(this);
+    this.newCustomer = this.newCustomer.bind(this);
   }
 
   async componentDidMount() {
@@ -132,6 +133,10 @@ export default class AddOrder extends React.Component {
     this.setState({
       openDialog: false,
     });
+  }
+
+  newCustomer() {
+    return this.props.history.push('newcustomer');
   }
 
   async handleAuthUpdate() {
@@ -397,8 +402,11 @@ export default class AddOrder extends React.Component {
               </CardHeader>
               <CardBody>
                 <GridContainer>
-                  <GridItem xs={12} sm={12} md={12}>
+                  <GridItem xs={12} sm={12} md={9}>
                     <CustomerSearch customerChanged={this.customerChanged} />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={3}>
+                    <Button color="primary" onClick={this.newCustomer}>New Customer</Button>
                   </GridItem>
                 </GridContainer>
                 { customer ? (
@@ -516,8 +524,11 @@ export default class AddOrder extends React.Component {
                 ) : (<div />)
                 }
                 <GridContainer>
-                  <GridItem xs={12} sm={12} md={12}>
+                  <GridItem xs={12} sm={12} md={9}>
                     <ProductSearch productChanged={this.productChanged} />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={3}>
+                    {/* <Button color="primary" onClick={this.newCustomer}>Product List</Button> */}
                   </GridItem>
                 </GridContainer>
                 <GridContainer>
