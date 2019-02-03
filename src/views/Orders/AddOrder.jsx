@@ -1,5 +1,6 @@
 import React from 'react';
 import Check from '@material-ui/icons/Check';
+import Add from '@material-ui/icons/Add';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
@@ -406,7 +407,7 @@ export default class AddOrder extends React.Component {
                     <CustomerSearch customerChanged={this.customerChanged} />
                   </GridItem>
                   <GridItem xs={12} sm={12} md={3}>
-                    <Button color="primary" onClick={this.newCustomer}>New Customer</Button>
+                    <Button color="primary" onClick={this.newCustomer}><Add></Add> New Customer</Button>
                   </GridItem>
                 </GridContainer>
                 { customer ? (
