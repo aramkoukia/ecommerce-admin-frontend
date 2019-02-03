@@ -34,6 +34,17 @@ export default class UserService {
     }
   }
 
+  static async getUserByAuthCode(authCode) {
+    try {
+      const response = await RestUtilities.get(
+        `users/${authCode}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async UpdateUserRolesAndLocations(userInfo) {
     try {
       const response = await RestUtilities.put(

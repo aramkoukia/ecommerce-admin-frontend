@@ -6,8 +6,9 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControl from '@material-ui/core/FormControl';
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import GridItem from '../../components/Grid/GridItem';
@@ -24,7 +25,9 @@ import CustomerSearch from './CustomerSearch';
 import OrderTable from './OrderTable';
 import OrderService from '../../services/OrderService';
 import TaxService from '../../services/TaxService';
+import UserService from '../../services/UserService';
 import Location from '../../stores/Location';
+
 
 const styles = {
   cardCategoryWhite: {
@@ -86,6 +89,8 @@ export default class AddOrder extends React.Component {
       openSnackbar: false,
       chargePst: true,
       openDialog: false,
+      openAuthDialog: true,
+      userGivenName: '',
       paymentTypeId: '23',
     };
 
@@ -103,6 +108,7 @@ export default class AddOrder extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.pay = this.pay.bind(this);
     this.handlePaymentTypeChange = this.handlePaymentTypeChange.bind(this);
+    this.handleAuthUpdate = this.handleAuthUpdate.bind(this);
   }
 
   async componentDidMount() {
@@ -112,17 +118,43 @@ export default class AddOrder extends React.Component {
       allTaxes: taxes,
       chargePst: true,
       paymentTypeId: '23',
+      openDialog: false,
+      openAuthDialog: true,
+      userGivenName: '',
     });
+  }
+
+  handlePaymentTypeChange = (event) => {
+    this.setState({ paymentTypeId: event.target.value });
   }
 
   handleClose = () => {
     this.setState({
       openDialog: false,
     });
-  };
+  }
 
-  handlePaymentTypeChange = event => {
-    this.setState({ paymentTypeId: event.target.value });
+  async handleAuthUpdate() {
+    const { authCode } = this.state;
+    const result = await UserService.getUserByAuthCode(authCode);
+    if (result === false
+        || result === ''
+        || result === null
+        || result.StatusCode === 500
+        || result.StatusCode === 400
+        || result.StatusCode === 404) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Invalid Auth Code!',
+        snackbarColor: 'danger',
+      });
+      return false;
+    }
+
+    this.setState({
+      openAuthDialog: false,
+      userGivenName: result.givenName,
+    });
   }
 
   updateTaxes(customer, chargePst) {
@@ -345,7 +377,10 @@ export default class AddOrder extends React.Component {
       customer, openSnackbar, snackbarMessage, snackbarColor, notes, poNumber,
       chargePst,
       openDialog,
+      openAuthDialog,
       paymentTypeId,
+      authCode,
+      userGivenName,
     } = this.state;
 
     return (
@@ -354,7 +389,10 @@ export default class AddOrder extends React.Component {
           <GridItem xs={12} sm={12} md={12}>
             <Card>
               <CardHeader color="primary">
-                <div className={styles.cardTitleWhite}>New Order</div>
+                <div className={styles.cardTitleWhite}>
+                  <b>New Order</b> - User: 
+                  { authCode } - { userGivenName }
+                </div>
               </CardHeader>
               <CardBody>
                 <GridContainer>
@@ -594,6 +632,35 @@ export default class AddOrder extends React.Component {
             </Button>
           </DialogActions>
         </Dialog>
+
+        <Dialog
+          open={openAuthDialog}
+          // onClose={this.handleAuthClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <Card>
+              <CardHeader color="info">
+                <div>Auth Code</div>
+              </CardHeader>
+              <CardBody>
+                <TextField
+                  name="authCode"
+                  label="Auth Code"
+                  type="text"
+                  onChange={this.handleChange}
+                  value={authCode}
+                />
+              </CardBody>
+            </Card>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleAuthUpdate} color="primary">
+              Ok
+            </Button>
+          </DialogActions>
+        </Dialog>
+
       </div>
     );
   }
