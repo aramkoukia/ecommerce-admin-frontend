@@ -69,10 +69,10 @@ export default class OrderService {
     }
   }
 
-  static async emailOrder(orderId) {
+  static async emailOrder(orderId, email) {
     try {
       const response = await RestUtilities.get(
-        `orders/${orderId}/email`,
+        `orders/${orderId}/email?email=${email}`,
       );
       return response.content;
     } catch (err) {

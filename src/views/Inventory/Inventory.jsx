@@ -161,6 +161,7 @@ export default class Inventory extends React.Component {
       fromLocation: 1,
       toLocation: 2,
     });
+    window.location.reload();
   }
 
   async handleUpdate() {
@@ -220,6 +221,7 @@ export default class Inventory extends React.Component {
       abbotsfordStorageCode: '',
       abbotsfordNotes: '',
     });
+    window.location.reload();
   }
 
   handleChange(event) {

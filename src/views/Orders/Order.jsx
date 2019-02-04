@@ -2,6 +2,7 @@ import React from 'react';
 import Check from '@material-ui/icons/Check';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
+import TextField from '@material-ui/core/TextField';
 import Chip from '@material-ui/core/Chip';
 import Print from '@material-ui/icons/Print';
 import Email from '@material-ui/icons/Email';
@@ -50,7 +51,9 @@ export class Order extends React.Component {
       snackbarColor: '',
       loading: false,
       openDialog: false,
+      openEmailDialog: false,
       paymentTypeId: '23',
+      customerEmail: '',
     };
 
     this.saveAsPaid = this.saveAsPaid.bind(this);
@@ -60,8 +63,11 @@ export class Order extends React.Component {
     this.printOrder = this.printOrder.bind(this);
     this.cancelHold = this.cancelHold.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleEmailDialogClose = this.handleClose.bind(this);
     this.pay = this.pay.bind(this);
     this.handlePaymentTypeChange = this.handlePaymentTypeChange.bind(this);
+    this.handleEmailOrderDialog = this.handleEmailOrderDialog.bind(this);
   }
 
   async componentDidMount() {
@@ -70,8 +76,16 @@ export class Order extends React.Component {
     this.setState({
       order,
       openDialog: false,
+      openEmailDialog: false,
       paymentTypeId: '23',
+      customerEmail: order.customer.email,
     });
+  }
+
+  handleEmailOrderDialog() {
+    this.setState({
+      openEmailDialog: true,
+    });    
   }
 
   handleClose = () => {
@@ -79,6 +93,12 @@ export class Order extends React.Component {
       openDialog: false,
     });
   };
+
+  handleEmailDialogClose = () => {
+    this.setState({
+      openEmailDialog: false,
+    });
+  }
 
   handlePaymentTypeChange = (event) => {
     this.setState({ paymentTypeId: event.target.value });
@@ -109,11 +129,12 @@ export class Order extends React.Component {
   }
 
   async emailOrder() {
-    const { order } = this.state;
+    const { order, customerEmail } = this.state;
     this.setState({
       loading: true,
+      openEmailDialog: false,
     });
-    await OrderService.emailOrder(order.orderId);
+    await OrderService.emailOrder(order.orderId, customerEmail);
     this.setState({
       loading: false,
     });
@@ -191,7 +212,7 @@ export class Order extends React.Component {
 
   render() {
     const {
-      order, openSnackbar, snackbarMessage, snackbarColor, loading, openDialog, paymentTypeId,
+      order, openSnackbar, snackbarMessage, snackbarColor, loading, openDialog, paymentTypeId, openEmailDialog, customerEmail,
     } = this.state;
 
     return (
@@ -215,7 +236,7 @@ export class Order extends React.Component {
                   <GridItem>
                     <GridContainer>
                       <GridItem>
-                        <Button color="warning" onClick={this.emailOrder}>
+                        <Button color="warning" onClick={this.handleEmailOrderDialog}>
                           <Email />
                           &nbsp;
                           Email
@@ -318,6 +339,40 @@ export class Order extends React.Component {
             </Button>
           </DialogActions>
         </Dialog>
+        <Dialog
+          open={openEmailDialog}
+          onClose={this.handleEmailDialogClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <Card>
+              <CardHeader color="info">
+                <div>Invoice Email</div>
+              </CardHeader>
+              <CardBody>
+                <FormControl component="fieldset">
+                  <TextField
+                    required
+                    name="customerEmail"
+                    label="Customer Email"
+                    type="text"
+                    onChange={this.handleChange}
+                    fullWidth
+                    value={customerEmail}
+                  />
+                </FormControl>
+              </CardBody>
+            </Card>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleEmailDialogClose} color="info">
+              Cancel
+            </Button>
+            <Button onClick={this.emailOrder} color="primary">
+              Send
+            </Button>
+          </DialogActions>
+        </Dialog>        
        </div>
         ) }
       </div>
