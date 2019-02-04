@@ -64,7 +64,7 @@ export class Order extends React.Component {
     this.cancelHold = this.cancelHold.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.handleEmailDialogClose = this.handleClose.bind(this);
+    this.handleEmailDialogClose = this.handleEmailDialogClose.bind(this);
     this.pay = this.pay.bind(this);
     this.handlePaymentTypeChange = this.handlePaymentTypeChange.bind(this);
     this.handleEmailOrderDialog = this.handleEmailOrderDialog.bind(this);
