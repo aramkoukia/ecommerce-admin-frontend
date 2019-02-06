@@ -110,6 +110,7 @@ export default class AddOrder extends React.Component {
     this.pay = this.pay.bind(this);
     this.handlePaymentTypeChange = this.handlePaymentTypeChange.bind(this);
     this.handleAuthUpdate = this.handleAuthUpdate.bind(this);
+    this.handleAuthEnter = this.handleAuthEnter.bind(this);
     this.newCustomer = this.newCustomer.bind(this);
   }
 
@@ -138,6 +139,12 @@ export default class AddOrder extends React.Component {
 
   newCustomer() {
     return this.props.history.push('newcustomer');
+  }
+
+  async handleAuthEnter(event) {
+    if(event.key == 'Enter'){
+      await this.handleAuthUpdate();
+    }
   }
 
   async handleAuthUpdate() {
@@ -397,7 +404,7 @@ export default class AddOrder extends React.Component {
             <Card>
               <CardHeader color="primary">
                 <div className={styles.cardTitleWhite}>
-                  <b>New Order</b> - User: 
+                  <b>New Order</b> - User:
                   { authCode } - { userGivenName }
                 </div>
               </CardHeader>
@@ -661,7 +668,9 @@ export default class AddOrder extends React.Component {
                   name="authCode"
                   label="Auth Code"
                   type="text"
+                  autoFocus={true}
                   onChange={this.handleChange}
+                  onKeyPress={this.handleAuthEnter}
                   value={authCode}
                 />
               </CardBody>
