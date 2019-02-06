@@ -661,7 +661,7 @@ export default class AddOrder extends React.Component {
           <DialogContent>
             <Card>
               <CardHeader color="info">
-                <div>Auth Code</div>
+                <div>Pass Code</div>
               </CardHeader>
               <CardBody>
                 <TextField
