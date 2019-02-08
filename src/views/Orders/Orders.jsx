@@ -13,7 +13,7 @@ import Location from '../../stores/Location';
 
 function dateFormat(dateString) {
   const date = new Date(dateString);
-  return `${date.toLocaleDateString()}`;
+  return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
 }
 
 export default class Orders extends React.Component {
