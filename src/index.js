@@ -17,16 +17,20 @@ const hist = createBrowserHistory();
 // appInsights.setup("877ac590-4d9c-4864-a6ac-4c414c501ac0");
 // appInsights.start();
 
+function permissionsChanged() {
+  console.log('permissionsChanged');
+}
+
 ReactDOM.render(
   <Router history={hist}>
     <Switch>
       {indexRoutes.map((prop, key) => {
         if (Auth.isSignedIn()) {
           return (
-            <Route path={prop.path} component={prop.component} key={key} />
+            <Route path={prop.path} component={prop.component} key={key}  permissionsChanged={permissionsChanged} />
           );
         }
-        return <Route path={prop.path} component={prop.component} key={key} />;
+        return <Route path={prop.path} component={prop.component} key={key} permissionsChanged={permissionsChanged} />;
         // return <Redirect from={prop.path} to="/login" key={key} />;
       })}
     </Switch>

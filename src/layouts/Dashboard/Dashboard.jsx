@@ -12,15 +12,8 @@ import dashboardStyle from 'assets/jss/material-dashboard-react/layouts/dashboar
 import image from 'assets/img/sidebar-2.jpg';
 import logo from 'assets/img/logo.png';
 import Auth from '../../services/Auth';
-
-const switchRoutes = (
-  <Switch>
-    {dashboardRoutes.map((prop, key) => {
-      if (prop.redirect) {return <Redirect from={prop.path} to={prop.to} key={key} />;}
-      return <Route path={prop.path} component={prop.component} key={key} onEnter={requireAuth} />;
-    })}
-  </Switch>
-);
+import AddOrder from '../../views/Orders/AddOrder';
+import Return from '../../views/Orders/Return';
 
 function requireAuth(nextState, replace) {
   if (!Auth.isSignedIn) {
@@ -36,10 +29,16 @@ class App extends React.Component {
     super(props);
     this.state = {
       mobileOpen: false,
+      permissionsChanged: false,
     };
     this.resizeFunction = this.resizeFunction.bind(this);
+    this.permissionsChanged = this.permissionsChanged.bind(this);
   }
 
+  permissionsChanged() {
+    this.setState({ permissionsChanged: true })
+  }
+  
   handleDrawerToggle = () => {
     this.setState({ mobileOpen: !this.state.mobileOpen });
   };
@@ -80,12 +79,35 @@ class App extends React.Component {
 
   render() {
     const { classes, ...rest } = this.props;
+    const { permissionsChanged } = this.state;
+
+    const switchRoutes = (
+      <Switch>
+        {dashboardRoutes.map((prop, key) => {
+          if (prop.redirect) {
+            return <Redirect from={prop.path} to={prop.to} key={key} />;
+          }
+    
+          if(prop.path === '/neworder') {
+            return <Route path={prop.path} key={key} onEnter={requireAuth} render={ (props) => ( <AddOrder {...props} permissionsChanged={this.permissionsChanged} />) } />;
+          }
+    
+          if (prop.path === '/return') {
+            return <Route path={prop.path} key={key} onEnter={requireAuth} render={ (props) => ( <Return {...props} permissionsChanged={this.permissionsChanged} />) } />;
+          }
+    
+          return <Route path={prop.path} component={prop.component} key={key} onEnter={requireAuth} />;
+        })}
+      </Switch>
+    );
+
     return (
       <div className={classes.wrapper}>
 
         { !this.isLogin() ? (
           <Sidebar
             routes={dashboardRoutes}
+            permissionsChanged={permissionsChanged}
             logoText={"Lights and Parts"}
             logo={logo}
             image={image}

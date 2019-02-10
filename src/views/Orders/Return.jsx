@@ -28,6 +28,7 @@ import CustomerInfo from './CustomerInfo';
 import OrderService from '../../services/OrderService';
 import Location from '../../stores/Location';
 import UserService from '../../services/UserService';
+import AuthStore from '../../stores/Auth';
 
 const styles = {
   chip: {
@@ -100,6 +101,7 @@ export class Return extends React.Component {
 
   async handleAuthUpdate() {
     const { authCode } = this.state;
+    const { permissionsChanged } = this.props;
     const result = await UserService.getUserByAuthCode(authCode);
     if (result === false
         || result === ''
@@ -115,10 +117,12 @@ export class Return extends React.Component {
       return false;
     }
 
+    AuthStore.setUserPermissions(result.permissions);
     this.setState({
       openAuthDialog: false,
-      userGivenName: result.givenName,
+      userGivenName: result.user.givenName,
     });
+    permissionsChanged();
   }
 
   handleChange(event) {

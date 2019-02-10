@@ -27,7 +27,7 @@ import OrderService from '../../services/OrderService';
 import TaxService from '../../services/TaxService';
 import UserService from '../../services/UserService';
 import Location from '../../stores/Location';
-
+import AuthStore from '../../stores/Auth';
 
 const styles = {
   cardCategoryWhite: {
@@ -89,7 +89,6 @@ export default class AddOrder extends React.Component {
       openSnackbar: false,
       chargePst: true,
       openDialog: false,
-      openAuthDialog: true,
       userGivenName: '',
       paymentTypeId: '23',
     };
@@ -148,6 +147,8 @@ export default class AddOrder extends React.Component {
 
   async handleAuthUpdate() {
     const { authCode } = this.state;
+    const { permissionsChanged } = this.props;
+
     const result = await UserService.getUserByAuthCode(authCode);
     if (result === false
         || result === ''
@@ -163,10 +164,12 @@ export default class AddOrder extends React.Component {
       return false;
     }
 
+    AuthStore.setUserPermissions(result.permissions);
     this.setState({
       openAuthDialog: false,
-      userGivenName: result.givenName,
+      userGivenName: result.user.givenName,
     });
+    permissionsChanged();
   }
 
   updateTaxes(customer, chargePst) {
