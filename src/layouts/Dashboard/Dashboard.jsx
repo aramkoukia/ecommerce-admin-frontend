@@ -92,7 +92,7 @@ class App extends React.Component {
             return <Route path={prop.path} key={key} onEnter={requireAuth} render={ (props) => ( <AddOrder {...props} permissionsChanged={this.permissionsChanged} />) } />;
           }
     
-          if (prop.path === '/return') {
+          if (prop.path === '/return/:id') {
             return <Route path={prop.path} key={key} onEnter={requireAuth} render={ (props) => ( <Return {...props} permissionsChanged={this.permissionsChanged} />) } />;
           }
     
