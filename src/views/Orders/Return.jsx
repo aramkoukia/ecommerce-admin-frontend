@@ -8,6 +8,10 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControl from '@material-ui/core/FormControl';
 import PropTypes from 'prop-types';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -47,7 +51,9 @@ export class Return extends React.Component {
       snackbarColor: '',
       loading: false,
       openAuthDialog: true,
+      openDialog: false,
       authCode: '',
+      paymentTypeId: '23',
       rows: [],
     };
 
@@ -56,6 +62,8 @@ export class Return extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleAuthUpdate = this.handleAuthUpdate.bind(this);
     this.handleAuthEnter = this.handleAuthEnter.bind(this);
+    this.selectPaymentToReturn = this.selectPaymentToReturn.bind(this);
+    this.handlePaymentTypeChange = this.handlePaymentTypeChange.bind(this);
   }
 
   async componentDidMount() {
@@ -69,7 +77,18 @@ export class Return extends React.Component {
       order,
       rows: order.orderDetail,
       openAuthDialog: true,
+      openDialog: false,
       authCode: '',
+    });
+  }
+
+  handlePaymentTypeChange = (event) => {
+    this.setState({ paymentTypeId: event.target.value });
+  }
+
+  handleClose = () => {
+    this.setState({
+      openDialog: false,
     });
   }
 
@@ -122,7 +141,7 @@ export class Return extends React.Component {
 
   async saveOrder(orderStatus) {
     const {
-      rows, total, subTotal, totalDiscount, notes, poNumber, order, authCode,
+      rows, total, subTotal, totalDiscount, notes, poNumber, order, authCode, paymentTypeId,
     } = this.state;
     const originalOrderId = this.props.match.params.id;
     const status = orderStatus;
@@ -161,6 +180,7 @@ export class Return extends React.Component {
       orderDetail: orderDetails,
       originalOrderId,
       authCode,
+      paymentTypeId: Number(paymentTypeId),
     };
 
     const result = await OrderService.saveOrder(returnOrder);
@@ -175,11 +195,18 @@ export class Return extends React.Component {
     return result;
   }
 
+  async selectPaymentToReturn() {
+    this.setState({
+      openDialog: true,
+    });
+  }
+
   async saveReturn() {
     const result = await this.saveOrder('Return');
     if (result && result.orderId) {
       this.setState({
         openSnackbar: true,
+        openDialog: false,
         snackbarMessage: 'Order was returned successfully!',
         snackbarColor: 'success',
       });
@@ -198,7 +225,7 @@ export class Return extends React.Component {
 
   render() {
     const {
-      order, openSnackbar, snackbarMessage, snackbarColor, loading, notes, openAuthDialog, authCode, userGivenName,
+      order, openSnackbar, snackbarMessage, snackbarColor, loading, notes, openAuthDialog, authCode, userGivenName, openDialog, paymentTypeId
     } = this.state;
 
     return (
@@ -225,7 +252,7 @@ export class Return extends React.Component {
                   <GridItem>
                     <GridContainer>
                       <GridItem>
-                        <Button color="primary" onClick={this.saveReturn}>
+                        <Button color="primary" onClick={this.selectPaymentToReturn}>
                           <Save />
                           &nbsp;
                           Save
@@ -283,6 +310,42 @@ export class Return extends React.Component {
             />
           </GridItem>
           <Dialog
+          open={openDialog}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <Card>
+              <CardHeader color="info">
+                <div>Select Payment Option</div>
+              </CardHeader>
+              <CardBody>
+                <FormControl component="fieldset">
+                  <RadioGroup
+                    aria-label="Payment Type"
+                    name="paymentType"
+                    value={paymentTypeId}
+                    onChange={this.handlePaymentTypeChange}
+                  >
+                    <FormControlLabel value="22" control={<Radio />} label="Cash" />
+                    <FormControlLabel value="23" control={<Radio />} label="Credit Card / Debit" />
+                    <FormControlLabel value="24" control={<Radio />} label="Cheque" />
+                    <FormControlLabel value="25" control={<Radio />} label="Paypal and Amazon + USD Account" />
+                  </RadioGroup>
+                </FormControl>
+              </CardBody>
+            </Card>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+            <Button onClick={this.saveReturn} color="primary">
+              Pay
+            </Button>
+          </DialogActions>
+        </Dialog>         
+         <Dialog
           open={openAuthDialog}
           aria-labelledby="form-dialog-title"
         >
