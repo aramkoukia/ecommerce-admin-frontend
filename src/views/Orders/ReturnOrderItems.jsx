@@ -1,5 +1,4 @@
 import React from 'react';
-import withStyles from '@material-ui/core/styles/withStyles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -61,6 +60,7 @@ export default class ReturnOrderItems extends React.Component {
     for (const i in orderRows) {
       if (orderRows[i].productId == event.target.name) {
         orderRows[i].amount = event.target.value;
+        orderRows[i].total = event.target.value * orderRows[i].unitPrice * -1;
         this.setState({ orderRows });
         break;
       }
@@ -82,7 +82,7 @@ export default class ReturnOrderItems extends React.Component {
     if (items.length === 0) {
       return 0;
     }
-    return items.map(({ unitPrice, amount }) => unitPrice * amount).reduce((sum, i) => sum + i, 0) - totalDiscount;
+    return items.map(({ unitPrice, amount }) => unitPrice * amount * -1).reduce((sum, i) => sum + i, 0) - totalDiscount;
   }
 
   discount(orderRows) {
@@ -94,7 +94,7 @@ export default class ReturnOrderItems extends React.Component {
 
   total(subTotal, discount, taxes) {
     const totalTax = taxes.map(({ tax }) => (tax.percentage / 100) * subTotal).reduce((sum, i) => sum + i, 0);
-    return subTotal + totalTax - discount;
+    return (subTotal + totalTax - discount);
   }
 
   render() {

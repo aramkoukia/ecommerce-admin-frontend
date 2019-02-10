@@ -10,7 +10,6 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
-import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -142,7 +141,7 @@ export default class AddOrder extends React.Component {
   }
 
   async handleAuthEnter(event) {
-    if(event.key == 'Enter'){
+    if(event.key === 'Enter') {
       await this.handleAuthUpdate();
     }
   }

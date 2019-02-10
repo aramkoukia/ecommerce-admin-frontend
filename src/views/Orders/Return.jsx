@@ -4,6 +4,10 @@ import { withStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import Save from '@material-ui/icons/Save';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import TextField from '@material-ui/core/TextField';
 import PropTypes from 'prop-types';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -19,6 +23,7 @@ import ReturnOrderItems from './ReturnOrderItems';
 import CustomerInfo from './CustomerInfo';
 import OrderService from '../../services/OrderService';
 import Location from '../../stores/Location';
+import UserService from '../../services/UserService';
 
 const styles = {
   chip: {
@@ -41,19 +46,59 @@ export class Return extends React.Component {
       snackbarMessage: '',
       snackbarColor: '',
       loading: false,
+      openAuthDialog: true,
+      authCode: '',
       rows: [],
     };
 
     this.saveReturn = this.saveReturn.bind(this);
     this.priceChanged = this.priceChanged.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleAuthUpdate = this.handleAuthUpdate.bind(this);
+    this.handleAuthEnter = this.handleAuthEnter.bind(this);
   }
 
   async componentDidMount() {
     const orderId = this.props.match.params.id;
     const order = await OrderService.getOrderDetail(orderId);
+    for (const i in order.orderDetail) {
+      order.orderDetail[i].total = order.orderDetail[i].total * -1
+    }
+
     this.setState({
       order,
       rows: order.orderDetail,
+      openAuthDialog: true,
+      authCode: '',
+    });
+  }
+
+  async handleAuthEnter(event) {
+    if (event.key === 'Enter') {
+      await this.handleAuthUpdate();
+    }
+  }
+
+  async handleAuthUpdate() {
+    const { authCode } = this.state;
+    const result = await UserService.getUserByAuthCode(authCode);
+    if (result === false
+        || result === ''
+        || result === null
+        || result.StatusCode === 500
+        || result.StatusCode === 400
+        || result.StatusCode === 404) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Invalid Auth Code!',
+        snackbarColor: 'danger',
+      });
+      return false;
+    }
+
+    this.setState({
+      openAuthDialog: false,
+      userGivenName: result.givenName,
     });
   }
 
@@ -77,7 +122,7 @@ export class Return extends React.Component {
 
   async saveOrder(orderStatus) {
     const {
-      rows, total, subTotal, totalDiscount, notes, poNumber, order,
+      rows, total, subTotal, totalDiscount, notes, poNumber, order, authCode,
     } = this.state;
     const originalOrderId = this.props.match.params.id;
     const status = orderStatus;
@@ -115,6 +160,7 @@ export class Return extends React.Component {
       orderTax: orderTaxes,
       orderDetail: orderDetails,
       originalOrderId,
+      authCode,
     };
 
     const result = await OrderService.saveOrder(returnOrder);
@@ -152,7 +198,7 @@ export class Return extends React.Component {
 
   render() {
     const {
-      order, openSnackbar, snackbarMessage, snackbarColor, loading, notes,
+      order, openSnackbar, snackbarMessage, snackbarColor, loading, notes, openAuthDialog, authCode, userGivenName,
     } = this.state;
 
     return (
@@ -169,7 +215,9 @@ export class Return extends React.Component {
                   &nbsp;
                   <b>{order.orderId}</b>
                   &nbsp;&nbsp; {dateFormat(order.orderDate)}
-                  &nbsp;&nbsp; <Chip label={order.status} color="primary" />
+                  &nbsp;&nbsp; <Chip label={order.status} color="primary" /> 
+                   - User:
+                  { authCode } - { userGivenName }
                 </div>
               </CardHeader>
               <CardBody>
@@ -234,6 +282,35 @@ export class Return extends React.Component {
               close
             />
           </GridItem>
+          <Dialog
+          open={openAuthDialog}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <Card>
+              <CardHeader color="info">
+                <div>Pass Code</div>
+              </CardHeader>
+              <CardBody>
+                <TextField
+                  name="authCode"
+                  label="Auth Code"
+                  type="text"
+                  autoFocus={true}
+                  onChange={this.handleChange}
+                  onKeyPress={this.handleAuthEnter}
+                  value={authCode}
+                />
+              </CardBody>
+            </Card>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleAuthUpdate} color="primary">
+              Ok
+            </Button>
+          </DialogActions>
+        </Dialog>
+
         </GridContainer>
         ) }
       </div>
