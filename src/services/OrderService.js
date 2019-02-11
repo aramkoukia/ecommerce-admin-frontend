@@ -25,6 +25,18 @@ export default class OrderService {
     }
   }
 
+  static async updateOrderInfo(orderId, orderInfo) {
+    try {
+      const response = await RestUtilities.put(
+        `orders/${orderId}/info`,
+        orderInfo,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getOrders() {
     try {
       const response = await RestUtilities.get(
