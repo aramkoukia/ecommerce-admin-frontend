@@ -20,6 +20,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
+import Portal from '@material-ui/core/Portal';
 import GridItem from '../Grid/GridItem';
 import GridContainer from '../Grid/GridContainer';
 import Card from '../Card/Card';
@@ -191,7 +192,7 @@ class HeaderLinks extends React.Component {
       });
     } else {
       const message = result.errors.map((error) => {
-        return error.description;
+        return error;
       }).join('. ');
 
       this.setState({
@@ -368,6 +369,7 @@ class HeaderLinks extends React.Component {
             </Button>            
           </DialogActions>
           </Dialog>          
+          <Portal>
           <Snackbar
           place="tl"
           color={snackbarColor}
@@ -377,6 +379,7 @@ class HeaderLinks extends React.Component {
           closeNotification={() => this.setState({ openSnackbar: false })}
           close
         />
+        </Portal>
           </div>
         ) : (<div />)}
       </div>

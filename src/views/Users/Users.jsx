@@ -11,6 +11,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
+import Portal from '@material-ui/core/Portal';
 import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
@@ -384,6 +385,7 @@ export default class Users extends React.Component {
           </DialogActions>
         </Dialog>
         )}
+        <Portal>
         <Snackbar
           place="tl"
           color={snackbarColor}
@@ -393,6 +395,7 @@ export default class Users extends React.Component {
           closeNotification={() => this.setState({ openSnackbar: false })}
           close
         />
+        </Portal>
       </div>
     );
   }
