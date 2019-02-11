@@ -1,13 +1,13 @@
 import React from 'react';
 import MUIDataTable from 'mui-datatables';
 import TextField from '@material-ui/core/TextField';
+import Button from '../../components/CustomButtons/Button';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
-import CustomInput from '../../components/CustomInput/CustomInput';
-import PurchaseService from '../../services/PurchaseService';
+import ReportService from '../../services/ReportService';
 
 function dateFormat(dateString) {
   const date = new Date(dateString);
@@ -18,30 +18,47 @@ export default class CustomerReport extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { purchases: [] };
-    this.rowClicked = this.rowClicked.bind(this);
+    this.state = {
+      fromDate: '',
+      toDate: '',
+    };
+    this.search = this.search.bind(this);
   }
 
   componentDidMount() {
-    this.purchasesList();
+    this.setState({
+      fromDate: new Date(Date.now()),
+      toDate: new Date(Date.now()),
+    });
   }
 
-  purchasesList() {
-    const columns = ['purchaseId', 'purchaseDate', 'supplier', 'deliveryDate', 'status', 'total', 'createdByUserId'];
-    PurchaseService.getPurchases()
-      .then((results) => results.map(row => {
-        return columns.map(column => {
-          if (column === "purchaseDate") {
-            return dateFormat(row[column]);
-          }
-          return row[column] || "";
-        });
-      }))
-      .then(data => this.setState({ purchases: data }));
-  }
+  handleChange = name => (event) => {
+    this.setState({
+      [name]: event.target.value,
+    });
+  };
 
-  rowClicked(rowData, _rowMeta) {
-    this.props.history.push(`/purchase/${rowData[0]}`);
+  search() {
+    const { fromDate, toDate } = this.state;
+    const customerPaidColumns = ['orderId', 'poNumber', 'total', 'status', 'orderDate', 'paymentAmount', 'paymentTypeName', 'companyName', 'address', 'city', 'province', 'postalCode'];
+    ReportService.getCustomerPaid(fromDate, toDate)
+      .then(results => results.map(row => customerPaidColumns.map((column) => {
+        if (column === 'orderDate') {
+          return dateFormat(row[column]);
+        }
+        return row[column] || '';
+      })))
+      .then(data => this.setState({ customerPaidData: data }));
+
+    const customerUnPaidColumns = ['orderId', 'poNumber', 'total', 'status', 'orderDate', 'dueDate', 'companyName', 'address', 'city', 'province', 'postalCode'];
+    ReportService.getCustomerUnPaid(fromDate, toDate)
+      .then(results => results.map(row => customerUnPaidColumns.map((column) => {
+        if (column === 'orderDate' || column === 'dueDate') {
+          return dateFormat(row[column]);
+        }
+        return row[column] || '';
+      })))
+      .then(data => this.setState({ customerUnPaidData: data }));    
   }
 
   render() {
@@ -75,54 +92,70 @@ export default class CustomerReport extends React.Component {
       },
     };
 
-    const columns = [
-      {
-        name: 'Purchase Number',
-        options: {
-          filter: false,
-        },
+    const customerPaidColumns = ['Invoice Id', 'PO Number', 'Total Sale ($)', 'Status', 'Date', 'Payment Amount($)', 'Paid By', 'Company Name',
+    {
+      name: 'Address',
+      options: {
+        display: false,
       },
-      {
-        name: 'Purchase Date',
-        options: {
-          filter: false,
-        },
+    },
+    {
+      name: 'City',
+      options: {
+        display: false,
       },
-      {
-        name: 'Supplier',
-        options: {
-          filter: true,
-        },
+    },
+    {
+      name: 'Province',
+      options: {
+        display: false,
       },
-      {
-        name: 'Delivery Date',
-        options: {
-          filter: false,
-        },
+    },
+    {
+      name: 'PostalCode',
+      options: {
+        display: false,
       },
-      {
-        name: 'Status',
-        options: {
-          filter: true,
-        },
+    },];
+
+    const customerUnPaidColumns = ['Invoice Id', 'PO Number', 'Total Sale ($)', 'Status', 'Date', 'Due Date', 'Company Name',
+    {
+      name: 'Address',
+      options: {
+        display: false,
       },
-      {
-        name: 'Total',
-        options: {
-          filter: false,
-        },
+    },
+    {
+      name: 'City',
+      options: {
+        display: false,
       },
-      'Created By'];
+    },
+    {
+      name: 'Province',
+      options: {
+        display: false,
+      },
+    },
+    {
+      name: 'PostalCode',
+      options: {
+        display: false,
+      },
+    },];
 
     const options = {
       filterType: 'checkbox',
-      onRowClick: this.rowClicked,
       rowHover: true,
       resizableColumns: true,
       selectableRows: false,
     };
 
-    const { purchases } = this.state;
+    const { customerPaidData, customerUnPaidData, fromDate, toDate } = this.state;
+    // const paidTitle = `Paid Orders - From Date: ${dateFormat(fromDate)} To Date: ${dateFormat(toDate)}`;
+    // const unpaidTitle = `Awaiting Patment - Until Date: ${dateFormat(toDate)}`;
+    const paidTitle = 'Paid Orders';
+    const unpaidTitle = 'Awaiting Patment';
 
     return (
       <div>
@@ -136,9 +169,11 @@ export default class CustomerReport extends React.Component {
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={3}>
                     <TextField
+                      onChange={this.handleChange('fromDate')}
                       id="date"
                       label="From Date"
                       type="date"
+                      value={fromDate}
                       InputLabelProps={{
                         shrink: true,
                       }}
@@ -146,20 +181,34 @@ export default class CustomerReport extends React.Component {
                   </GridItem>
                   <GridItem xs={12} sm={12} md={3}>
                     <TextField
+                      onChange={this.handleChange('toDate')}
                       id="date"
                       label="To Date"
                       type="date"
+                      value={toDate}
                       InputLabelProps={{
                         shrink: true,
                       }}
                     />
                   </GridItem>
+                  <GridItem xs={12} sm={12} md={3}>
+                    <Button color="info" onClick={this.search}>Search</Button>
+                  </GridItem>
                 </GridContainer>
-                {/* <MUIDataTable
-                  data={purchases}
-                  columns={columns}
+
+                <MUIDataTable
+                  title={paidTitle}
+                  data={customerPaidData}
+                  columns={customerPaidColumns}
                   options={options}
-                /> */}
+                />
+
+                <MUIDataTable
+                  title={unpaidTitle}
+                  data={customerUnPaidData}
+                  columns={customerUnPaidColumns}
+                  options={options}
+                />
               </CardBody>
             </Card>
           </GridItem>

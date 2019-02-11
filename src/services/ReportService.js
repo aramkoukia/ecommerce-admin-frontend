@@ -110,4 +110,26 @@ export default class ReportService {
       return false;
     }
   }
+
+  static async getCustomerPaid(fromDate, toDate) {
+    try {
+      const response = await RestUtilities.get(
+        `reports/customerpaid?fromDate=${fromDate}&toDate=${toDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+  
+  static async getCustomerUnPaid(fromDate, toDate) {
+    try {
+      const response = await RestUtilities.get(
+        `reports/customerunpaid?fromDate=${fromDate}&toDate=${toDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }  
 }
