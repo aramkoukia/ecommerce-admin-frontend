@@ -68,4 +68,16 @@ export default class UserService {
       return false;
     }
   }
+
+  static async ResetPasscode(passcodeResetInfo) {
+    try {
+      const response = await RestUtilities.put(
+        'users/resetpasscode',
+        passcodeResetInfo,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }  
 }
