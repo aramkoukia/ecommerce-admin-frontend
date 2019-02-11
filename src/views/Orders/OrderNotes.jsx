@@ -98,16 +98,16 @@ export default class OrderNotes extends React.Component {
             fullWidth="true"
           />
           </GridItem>
-          <GridItem  md={12}>
+          <GridItem md={7}>
+            { loading && <CircularProgress /> }
+          </GridItem>          
+          <GridItem md={5}>
             <Button color="primary" onClick={this.updateOrderInfo}>
               <Save />
                &nbsp;
                Save
              </Button>
           </GridItem> 
-          <GridItem xs>
-            { loading && <CircularProgress /> }
-          </GridItem>          
           </GridContainer>
           <Snackbar
               place="tl"
