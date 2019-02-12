@@ -236,9 +236,9 @@ export default class OrderTable extends React.Component {
           <TableRow>
             <TableCell>Product</TableCell>
             <TableCell>Amount</TableCell>
-            <TableCell numeric>Unit Price</TableCell>
+            <TableCell numeric>Unit Price ($)</TableCell>
             <TableCell>Discount</TableCell>
-            <TableCell numeric>Total Price</TableCell>
+            <TableCell numeric>Total Price ($)</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
