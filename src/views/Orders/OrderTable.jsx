@@ -33,6 +33,7 @@ export default class OrderTable extends React.Component {
     });
 
     this.handleQuantityChanged = this.handleQuantityChanged.bind(this);
+    this.handleSalePriceChanged = this.handleSalePriceChanged.bind(this);
     this.handleDiscountAmountChanged = this.handleDiscountAmountChanged.bind(this);
     this.handleDiscountPercentChanged = this.handleDiscountPercentChanged.bind(this);
     this.handleDiscountTypeChanged = this.handleDiscountTypeChanged.bind(this);
@@ -47,12 +48,12 @@ export default class OrderTable extends React.Component {
         || taxes.length !== prevProps.taxes.length) {
       let orderRows = rows.slice();
       const totalDiscount = this.discount(orderRows);
-      const subTotal = this.subtotal(orderRows, totalDiscount);      
+      const subTotal = this.subtotal(orderRows, totalDiscount);
       const total = this.total(subTotal, taxes);
       this.setState({
           orderRows: rows,
           subTotal: subTotal,
-          total: total,  
+          total: total,
           totalDiscount: totalDiscount,
       });
 
@@ -81,7 +82,7 @@ export default class OrderTable extends React.Component {
     this.setState(
       {
         subTotal: subTotal,
-        total: total,  
+        total: total,
         totalDiscount: totalDiscount,
       }
     );
@@ -91,7 +92,7 @@ export default class OrderTable extends React.Component {
 
   handleQuantityChanged(event) {
     let { taxes, priceChanged } = this.props;
-    let { orderRows } = this.state;    
+    let { orderRows } = this.state;
     for(let i in orderRows) {
         if(orderRows[i].productId == event.target.name){
           orderRows[i].qty = event.target.value;
@@ -106,8 +107,32 @@ export default class OrderTable extends React.Component {
     const total = this.total(subTotal, taxes);
     this.setState({
         subTotal: subTotal,
-        total: total,  
+        total: total,
         totalDiscount: totalDiscount,
+    });
+
+    priceChanged(subTotal, total, totalDiscount);
+  }
+
+  handleSalePriceChanged(event) {
+    let { taxes, priceChanged } = this.props;
+    let { orderRows } = this.state;
+    for (let i in orderRows) {
+      if (orderRows[i].productId == event.target.name) {
+        orderRows[i].salesPrice = event.target.value;
+        orderRows[i].total = event.target.value * orderRows[i].qty;
+        this.setState({ orderRows });
+        break;
+      }
+    }
+
+    const totalDiscount = this.discount(orderRows);
+    const subTotal = this.subtotal(orderRows, totalDiscount);
+    const total = this.total(subTotal, taxes);
+    this.setState({
+      subTotal: subTotal,
+      total: total,
+      totalDiscount: totalDiscount,
     });
 
     priceChanged(subTotal, total, totalDiscount);
@@ -131,7 +156,7 @@ export default class OrderTable extends React.Component {
     this.setState(
       {
         subTotal: subTotal,
-        total: total,  
+        total: total,
         totalDiscount: totalDiscount,
       }
     );
@@ -150,14 +175,14 @@ export default class OrderTable extends React.Component {
           break;
         }
     }
-    
+
     const totalDiscount = this.discount(orderRows);
     const subTotal = this.subtotal(orderRows, totalDiscount);
     const total = this.total(subTotal, taxes);
     this.setState(
       {
         subTotal: subTotal,
-        total: total,  
+        total: total,
         totalDiscount: totalDiscount,
       }
     );
@@ -221,11 +246,11 @@ export default class OrderTable extends React.Component {
             return (
               <TableRow key={row.productId}>
                 <TableCell>
-                  <IconButton aria-label="Delete" 
+                  <IconButton aria-label="Delete"
                     name={row.productId}
                     onClick={this.handleProductRemoved}>
-                    <DeleteIcon 
-                      name={row.productId} 
+                    <DeleteIcon
+                      name={row.productId}
                       fontSize="small" />
                   </IconButton>
                   {row.productName}
@@ -238,14 +263,22 @@ export default class OrderTable extends React.Component {
                     type="number"
                     style = {{width: 100}}
                   />
-                </TableCell>                
-                <TableCell numeric>{this.ccyFormat(row.salesPrice)}</TableCell>
+                </TableCell>
+                <TableCell numeric>
+                  <TextField
+                    name={row.productId}
+                    value={row.salesPrice}
+                    onChange={this.handleSalePriceChanged}
+                    type="number"
+                    style={{ width: 100 }}
+                  />
+                </TableCell>
                 <TableCell>
                   <ToggleButtonGroup
                     hidden
                     name={row.productId}
-                    value={row.discountType} 
-                    exclusive 
+                    value={row.discountType}
+                    exclusive
                     onChange={this.handleDiscountTypeChanged}
                     style = {{width: 50}}>
                     <ToggleButton value="percent" name={row.productId}>
@@ -271,7 +304,7 @@ export default class OrderTable extends React.Component {
                       type="number"
                       style = {{width: 100}}
                     /> )} %
-                </TableCell>                
+                </TableCell>
                 <TableCell numeric>{this.ccyFormat(row.salesPrice * row.qty)}</TableCell>
               </TableRow>
             );
@@ -282,10 +315,10 @@ export default class OrderTable extends React.Component {
             <TableCell>Total Discount</TableCell>
             <TableCell></TableCell>
             <TableCell numeric>{this.ccyFormat(totalDiscount)}</TableCell>
-          </TableRow>          
+          </TableRow>
           <TableRow style={{'background-color': 'lightgray'}}>
             <TableCell></TableCell>
-            <TableCell></TableCell>            
+            <TableCell></TableCell>
             <TableCell>Subtotal</TableCell>
             <TableCell></TableCell>
             <TableCell numeric>{this.ccyFormat(subTotal)}</TableCell>
