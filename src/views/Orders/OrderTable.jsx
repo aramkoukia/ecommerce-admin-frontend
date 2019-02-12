@@ -261,7 +261,7 @@ export default class OrderTable extends React.Component {
                     value={row.qty}
                     onChange={this.handleQuantityChanged}
                     type="number"
-                    style = {{width: 100}}
+                    style = {{width: 70}}
                   />
                 </TableCell>
                 <TableCell numeric>
@@ -270,7 +270,7 @@ export default class OrderTable extends React.Component {
                     value={row.salesPrice}
                     onChange={this.handleSalePriceChanged}
                     type="number"
-                    style={{ width: 100 }}
+                    style={{ width: 70 }}
                   />
                 </TableCell>
                 <TableCell>
@@ -294,7 +294,7 @@ export default class OrderTable extends React.Component {
                       value={row.discountAmount}
                       onChange={this.handleDiscountAmountChanged}
                       type="number"
-                      style = {{width: 100}}
+                      style = {{width: 50}}
                     /> )}
                   { row.discountType == "percent" &&
                   ( <TextField
@@ -302,7 +302,7 @@ export default class OrderTable extends React.Component {
                       value={row.discountPercent}
                       onChange={this.handleDiscountPercentChanged}
                       type="number"
-                      style = {{width: 100}}
+                      style = {{width: 50}}
                     /> )} %
                 </TableCell>
                 <TableCell numeric>{this.ccyFormat(row.salesPrice * row.qty)}</TableCell>
