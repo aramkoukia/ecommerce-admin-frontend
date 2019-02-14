@@ -39,7 +39,7 @@ export default class Orders extends React.Component {
   };
 
   ordersList() {
-    const columns = ['locationName', 'orderId', 'orderDate', 'subTotal', 'total', 'status', 'poNumber', 'paidAmount', 'givenName', 'paymentTypeName'];
+    const columns = ['locationName', 'orderId', 'orderDate', 'subTotal', 'total', 'status', 'poNumber', 'paidAmount', 'givenName', 'paymentTypeName', 'companyName'];
     const locationId = Location.getStoreLocation();
     const { showAllOrders } = this.state;
     this.setState({ loading: true });
@@ -135,6 +135,12 @@ export default class Orders extends React.Component {
         name: 'Payment Type',
         options: {
           display: false,
+        },
+      },
+      {
+        name: 'Company Name',
+        options: {
+          filter: false,
         },
       },
     ];
