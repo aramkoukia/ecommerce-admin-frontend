@@ -25,7 +25,7 @@ function CustomerInfo(props) {
         <div className={classes.cardTitleWhite}>Customer</div>
       </CardHeader>
       <CardBody>
-        { customer && customer.firstName && (
+        { customer && (
         <Table
           tableHeaderColor="primary"
           tableHead={['Email', 'Name', 'Company Name', 'Credit Limit', 'PST Number', 'Phone Number', 'Segment', 'province']}
@@ -41,7 +41,7 @@ function CustomerInfo(props) {
           ]}
         />
         ) }
-        { (customer === undefined || !customer.firstName) && (
+        { (customer === undefined) && (
           <Danger>no customer info available</Danger>)
         }
       </CardBody>
