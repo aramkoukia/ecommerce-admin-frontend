@@ -35,10 +35,20 @@ export default class PaymentReport extends React.Component {
 
   search() {
     const { fromDate, toDate } = this.state;
-    const columns = ['givenName', 'paymentTypeName', 'paymentAmount', 'companyName', 'orderId', 'status'];
+    const paymentDetailsColumns = ['locationName', 'givenName', 'paymentTypeName', 'paymentAmount', 'companyName', 'orderId', 'status'];
     ReportService.getPayments(fromDate, toDate)
-      .then(results => results.map(row => columns.map(column => row[column] || '')))
-      .then(data => this.setState({ reportData: data }));
+      .then(results => results.map(row => paymentDetailsColumns.map(column => row[column] || '')))
+      .then(data => this.setState({ paymentDetailsData: data }));
+
+    const paymentsSummaryColumns = ['locationName', 'paymentTypeName', 'paymentAmount', 'status'];
+    ReportService.getPaymentsByOrderStatus(fromDate, toDate)
+      .then(results => results.map(row => paymentsSummaryColumns.map(column => row[column] || '')))
+      .then(data => this.setState({ paymentsSummaryData: data }));
+
+    const paymentsTotalColumns = ['locationName', 'paymentTypeName', 'paymentAmount'];
+    ReportService.getPaymentsTotal(fromDate, toDate)
+      .then(results => results.map(row => paymentsTotalColumns.map(column => row[column] || '')))
+      .then(data => this.setState({ paymentsTotalData: data }));
   }
 
   render() {
@@ -72,7 +82,41 @@ export default class PaymentReport extends React.Component {
       },
     };
 
-    const columns = [
+    const paymentsTotalColumns = [
+      {
+        name: 'Loaction',
+      },
+      {
+        name: 'Payment Type',
+      },
+      {
+        name: 'Amount ($)',
+        options: {
+          filter: true,
+        },
+      }];
+
+    const paymentsSummaryColumns = [
+      {
+        name: 'Loaction',
+      },
+      {
+        name: 'Payment Type',
+      },
+      {
+        name: 'Amount ($)',
+        options: {
+          filter: true,
+        },
+      },
+      {
+        name: 'Status',
+      }];
+
+    const paymentDetailsColumns = [
+      {
+        name: 'Loaction',
+      },
       {
         name: 'User',
       },
@@ -101,14 +145,28 @@ export default class PaymentReport extends React.Component {
         name: 'Status',
       }];
 
-    const options = {
+    const paymentsTotalOptions = {
       filterType: 'checkbox',
       rowHover: true,
       resizableColumns: true,
       selectableRows: false,
     };
 
-    const { reportData, fromDate, toDate } = this.state;
+    const paymentsSummaryOptions = {
+      filterType: 'checkbox',
+      rowHover: true,
+      resizableColumns: true,
+      selectableRows: false,
+    };
+
+    const paymentDetailsOptions = {
+      filterType: 'checkbox',
+      rowHover: true,
+      resizableColumns: true,
+      selectableRows: false,
+    };
+
+    const { paymentsSummaryData, paymentDetailsData, paymentsTotalData, fromDate, toDate } = this.state;
 
     return (
       <div>
@@ -149,9 +207,26 @@ export default class PaymentReport extends React.Component {
                   </GridItem>
                 </GridContainer>
                 <MUIDataTable
-                  data={reportData}
-                  columns={columns}
-                  options={options}
+                  title="Payments Summary"
+                  data={paymentsTotalData}
+                  columns={paymentsTotalColumns}
+                  options={paymentsTotalOptions}
+                />
+                <br />
+
+                <MUIDataTable
+                  title="Payments By Order Status"
+                  data={paymentsSummaryData}
+                  columns={paymentsSummaryColumns}
+                  options={paymentsSummaryOptions}
+                />
+                <br />
+
+                <MUIDataTable
+                  title="Payment Details"
+                  data={paymentDetailsData}
+                  columns={paymentDetailsColumns}
+                  options={paymentDetailsOptions}
                 />
               </CardBody>
             </Card>

@@ -100,6 +100,28 @@ export default class ReportService {
     }
   }
 
+  static async getPaymentsByOrderStatus(fromDate, toDate) {
+    try {
+      const response = await RestUtilities.get(
+        `reports/paymentsbypaymenttype?fromDate=${fromDate}&toDate=${toDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async getPaymentsTotal(fromDate, toDate) {
+    try {
+      const response = await RestUtilities.get(
+        `reports/paymentstotal?fromDate=${fromDate}&toDate=${toDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getPurchases(fromDate, toDate) {
     try {
       const response = await RestUtilities.get(
@@ -121,7 +143,7 @@ export default class ReportService {
       return false;
     }
   }
-  
+
   static async getCustomerUnPaid(fromDate, toDate) {
     try {
       const response = await RestUtilities.get(
@@ -131,5 +153,5 @@ export default class ReportService {
     } catch (err) {
       return false;
     }
-  }  
+  }
 }
