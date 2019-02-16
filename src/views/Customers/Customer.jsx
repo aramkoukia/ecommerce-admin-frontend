@@ -148,10 +148,10 @@ export default class Customer extends React.Component {
     return (
       <div>
         <GridContainer>
-          <GridItem xs={8}>
+          <GridItem xs={10}>
             <CustomerInfo customer={customer} />
           </GridItem>
-          <GridItem xs={4}>
+          <GridItem xs={2}>
             <Button color="primary" onClick={this.editCustomer}>Edit</Button>
           </GridItem>
           <GridItem xs={12} sm={12} md={12}>

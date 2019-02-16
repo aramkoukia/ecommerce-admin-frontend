@@ -103,7 +103,7 @@ class CustomerSearch extends React.Component {
   }
 
   async componentDidMount() {
-    const suggestions = await CustomerService.getCustomers();
+    const suggestions = await CustomerService.getCustomersWithBalance();
     this.setState({ suggestions });
   }
 

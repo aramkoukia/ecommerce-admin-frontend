@@ -25,7 +25,7 @@ export default class Customers extends React.Component {
 
   customersList() {
     this.setState({ loading: true });
-    const columns = ['customerCode', 'companyName', 'firstName', 'lastName', 'email', 'creditLimit', 'pstNumber', 'phoneNumber'];
+    const columns = ['customerCode', 'companyName', 'firstName', 'lastName', 'email', 'accountBalance', 'creditLimit', 'pstNumber', 'phoneNumber'];
     CustomerService.getCustomersWithBalance()
       .then(results => results.map(row => columns.map(column => row[column] || '')))
       .then(data => this.setState({ customers: data, loading: false }));
@@ -98,6 +98,13 @@ export default class Customers extends React.Component {
           filter: false,
         },
       },
+      {
+        name: 'Awaiting Payment ($)',
+        options: {
+          filter: false,
+        },
+      },
+
       {
         name: 'Credit Limit ($)',
         options: {
