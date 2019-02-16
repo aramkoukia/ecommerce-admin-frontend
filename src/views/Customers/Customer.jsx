@@ -1,13 +1,13 @@
 import React from 'react';
-// @material-ui/core components
-// import withStyles from "@material-ui/core/styles/withStyles";
-// core components
-import GridItem from 'components/Grid/GridItem.jsx';
-import GridContainer from 'components/Grid/GridContainer.jsx';
-import Card from 'components/Card/Card.jsx';
-import CardHeader from 'components/Card/CardHeader.jsx';
-import CardBody from 'components/Card/CardBody.jsx';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Print from '@material-ui/icons/Print';
+import Email from '@material-ui/icons/Email';
 import MUIDataTable from 'mui-datatables';
+import GridItem from '../../components/Grid/GridItem';
+import GridContainer from '../../components/Grid/GridContainer';
+import Card from '../../components/Card/Card';
+import CardHeader from '../../components/Card/CardHeader';
+import CardBody from '../../components/Card/CardBody';
 import Button from '../../components/CustomButtons/Button';
 import OrderService from '../../services/OrderService';
 import CustomerInfo from '../Orders/CustomerInfo';
@@ -28,6 +28,8 @@ export default class Customer extends React.Component {
     };
     this.rowClicked = this.rowClicked.bind(this);
     this.editCustomer = this.editCustomer.bind(this);
+    this.printStatement = this.printStatement.bind(this);
+    this.emailStatement = this.emailStatement.bind(this);
   }
 
   async componentDidMount() {
@@ -36,6 +38,7 @@ export default class Customer extends React.Component {
     const customer = await CustomerService.getCustomer(customerId);
     this.setState({
       customer,
+      loading: false,
     });
 
     this.ordersList(customerId);
@@ -46,8 +49,25 @@ export default class Customer extends React.Component {
     return this.props.history.push(`/editcustomer/${match.params.id}`);
   }
 
+  async printStatement() {
+    const { match } = this.props;
+    const customerId = match.params.id;
+    this.setState({ loading: true });
+    await CustomerService.printStatement(customerId);
+    this.setState({ loading: false });
+  }
+
+  async emailStatement() {
+    const { match } = this.props;
+    const customerId = match.params.id;
+    this.setState({ loading: true });
+    await CustomerService.emailStatement(customerId);
+    this.setState({ loading: false });
+  }
+
   ordersList(customerId) {
     const columns = ['locationName', 'orderId', 'orderDate', 'subTotal', 'total', 'status', 'poNumber', 'paidAmount', 'givenName'];
+    this.setState({ loading: true });
     OrderService.getCustomerOrders(customerId)
       .then(results => results.map(row => columns.map((column) => {
         if (column === 'orderDate') {
@@ -55,7 +75,7 @@ export default class Customer extends React.Component {
         }
         return row[column] || '';
       })))
-      .then(data => this.setState({ orders: data }));
+      .then(data => this.setState({ orders: data, loading: false }));
   }
 
   rowClicked(rowData) {
@@ -143,7 +163,7 @@ export default class Customer extends React.Component {
       selectableRows: false,
     };
 
-    const { orders, customer } = this.state;
+    const { orders, customer, loading } = this.state;
 
     return (
       <div>
@@ -153,6 +173,15 @@ export default class Customer extends React.Component {
           </GridItem>
           <GridItem xs={2}>
             <Button color="primary" onClick={this.editCustomer}>Edit</Button>
+            <Button color="secondary" onClick={this.printStatement}>
+              <Print />
+              Print Statement
+            </Button>
+            <Button color="secondary" onClick={this.emailStatement}>
+              <Email />
+              Email Statement
+            </Button>
+            {loading && <CircularProgress />}
           </GridItem>
           <GridItem xs={12} sm={12} md={12}>
             <Card>

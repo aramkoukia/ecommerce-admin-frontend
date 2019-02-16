@@ -57,4 +57,26 @@ export default class CustomerService {
       return false;
     }
   }
+
+  static async emailStatement(customerId) {
+    try {
+      const response = await RestUtilities.get(
+        `customers/${customerId}/emailstatement`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async printStatement(customerId) {
+    try {
+      const response = await RestUtilities.getBlob(
+        `customers/${customerId}/printstatement`,
+      );
+      return response;
+    } catch (err) {
+      return false;
+    }
+  }
 }
