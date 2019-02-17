@@ -28,13 +28,17 @@ const Sidebar = ({ ...props }) => {
 
   function getLocations() {
     return [
-      // {
-      //   locationId: 1,
-      //   locationName: 'Vancouver',
-      // },
+      {
+        locationId: 1,
+        locationName: 'Vancouver',
+      },
       {
         locationId: 2,
         locationName: 'Abbotsford',
+      },
+      {
+        locationId: 3,
+        locationName: 'Victoria',
       },
     ];
     // return LocationService.getLocationsForUser();

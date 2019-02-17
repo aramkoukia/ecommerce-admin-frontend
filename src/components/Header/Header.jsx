@@ -38,6 +38,10 @@ class Header extends React.Component {
           locationId: 2,
           locationName: 'Abbotsford',
         },
+        {
+          locationId: 3,
+          locationName: 'Victoria',
+        },
       ],
       isLoading: true,
     });
