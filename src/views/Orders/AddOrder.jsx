@@ -593,7 +593,7 @@ export default class AddOrder extends React.Component {
                   <GridItem xs>
                     <Button color="info" onClick={this.saveAsDraft}>Save As Draft</Button>
                   </GridItem>
-                  { customer ? (
+                  { customer && customer.creditLimit > 0 ? (
                     <GridItem xs>
                       <Button color="info" onClick={this.saveAsAccount}>Use Customers Account</Button>
                     </GridItem>
