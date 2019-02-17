@@ -29,6 +29,7 @@ import Orders from '../views/Orders/Orders';
 import Discounts from '../views/Discounts/Discounts';
 import Taxes from '../views/Taxes/Taxes';
 import Users from '../views/Users/Users';
+import AddUser from '../views/Users/AddUser';
 import Inventory from '../views/Inventory/Inventory';
 import Purchases from '../views/Purchases/Purchases';
 import AddPurchase from '../views/Purchases/AddPurchase';
@@ -197,6 +198,14 @@ const dashboardRoutes = [
     navbarName: '',
     icon: Person,
     component: Users,
+    permission: Permissions.ViewUsers,
+  },
+  {
+    path: '/adduser',
+    sidebarName: 'New User',
+    navbarName: '',
+    icon: Person,
+    component: AddUser,
     permission: Permissions.ViewUsers,
   },
   {

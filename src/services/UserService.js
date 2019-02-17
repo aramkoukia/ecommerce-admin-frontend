@@ -79,5 +79,17 @@ export default class UserService {
     } catch (err) {
       return false;
     }
-  }  
+  }
+
+  static async addUser(user) {
+    try {
+      const response = await RestUtilities.post(
+        'users',
+        user,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }
