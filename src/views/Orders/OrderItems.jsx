@@ -84,9 +84,10 @@ function OrderItems(props) {
             </TableRow>
             {order.orderPayment && order.orderPayment.map(orderPayment => (
               <TableRow>
-                <TableCell colSpan={2}><h4>Payment</h4></TableCell>
+                <TableCell><h4>Payment</h4></TableCell>
                 <TableCell><h4>{dateFormat(orderPayment.paymentDate)}</h4></TableCell>
                 <TableCell><h4>{orderPayment.paymentType.paymentTypeName}</h4></TableCell>
+                <TableCell><h4>{orderPayment.chequeNo}</h4></TableCell>
                 <TableCell numeric><h4>{ccyFormat(orderPayment.paymentAmount)}</h4></TableCell>
               </TableRow>
             ))}
