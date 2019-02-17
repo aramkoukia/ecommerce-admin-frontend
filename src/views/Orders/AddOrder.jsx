@@ -541,7 +541,7 @@ export default class AddOrder extends React.Component {
                 ) : (<div />)
                 }
                 <GridContainer>
-                  <GridItem xs={12} sm={12} md={9}>
+                  <GridItem xs={12} sm={12} md={12}>
                     <ProductSearch productChanged={this.productChanged} />
                   </GridItem>
                   <GridItem xs={12} sm={12} md={3}>
