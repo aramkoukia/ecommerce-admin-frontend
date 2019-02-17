@@ -1,20 +1,16 @@
 import React from 'react';
 import Check from '@material-ui/icons/Check';
-// @material-ui/core components
 import { withStyles } from '@material-ui/core/styles';
-// core components
-import GridItem from 'components/Grid/GridItem.jsx';
-import GridContainer from 'components/Grid/GridContainer.jsx';
-import Button from 'components/CustomButtons/Button.jsx';
-import Card from 'components/Card/Card.jsx';
-import CardHeader from 'components/Card/CardHeader.jsx';
-import CardBody from 'components/Card/CardBody.jsx';
-import CardFooter from 'components/Card/CardFooter.jsx';
+import GridItem from '../../components/Grid/GridItem';
+import GridContainer from '../../components/Grid/GridContainer';
+import Card from '../../components/Card/Card';
+import CardHeader from '../../components/Card/CardHeader';
+import CardBody from '../../components/Card/CardBody';
+import CardFooter from '../../components/Card/CardFooter';
 import PropTypes from 'prop-types';
-import Snackbar from 'components/Snackbar/Snackbar.jsx';
+import Snackbar from '../../components/Snackbar/Snackbar';
 import PurchaseNotes from './PurchaseNotes';
 import PurchaseItems from './PurchaseItems';
-
 import PurchaseService from '../../services/PurchaseService';
 
 const styles = {
