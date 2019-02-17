@@ -38,7 +38,7 @@ const styles = {
 
 function dateFormat(dateString) {
   const date = new Date(dateString);
-  return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+  return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
 }
 
 export class Return extends React.Component {
@@ -246,7 +246,7 @@ export class Return extends React.Component {
                   &nbsp;
                   <b>{order.orderId}</b>
                   &nbsp;&nbsp; {dateFormat(order.orderDate)}
-                  &nbsp;&nbsp; <Chip label={order.status} color="primary" /> 
+                  &nbsp;&nbsp; <Chip label={order.status} color="primary" />
                    - User:
                   { authCode } - { userGivenName }
                 </div>
@@ -348,7 +348,7 @@ export class Return extends React.Component {
               Pay
             </Button>
           </DialogActions>
-        </Dialog>         
+        </Dialog>
          <Dialog
           open={openAuthDialog}
           aria-labelledby="form-dialog-title"
