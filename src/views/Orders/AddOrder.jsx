@@ -222,9 +222,11 @@ export default class AddOrder extends React.Component {
     this.updateTaxes(customer, event.target.checked);
   }
 
-  validateCustomerCredit() {
+  orderExceedsCustomerCredit() {
     const { customer, total } = this.state;
-    if (customer && customer.creditLimit > customer.accountBalance + total) {
+    if (customer
+      && customer.creditLimit
+      && customer.creditLimit > customer.accountBalance + total) {
       return false;
     }
 
@@ -368,7 +370,7 @@ export default class AddOrder extends React.Component {
   }
 
   async saveAsAccount() {
-    if (this.validateCustomerCredit()) {
+    if (this.orderExceedsCustomerCredit()) {
       this.setState({
         openSnackbar: true,
         snackbarMessage: 'Customer is exceeding the credit limit!',
