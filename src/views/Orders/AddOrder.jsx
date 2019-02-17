@@ -9,7 +9,6 @@ import FormControl from '@material-ui/core/FormControl';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
-
 import TextField from '@material-ui/core/TextField';
 import PropTypes from 'prop-types';
 import GridItem from '../../components/Grid/GridItem';
@@ -92,6 +91,7 @@ export default class AddOrder extends React.Component {
       openDialog: false,
       userGivenName: '',
       paymentTypeId: '23',
+      chequeNo: '',
     };
 
     this.productChanged = this.productChanged.bind(this);
@@ -123,11 +123,15 @@ export default class AddOrder extends React.Component {
       openDialog: false,
       openAuthDialog: true,
       userGivenName: '',
+      chequeNo: '',
     });
   }
 
   handlePaymentTypeChange = (event) => {
-    this.setState({ paymentTypeId: event.target.value });
+    this.setState({
+      paymentTypeId: event.target.value,
+      chequeNo: '',
+    });
   }
 
   handleClose = () => {
@@ -141,7 +145,7 @@ export default class AddOrder extends React.Component {
   }
 
   async handleAuthEnter(event) {
-    if(event.key === 'Enter') {
+    if (event.key === 'Enter') {
       await this.handleAuthUpdate();
     }
   }
@@ -229,7 +233,7 @@ export default class AddOrder extends React.Component {
 
   async saveOrder(orderStatus) {
     const {
-      customer, rows, total, subTotal, notes, taxes, poNumber, paymentTypeId, authCode,
+      customer, rows, total, subTotal, notes, taxes, poNumber, paymentTypeId, authCode, chequeNo,
     } = this.state;
     const status = orderStatus;
     const orderDetails = rows.map(row => (
@@ -260,6 +264,7 @@ export default class AddOrder extends React.Component {
       status,
       notes,
       poNumber,
+      chequeNo,
       paymentTypeId: Number(paymentTypeId),
       pstNumber: customer !== null ? customer.pstNumber : null,
       orderTax: orderTaxes,
@@ -398,6 +403,7 @@ export default class AddOrder extends React.Component {
       paymentTypeId,
       authCode,
       userGivenName,
+      chequeNo,
     } = this.state;
 
     return (
@@ -640,6 +646,18 @@ export default class AddOrder extends React.Component {
                     <FormControlLabel value="22" control={<Radio />} label="Cash" />
                     <FormControlLabel value="23" control={<Radio />} label="Credit Card / Debit" />
                     <FormControlLabel value="24" control={<Radio />} label="Cheque" />
+                    {paymentTypeId === '24' && (
+                      <CustomInput
+                        labelText="Cheque Number"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                        inputProps={{
+                          value: chequeNo,
+                          name: 'chequeNo',
+                          onChange: this.handleChange,
+                        }}
+                      />)}
                     <FormControlLabel value="25" control={<Radio />} label="Paypal and Amazon + USD Account" />
                   </RadioGroup>
                 </FormControl>

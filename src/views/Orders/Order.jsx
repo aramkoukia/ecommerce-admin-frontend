@@ -14,6 +14,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import CustomInput from '../../components/CustomInput/CustomInput';
 import GridContainer from '../../components/Grid/GridContainer';
 import Button from '../../components/CustomButtons/Button';
 import Card from '../../components/Card/Card';
@@ -54,6 +55,7 @@ export class Order extends React.Component {
       openEmailDialog: false,
       paymentTypeId: '23',
       customerEmail: '',
+      chequeNo: '',
     };
 
     this.saveAsPaid = this.saveAsPaid.bind(this);
@@ -79,13 +81,14 @@ export class Order extends React.Component {
       openEmailDialog: false,
       paymentTypeId: '23',
       customerEmail: order.customer.email,
+      chequeNo: '',
     });
   }
 
   handleEmailOrderDialog() {
     this.setState({
       openEmailDialog: true,
-    });    
+    });
   }
 
   handleClose = () => {
@@ -101,7 +104,10 @@ export class Order extends React.Component {
   }
 
   handlePaymentTypeChange = (event) => {
-    this.setState({ paymentTypeId: event.target.value });
+    this.setState({
+      paymentTypeId: event.target.value,
+      chequeNo: '',
+    });
   }
 
   handleChange(event) {
@@ -109,8 +115,8 @@ export class Order extends React.Component {
   }
 
   async updateOrderStatus(orderStatus) {
-    const { order, paymentTypeId } = this.state;
-    const result = await OrderService.updateOrderStatus(order.orderId, { orderStatus, paymentTypeId });
+    const { order, paymentTypeId, chequeNo } = this.state;
+    const result = await OrderService.updateOrderStatus(order.orderId, { orderStatus, paymentTypeId, chequeNo });
     if (result === false || result === null || result.StatusCode === 500 || result.StatusCode === 400) {
       this.setState({
         openSnackbar: true,
@@ -212,7 +218,10 @@ export class Order extends React.Component {
 
   render() {
     const {
-      order, openSnackbar, snackbarMessage, snackbarColor, loading, openDialog, paymentTypeId, openEmailDialog, customerEmail,
+      order, openSnackbar, snackbarMessage, snackbarColor, loading, openDialog,
+      paymentTypeId,
+      openEmailDialog, customerEmail,
+      chequeNo,
     } = this.state;
 
     return (
@@ -324,6 +333,19 @@ export class Order extends React.Component {
                     <FormControlLabel value="22" control={<Radio />} label="Cash" />
                     <FormControlLabel value="23" control={<Radio />} label="Credit Card / Debit" />
                     <FormControlLabel value="24" control={<Radio />} label="Cheque" />
+                    { paymentTypeId === '24' && (
+                      <CustomInput
+                        labelText="Cheque Number"
+                        formControlProps={{
+                              fullWidth: true,
+                            }}
+                            inputProps={{
+                              value: chequeNo,
+                              name: 'chequeNo',
+                              onChange: this.handleChange,
+                            }}
+                          />)}
+
                     <FormControlLabel value="25" control={<Radio />} label="Paypal and Amazon + USD Account" />
                   </RadioGroup>
                 </FormControl>
@@ -372,7 +394,7 @@ export class Order extends React.Component {
               Send
             </Button>
           </DialogActions>
-        </Dialog>        
+        </Dialog>
        </div>
         ) }
       </div>
