@@ -122,7 +122,7 @@ export default class Inventory extends React.Component {
         snackbarColor: 'danger',
       });
       return;
-    }    
+    }
 
     if ((fromLocation === 1 && vancouverQuantity < transferQuantity)
         || (fromLocation === 2 && abbotsfordQuantity < transferQuantity)) {
@@ -342,6 +342,8 @@ export default class Inventory extends React.Component {
       rowHover: true,
       resizableColumns: true,
       selectableRows: false,
+      rowsPerPageOptions: [25, 50, 100],
+      rowsPerPage: 25,
     };
 
     const {

@@ -9,7 +9,12 @@ import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import ReportService from '../../services/ReportService';
 
-export default class SalesReport extends React.Component {
+function dateFormat(dateString) {
+  const date = new Date(dateString);
+  return `${date.toLocaleDateString()}`;
+}
+
+export default class CustomerStatement extends React.Component {
   constructor(props) {
     super(props);
 
@@ -35,10 +40,25 @@ export default class SalesReport extends React.Component {
 
   search() {
     const { fromDate, toDate } = this.state;
-    const columns = ['locationName', 'status', 'transactions', 'gst', 'pst', 'otherTax', 'discount', 'subTotal', 'total'];
-    ReportService.getSales(fromDate, toDate)
-      .then(results => results.map(row => columns.map(column => row[column] || '')))
-      .then(data => this.setState({ reportData: data }));
+    const customerPaidColumns = ['orderId', 'poNumber', 'total', 'status', 'orderDate', 'paymentAmount', 'paymentTypeName', 'companyName', 'address', 'city', 'province', 'postalCode'];
+    ReportService.getCustomerPaid(fromDate, toDate)
+      .then(results => results.map(row => customerPaidColumns.map((column) => {
+        if (column === 'orderDate') {
+          return dateFormat(row[column]);
+        }
+        return row[column] || '';
+      })))
+      .then(data => this.setState({ customerPaidData: data }));
+
+    const customerUnPaidColumns = ['orderId', 'poNumber', 'total', 'status', 'orderDate', 'dueDate', 'companyName', 'address', 'city', 'province', 'postalCode'];
+    ReportService.getCustomerUnPaid(fromDate, toDate)
+      .then(results => results.map(row => customerUnPaidColumns.map((column) => {
+        if (column === 'orderDate' || column === 'dueDate') {
+          return dateFormat(row[column]);
+        }
+        return row[column] || '';
+      })))
+      .then(data => this.setState({ customerUnPaidData: data }));
   }
 
   render() {
@@ -72,34 +92,57 @@ export default class SalesReport extends React.Component {
       },
     };
 
-    const columns = [
-      {
-        name: 'Location',
+    const customerPaidColumns = ['Invoice Id', 'PO Number', 'Total Sale ($)', 'Status', 'Date', 'Payment Amount($)', 'Paid By', 'Company Name',
+    {
+      name: 'Address',
+      options: {
+        display: false,
       },
-      {
-        name: 'Status',
+    },
+    {
+      name: 'City',
+      options: {
+        display: false,
       },
-      {
-        name: 'Transactions',
+    },
+    {
+      name: 'Province',
+      options: {
+        display: false,
       },
-      {
-        name: 'GST ($)',
+    },
+    {
+      name: 'PostalCode',
+      options: {
+        display: false,
       },
-      {
-        name: 'PST ($)',
+    },];
+
+    const customerUnPaidColumns = ['Invoice Id', 'PO Number', 'Total Sale ($)', 'Status', 'Date', 'Due Date', 'Company Name',
+    {
+      name: 'Address',
+      options: {
+        display: false,
       },
-      {
-        name: 'Other Tax ($)',
+    },
+    {
+      name: 'City',
+      options: {
+        display: false,
       },
-      {
-        name: 'Discount ($)',
+    },
+    {
+      name: 'Province',
+      options: {
+        display: false,
       },
-      {
-        name: 'Sub Total ($)',
+    },
+    {
+      name: 'PostalCode',
+      options: {
+        display: false,
       },
-      {
-        name: 'Total ($)',
-      }];
+    },];
 
     const options = {
       filterType: 'checkbox',
@@ -110,7 +153,11 @@ export default class SalesReport extends React.Component {
       rowsPerPage: 25,
     };
 
-    const { reportData, fromDate, toDate } = this.state;
+    const { customerPaidData, customerUnPaidData, fromDate, toDate } = this.state;
+    // const paidTitle = `Paid Orders - From Date: ${dateFormat(fromDate)} To Date: ${dateFormat(toDate)}`;
+    // const unpaidTitle = `Awaiting Patment - Until Date: ${dateFormat(toDate)}`;
+    const paidTitle = 'Paid Orders';
+    const unpaidTitle = 'Awaiting Patment';
 
     return (
       <div>
@@ -118,7 +165,7 @@ export default class SalesReport extends React.Component {
           <GridItem xs={12} sm={12} md={12}>
             <Card>
               <CardHeader color="primary">
-                <div className={styles.cardTitleWhite}>Sales Report</div>
+                <div className={styles.cardTitleWhite}>Customer Report</div>
               </CardHeader>
               <CardBody>
                 <GridContainer>
@@ -150,9 +197,18 @@ export default class SalesReport extends React.Component {
                     <Button color="info" onClick={this.search}>Search</Button>
                   </GridItem>
                 </GridContainer>
+
                 <MUIDataTable
-                  data={reportData}
-                  columns={columns}
+                  title={paidTitle}
+                  data={customerPaidData}
+                  columns={customerPaidColumns}
+                  options={options}
+                />
+
+                <MUIDataTable
+                  title={unpaidTitle}
+                  data={customerUnPaidData}
+                  columns={customerUnPaidColumns}
                   options={options}
                 />
               </CardBody>

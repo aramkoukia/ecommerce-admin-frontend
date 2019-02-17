@@ -58,7 +58,7 @@ export default class CustomerReport extends React.Component {
         }
         return row[column] || '';
       })))
-      .then(data => this.setState({ customerUnPaidData: data }));    
+      .then(data => this.setState({ customerUnPaidData: data }));
   }
 
   render() {
@@ -149,6 +149,8 @@ export default class CustomerReport extends React.Component {
       rowHover: true,
       resizableColumns: true,
       selectableRows: false,
+      rowsPerPageOptions: [25, 50, 100],
+      rowsPerPage: 25,
     };
 
     const { customerPaidData, customerUnPaidData, fromDate, toDate } = this.state;

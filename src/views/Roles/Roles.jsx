@@ -173,6 +173,8 @@ export default class Roles extends React.Component {
       rowHover: true,
       resizableColumns: true,
       selectableRows: false,
+      rowsPerPageOptions: [25, 50, 100],
+      rowsPerPage: 25,
     };
 
     const {

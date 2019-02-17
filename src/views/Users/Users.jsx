@@ -37,6 +37,7 @@ export default class Users extends React.Component {
       locations: [
         { locationId: 1, locationName: 'Vancouver' },
         { locationId: 2, locationName: 'Abbotsford' },
+        { locationId: 3, locationName: 'Victoria' },
       ],
       roles: [],
       roleChecked: [0],
@@ -251,6 +252,8 @@ export default class Users extends React.Component {
       rowHover: true,
       resizableColumns: true,
       selectableRows: false,
+      rowsPerPageOptions: [25, 50, 100],
+      rowsPerPage: 25,
     };
 
     const {

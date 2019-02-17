@@ -61,6 +61,8 @@ export default class Taxes extends React.Component {
 
     const options = {
       filterType: 'checkbox',
+      rowsPerPageOptions: [25, 50, 100],
+      rowsPerPage: 25,
     };
 
     const { taxes } = this.state;

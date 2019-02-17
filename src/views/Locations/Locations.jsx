@@ -59,6 +59,8 @@ export default class Locations extends React.Component {
     const columns = ['Location Id', 'Location Name', 'Location Address'];
     const options = {
       filterType: 'checkbox',
+      rowsPerPageOptions: [25, 50, 100],
+      rowsPerPage: 25,
     };
 
     const { locations } = this.state;

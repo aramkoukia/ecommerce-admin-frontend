@@ -51,6 +51,8 @@ function Discounts(props) {
 
   const options = {
     filterType: 'checkbox',
+    rowsPerPageOptions: [25, 50, 100],
+    rowsPerPage: 25,
   };
 
   return (
