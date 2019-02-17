@@ -85,6 +85,9 @@ export default class SignIn extends React.Component {
         marginBottom: '3px',
         textDecoration: 'none',
       },
+      backGround: {
+        backgroundColor: 'red',
+      },
     };
     const search = this.props.location.search;
     const params = new URLSearchParams(search);
@@ -120,12 +123,13 @@ export default class SignIn extends React.Component {
       }
     }
     return (
-      <div>
+      <div className={styles.backGround}>
         <GridContainer justify="center" alignItems="center">
           <GridItem>
             <Card>
               <CardHeader color="primary">
                 <h4 className={styles.cardTitleWhite}>
+                  {/* <img src="../logo.png" alt="Lights and Parts" /> */}
                   Lights and Parts - Sign In
                 </h4>
                 {initialLoadContent}
