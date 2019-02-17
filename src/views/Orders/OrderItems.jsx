@@ -24,6 +24,11 @@ const style = {
   },
 };
 
+function dateFormat(dateString) {
+  const date = new Date(dateString);
+  return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+}
+
 function ccyFormat(num) {
   return `${num.toFixed(2)} $`;
 }
@@ -77,6 +82,14 @@ function OrderItems(props) {
               <TableCell colSpan={4}><h3>Total</h3></TableCell>
               <TableCell numeric><Success><h3>{ccyFormat(order.total)}</h3></Success></TableCell>
             </TableRow>
+            {order.orderPayment && order.orderPayment.map(orderPayment => (
+              <TableRow>
+                <TableCell colSpan={2}><h4>Payment</h4></TableCell>
+                <TableCell><h4>{dateFormat(orderPayment.paymentDate)}</h4></TableCell>
+                <TableCell><h4>{orderPayment.paymentType.paymentTypeName}</h4></TableCell>
+                <TableCell numeric><h4>{ccyFormat(orderPayment.paymentAmount)}</h4></TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </CardBody>
