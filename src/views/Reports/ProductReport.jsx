@@ -35,7 +35,7 @@ export default class ProductSalesReport extends React.Component {
 
   search() {
     const { fromDate, toDate } = this.state;
-    const columns = ['productTypeName', 'productCode', 'productName', 'vanTotalSales', 'abbTotalSales'];
+    const columns = ['productTypeName', 'productCode', 'productName', 'vanTotalSales', 'vanBalance', 'abbTotalSales', 'abbBalance'];
     ReportService.getProductSales(fromDate, toDate)
       .then(results => results.map(row => columns.map(column => row[column] || '')))
       .then(data => this.setState({ reportData: data }));
@@ -95,7 +95,19 @@ export default class ProductSalesReport extends React.Component {
         },
       },
       {
+        name: 'Vancouver Balance',
+        options: {
+          filter: false,
+        },
+      },
+      {
         name: 'Abbotsford Sales ($)',
+        options: {
+          filter: true,
+        },
+      },
+      {
+        name: 'Abbotsford Balance',
         options: {
           filter: true,
         },
