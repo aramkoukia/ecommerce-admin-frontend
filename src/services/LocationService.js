@@ -22,4 +22,16 @@ export default class LocationService {
       return false;
     }
   }
+
+  static async addLocation(location) {
+    try {
+      const response = await RestUtilities.post(
+        'locations',
+        location,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }

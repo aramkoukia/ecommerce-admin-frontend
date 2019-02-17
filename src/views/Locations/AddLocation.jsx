@@ -1,82 +1,124 @@
 import React from 'react';
-
-// @material-ui/core components
-import withStyles from '@material-ui/core/styles/withStyles';
+import Check from '@material-ui/icons/Check';
 import SchemaForm from 'jsonschema-form-for-material-ui';
+import ReactTimeout from 'react-timeout';
+import GridItem from '../../components/Grid/GridItem';
+import GridContainer from '../../components/Grid/GridContainer';
+import CardHeader from '../../components/Card/CardHeader';
+import CardBody from '../../components/Card/CardBody';
+import Card from '../../components/Card/Card';
+import Snackbar from '../../components/Snackbar/Snackbar';
+import LocationService from '../../services/LocationService';
 
-const styles = {
-  cardCategoryWhite: {
-    color: 'rgba(255,255,255,.62)',
-    margin: '0',
-    fontSize: '14px',
-    marginTop: '0',
-    marginBottom: '0',
-  },
-  cardTitleWhite: {
-    color: '#FFFFFF',
-    marginTop: '0px',
-    minHeight: 'auto',
-    fontWeight: '300',
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-    marginBottom: '3px',
-    textDecoration: 'none',
-  },
-};
+class AddLocation extends React.Component {
+  constructor(props) {
+    super(props);
 
-// const styles = theme => ({
-//   field: {},
-//   formButtons: {},
-//   root: {},
-// });
+    this.onSubmit = this.onSubmit.bind(this);
 
-const schema = {
-  // "title": "A registration form",
-  // "description": "A simple form example.",
-  type: 'object',
-  required: [
-    'name',
-  ],
-  properties: {
-    name: {
-      type: 'string',
-      title: 'Location Name',
-    },
-    address: {
-      type: 'string',
-      title: 'Address',
-    },
-  },
-};
+    this.state = {
+      openSnackbar: false,
+      snackbarMessage: '',
+      snackbarColor: '',
+    };
+  }
 
-const uiSchema = {
-  Name: {
-    'ui:autofocus': true,
-    'ui:emptyValue': '',
-  },
-  Address: {
-    'ui:widget': 'updown',
-    'ui:title': 'Age of person',
-    'ui:description': 'This description will be in a Popover',
-  },
-};
+  async componentDidMount() {
+    this.setState({
+      openSnackbar: false,
+      snackbarMessage: '',
+      snackbarColor: '',
+    });
+  }
 
-const initialFormData = {
-  name: '',
-  address: '',
-};
+  async onSubmit(form) {
+    const result = await LocationService.addLocation(form.formData);
+    this.setState({
+      openSnackbar: true,
+      snackbarMessage: 'New location is saved!',
+      snackbarColor: 'success',
+    });
 
-function AddLocation(props) {
-  return (
-    <SchemaForm
-      // classes={classes}
-      schema={schema}
-      uiSchema={uiSchema}
-      formData={initialFormData}
-      // onCancel={this.onCancel}
-      // onSubmit={this.onSubmit}
-      // onChange={this.onFormChanged}
-    />
-  );
+    return this.props.setTimeout(this.props.history.push(`/locations`, 2000));
+  }
+
+  render() {
+    const { openSnackbar, snackbarMessage, snackbarColor } = this.state;
+    const styles = {
+      field: {
+        display: 'grid',
+      },
+      root: {
+        display: 'grid',
+      },
+    };
+
+    const schema = {
+      type: 'object',
+      required: [
+        'locationName',
+      ],
+      properties: {
+        locationName: {
+          type: 'string',
+          title: 'Location Name',
+        },
+        locationAddress: {
+          type: 'string',
+          title: 'Location Address',
+        },
+      },
+    };
+
+    const uiSchema = {
+      locationName: {
+        'ui:autofocus': true,
+        'ui:emptyValue': '',
+      },
+      locationAddress: {
+        'ui:autofocus': true,
+        'ui:emptyValue': '',
+      },
+    };
+
+    const initialFormData = {
+      locationName: '',
+      locationAddress: '',
+    };
+
+    return (
+      <div>
+        <GridContainer>
+          <GridItem xs={12} sm={12} md={9}>
+            <Card>
+              <CardHeader color="primary">
+                <div className={styles.cardTitleWhite}>New Location</div>
+              </CardHeader>
+              <CardBody>
+                <SchemaForm
+                  classes={styles}
+                  schema={schema}
+                  uiSchema={uiSchema}
+                  formData={initialFormData}
+                  onSubmit={this.onSubmit}
+                />
+
+              </CardBody>
+            </Card>
+          </GridItem>
+        </GridContainer>
+        <Snackbar
+          place="tl"
+          color={snackbarColor}
+          icon={Check}
+          message={snackbarMessage}
+          open={openSnackbar}
+          closeNotification={() => this.setState({ openSnackbar: false })}
+          close
+        />
+      </div>
+    );
+  }
 }
 
-export default withStyles(styles)(AddLocation);
+export default ReactTimeout(AddLocation);
