@@ -415,8 +415,11 @@ export default class AddOrder extends React.Component {
             <Card>
               <CardHeader color="primary">
                 <div className={styles.cardTitleWhite}>
-                  <b>New Order</b> - User:
-                  { authCode } - { userGivenName }
+                  <b>New Order</b>
+                  - User:
+                  {authCode}
+                  -
+                  {userGivenName}
                 </div>
               </CardHeader>
               <CardBody>
@@ -425,7 +428,10 @@ export default class AddOrder extends React.Component {
                     <CustomerSearch customerChanged={this.customerChanged} />
                   </GridItem>
                   <GridItem xs={12} sm={12} md={3}>
-                    <Button color="primary" onClick={this.newCustomer}><Add></Add> New Customer</Button>
+                    <Button color="primary" onClick={this.newCustomer}>
+                      <Add />
+                      New Customer
+                    </Button>
                   </GridItem>
                 </GridContainer>
                 { customer ? (
@@ -659,7 +665,8 @@ export default class AddOrder extends React.Component {
                           name: 'chequeNo',
                           onChange: this.handleChange,
                         }}
-                      />)}
+                      />
+                    )}
                     <FormControlLabel value="25" control={<Radio />} label="Paypal and Amazon + USD Account" />
                   </RadioGroup>
                 </FormControl>
@@ -691,7 +698,7 @@ export default class AddOrder extends React.Component {
                   name="authCode"
                   label="Auth Code"
                   type="text"
-                  autoFocus={true}
+                  autoFocus
                   onChange={this.handleChange}
                   onKeyPress={this.handleAuthEnter}
                   value={authCode}
