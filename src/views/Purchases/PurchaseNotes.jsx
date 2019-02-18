@@ -21,7 +21,11 @@ const style = {
 
 function dateFormat(dateString) {
   const date = new Date(dateString);
-  return `${date.toLocaleDateString()}`;
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, 0);
+  const day = `${date.getDate()}`.padStart(2, 0);
+  const stringDate = [day, month, year].join('/');
+  return stringDate;
 }
 
 function OrderNotes(props) {

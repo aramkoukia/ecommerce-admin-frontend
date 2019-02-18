@@ -10,7 +10,11 @@ import PurchaseService from '../../services/PurchaseService';
 
 function dateFormat(dateString) {
   const date = new Date(dateString);
-  return `${date.toLocaleDateString()}`;
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, 0);
+  const day = `${date.getDate()}`.padStart(2, 0);
+  const stringDate = [day, month, year].join('/');
+  return `${stringDate} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
 }
 
 export default class Purchases extends React.Component {
