@@ -240,7 +240,7 @@ export default class Orders extends React.Component {
                           color="primary"
                         />
                       )}
-                      label="Load orders older than 6 month"
+                      label="Load orders older than 3 month"
                     />
                   </GridItem>
                   <GridItem md={1}>
