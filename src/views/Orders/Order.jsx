@@ -119,16 +119,26 @@ export class Order extends React.Component {
   }
 
   async updateOrderStatus(orderStatus) {
+    this.setState({
+      loading: true,
+    });
+
     const { order, paymentTypeId, chequeNo } = this.state;
     const result = await OrderService.updateOrderStatus(order.orderId, { orderStatus, paymentTypeId, chequeNo });
     if (result === false || result === null || result.StatusCode === 500 || result.StatusCode === 400) {
       this.setState({
         openSnackbar: true,
+        loading: false,
         snackbarMessage: 'Oops, looks like something went wrong!',
         snackbarColor: 'danger',
       });
       return false;
     }
+
+    this.setState({
+      loading: false,
+    });
+
     return result;
   }
 
@@ -249,14 +259,14 @@ export class Order extends React.Component {
                   <GridItem>
                     <GridContainer>
                       <GridItem>
-                        <Button color="warning" onClick={this.handleEmailOrderDialog}>
+                        <Button color="warning" disabled={loading} onClick={this.handleEmailOrderDialog}>
                           <Email />
                           &nbsp;
                           Email
                         </Button>
                       </GridItem>
                       <GridItem>
-                        <Button color="warning" onClick={this.printOrder}>
+                        <Button color="warning" disabled={loading} onClick={this.printOrder}>
                           <Print />
                           &nbsp;
                           Print
@@ -360,7 +370,7 @@ export class Order extends React.Component {
             <Button onClick={this.handleClose} color="info">
               Cancel
             </Button>
-            <Button onClick={this.pay} color="primary">
+                <Button disabled={loading} onClick={this.pay} color="primary">
               Pay
             </Button>
           </DialogActions>
