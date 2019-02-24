@@ -176,8 +176,9 @@ export default class PaymentReport extends React.Component {
     };
 
     const { paymentsSummaryData, paymentDetailsData, paymentsTotalData, fromDate, toDate } = this.state;
-    const summaryReportTitle = `Payment Summary. From: ${dateFormat(fromDate)} To: ${dateFormat(toDate)}`;
-
+    const paymentSummaryTitle = `Payment Summary. From: ${dateFormat(fromDate)} To: ${dateFormat(toDate)}`;
+    const paymentsByOrderStatusTitle = `Payments By Order Status. From: ${dateFormat(fromDate)} To: ${dateFormat(toDate)}`;
+    const paymentDetailsTitle = `Payment Details. From: ${dateFormat(fromDate)} To: ${dateFormat(toDate)}`;
     return (
       <div>
         <GridContainer>
@@ -217,7 +218,7 @@ export default class PaymentReport extends React.Component {
                   </GridItem>
                 </GridContainer>
                 <MUIDataTable
-                  title={summaryReportTitle}
+                  title={paymentSummaryTitle}
                   data={paymentsTotalData}
                   columns={paymentsTotalColumns}
                   options={paymentsTotalOptions}
@@ -225,7 +226,7 @@ export default class PaymentReport extends React.Component {
                 <br />
 
                 <MUIDataTable
-                  title="Payments By Order Status"
+                  title={paymentsByOrderStatusTitle}
                   data={paymentsSummaryData}
                   columns={paymentsSummaryColumns}
                   options={paymentsSummaryOptions}
@@ -233,7 +234,7 @@ export default class PaymentReport extends React.Component {
                 <br />
 
                 <MUIDataTable
-                  title="Payment Details"
+                  title={paymentDetailsTitle}
                   data={paymentDetailsData}
                   columns={paymentDetailsColumns}
                   options={paymentDetailsOptions}
