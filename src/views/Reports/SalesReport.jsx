@@ -9,6 +9,15 @@ import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import ReportService from '../../services/ReportService';
 
+function dateFormat(dateString) {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, 0);
+  const day = `${date.getDate()}`.padStart(2, 0);
+  const stringDate = [day, month, year].join('/');
+  return stringDate;
+}
+
 export default class SalesReport extends React.Component {
   constructor(props) {
     super(props);
@@ -111,6 +120,7 @@ export default class SalesReport extends React.Component {
     };
 
     const { reportData, fromDate, toDate } = this.state;
+    const salesReportTitle = `Sales Report. From: ${dateFormat(fromDate)} To: ${dateFormat(toDate)}`;
 
     return (
       <div>
@@ -151,6 +161,7 @@ export default class SalesReport extends React.Component {
                   </GridItem>
                 </GridContainer>
                 <MUIDataTable
+                  title={salesReportTitle}
                   data={reportData}
                   columns={columns}
                   options={options}
