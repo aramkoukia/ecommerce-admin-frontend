@@ -3,8 +3,6 @@ import Check from '@material-ui/icons/Check';
 import Add from '@material-ui/icons/Add';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControl from '@material-ui/core/FormControl';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -90,8 +88,12 @@ export default class AddOrder extends React.Component {
       chargePst: true,
       openDialog: false,
       userGivenName: '',
-      paymentTypeId: '23',
       chequeNo: '',
+      payCreditDebit: true,
+      creditDebitAmount: 0,
+      cashAmount: 0,
+      chequeAmount: 0,
+      paypalAmazonUsdAmount: 0,
     };
 
     this.productChanged = this.productChanged.bind(this);
@@ -105,9 +107,9 @@ export default class AddOrder extends React.Component {
     this.saveAsHold = this.saveAsHold.bind(this);
     this.saveAsAccount = this.saveAsAccount.bind(this);
     this.handleCheckChange = this.handleCheckChange.bind(this);
+    this.handlePstCheckChange = this.handlePstCheckChange.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.pay = this.pay.bind(this);
-    this.handlePaymentTypeChange = this.handlePaymentTypeChange.bind(this);
     this.handleAuthUpdate = this.handleAuthUpdate.bind(this);
     this.handleAuthEnter = this.handleAuthEnter.bind(this);
     this.newCustomer = this.newCustomer.bind(this);
@@ -119,7 +121,6 @@ export default class AddOrder extends React.Component {
       taxes,
       allTaxes: taxes,
       chargePst: true,
-      paymentTypeId: '23',
       openDialog: false,
       openAuthDialog: true,
       userGivenName: '',
@@ -127,11 +128,40 @@ export default class AddOrder extends React.Component {
     });
   }
 
-  handlePaymentTypeChange = (event) => {
-    this.setState({
-      paymentTypeId: event.target.value,
-      chequeNo: '',
-    });
+  getOrderPayments() {
+    const {
+      payCash, payCreditDebit, payCheque, payAmazonUsd,
+      cashAmount, creditDebitAmount, chequeAmount, paypalAmazonUsdAmount,
+      chequeNo,
+    } = this.state;
+
+    const orderPayments = [];
+    if (payCash) {
+      orderPayments.push({
+        paymentTypeId: 22,
+        paymentAmount: cashAmount,
+      });
+    }
+    if (payCreditDebit) {
+      orderPayments.push({
+        paymentTypeId: 23,
+        paymentAmount: creditDebitAmount,
+      });
+    }
+    if (payCheque) {
+      orderPayments.push({
+        paymentTypeId: 24,
+        paymentAmount: chequeAmount,
+        chequeNo,
+      });
+    }
+    if (payAmazonUsd) {
+      orderPayments.push({
+        paymentTypeId: 25,
+        paymentAmount: paypalAmazonUsdAmount,
+      });
+    }
+    return orderPayments;
   }
 
   handleClose = () => {
@@ -217,6 +247,36 @@ export default class AddOrder extends React.Component {
   }
 
   handleCheckChange(event) {
+    const {
+      total, cashAmount, creditDebitAmount, chequeAmount, paypalAmazonUsdAmount,
+    } = this.state;
+    const paymentAmount = (Number(cashAmount) + Number(creditDebitAmount) + Number(chequeAmount) + Number(paypalAmazonUsdAmount)).toFixed(2);
+    const remain = (total - paymentAmount).toFixed(2);
+    this.setState({ [event.target.name]: event.target.checked });
+    if (event.target.checked) {
+      if (event.target.name === 'payCash') {
+        this.setState({ cashAmount: remain });
+      } else if (event.target.name === 'payCreditDebit') {
+        this.setState({ creditDebitAmount: remain });
+      } else if (event.target.name === 'payCheque') {
+        this.setState({ chequeAmount: remain });
+      } else if (event.target.name === 'payAmazonUsd') {
+        this.setState({ paypalAmazonUsdAmount: remain });
+      }
+    } else {
+      if (event.target.name === 'payCash') {
+        this.setState({ cashAmount: 0 });
+      } else if (event.target.name === 'payCreditDebit') {
+        this.setState({ creditDebitAmount: 0 });
+      } else if (event.target.name === 'payCheque') {
+        this.setState({ chequeAmount: 0 });
+      } else if (event.target.name === 'payAmazonUsd') {
+        this.setState({ paypalAmazonUsdAmount: 0 });
+      }
+    }
+  }
+
+  handlePstCheckChange(event) {
     this.setState({ chargePst: event.target.checked });
     const { customer } = this.state;
     this.updateTaxes(customer, event.target.checked);
@@ -235,7 +295,7 @@ export default class AddOrder extends React.Component {
 
   async saveOrder(orderStatus) {
     const {
-      customer, rows, total, subTotal, notes, taxes, poNumber, paymentTypeId, authCode, chequeNo,
+      customer, rows, total, subTotal, notes, taxes, poNumber, authCode,
     } = this.state;
     const status = orderStatus;
     const orderDetails = rows.map(row => (
@@ -258,6 +318,11 @@ export default class AddOrder extends React.Component {
         taxAmount: (tax.percentage / 100) * subTotal,
       }));
 
+    let orderPayment = [];
+    if (orderStatus === 'Paid') {
+      orderPayment = this.getOrderPayments();
+    }
+
     const order = {
       locationId: Location.getStoreLocation(),
       subTotal,
@@ -266,13 +331,11 @@ export default class AddOrder extends React.Component {
       status,
       notes,
       poNumber,
-      chequeNo,
-      paymentTypeId: Number(paymentTypeId),
       pstNumber: customer !== null ? customer.pstNumber : null,
       orderTax: orderTaxes,
       orderDetail: orderDetails,
       authCode,
-      // orderPayment: orderPayment, will set this in the API
+      orderPayment,
     };
 
     const result = await OrderService.saveOrder(order);
@@ -291,6 +354,19 @@ export default class AddOrder extends React.Component {
   }
 
   async pay() {
+    const {
+      total, cashAmount, creditDebitAmount, chequeAmount, paypalAmazonUsdAmount,
+    } = this.state;
+    const paidAmount = Number(cashAmount) + Number(creditDebitAmount) + Number(chequeAmount) + Number(paypalAmazonUsdAmount);
+    if ((Number(paidAmount)).toFixed(2) !== (Number(total)).toFixed(2)) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: `Total Paid Amount: ${paidAmount.toFixed(2)} $, must be the same as Order Total:${total.toFixed(2)} $`,
+        snackbarColor: 'danger',
+      });
+      return;
+    }
+
     const { history } = this.props;
     const result = await this.saveOrder('Paid');
     if (result && result.orderId) {
@@ -304,8 +380,10 @@ export default class AddOrder extends React.Component {
   }
 
   async saveAsPaid() {
+    const { total } = this.state;
     this.setState({
       openDialog: true,
+      creditDebitAmount: total.toFixed(2),
     });
   }
 
@@ -402,10 +480,18 @@ export default class AddOrder extends React.Component {
       chargePst,
       openDialog,
       openAuthDialog,
-      paymentTypeId,
+      total,
       authCode,
       userGivenName,
       chequeNo,
+      payCash,
+      payCheque,
+      payCreditDebit,
+      payAmazonUsd,
+      cashAmount,
+      chequeAmount,
+      creditDebitAmount,
+      paypalAmazonUsdAmount,
     } = this.state;
 
     return (
@@ -531,7 +617,7 @@ export default class AddOrder extends React.Component {
                                 control={(
                                   <Checkbox
                                     checked={chargePst}
-                                    onChange={this.handleCheckChange}
+                                    onChange={this.handlePstCheckChange}
                                     value="chargePst"
                                   />
                                 )}
@@ -645,30 +731,129 @@ export default class AddOrder extends React.Component {
               </CardHeader>
               <CardBody>
                 <FormControl component="fieldset">
-                  <RadioGroup
-                    aria-label="Payment Type"
-                    name="paymentType"
-                    value={paymentTypeId}
-                    onChange={this.handlePaymentTypeChange}
-                  >
-                    <FormControlLabel value="22" control={<Radio />} label="Cash" />
-                    <FormControlLabel value="23" control={<Radio />} label="Credit Card / Debit" />
-                    <FormControlLabel value="24" control={<Radio />} label="Cheque" />
-                    {paymentTypeId === '24' && (
-                      <CustomInput
-                        labelText="Cheque Number"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                        inputProps={{
-                          value: chequeNo,
-                          name: 'chequeNo',
-                          onChange: this.handleChange,
-                        }}
+                  <GridContainer>
+                    <GridItem xs={12} sm={12} md={6}>
+                      <FormControlLabel
+                        control={(
+                          <Checkbox
+                            name="payCash"
+                            checked={payCash}
+                            onChange={this.handleCheckChange}
+                            value="payCash"
+                          />
+                        )}
+                        label="Cash"
                       />
-                    )}
-                    <FormControlLabel value="25" control={<Radio />} label="Paypal and Amazon + USD Account" />
-                  </RadioGroup>
+                      </GridItem>
+                      <GridItem xs={12} sm={12} md={6}>
+                      <TextField
+                        disabled={!payCash}
+                          name="cashAmount"
+                          label="Cash Amount"
+                          type="text"
+                          onChange={this.handleChange}
+                          value={cashAmount}
+                        />
+                      </GridItem>
+                      <GridItem xs={12} sm={12} md={6}>
+                      <FormControlLabel
+                        control={(
+                          <Checkbox
+                            checked={payCreditDebit}
+                            onChange={this.handleCheckChange}
+                            name="payCreditDebit"
+                            value="payCreditDebit"
+                          />
+                        )}
+                        label="Credit Card / Debit"
+                      />
+                      </GridItem>
+                      <GridItem xs={12} sm={12} md={6}>
+                      <TextField
+                        disabled={!payCreditDebit}
+                          name="creditDebitAmount"
+                          label="Credit/Debit Amount"
+                          type="text"
+                          onChange={this.handleChange}
+                          value={creditDebitAmount}
+                        />
+                      </GridItem>
+                      <GridItem xs={12} sm={12} md={6}>
+                      <FormControlLabel
+                        control={(
+                          <Checkbox
+                            checked={payCheque}
+                            onChange={this.handleCheckChange}
+                            value="payCheque"
+                            name="payCheque"
+                          />
+                        )}
+                        label="Cheque"
+                      />
+                      {payCheque && (
+                        <TextField
+                          name="chequeNo"
+                          label="Cheque Number"
+                          type="text"
+                          onChange={this.handleChange}
+                          value={chequeNo}
+                        />
+                      )}
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={6}>
+                      <TextField
+                        disabled={!payCheque}
+                        name="chequeAmount"
+                        label="Cheque Amount"
+                        type="text"
+                        onChange={this.handleChange}
+                        value={chequeAmount}
+                      />
+                    </GridItem>
+                      <GridItem xs={12} sm={12} md={6}>
+                      <FormControlLabel
+                        control={(
+                          <Checkbox
+                            checked={payAmazonUsd}
+                            onChange={this.handleCheckChange}
+                            value="payAmazonUsd"
+                            name="payAmazonUsd"
+                          />
+                        )}
+                        label="Paypal and Amazon + USD"
+                      />
+                      </GridItem>
+                      <GridItem xs={12} sm={12} md={6}>
+                      <TextField
+                        disabled={!payAmazonUsd}
+                        name="paypalAmazonUsdAmount"
+                        label="Paypal/Amazon/USD"
+                        type="text"
+                        onChange={this.handleChange}
+                        value={paypalAmazonUsdAmount}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={12}>
+                      <br />
+                      <hr />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={6}>
+                      <h5>Total Payment:</h5>
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={6}>
+                      <h5>
+                      { (Number(cashAmount) + Number(creditDebitAmount) + Number(chequeAmount) + Number(paypalAmazonUsdAmount)).toFixed(2) } $
+                      </h5>
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={6}>
+                      <h5>Amount Due:</h5>
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={6}>
+                      <h5>
+                        { total && total.toFixed(2) } $
+                      </h5>
+                    </GridItem>
+                    </GridContainer>
                 </FormControl>
               </CardBody>
             </Card>

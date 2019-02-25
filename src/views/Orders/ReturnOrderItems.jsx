@@ -14,6 +14,16 @@ function ccyFormat(num) {
   return `${num.toFixed(2)} $`;
 }
 
+
+function dateFormat(dateString) {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, 0);
+  const day = `${date.getDate()}`.padStart(2, 0);
+  const stringDate = [day, month, year].join('/');
+  return `${stringDate} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+}
+
 export default class ReturnOrderItems extends React.Component {
   constructor(props) {
     super(props);
@@ -98,7 +108,7 @@ export default class ReturnOrderItems extends React.Component {
   }
 
   render() {
-    const { taxes } = this.props;
+    const { taxes, order } = this.props;
     const {
       orderRows, total, subTotal, totalDiscount,
     } = this.state;
@@ -155,7 +165,16 @@ export default class ReturnOrderItems extends React.Component {
               <TableRow>
                 <TableCell colSpan={3}><h3>Refund Total</h3></TableCell>
                 <TableCell numeric><Success><h3>{ccyFormat(total)}</h3></Success></TableCell>
-              </TableRow>
+                </TableRow>
+                {order.orderPayment && order.orderPayment.map(orderPayment => (
+                  <TableRow>
+                    <TableCell><h4>Payment</h4></TableCell>
+                    <TableCell><h4>{dateFormat(orderPayment.paymentDate)}</h4></TableCell>
+                    <TableCell><h4>{orderPayment.paymentType.paymentTypeName}</h4></TableCell>
+                    <TableCell><h4>{orderPayment.chequeNo}</h4></TableCell>
+                    <TableCell numeric><h4>{ccyFormat(orderPayment.paymentAmount)}</h4></TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
             )}
           </Table>

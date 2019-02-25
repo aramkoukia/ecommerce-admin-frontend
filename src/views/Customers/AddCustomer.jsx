@@ -39,7 +39,8 @@ class AddCustomer extends React.Component {
       snackbarColor: 'success',
     });
 
-    return this.props.setTimeout(this.props.history.push(`/customer/${result.customerId}`, 2000));
+    this.props.history.goBack();
+    // return this.props.setTimeout(this.props.history.push(`/customer/${result.customerId}`, 2000));
   }
 
   render() {
