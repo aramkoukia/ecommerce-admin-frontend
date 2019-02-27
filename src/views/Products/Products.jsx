@@ -41,7 +41,7 @@ export default class Products extends React.Component {
 
   productsList() {
     this.setState({ loading: true });
-    const columns = ['productTypeName', 'productCode', 'productName', 'salesPrice', 'vancouverBalance', 'abbotsfordBalance', 'productId'];
+    const columns = ['productTypeName', 'productCode', 'productName', 'salesPrice', 'vancouverBalance', 'abbotsfordBalance', 'disabled', 'productId'];
     ProductService.getProducts()
       .then(results => results.map(row => columns.map(column => (row[column] === null ? '' : row[column]))))
       .then(data => this.setState({ products: data, loading: false }));
@@ -49,7 +49,7 @@ export default class Products extends React.Component {
 
   rowClicked(rowData) {
     const { history } = this.props;
-    history.push(`/product/${rowData[6]}`);
+    history.push(`/product/${rowData[7]}`);
   }
 
   render() {
@@ -83,7 +83,7 @@ export default class Products extends React.Component {
       },
     };
 
-    const columns = ['Type', 'Product Code', 'Product Name', 'Sales Price ($)', 'Vanvouver  Balance', 'Abbotsford Balance',
+    const columns = ['Type', 'Product Code', 'Product Name', 'Sales Price ($)', 'Vanvouver  Balance', 'Abbotsford Balance', 'Disabled',
       {
         name: 'productId',
         options: {

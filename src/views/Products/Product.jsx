@@ -3,6 +3,7 @@ import Check from '@material-ui/icons/Check';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import MUIDataTable from 'mui-datatables';
+import Button from '../../components/CustomButtons/Button';
 import Table from '../../components/Table/Table';
 import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
@@ -40,6 +41,8 @@ export class Product extends React.Component {
       snackbarColor: '',
       loading: false,
     };
+
+    this.enableDisableProducts = this.enableDisableProducts.bind(this);
   }
 
   async componentDidMount() {
@@ -50,6 +53,12 @@ export class Product extends React.Component {
     });
 
     this.productTransactionList(productId);
+  }
+
+  enableDisableProducts() {
+    const productId = this.props.match.params.id;
+    ProductService.disableProduct(productId);
+    window.location.reload();
   }
 
   productTransactionList(productId) {
@@ -103,14 +112,26 @@ export class Product extends React.Component {
                         <div>Product Info</div>
                       </CardHeader>
                       <CardBody>
-                        { product && (
-                        <Table
-                          tableHeaderColor="primary"
-                          tableHead={['Product Type', 'Code', 'Name', 'Sale Price', 'Vancouver Balance', 'Abbotsford Balance']}
-                          tableData={
-                            [[product.productTypeName, product.productCode, product.productName, product.salesPrice, product.vancouverBalance, product.abbotsfordBalance]]
+                        {product && (
+                            <div>
+                              {product.disabled === 'False' && (
+                                <Button color="info" onClick={this.enableDisableProducts}>
+                              Disable Product
+                            </Button>
+                              )}
+                              {product.disabled === 'True' && (
+                                <Button color="info" onClick={this.enableDisableProducts}>
+                                  Enable Product
+                            </Button>
+                              )}
+                            <Table
+                              tableHeaderColor="primary"
+                              tableHead={['Product Type', 'Code', 'Name', 'Sale Price', 'Vancouver Balance', 'Abbotsford Balance', 'Disabled']}
+                              tableData={
+                            [[product.productTypeName, product.productCode, product.productName, product.salesPrice, product.vancouverBalance, product.abbotsfordBalance, product.disabled]]
                           }
-                        />
+                            />
+                          </div>
                         ) }
                       </CardBody>
                     </Card>

@@ -80,4 +80,16 @@ export default class ProductService {
     }
   }
 
+  static async disableProduct(id) {
+    try {
+      const response = await RestUtilities.delete(
+        `products/${id}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+
 }
