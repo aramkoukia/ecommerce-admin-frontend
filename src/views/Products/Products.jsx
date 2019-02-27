@@ -1,11 +1,14 @@
 import React from 'react';
 import MUIDataTable from 'mui-datatables';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Check from '@material-ui/icons/Check';
+import Snackbar from '../../components/Snackbar/Snackbar';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
+import Button from '../../components/CustomButtons/Button';
 import ProductService from '../../services/ProductService';
 
 export default class Products extends React.Component {
@@ -15,12 +18,25 @@ export default class Products extends React.Component {
     this.state = {
       products: [],
       loading: false,
+      openSnackbar: false,
+      snackbarMessage: '',
+      snackbarColor: '',
     };
     this.rowClicked = this.rowClicked.bind(this);
+    this.syncProducts = this.syncProducts.bind(this);
   }
 
   componentDidMount() {
     this.productsList();
+  }
+
+  syncProducts() {
+    ProductService.syncProducts();
+    this.setState({
+      openSnackbar: true,
+      snackbarMessage: 'Products sync process started. This could take 3-5 minutes to finish!',
+      snackbarColor: 'success',
+    });
   }
 
   productsList() {
@@ -86,7 +102,13 @@ export default class Products extends React.Component {
       rowsPerPage: 25,
     };
 
-    const { products, loading } = this.state;
+    const {
+      products,
+      loading,
+      openSnackbar,
+      snackbarMessage,
+      snackbarColor,
+    } = this.state;
 
     return (
       <div>
@@ -97,6 +119,10 @@ export default class Products extends React.Component {
                 <div className={styles.cardTitleWhite}>Products List</div>
               </CardHeader>
               <CardBody>
+                <Button color="info" disabled={loading} onClick={this.syncProducts}>
+                  Sync Products From Wordpress
+                </Button>
+
                 <MUIDataTable
                   title="Click on each product to see all the transactions for that product."
                   data={products}
@@ -107,6 +133,15 @@ export default class Products extends React.Component {
             </Card>
             { loading && (<LinearProgress />) }
           </GridItem>
+          <Snackbar
+            place="tl"
+            color={snackbarColor}
+            icon={Check}
+            message={snackbarMessage}
+            open={openSnackbar}
+            closeNotification={() => this.setState({ openSnackbar: false })}
+            close
+          />
         </GridContainer>
       </div>
     );

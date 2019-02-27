@@ -68,4 +68,16 @@ export default class ProductService {
       return false;
     }
   }
+
+  static async syncProducts() {
+    try {
+      const response = await RestUtilities.get(
+        'sync/products',
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
 }
