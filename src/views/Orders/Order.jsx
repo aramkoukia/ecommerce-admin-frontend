@@ -53,7 +53,6 @@ export class Order extends React.Component {
       loading: false,
       openDialog: false,
       openEmailDialog: false,
-      paymentTypeId: '23',
       customerEmail: '',
       chequeNo: '',
       payCreditDebit: true,

@@ -66,6 +66,8 @@ export class Return extends React.Component {
       cashAmount: 0,
       chequeAmount: 0,
       paypalAmazonUsdAmount: 0,
+      restockingFeePercent: 10,
+      restockingFeeAmount:0,
     };
 
     this.pay = this.pay.bind(this);
@@ -203,7 +205,10 @@ export class Return extends React.Component {
 
   async saveOrder(orderStatus) {
     const {
-      rows, total, subTotal, totalDiscount, notes, poNumber, order, authCode,
+      rows,
+      total, subTotal, totalDiscount, notes, poNumber, order, authCode,
+      restockingFeePercent,
+      restockingFeeAmount,
     } = this.state;
     const originalOrderId = this.props.match.params.id;
     const status = orderStatus;
@@ -248,6 +253,8 @@ export class Return extends React.Component {
       originalOrderId,
       authCode,
       orderPayment,
+      restockingFeeAmount,
+      restockingFeePercent,
     };
 
     const result = await OrderService.saveOrder(returnOrder);
@@ -296,12 +303,14 @@ export class Return extends React.Component {
     }
   }
 
-  priceChanged(rows, subTotal, total, totalDiscount) {
+  priceChanged(rows, subTotal, total, totalDiscount, restockingFeePercent, restockingFeeAmount) {
     this.setState({
       subTotal,
       total,
       totalDiscount,
       rows,
+      restockingFeePercent,
+      restockingFeeAmount,
     });
   }
 

@@ -33,6 +33,8 @@ export default class ReturnOrderItems extends React.Component {
       subTotal: 0,
       total: 0,
       totalDiscount: 0,
+      restockingFeePercent: 10,
+      restockingFeeAmount: 0,
     };
   }
 
@@ -44,18 +46,22 @@ export default class ReturnOrderItems extends React.Component {
       orderRows: rows,
     });
 
+    const { restockingFeePercent } = this.state;
     this.handleQuantityChanged = this.handleQuantityChanged.bind(this);
+    this.handleRestockingFeeChanged = this.handleRestockingFeeChanged.bind(this);
 
     const totalDiscount = this.discount(rows);
     const subTotal = this.subtotal(rows, totalDiscount);
-    const total = this.total(subTotal, totalDiscount, taxes);
+    const restockingFeeAmount = subTotal * restockingFeePercent / 100 * -1;
+    const total = this.total(subTotal, taxes, restockingFeeAmount);
 
     this.setState({
       subTotal,
       total,
+      restockingFeeAmount,
       totalDiscount,
     });
-    priceChanged(rows, subTotal, total, totalDiscount);
+    priceChanged(rows, subTotal, total, totalDiscount, restockingFeePercent, restockingFeeAmount);
   }
 
   handleChange = name => (event) => {
@@ -64,9 +70,30 @@ export default class ReturnOrderItems extends React.Component {
     });
   };
 
+  handleRestockingFeeChanged (event) {
+    const { taxes, priceChanged } = this.props;
+    const orderRows = this.state.orderRows.slice();
+    const totalDiscount = this.discount(orderRows);
+    const subTotal = this.subtotal(orderRows, totalDiscount);
+    const restockingFeePercent = Number(event.target.value);
+    const restockingFeeAmount = subTotal * restockingFeePercent / 100 * -1;
+    const total = this.total(subTotal, taxes, restockingFeeAmount);
+
+    this.setState({
+      subTotal,
+      total,
+      totalDiscount,
+      restockingFeeAmount,
+      restockingFeePercent,
+    });
+
+    priceChanged(orderRows, subTotal, total, totalDiscount);
+  }
+
   handleQuantityChanged(event) {
     const { taxes, priceChanged } = this.props;
     const orderRows = this.state.orderRows.slice();
+    const { restockingFeePercent } = this.state;
     for (const i in orderRows) {
       if (orderRows[i].productId == event.target.name) {
         orderRows[i].amount = event.target.value;
@@ -78,14 +105,16 @@ export default class ReturnOrderItems extends React.Component {
 
     const totalDiscount = this.discount(orderRows);
     const subTotal = this.subtotal(orderRows, totalDiscount);
-    const total = this.total(subTotal, totalDiscount, taxes);
+    const restockingFeeAmount = subTotal * restockingFeePercent / 100 * -1;
+    const total = this.total(subTotal, taxes, restockingFeeAmount);
     this.setState({
       subTotal,
       total,
       totalDiscount,
+      restockingFeeAmount,
     });
 
-    priceChanged(orderRows, subTotal, total, totalDiscount);
+    priceChanged(orderRows, subTotal, total, totalDiscount, restockingFeePercent, restockingFeeAmount);
   }
 
   subtotal(items, totalDiscount) {
@@ -102,15 +131,15 @@ export default class ReturnOrderItems extends React.Component {
     return orderRows.map(({ totalDiscount }) => totalDiscount * -1).reduce((sum, i) => sum + i, 0);
   }
 
-  total(subTotal, discount, taxes) {
+  total(subTotal, taxes, restockingFeeAmount) {
     const totalTax = taxes.map(({ tax }) => (tax.percentage / 100) * subTotal).reduce((sum, i) => sum + i, 0);
-    return (subTotal + totalTax);
+    return (subTotal + totalTax) + restockingFeeAmount;
   }
 
   render() {
     const { taxes, order } = this.props;
     const {
-      orderRows, total, subTotal, totalDiscount,
+      orderRows, total, subTotal, totalDiscount, restockingFeeAmount, restockingFeePercent
     } = this.state;
     return (
       <Card>
@@ -155,6 +184,23 @@ export default class ReturnOrderItems extends React.Component {
                 <TableCell colSpan={3}>Total Discount</TableCell>
                 <TableCell numeric>{ccyFormat(totalDiscount)}</TableCell>
               </TableRow>
+              <TableRow>
+                  <TableCell><b>Re-Stocking Fee (%)</b></TableCell>
+                  <TableCell numeric>
+                  <TextField
+                    name="restockingFeePercent"
+                    value={restockingFeePercent}
+                    onChange={this.handleRestockingFeeChanged}
+                    type="number"
+                    style={{ width: 70 }}
+                    /> %
+                  </TableCell>
+                  <TableCell numeric>
+                    <b>
+                      {ccyFormat(restockingFeeAmount)}
+                    </b>
+                </TableCell>
+              </TableRow>
               {taxes.map(tax => (
                 <TableRow>
                   <TableCell>{tax.tax.taxName}</TableCell>
@@ -163,8 +209,8 @@ export default class ReturnOrderItems extends React.Component {
                 </TableRow>
               ))}
               <TableRow>
-                <TableCell colSpan={3}><h3>Refund Total</h3></TableCell>
-                <TableCell numeric><Success><h3>{ccyFormat(total)}</h3></Success></TableCell>
+                <TableCell colSpan={3}><h4>Refund Total</h4></TableCell>
+                <TableCell numeric><Success><h4>{ccyFormat(total)}</h4></Success></TableCell>
                 </TableRow>
                 {order.orderPayment && order.orderPayment.map(orderPayment => (
                   <TableRow>

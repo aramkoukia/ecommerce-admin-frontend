@@ -1,16 +1,14 @@
 import React from 'react';
-// @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
-// core components
-import Card from 'components/Card/Card.jsx';
-import CardHeader from 'components/Card/CardHeader.jsx';
-import CardBody from 'components/Card/CardBody.jsx';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
-import Success from 'components/Typography/Success.jsx';
 import TableRow from '@material-ui/core/TableRow';
+import Success from '../../components/Typography/Success';
+import Card from '../../components/Card/Card';
+import CardHeader from '../../components/Card/CardHeader';
+import CardBody from '../../components/Card/CardBody';
 
 const style = {
   cardTitleWhite: {
@@ -75,6 +73,22 @@ function OrderItems(props) {
               <TableCell colSpan={3}>Total Discount</TableCell>
               <TableCell numeric>{ccyFormat(order.totalDiscount)}</TableCell>
             </TableRow>
+            {order.status === 'Return' && (
+              <TableRow>
+                <TableCell><b>Re-Stocking Fee (%)</b></TableCell>
+                <TableCell numeric>
+                  <b>
+                    {order.restockingFeePercent}
+                    %
+                </b>
+                </TableCell>
+                <TableCell numeric>
+                  <b>
+                    {ccyFormat(order.restockingFeeAmount)}
+                  </b>
+                </TableCell>
+              </TableRow>
+            )}
             {order.orderTax.map(tax => (
               <TableRow>
                 <TableCell>{tax.tax.taxName}</TableCell>
