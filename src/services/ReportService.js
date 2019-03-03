@@ -78,6 +78,17 @@ export default class ReportService {
     }
   }
 
+  static async getProductSalesDetail(fromDate, toDate) {
+    try {
+      const response = await RestUtilities.get(
+        `reports/productsalesdetail?fromDate=${fromDate}&toDate=${toDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getProductTypeSales(fromDate, toDate) {
     try {
       const response = await RestUtilities.get(

@@ -35,10 +35,15 @@ export default class ProductSalesReport extends React.Component {
 
   search() {
     const { fromDate, toDate } = this.state;
-    const columns = ['productTypeName', 'productCode', 'productName', 'vanTotalSales', 'vanBalance', 'abbTotalSales', 'abbBalance'];
+    const columns = ['productTypeName', 'productCode', 'productName', 'vanTotalSales', 'vanAmount', 'vanBalance', 'abbTotalSales', 'abbAmount', 'abbBalance'];
     ReportService.getProductSales(fromDate, toDate)
       .then(results => results.map(row => columns.map(column => row[column] || '')))
       .then(data => this.setState({ reportData: data }));
+
+    const productSalesDetailColumns = ['locationName', 'productTypeName', 'productCode', 'productName', 'orderId', 'customerCode', 'companyName', 'totalSales', 'amount'];
+    ReportService.getProductSalesDetail(fromDate, toDate)
+      .then(results => results.map(row => productSalesDetailColumns.map(column => row[column] || '')))
+      .then(data => this.setState({ productSalesDetailData: data }));
   }
 
   render() {
@@ -75,6 +80,9 @@ export default class ProductSalesReport extends React.Component {
     const columns = [
       {
         name: 'Category',
+        options: {
+          display: false,
+        },
       },
       {
         name: 'Product Code',
@@ -89,27 +97,94 @@ export default class ProductSalesReport extends React.Component {
         },
       },
       {
-        name: 'Vancouver Sales ($)',
+        name: 'Van Sales ($)',
         options: {
           filter: false,
         },
       },
       {
-        name: 'Vancouver Balance',
+        name: 'Van Sales Amount',
         options: {
           filter: false,
         },
       },
       {
-        name: 'Abbotsford Sales ($)',
+        name: 'Van Balance',
+        options: {
+          filter: false,
+        },
+      },
+      {
+        name: 'Abb Sales ($)',
         options: {
           filter: true,
         },
       },
       {
-        name: 'Abbotsford Balance',
+        name: 'Abb Sales Amount',
         options: {
           filter: true,
+        },
+      },
+      {
+        name: 'Abb Balance',
+        options: {
+          filter: true,
+        },
+      }];
+
+    const productSalesDetailColumns = [
+      {
+        name: 'Location Name',
+      },
+      {
+        name: 'Category',
+        options: {
+          filter: false,
+          display: false,
+        },
+      },
+      {
+        name: 'Product Code',
+        options: {
+          filter: true,
+        },
+      },
+      {
+        name: 'Product Name',
+        options: {
+          filter: true,
+        },
+      },
+      {
+        name: 'Order Id',
+        options: {
+          filter: false,
+        },
+      },
+      {
+        name: 'Customer Code',
+        options: {
+          filter: true,
+          display: false,
+        },
+      },
+      {
+        name: 'Company Name',
+        options: {
+          filter: true,
+        },
+      },
+      {
+        name: 'Total Sales ($)',
+        options: {
+          filter: false,
+        },
+      },
+      {
+        name: 'Amount',
+        options: {
+          filter: false,
         },
       }];
 
@@ -122,7 +197,7 @@ export default class ProductSalesReport extends React.Component {
       rowsPerPage: 25,
     };
 
-    const { reportData, fromDate, toDate } = this.state;
+    const { reportData, productSalesDetailData, fromDate, toDate } = this.state;
 
     return (
       <div>
@@ -163,8 +238,16 @@ export default class ProductSalesReport extends React.Component {
                   </GridItem>
                 </GridContainer>
                 <MUIDataTable
+                  title="Product Sales Report"
                   data={reportData}
                   columns={columns}
+                  options={options}
+                />
+
+                <MUIDataTable
+                  title="Product Sales Detail Report"
+                  data={productSalesDetailData}
+                  columns={productSalesDetailColumns}
                   options={options}
                 />
               </CardBody>
