@@ -100,4 +100,13 @@ export default class OrderService {
       return false;
     }
   }
+
+  static async packingOrder(orderId) {
+    try {
+      const response = await RestUtilities.getBlob(`orders/${orderId}/packingSlip`);
+      return response;
+    } catch (err) {
+      return false;
+    }
+  }
 }

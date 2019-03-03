@@ -67,6 +67,7 @@ export class Order extends React.Component {
     this.refundOrder = this.refundOrder.bind(this);
     this.emailOrder = this.emailOrder.bind(this);
     this.printOrder = this.printOrder.bind(this);
+    this.packingOrder = this.packingOrder.bind(this);
     this.cancelHold = this.cancelHold.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -234,6 +235,17 @@ export class Order extends React.Component {
     });
   }
 
+  async packingOrder() {
+    const { order } = this.state;
+    this.setState({
+      loading: true,
+    });
+    await OrderService.packingOrder(order.orderId);
+    this.setState({
+      loading: false,
+    });
+  }
+
   async saveAsPaid() {
     const { order } = this.state;
     this.setState({
@@ -355,6 +367,17 @@ export class Order extends React.Component {
                           Print
                         </Button>
                       </GridItem>
+
+                      { (order.status === 'Account' || order.status === 'Paid')
+                        && (
+                        <GridItem>
+                          <Button color="warning" disabled={loading} onClick={this.packingOrder}>
+                            <Print />
+                              &nbsp;
+                              Packing Slip
+                          </Button>
+                        </GridItem>
+                        )}
 
                       { order.status === 'Draft' || order.status === 'OnHold' || order.status === 'Account'
                         ? (
