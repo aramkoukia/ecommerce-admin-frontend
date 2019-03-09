@@ -100,6 +100,7 @@ class ProductSearch extends React.Component {
     );
 
     this.onChange = this.onChange.bind(this);
+    this.onKeyPress = this.onKeyPress.bind(this);
 
     this.getSuggestionValue = this.getSuggestionValue.bind(this);
   }
@@ -107,6 +108,18 @@ class ProductSearch extends React.Component {
   async componentDidMount() {
     const suggestions = await ProductService.getProductsForSales();
     this.setState({ suggestions });
+  }
+
+  onKeyPress(e) {
+    const { filteredSuggestions } = this.state;
+    if (e.key === 'Enter'
+      && filteredSuggestions
+      && filteredSuggestions.length > 0) {
+      this.getSuggestionValue(filteredSuggestions[0]);
+      this.setState({
+        value: '',
+      });
+    }
   }
 
   onChange(event, { newValue, method }) {
@@ -177,6 +190,7 @@ class ProductSearch extends React.Component {
             placeholder: 'Search Products',
             value,
             onChange: this.onChange,
+            onKeyPress: this.onKeyPress,
             inputRef: (node) => {
               this.popperNode = node;
             },
