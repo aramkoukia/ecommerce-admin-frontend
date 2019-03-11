@@ -30,6 +30,9 @@ const styles = {
   chip: {
     margin: 5,
   },
+  smallText: {
+    width: '100px',
+  },
 };
 
 function dateFormat(dateString) {
@@ -60,6 +63,8 @@ export class Order extends React.Component {
       cashAmount: 0,
       chequeAmount: 0,
       paypalAmazonUsdAmount: 0,
+      cashChange: 0,
+      cashPaid: 0,
     };
 
     this.saveAsPaid = this.saveAsPaid.bind(this);
@@ -75,6 +80,7 @@ export class Order extends React.Component {
     this.pay = this.pay.bind(this);
     this.handleCheckChange = this.handleCheckChange.bind(this);
     this.handleEmailOrderDialog = this.handleEmailOrderDialog.bind(this);
+    this.handleCashChange = this.handleCashChange.bind(this);
   }
 
   async componentDidMount() {
@@ -147,6 +153,20 @@ export class Order extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
   }
 
+  handleCashChange(event) {
+    const { cashAmount } = this.state;
+    const cashPaid = event.target.value;
+    let cashChange = 0;
+    if (event.target.value && cashAmount) {
+      cashChange = Number(Number(cashPaid).toFixed(2) - Number(cashAmount).toFixed(2)).toFixed(2);
+    }
+
+    this.setState({
+      cashPaid,
+      cashChange,
+    });
+  }
+
   handleCheckChange(event) {
     const {
       order, cashAmount, creditDebitAmount, chequeAmount, paypalAmazonUsdAmount,
@@ -164,16 +184,14 @@ export class Order extends React.Component {
       } else if (event.target.name === 'payAmazonUsd') {
         this.setState({ paypalAmazonUsdAmount: remain });
       }
-    } else {
-      if (event.target.name === 'payCash') {
-        this.setState({ cashAmount: 0 });
-      } else if (event.target.name === 'payCreditDebit') {
-        this.setState({ creditDebitAmount: 0 });
-      } else if (event.target.name === 'payCheque') {
-        this.setState({ chequeAmount: 0 });
-      } else if (event.target.name === 'payAmazonUsd') {
-        this.setState({ paypalAmazonUsdAmount: 0 });
-      }
+    } else if (event.target.name === 'payCash') {
+      this.setState({ cashAmount: 0 });
+    } else if (event.target.name === 'payCreditDebit') {
+      this.setState({ creditDebitAmount: 0 });
+    } else if (event.target.name === 'payCheque') {
+      this.setState({ chequeAmount: 0 });
+    } else if (event.target.name === 'payAmazonUsd') {
+      this.setState({ paypalAmazonUsdAmount: 0 });
     }
   }
 
@@ -331,44 +349,46 @@ export class Order extends React.Component {
       chequeAmount,
       creditDebitAmount,
       paypalAmazonUsdAmount,
+      cashChange,
+      cashPaid,
     } = this.state;
 
     return (
       <div>
         { order && (
         <div>
-         <GridContainer>
-          <GridItem xs={12} sm={12} md={12}>
-            <Card>
-              <CardHeader color="primary">
-                <div>
+          <GridContainer>
+            <GridItem xs={12} sm={12} md={12}>
+              <Card>
+                <CardHeader color="primary">
+                  <div>
                   Order #
                   &nbsp;
-                  <b>{order.orderId}</b>
-                  &nbsp;&nbsp; {dateFormat(order.orderDate)}
-                  &nbsp;&nbsp; <Chip label={order.status} color="primary" />
-                </div>
-              </CardHeader>
-              <CardBody>
-                <GridContainer>
-                  <GridItem>
-                    <GridContainer>
-                      <GridItem>
-                        <Button color="warning" disabled={loading} onClick={this.handleEmailOrderDialog}>
-                          <Email />
+                    <b>{order.orderId}</b>
+                    {dateFormat(order.orderDate)}
+                    <Chip label={order.status} color="primary" />
+                  </div>
+                </CardHeader>
+                <CardBody>
+                  <GridContainer>
+                    <GridItem>
+                      <GridContainer>
+                        <GridItem>
+                          <Button color="warning" disabled={loading} onClick={this.handleEmailOrderDialog}>
+                            <Email />
                           &nbsp;
                           Email
-                        </Button>
-                      </GridItem>
-                      <GridItem>
-                        <Button color="warning" disabled={loading} onClick={this.printOrder}>
-                          <Print />
+                          </Button>
+                        </GridItem>
+                        <GridItem>
+                          <Button color="warning" disabled={loading} onClick={this.printOrder}>
+                            <Print />
                           &nbsp;
                           Print
-                        </Button>
-                      </GridItem>
+                          </Button>
+                        </GridItem>
 
-                      { (order.status === 'Account' || order.status === 'Paid')
+                        { (order.status === 'Account' || order.status === 'Paid')
                         && (
                         <GridItem>
                           <Button color="warning" disabled={loading} onClick={this.packingOrder}>
@@ -379,75 +399,75 @@ export class Order extends React.Component {
                         </GridItem>
                         )}
 
-                      { order.status === 'Draft' || order.status === 'OnHold' || order.status === 'Account'
-                        ? (
-                          <GridItem xs>
-                            <Button color="info" onClick={this.saveAsPaid}>Mark As Paid</Button>
-                          </GridItem>
-                        ) : <div />}
+                        { order.status === 'Draft' || order.status === 'OnHold' || order.status === 'Account'
+                          ? (
+                            <GridItem xs>
+                              <Button color="info" onClick={this.saveAsPaid}>Mark As Paid</Button>
+                            </GridItem>
+                          ) : <div />}
 
-                      { order.status === 'Draft' && (
-                      <GridItem xs>
-                        <Button color="info" onClick={this.saveAsHold}>Put On Hold</Button>
-                      </GridItem>
-                      )}
+                        { order.status === 'Draft' && (
+                        <GridItem xs>
+                          <Button color="info" onClick={this.saveAsHold}>Put On Hold</Button>
+                        </GridItem>
+                        )}
 
-                      { order.status === 'Paid' && (
-                      <GridItem xs>
-                        <Button color="info" onClick={this.refundOrder}>Return</Button>
-                      </GridItem>
-                      )}
+                        { order.status === 'Paid' && (
+                        <GridItem xs>
+                          <Button color="info" onClick={this.refundOrder}>Return</Button>
+                        </GridItem>
+                        )}
 
-                      { order.status === 'OnHold' && (
-                      <GridItem xs>
-                        <Button color="info" onClick={this.cancelHold}>Cancel On Hold</Button>
-                      </GridItem>
-                      )}
-                      <GridItem xs>
-                        { loading && <CircularProgress /> }
-                      </GridItem>
-                    </GridContainer>
-                  </GridItem>
-                  <GridItem xs={12}>
-                    <OrderItems order={order} />
-                  </GridItem>
-                  <GridItem xs={8}>
-                    <CustomerInfo customer={order.customer} />
-                  </GridItem>
-                  <GridItem xs={4}>
-                    <OrderNotes order={order} />
-                  </GridItem>
-                </GridContainer>
-              </CardBody>
-              <CardFooter />
-            </Card>
-            <Snackbar
-              place="tl"
-              color={snackbarColor}
-              icon={Check}
-              message={snackbarMessage}
-              open={openSnackbar}
-              closeNotification={() => this.setState({ openSnackbar: false })}
-              close
-            />
-          </GridItem>
-        </GridContainer>
-            <Dialog
-              open={openDialog}
-              onClose={this.handleClose}
-              aria-labelledby="form-dialog-title"
-            >
-              <DialogContent>
-                <Card>
-                  <CardHeader color="info">
-                    <div>Select Payment Option</div>
-                  </CardHeader>
-                  <CardBody>
-                    <FormControl component="fieldset">
-                      <GridContainer>
-                        <GridItem xs={12} sm={12} md={6}>
-                          <FormControlLabel
-                            control={(
+                        { order.status === 'OnHold' && (
+                        <GridItem xs>
+                          <Button color="info" onClick={this.cancelHold}>Cancel On Hold</Button>
+                        </GridItem>
+                        )}
+                        <GridItem xs>
+                          { loading && <CircularProgress /> }
+                        </GridItem>
+                      </GridContainer>
+                    </GridItem>
+                    <GridItem xs={12}>
+                      <OrderItems order={order} />
+                    </GridItem>
+                    <GridItem xs={8}>
+                      <CustomerInfo customer={order.customer} />
+                    </GridItem>
+                    <GridItem xs={4}>
+                      <OrderNotes order={order} />
+                    </GridItem>
+                  </GridContainer>
+                </CardBody>
+                <CardFooter />
+              </Card>
+              <Snackbar
+                place="tl"
+                color={snackbarColor}
+                icon={Check}
+                message={snackbarMessage}
+                open={openSnackbar}
+                closeNotification={() => this.setState({ openSnackbar: false })}
+                close
+              />
+            </GridItem>
+          </GridContainer>
+          <Dialog
+            open={openDialog}
+            onClose={this.handleClose}
+            aria-labelledby="form-dialog-title"
+          >
+            <DialogContent>
+              <Card>
+                <CardHeader color="info">
+                  <div>Select Payment Option</div>
+                </CardHeader>
+                <CardBody>
+                  <FormControl component="fieldset">
+                    <GridContainer>
+                      <GridItem md={3}>
+                        <FormControlLabel
+                          control={(
                               <Checkbox
                                 name="payCash"
                                 checked={payCash}
@@ -455,167 +475,197 @@ export class Order extends React.Component {
                                 value="payCash"
                               />
                             )}
-                            label="Cash"
-                          />
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={6}>
-                          <TextField
-                            disabled={!payCash}
-                            name="cashAmount"
-                            label="Cash Amount"
-                            type="text"
-                            onChange={this.handleChange}
-                            value={cashAmount}
-                          />
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={6}>
-                          <FormControlLabel
-                            control={(
-                              <Checkbox
-                                checked={payCreditDebit}
-                                onChange={this.handleCheckChange}
-                                name="payCreditDebit"
-                                value="payCreditDebit"
-                              />
-                            )}
-                            label="Credit Card / Debit"
-                          />
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={6}>
-                          <TextField
-                            disabled={!payCreditDebit}
-                            name="creditDebitAmount"
-                            label="Credit/Debit Amount"
-                            type="text"
-                            onChange={this.handleChange}
-                            value={creditDebitAmount}
-                          />
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={6}>
-                          <FormControlLabel
-                            control={(
-                              <Checkbox
-                                checked={payCheque}
-                                onChange={this.handleCheckChange}
-                                value="payCheque"
-                                name="payCheque"
-                              />
-                            )}
-                            label="Cheque"
-                          />
-                          {payCheque && (
-                            <TextField
-                              name="chequeNo"
-                              label="Cheque Number"
-                              type="text"
-                              onChange={this.handleChange}
-                              value={chequeNo}
+                          label="Cash"
+                        />
+                      </GridItem>
+                      <GridItem md={3}>
+                        <TextField
+                          disabled={!payCash}
+                          name="cashAmount"
+                          label="Cash Amount"
+                          type="text"
+                          onChange={this.handleChange}
+                          style={styles.smallText}
+                          value={cashAmount}
+                        />
+                      </GridItem>
+                      <GridItem md={3}>
+                        <TextField
+                          disabled={!payCash}
+                          name="cashPaid"
+                          label="Bills Paid"
+                          type="text"
+                          onChange={this.handleCashChange}
+                          style={styles.smallText}
+                          value={cashPaid}
+                        />
+                      </GridItem>
+                      <GridItem md={3}>
+                        <TextField
+                          disabled
+                          name="cashChange"
+                          label="Change"
+                          type="text"
+                          style={styles.smallText}
+                          value={cashChange}
+                        />
+                      </GridItem>
+                      <GridItem md={6}>
+                        <FormControlLabel
+                          control={(
+                            <Checkbox
+                              checked={payCreditDebit}
+                              onChange={this.handleCheckChange}
+                              name="payCreditDebit"
+                              value="payCreditDebit"
                             />
-                          )}
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={6}>
-                          <TextField
-                            disabled={!payCheque}
-                            name="chequeAmount"
-                            label="Cheque Amount"
-                            type="text"
-                            onChange={this.handleChange}
-                            value={chequeAmount}
-                          />
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={6}>
-                          <FormControlLabel
-                            control={(
-                              <Checkbox
-                                checked={payAmazonUsd}
-                                onChange={this.handleCheckChange}
-                                value="payAmazonUsd"
-                                name="payAmazonUsd"
-                              />
                             )}
-                            label="Paypal and Amazon + USD"
-                          />
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={6}>
-                          <TextField
-                            disabled={!payAmazonUsd}
-                            name="paypalAmazonUsdAmount"
-                            label="Paypal/Amazon/USD"
-                            type="text"
-                            onChange={this.handleChange}
-                            value={paypalAmazonUsdAmount}
-                          />
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={12}>
-                          <br />
-                          <hr />
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={6}>
-                          <h5>Total Payment:</h5>
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={6}>
-                          <h5>
-                            {(Number(cashAmount) + Number(creditDebitAmount) + Number(chequeAmount) + Number(paypalAmazonUsdAmount)).toFixed(2)} $
-                      </h5>
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={6}>
-                          <h5>Amount Due:</h5>
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={6}>
-                          <h5>
-                            {order.total && order.total.toFixed(2)} $
-                      </h5>
-                        </GridItem>
-                      </GridContainer>
-                    </FormControl>
-                  </CardBody>
-                </Card>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={this.handleClose} color="info">
+                          label="Credit Card / Debit"
+                        />
+                      </GridItem>
+                      <GridItem md={6}>
+                        <TextField
+                          disabled={!payCreditDebit}
+                          name="creditDebitAmount"
+                          label="Credit/Debit Amount"
+                          type="text"
+                          onChange={this.handleChange}
+                          value={creditDebitAmount}
+                        />
+                      </GridItem>
+                      <GridItem md={6}>
+                        <FormControlLabel
+                          control={(
+                            <Checkbox
+                              checked={payCheque}
+                              onChange={this.handleCheckChange}
+                              value="payCheque"
+                              name="payCheque"
+                            />
+                            )}
+                          label="Cheque"
+                        />
+                        {payCheque && (
+                        <TextField
+                          name="chequeNo"
+                          label="Cheque Number"
+                          type="text"
+                          onChange={this.handleChange}
+                          value={chequeNo}
+                        />
+                        )}
+                      </GridItem>
+                      <GridItem md={6}>
+                        <TextField
+                          disabled={!payCheque}
+                          name="chequeAmount"
+                          label="Cheque Amount"
+                          type="text"
+                          onChange={this.handleChange}
+                          value={chequeAmount}
+                        />
+                      </GridItem>
+                      <GridItem md={6}>
+                        <FormControlLabel
+                          control={(
+                            <Checkbox
+                              checked={payAmazonUsd}
+                              onChange={this.handleCheckChange}
+                              value="payAmazonUsd"
+                              name="payAmazonUsd"
+                            />
+                            )}
+                          label="Paypal and Amazon + USD"
+                        />
+                      </GridItem>
+                      <GridItem md={6}>
+                        <TextField
+                          disabled={!payAmazonUsd}
+                          name="paypalAmazonUsdAmount"
+                          label="Paypal/Amazon/USD"
+                          type="text"
+                          onChange={this.handleChange}
+                          value={paypalAmazonUsdAmount}
+                        />
+                      </GridItem>
+                      <GridItem md={12}>
+                        <br />
+                        <hr />
+                      </GridItem>
+                      <GridItem md={6}>
+                        <h5>Total Payment:</h5>
+                      </GridItem>
+                      <GridItem md={6}>
+                        <h5>
+                          {
+                              (Number(cashAmount)
+                              + Number(creditDebitAmount)
+                              + Number(chequeAmount)
+                              + Number(paypalAmazonUsdAmount)).toFixed(2)}
+                          {' '}
+$
+                        </h5>
+                      </GridItem>
+                      <GridItem md={6}>
+                        <h5>Amount Due:</h5>
+                      </GridItem>
+                      <GridItem md={6}>
+                        <h5>
+                          {order.total && order.total.toFixed(2)}
+                          {' '}
+$
+                        </h5>
+                      </GridItem>
+                    </GridContainer>
+                  </FormControl>
+                </CardBody>
+              </Card>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.handleClose} color="info">
                   Cancel
-            </Button>
-                <Button onClick={this.pay} color="primary">
+              </Button>
+              <Button onClick={this.pay} color="primary">
                   Pay
-            </Button>
-              </DialogActions>
-            </Dialog>
+              </Button>
+            </DialogActions>
+          </Dialog>
 
-        <Dialog
-          open={openEmailDialog}
-          onClose={this.handleEmailDialogClose}
-          aria-labelledby="form-dialog-title"
-        >
-          <DialogContent>
-            <Card>
-              <CardHeader color="info">
-                <div>Invoice Email</div>
-              </CardHeader>
-              <CardBody>
-                <FormControl component="fieldset">
-                  <TextField
-                    required
-                    name="customerEmail"
-                    label="Customer Email"
-                    type="text"
-                    onChange={this.handleChange}
-                    fullWidth
-                    value={customerEmail}
-                  />
-                </FormControl>
-              </CardBody>
-            </Card>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleEmailDialogClose} color="info">
+          <Dialog
+            open={openEmailDialog}
+            onClose={this.handleEmailDialogClose}
+            aria-labelledby="form-dialog-title"
+          >
+            <DialogContent>
+              <Card>
+                <CardHeader color="info">
+                  <div>Invoice Email</div>
+                </CardHeader>
+                <CardBody>
+                  <FormControl component="fieldset">
+                    <TextField
+                      required
+                      name="customerEmail"
+                      label="Customer Email"
+                      type="text"
+                      onChange={this.handleChange}
+                      fullWidth
+                      value={customerEmail}
+                    />
+                  </FormControl>
+                </CardBody>
+              </Card>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.handleEmailDialogClose} color="info">
               Cancel
-            </Button>
-            <Button onClick={this.emailOrder} color="primary">
+              </Button>
+              <Button onClick={this.emailOrder} color="primary">
               Send
-            </Button>
-          </DialogActions>
-        </Dialog>
-       </div>
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </div>
         ) }
       </div>
     );
@@ -623,7 +673,7 @@ export class Order extends React.Component {
 }
 
 Order.propTypes = {
-  classes: PropTypes.object.isRequired,
+  // classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(Order);

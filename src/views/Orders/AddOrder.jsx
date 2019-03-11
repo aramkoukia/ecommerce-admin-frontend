@@ -44,6 +44,9 @@ const styles = {
     marginBottom: '3px',
     textDecoration: 'none',
   },
+  smallText: {
+    width: '100px',
+  },
 };
 
 function priceRow(qty, unit) {
@@ -94,6 +97,8 @@ export default class AddOrder extends React.Component {
       cashAmount: 0,
       chequeAmount: 0,
       paypalAmazonUsdAmount: 0,
+      cashPaid: 0,
+      cashChange: 0,
     };
 
     this.productChanged = this.productChanged.bind(this);
@@ -102,6 +107,7 @@ export default class AddOrder extends React.Component {
     this.customerChanged = this.customerChanged.bind(this);
     this.clearCustomer = this.clearCustomer.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleCashChange = this.handleCashChange.bind(this);
     this.saveAsPaid = this.saveAsPaid.bind(this);
     this.saveAsDraft = this.saveAsDraft.bind(this);
     this.saveAsHold = this.saveAsHold.bind(this);
@@ -171,7 +177,8 @@ export default class AddOrder extends React.Component {
   }
 
   newCustomer() {
-    return this.props.history.push('newcustomer');
+    const { history } = this.props;
+    return history.push('newcustomer');
   }
 
   async handleAuthEnter(event) {
@@ -246,11 +253,30 @@ export default class AddOrder extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
   }
 
+  handleCashChange(event) {
+    const { cashAmount } = this.state;
+    const cashPaid = event.target.value;
+    let cashChange = 0;
+    if (event.target.value && cashAmount) {
+      cashChange = Number(Number(cashPaid).toFixed(2) - Number(cashAmount).toFixed(2)).toFixed(2);
+    }
+
+    this.setState({
+      cashPaid,
+      cashChange,
+    });
+  }
+
   handleCheckChange(event) {
     const {
       total, cashAmount, creditDebitAmount, chequeAmount, paypalAmazonUsdAmount,
     } = this.state;
-    const paymentAmount = (Number(cashAmount) + Number(creditDebitAmount) + Number(chequeAmount) + Number(paypalAmazonUsdAmount)).toFixed(2);
+    const paymentAmount = (
+      Number(cashAmount)
+      + Number(creditDebitAmount)
+      + Number(chequeAmount)
+      + Number(paypalAmazonUsdAmount)).toFixed(2);
+
     const remain = (total - paymentAmount).toFixed(2);
     this.setState({ [event.target.name]: event.target.checked });
     if (event.target.checked) {
@@ -263,16 +289,14 @@ export default class AddOrder extends React.Component {
       } else if (event.target.name === 'payAmazonUsd') {
         this.setState({ paypalAmazonUsdAmount: remain });
       }
-    } else {
-      if (event.target.name === 'payCash') {
-        this.setState({ cashAmount: 0 });
-      } else if (event.target.name === 'payCreditDebit') {
-        this.setState({ creditDebitAmount: 0 });
-      } else if (event.target.name === 'payCheque') {
-        this.setState({ chequeAmount: 0 });
-      } else if (event.target.name === 'payAmazonUsd') {
-        this.setState({ paypalAmazonUsdAmount: 0 });
-      }
+    } else if (event.target.name === 'payCash') {
+      this.setState({ cashAmount: 0 });
+    } else if (event.target.name === 'payCreditDebit') {
+      this.setState({ creditDebitAmount: 0 });
+    } else if (event.target.name === 'payCheque') {
+      this.setState({ chequeAmount: 0 });
+    } else if (event.target.name === 'payAmazonUsd') {
+      this.setState({ paypalAmazonUsdAmount: 0 });
     }
   }
 
@@ -357,7 +381,12 @@ export default class AddOrder extends React.Component {
     const {
       total, cashAmount, creditDebitAmount, chequeAmount, paypalAmazonUsdAmount,
     } = this.state;
-    const paidAmount = Number(cashAmount) + Number(creditDebitAmount) + Number(chequeAmount) + Number(paypalAmazonUsdAmount);
+
+    const paidAmount = Number(cashAmount)
+      + Number(creditDebitAmount)
+      + Number(chequeAmount)
+      + Number(paypalAmazonUsdAmount);
+
     if ((Number(paidAmount)).toFixed(2) !== (Number(total)).toFixed(2)) {
       this.setState({
         openSnackbar: true,
@@ -492,6 +521,8 @@ export default class AddOrder extends React.Component {
       chequeAmount,
       creditDebitAmount,
       paypalAmazonUsdAmount,
+      cashChange,
+      cashPaid,
     } = this.state;
 
     return (
@@ -731,8 +762,8 @@ export default class AddOrder extends React.Component {
               </CardHeader>
               <CardBody>
                 <FormControl component="fieldset">
-                  <GridContainer>
-                    <GridItem xs={12} sm={12} md={6}>
+                  <GridContainer md={12}>
+                    <GridItem md={3}>
                       <FormControlLabel
                         control={(
                           <Checkbox
@@ -744,18 +775,40 @@ export default class AddOrder extends React.Component {
                         )}
                         label="Cash"
                       />
-                      </GridItem>
-                      <GridItem xs={12} sm={12} md={6}>
+                    </GridItem>
+                    <GridItem md={3}>
                       <TextField
                         disabled={!payCash}
-                          name="cashAmount"
-                          label="Cash Amount"
-                          type="text"
-                          onChange={this.handleChange}
-                          value={cashAmount}
-                        />
-                      </GridItem>
-                      <GridItem xs={12} sm={12} md={6}>
+                        name="cashAmount"
+                        label="Cash Amount"
+                        type="text"
+                        onChange={this.handleChange}
+                        style={styles.smallText}
+                        value={cashAmount}
+                      />
+                    </GridItem>
+                    <GridItem md={3}>
+                      <TextField
+                        disabled={!payCash}
+                        name="cashPaid"
+                        label="Bills Paid"
+                        type="text"
+                        onChange={this.handleCashChange}
+                        style={styles.smallText}
+                        value={cashPaid}
+                      />
+                    </GridItem>
+                    <GridItem md={3}>
+                      <TextField
+                        disabled
+                        name="cashChange"
+                        label="Change"
+                        type="text"
+                        style={styles.smallText}
+                        value={cashChange}
+                      />
+                    </GridItem>
+                    <GridItem md={6}>
                       <FormControlLabel
                         control={(
                           <Checkbox
@@ -767,18 +820,18 @@ export default class AddOrder extends React.Component {
                         )}
                         label="Credit Card / Debit"
                       />
-                      </GridItem>
-                      <GridItem xs={12} sm={12} md={6}>
+                    </GridItem>
+                    <GridItem md={6}>
                       <TextField
                         disabled={!payCreditDebit}
-                          name="creditDebitAmount"
-                          label="Credit/Debit Amount"
-                          type="text"
-                          onChange={this.handleChange}
-                          value={creditDebitAmount}
-                        />
-                      </GridItem>
-                      <GridItem xs={12} sm={12} md={6}>
+                        name="creditDebitAmount"
+                        label="Credit/Debit Amount"
+                        type="text"
+                        onChange={this.handleChange}
+                        value={creditDebitAmount}
+                      />
+                    </GridItem>
+                    <GridItem md={6}>
                       <FormControlLabel
                         control={(
                           <Checkbox
@@ -800,7 +853,7 @@ export default class AddOrder extends React.Component {
                         />
                       )}
                     </GridItem>
-                    <GridItem xs={12} sm={12} md={6}>
+                    <GridItem md={6}>
                       <TextField
                         disabled={!payCheque}
                         name="chequeAmount"
@@ -810,7 +863,7 @@ export default class AddOrder extends React.Component {
                         value={chequeAmount}
                       />
                     </GridItem>
-                      <GridItem xs={12} sm={12} md={6}>
+                    <GridItem md={6}>
                       <FormControlLabel
                         control={(
                           <Checkbox
@@ -822,8 +875,8 @@ export default class AddOrder extends React.Component {
                         )}
                         label="Paypal and Amazon + USD"
                       />
-                      </GridItem>
-                      <GridItem xs={12} sm={12} md={6}>
+                    </GridItem>
+                    <GridItem md={6}>
                       <TextField
                         disabled={!payAmazonUsd}
                         name="paypalAmazonUsdAmount"
@@ -833,27 +886,34 @@ export default class AddOrder extends React.Component {
                         value={paypalAmazonUsdAmount}
                       />
                     </GridItem>
-                    <GridItem xs={12} sm={12} md={12}>
+                    <GridItem md={12}>
                       <br />
                       <hr />
                     </GridItem>
-                    <GridItem xs={12} sm={12} md={6}>
+                    <GridItem md={6}>
                       <h5>Total Payment:</h5>
                     </GridItem>
-                    <GridItem xs={12} sm={12} md={6}>
+                    <GridItem md={6}>
                       <h5>
-                      { (Number(cashAmount) + Number(creditDebitAmount) + Number(chequeAmount) + Number(paypalAmazonUsdAmount)).toFixed(2) } $
+                        {(Number(cashAmount)
+                          + Number(creditDebitAmount)
+                          + Number(chequeAmount)
+                          + Number(paypalAmazonUsdAmount)).toFixed(2)}
+                        {' '}
+                        $
                       </h5>
                     </GridItem>
-                    <GridItem xs={12} sm={12} md={6}>
+                    <GridItem md={6}>
                       <h5>Amount Due:</h5>
                     </GridItem>
-                    <GridItem xs={12} sm={12} md={6}>
+                    <GridItem md={6}>
                       <h5>
-                        { total && total.toFixed(2) } $
+                        { total && total.toFixed(2) }
+                        {' '}
+$
                       </h5>
                     </GridItem>
-                    </GridContainer>
+                  </GridContainer>
                 </FormControl>
               </CardBody>
             </Card>
@@ -902,3 +962,7 @@ export default class AddOrder extends React.Component {
     );
   }
 }
+
+AddOrder.propTypes = {
+  history: PropTypes.func.isRequired,
+};
