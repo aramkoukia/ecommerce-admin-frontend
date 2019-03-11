@@ -1,7 +1,6 @@
 import React from 'react';
 import Check from '@material-ui/icons/Check';
 import { withStyles } from '@material-ui/core/styles';
-import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Chip from '@material-ui/core/Chip';
@@ -25,6 +24,7 @@ import OrderNotes from './OrderNotes';
 import OrderItems from './OrderItems';
 import CustomerInfo from './CustomerInfo';
 import OrderService from '../../services/OrderService';
+import CustomerSearch from './CustomerSearch';
 
 const styles = {
   chip: {
@@ -81,6 +81,8 @@ export class Order extends React.Component {
     this.handleCheckChange = this.handleCheckChange.bind(this);
     this.handleEmailOrderDialog = this.handleEmailOrderDialog.bind(this);
     this.handleCashChange = this.handleCashChange.bind(this);
+    this.customerChanged = this.customerChanged.bind(this);
+    this.updateCustomer = this.updateCustomer.bind(this);
   }
 
   async componentDidMount() {
@@ -92,24 +94,6 @@ export class Order extends React.Component {
       openEmailDialog: false,
       customerEmail: order.customer.email,
       chequeNo: '',
-    });
-  }
-
-  handleEmailOrderDialog() {
-    this.setState({
-      openEmailDialog: true,
-    });
-  }
-
-  handleClose = () => {
-    this.setState({
-      openDialog: false,
-    });
-  };
-
-  handleEmailDialogClose = () => {
-    this.setState({
-      openEmailDialog: false,
     });
   }
 
@@ -147,6 +131,47 @@ export class Order extends React.Component {
       });
     }
     return orderPayments;
+  }
+
+  handleEmailDialogClose = () => {
+    this.setState({
+      openEmailDialog: false,
+    });
+  }
+
+  handleClose = () => {
+    this.setState({
+      openDialog: false,
+    });
+  }
+
+  async updateCustomer() {
+    const orderId = this.props.match.params.id;
+    const { order } = this.state;
+    const result = await OrderService.updateOrderCustomer(orderId, { customerId: order.customer.customerId });
+    if (result) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Order\'s Customer was updated successfully!',
+        snackbarColor: 'success',
+        openDialog: false,
+      });
+      window.location.reload();
+    }
+  }
+
+  customerChanged(customer) {
+    const { order } = this.state;
+    order.customer = customer;
+    this.setState({
+      order,
+    });
+  }
+
+  handleEmailOrderDialog() {
+    this.setState({
+      openEmailDialog: true,
+    });
   }
 
   handleChange(event) {
@@ -432,7 +457,21 @@ export class Order extends React.Component {
                       <OrderItems order={order} />
                     </GridItem>
                     <GridItem xs={8}>
-                      <CustomerInfo customer={order.customer} />
+                      <GridContainer>
+                        <GridItem xs={12}>
+                          <CustomerInfo customer={order.customer} />
+                        </GridItem>
+                        <GridItem xs={9}>
+                          {order.status === 'Draft' && (
+                          <CustomerSearch customerChanged={this.customerChanged} />
+                          )}
+                        </GridItem>
+                        <GridItem xs={3}>
+                          {order.status === 'Draft' && (
+                            <Button color="info" onClick={this.updateCustomer}>Update Customer</Button>
+                          )}
+                        </GridItem>
+                      </GridContainer>
                     </GridItem>
                     <GridItem xs={4}>
                       <OrderNotes order={order} />
@@ -468,12 +507,12 @@ export class Order extends React.Component {
                       <GridItem md={3}>
                         <FormControlLabel
                           control={(
-                              <Checkbox
-                                name="payCash"
-                                checked={payCash}
-                                onChange={this.handleCheckChange}
-                                value="payCash"
-                              />
+                            <Checkbox
+                              name="payCash"
+                              checked={payCash}
+                              onChange={this.handleCheckChange}
+                              value="payCash"
+                            />
                             )}
                           label="Cash"
                         />
