@@ -34,10 +34,10 @@ export default class ProductService {
     }
   }
 
-  static async getProductTransactions(productId) {
+  static async getProductTransactions(productId, fromDate, toDate) {
     try {
       const response = await RestUtilities.get(
-        `products/${productId}/transactions`,
+        `products/${productId}/transactions?fromDate=${fromDate}&toDate=${toDate}`,
       );
       return response.content;
     } catch (err) {

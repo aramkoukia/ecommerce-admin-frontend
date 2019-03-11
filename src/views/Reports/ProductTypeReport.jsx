@@ -9,6 +9,15 @@ import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import ReportService from '../../services/ReportService';
 
+function dateFormat(dateString) {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, 0);
+  const day = `${date.getUTCDate()}`.padStart(2, 0);
+  const stringDate = [year, month, day].join('-');
+  return stringDate;
+}
+
 export default class ProductTypeSalesReport extends React.Component {
   constructor(props) {
     super(props);
@@ -21,9 +30,11 @@ export default class ProductTypeSalesReport extends React.Component {
   }
 
   componentDidMount() {
+    const fromDate = dateFormat(new Date(Date.now()));
+    const toDate = dateFormat(new Date(Date.now()));
     this.setState({
-      fromDate: new Date(Date.now()),
-      toDate: new Date(Date.now()),
+      fromDate,
+      toDate,
     });
   }
 

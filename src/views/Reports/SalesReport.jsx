@@ -14,7 +14,7 @@ function dateFormat(dateString) {
   const year = date.getFullYear();
   const month = `${date.getMonth() + 1}`.padStart(2, 0);
   const day = `${date.getUTCDate()}`.padStart(2, 0);
-  const stringDate = [day, month, year].join('/');
+  const stringDate = [year, month, day].join('-');
   return stringDate;
 }
 
@@ -30,9 +30,11 @@ export default class SalesReport extends React.Component {
   }
 
   componentDidMount() {
+    const fromDate = dateFormat(new Date(Date.now()));
+    const toDate = dateFormat(new Date(Date.now()));
     this.setState({
-      fromDate: new Date(Date.now()),
-      toDate: new Date(Date.now()),
+      fromDate,
+      toDate,
     });
   }
 

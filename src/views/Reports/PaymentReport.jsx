@@ -14,7 +14,7 @@ function dateFormat(dateString) {
   const year = date.getFullYear();
   const month = `${date.getMonth() + 1}`.padStart(2, 0);
   const day = `${date.getUTCDate()}`.padStart(2, 0);
-  const stringDate = [day, month, year].join('/');
+  const stringDate = [year, month, day].join('-');
   return stringDate;
 }
 
@@ -30,9 +30,11 @@ export default class PaymentReport extends React.Component {
   }
 
   componentDidMount() {
+    const fromDate = dateFormat(new Date(Date.now()));
+    const toDate = dateFormat(new Date(Date.now()));
     this.setState({
-      fromDate: new Date(Date.now()),
-      toDate: new Date(Date.now()),
+      fromDate,
+      toDate,
     });
   }
 
@@ -40,7 +42,7 @@ export default class PaymentReport extends React.Component {
     this.setState({
       [name]: event.target.value,
     });
-  };
+  }
 
   search() {
     const { fromDate, toDate } = this.state;
@@ -175,7 +177,9 @@ export default class PaymentReport extends React.Component {
       selectableRows: false,
     };
 
-    const { paymentsSummaryData, paymentDetailsData, paymentsTotalData, fromDate, toDate } = this.state;
+    const {
+      paymentsSummaryData, paymentDetailsData, paymentsTotalData, fromDate, toDate,
+    } = this.state;
     const paymentSummaryTitle = `Payment Summary. From: ${dateFormat(fromDate)} To: ${dateFormat(toDate)}`;
     const paymentsByOrderStatusTitle = `Payments By Order Status. From: ${dateFormat(fromDate)} To: ${dateFormat(toDate)}`;
     const paymentDetailsTitle = `Payment Details. From: ${dateFormat(fromDate)} To: ${dateFormat(toDate)}`;
