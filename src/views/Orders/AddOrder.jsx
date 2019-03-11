@@ -534,8 +534,6 @@ export default class AddOrder extends React.Component {
                 <div className={styles.cardTitleWhite}>
                   <b>New Order</b>
                   - User:
-                  {authCode}
-                  -
                   {userGivenName}
                 </div>
               </CardHeader>
@@ -942,7 +940,7 @@ $
                 <TextField
                   name="authCode"
                   label="Auth Code"
-                  type="text"
+                  type="password"
                   autoFocus
                   onChange={this.handleChange}
                   onKeyPress={this.handleAuthEnter}

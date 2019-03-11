@@ -353,7 +353,7 @@ export class Return extends React.Component {
                   &nbsp;&nbsp; {dateFormat(order.orderDate)}
                   &nbsp;&nbsp; <Chip label={order.status} color="primary" />
                    - User:
-                  { authCode } - { userGivenName }
+                  {userGivenName}
                 </div>
               </CardHeader>
               <CardBody>
@@ -580,7 +580,7 @@ export class Return extends React.Component {
                 <TextField
                   name="authCode"
                   label="Auth Code"
-                  type="text"
+                  type="password"
                   autoFocus={true}
                   onChange={this.handleChange}
                   onKeyPress={this.handleAuthEnter}
