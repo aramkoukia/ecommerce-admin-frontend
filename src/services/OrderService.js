@@ -121,4 +121,16 @@ export default class OrderService {
       return false;
     }
   }
+
+  static async validateInventory(inventoryValidationRequest) {
+    try {
+      const response = await RestUtilities.put(
+        'orders/validateinventory',
+        inventoryValidationRequest,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }
