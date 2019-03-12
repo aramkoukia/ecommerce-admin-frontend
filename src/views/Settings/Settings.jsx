@@ -36,8 +36,9 @@ class Settings extends React.Component {
 
   async onSubmit(form) {
     const { match } = this.props;
-    const result = await SettingsService.updateSettings(form.formData);
+    const settings = await SettingsService.updateSettings(form.formData);
     this.setState({
+      settings,
       openSnackbar: true,
       snackbarMessage: 'System settings is updated!',
       snackbarColor: 'success',
@@ -69,32 +70,32 @@ class Settings extends React.Component {
         'smtpUseSsl',
       ],
       properties: {
-        firstName: {
+        adminEmail: {
           type: 'string',
           title: 'Admin Email',
         },
-        lastName: {
+        reportEmail: {
           type: 'string',
           title: 'Report Email',
         },
-        companyName: {
+        fromEmail: {
           type: 'string',
           title: 'From Email',
         },
-        phoneNumber: {
+        fromEmailPassword: {
           type: 'string',
           title: 'From Email Password',
         },
-        mobile: {
+        smtpPort: {
           type: 'string',
           title: 'SMTP Port',
         },
-        address: {
+        smtpHost: {
           type: 'string',
           title: 'SMTP Host',
         },
-        city: {
-          type: 'string',
+        smtpUseSsl: {
+          type: 'boolean',
           title: 'Use SSL for SMTP',
         },
       },
@@ -129,6 +130,7 @@ class Settings extends React.Component {
       smtpUseSsl: {
         'ui:autofocus': true,
         'ui:emptyValue': '',
+        'ui:widget': 'checkbox',
       },
     };
 
