@@ -7,7 +7,12 @@ import FormControl from '@material-ui/core/FormControl';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
+import Table from '@material-ui/core/Table';
 import TextField from '@material-ui/core/TextField';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import PropTypes from 'prop-types';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -24,6 +29,7 @@ import OrderTable from './OrderTable';
 import OrderService from '../../services/OrderService';
 import TaxService from '../../services/TaxService';
 import UserService from '../../services/UserService';
+import SettingsService from '../../services/SettingsService';
 import Location from '../../stores/Location';
 import AuthStore from '../../stores/Auth';
 
@@ -99,6 +105,9 @@ export default class AddOrder extends React.Component {
       paypalAmazonUsdAmount: 0,
       cashPaid: 0,
       cashChange: 0,
+      validationResult: [],
+      showValidationDialog: false,
+      orderStatus: '',
     };
 
     this.productChanged = this.productChanged.bind(this);
@@ -109,9 +118,12 @@ export default class AddOrder extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleCashChange = this.handleCashChange.bind(this);
     this.saveAsPaid = this.saveAsPaid.bind(this);
+    this.saveAsPaidClicked = this.saveAsPaidClicked.bind(this);
     this.saveAsDraft = this.saveAsDraft.bind(this);
     this.saveAsHold = this.saveAsHold.bind(this);
+    this.saveAsHoldClicked = this.saveAsHoldClicked.bind(this);
     this.saveAsAccount = this.saveAsAccount.bind(this);
+    this.saveAsAccountClicked = this.saveAsAccountClicked.bind(this);
     this.handleCheckChange = this.handleCheckChange.bind(this);
     this.handlePstCheckChange = this.handlePstCheckChange.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -119,6 +131,8 @@ export default class AddOrder extends React.Component {
     this.handleAuthUpdate = this.handleAuthUpdate.bind(this);
     this.handleAuthEnter = this.handleAuthEnter.bind(this);
     this.newCustomer = this.newCustomer.bind(this);
+    this.continueOrder = this.continueOrder.bind(this);
+    this.cancelOrder = this.cancelOrder.bind(this);
   }
 
   async componentDidMount() {
@@ -170,10 +184,30 @@ export default class AddOrder extends React.Component {
     return orderPayments;
   }
 
+  cancelOrder = () => {
+    this.setState({
+      showValidationDialog: false,
+    });
+  }
+
   handleClose = () => {
     this.setState({
       openDialog: false,
     });
+  }
+
+  async continueOrder() {
+    this.setState({
+      showValidationDialog: false,
+    });
+    const { orderStatus } = this.state;
+    if (orderStatus === 'Account') {
+      await this.saveAsAccount();
+    } else if (orderStatus === 'OnHold') {
+      await this.saveAsHold();
+    } else if (orderStatus === 'Paid') {
+      await this.saveAsPaid();
+    }
   }
 
   newCustomer() {
@@ -317,10 +351,44 @@ export default class AddOrder extends React.Component {
     return true;
   }
 
+  async validateInventory(rows, orderStatus, locationId) {
+    this.setState({ orderStatus });
+    if (orderStatus === 'Draft') {
+      return false;
+    }
+
+    const setting = await SettingsService.getSettings();
+    const { warnInSufficientStockOnOrder, blockInSufficientStockOnOrder } = setting;
+    this.setState({
+      warnInSufficientStockOnOrder,
+      blockInSufficientStockOnOrder,
+    });
+
+    if (warnInSufficientStockOnOrder || blockInSufficientStockOnOrder) {
+      const orderItems = rows.map(row => (
+        {
+          locationId,
+          productId: row.productId,
+          amount: row.qty,
+        }));
+
+      const result = await OrderService.validateInventory({ orderItems });
+      if (result && result.length > 0) {
+        this.setState({
+          validationResult: result,
+          showValidationDialog: true,
+        });
+        return true;
+      }
+    }
+    return false;
+  }
+
   async saveOrder(orderStatus) {
     const {
       customer, rows, total, subTotal, notes, taxes, poNumber, authCode,
     } = this.state;
+    const locationId = Location.getStoreLocation();
     const status = orderStatus;
     const orderDetails = rows.map(row => (
       {
@@ -348,7 +416,7 @@ export default class AddOrder extends React.Component {
     }
 
     const order = {
-      locationId: Location.getStoreLocation(),
+      locationId,
       subTotal,
       total,
       customerId: customer !== null ? customer.customerId : null,
@@ -416,6 +484,17 @@ export default class AddOrder extends React.Component {
     });
   }
 
+  async saveAsPaidClicked() {
+    const { rows } = this.state;
+    const locationId = Location.getStoreLocation();
+    const validationExecuted = await this.validateInventory(rows, 'Paid', locationId);
+    if (validationExecuted) {
+      return;
+    }
+
+    this.saveAsPaid();
+  }
+
   clearCustomer() {
     this.setState({ customer: null });
   }
@@ -476,16 +555,17 @@ export default class AddOrder extends React.Component {
     }
   }
 
-  async saveAsAccount() {
-    if (this.orderExceedsCustomerCredit()) {
-      this.setState({
-        openSnackbar: true,
-        snackbarMessage: 'Customer is exceeding the credit limit!',
-        snackbarColor: 'danger',
-      });
+  async saveAsHoldClicked() {
+    const { rows } = this.state;
+    const locationId = Location.getStoreLocation();
+    const validationExecuted = await this.validateInventory(rows, 'OnHold', locationId);
+    if (validationExecuted) {
       return;
     }
+    await this.saveAsHold();
+  }
 
+  async saveAsAccount() {
     const result = await this.saveOrder('Account');
     const { history } = this.props;
 
@@ -497,6 +577,24 @@ export default class AddOrder extends React.Component {
       });
       history.push(`/order/${result.orderId}`);
     }
+  }
+
+  async saveAsAccountClicked() {
+    if (this.orderExceedsCustomerCredit()) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Customer is exceeding the credit limit!',
+        snackbarColor: 'danger',
+      });
+      return;
+    }
+    const { rows } = this.state;
+    const locationId = Location.getStoreLocation();
+    const validationExecuted = await this.validateInventory(rows, 'Account', locationId);
+    if (validationExecuted) {
+      return;
+    }
+    this.saveAsAccount();
   }
 
   render() {
@@ -523,6 +621,10 @@ export default class AddOrder extends React.Component {
       paypalAmazonUsdAmount,
       cashChange,
       cashPaid,
+      showValidationDialog,
+      validationResult,
+      warnInSufficientStockOnOrder,
+      blockInSufficientStockOnOrder,
     } = this.state;
 
     return (
@@ -717,20 +819,20 @@ export default class AddOrder extends React.Component {
               <CardFooter>
                 <GridContainer>
                   <GridItem xs>
-                    <Button color="primary" onClick={this.saveAsPaid}>Mark As Paid</Button>
+                    <Button color="primary" onClick={this.saveAsPaidClicked}>Mark As Paid</Button>
                   </GridItem>
                   <GridItem xs>
                     <Button color="info" onClick={this.saveAsDraft}>Save As Draft</Button>
                   </GridItem>
                   { customer && customer.creditLimit > 0 ? (
                     <GridItem xs>
-                      <Button color="info" onClick={this.saveAsAccount}>Use Customers Account</Button>
+                      <Button color="info" onClick={this.saveAsAccountClicked}>Use Customers Account</Button>
                     </GridItem>
                   ) : (<div />)
                   }
                   { customer ? (
                     <GridItem xs>
-                      <Button color="info" onClick={this.saveAsHold}>Put On Hold</Button>
+                      <Button color="info" onClick={this.saveAsHoldClicked}>Put On Hold</Button>
                     </GridItem>
                   ) : (<div />)
                   }
@@ -953,6 +1055,69 @@ $
             <Button onClick={this.handleAuthUpdate} color="primary">
               Ok
             </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
+          open={showValidationDialog}
+          aria-labelledby="form-dialog-title"
+          maxWidth="xl"
+        >
+          <DialogContent>
+            <Card>
+              <CardHeader color="danger">
+                <div>Insufficient Inventory!</div>
+              </CardHeader>
+              <CardBody>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+              <TableCell>Code</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Balance</TableCell>
+              <TableCell>Order Amount</TableCell>
+              <TableCell>Short</TableCell>
+              <TableCell>On Hold</TableCell>
+            </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {validationResult.map(row => (
+              <TableRow key={row.productId}>
+                <TableCell>{row.productCode}</TableCell>
+                <TableCell>{row.productName}</TableCell>
+                <TableCell>{row.amount}</TableCell>
+                <TableCell>{row.amountRequested}</TableCell>
+                <TableCell>{row.amountShort}</TableCell>
+                <TableCell>{row.onHold}</TableCell>
+              </TableRow>
+            ))}
+                  </TableBody>
+                </Table>
+                { warnInSufficientStockOnOrder && !blockInSufficientStockOnOrder && (
+                <h4>Are you sure you want to continue?</h4>
+                )}
+                {warnInSufficientStockOnOrder && blockInSufficientStockOnOrder && (
+                  <h4>You cannot continue the sales because of insifficient inventory.</h4>
+                )}
+              </CardBody>
+            </Card>
+          </DialogContent>
+          <DialogActions>
+            {warnInSufficientStockOnOrder && !blockInSufficientStockOnOrder && (
+              <div>
+                <Button onClick={this.continueOrder} color="danger">
+                  Yes
+                 </Button>
+                <Button onClick={this.cancelOrder} color="info">
+                  No
+                </Button>
+              </div>
+            )}
+            {warnInSufficientStockOnOrder && blockInSufficientStockOnOrder && (
+              <Button onClick={this.cancelOrder} color="info">
+                Ok
+              </Button>
+)}
           </DialogActions>
         </Dialog>
 
