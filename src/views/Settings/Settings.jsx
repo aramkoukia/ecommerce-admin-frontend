@@ -35,7 +35,6 @@ class Settings extends React.Component {
   }
 
   async onSubmit(form) {
-    const { match } = this.props;
     const settings = await SettingsService.updateSettings(form.formData);
     this.setState({
       settings,
@@ -68,6 +67,8 @@ class Settings extends React.Component {
         'smtpPort',
         'smtpHost',
         'smtpUseSsl',
+        'warnInSufficientStockOnOrder',
+        'blockInSufficientStockOnOrder',
       ],
       properties: {
         adminEmail: {
@@ -97,6 +98,14 @@ class Settings extends React.Component {
         smtpUseSsl: {
           type: 'boolean',
           title: 'Use SSL for SMTP',
+        },
+        warnInSufficientStockOnOrder: {
+          type: 'boolean',
+          title: 'Warn InSufficient Stock On Order',
+        },
+        blockInSufficientStockOnOrder: {
+          type: 'boolean',
+          title: 'Block InSufficient Stock On Order',
         },
       },
     };
@@ -132,6 +141,16 @@ class Settings extends React.Component {
         'ui:emptyValue': '',
         'ui:widget': 'checkbox',
       },
+      warnInSufficientStockOnOrder: {
+        'ui:autofocus': true,
+        'ui:emptyValue': '',
+        'ui:widget': 'checkbox',
+      },
+      blockInSufficientStockOnOrder: {
+        'ui:autofocus': true,
+        'ui:emptyValue': '',
+        'ui:widget': 'checkbox',
+      },
     };
 
     const initialFormData = {
@@ -142,6 +161,8 @@ class Settings extends React.Component {
       smtpPort: settings.smtpPort,
       smtpHost: settings.smtpHost,
       smtpUseSsl: settings.smtpUseSsl,
+      warnInSufficientStockOnOrder: settings.warnInSufficientStockOnOrder,
+      blockInSufficientStockOnOrder: settings.blockInSufficientStockOnOrder,
     };
 
     return (
