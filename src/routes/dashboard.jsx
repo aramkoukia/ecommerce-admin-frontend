@@ -7,7 +7,7 @@ import Money from '@material-ui/icons/Money';
 import PlaylistPlay from '@material-ui/icons/PlaylistPlay';
 import ContactMail from '@material-ui/icons/ContactMail';
 import InsertChart from '@material-ui/icons/InsertChart';
-import MoneyOff from '@material-ui/icons/MoneyOff';
+import SettingsBrightness from '@material-ui/icons/SettingsBrightness';
 import LocationOn from '@material-ui/icons/LocationOn';
 import ScreenLockLandscape from '@material-ui/icons/ScreenLockLandscape';
 import Products from '../views/Products/Products';
@@ -39,6 +39,7 @@ import SignIn from '../views/Login/Auth';
 import { Order } from '../views/Orders/Order';
 import { Return } from '../views/Orders/Return';
 import Roles from '../views/Roles/Roles';
+import Settings from '../views/Settings/Settings';
 import Permissions from '../stores/Permissions';
 
 const dashboardRoutes = [
@@ -223,6 +224,14 @@ const dashboardRoutes = [
     navbarName: '',
     icon: ScreenLockLandscape,
     component: Roles,
+    permission: Permissions.ViewRoles,
+  },
+  {
+    path: '/settings',
+    sidebarName: 'Settings',
+    navbarName: '',
+    icon: SettingsBrightness,
+    component: Settings,
     permission: Permissions.ViewRoles,
   },
   {
