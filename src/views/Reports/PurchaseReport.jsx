@@ -13,9 +13,14 @@ function dateFormat(dateString) {
   const date = new Date(dateString);
   const year = date.getFullYear();
   const month = `${date.getMonth() + 1}`.padStart(2, 0);
-  const day = `${date.getDate()}`.padStart(2, 0);
+  const day = `${date.getUTCDate()}`.padStart(2, 0);
   const stringDate = [day, month, year].join('/');
   return stringDate;
+}
+
+Date.prototype.addHours = function (h) {
+  this.setHours(this.getHours() + h);
+  return this;
 }
 
 export default class PurchaseReport extends React.Component {
@@ -43,14 +48,12 @@ export default class PurchaseReport extends React.Component {
   purchasesList() {
     const columns = ['purchaseId', 'purchaseDate', 'supplier', 'deliveryDate', 'status', 'total', 'createdByUserId'];
     PurchaseService.getPurchases()
-      .then((results) => results.map(row => {
-        return columns.map(column => {
+      .then(results => results.map((row) => columns.map(column => {
           if (column === "purchaseDate") {
             return dateFormat(row[column]);
           }
           return row[column] || "";
-        });
-      }))
+        })))
       .then(data => this.setState({ purchases: data }));
   }
 
@@ -170,9 +173,8 @@ export default class PurchaseReport extends React.Component {
                       }}
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={12} md={3}>
-                  </GridItem>
-                  </GridContainer>
+                  <GridItem xs={12} sm={12} md={3} />
+                </GridContainer>
                 <MUIDataTable
                   data={purchases}
                   columns={columns}

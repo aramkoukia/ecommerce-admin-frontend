@@ -1,8 +1,8 @@
 import React from 'react';
 import MUIDataTable from 'mui-datatables';
 import TextField from '@material-ui/core/TextField';
-import Button from '../../components/CustomButtons/Button';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import Button from '../../components/CustomButtons/Button';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
@@ -19,6 +19,11 @@ function dateFormat(dateString) {
   return stringDate;
 }
 
+Date.prototype.addHours = function (h) {
+  this.setHours(this.getHours() + h);
+  return this;
+}
+
 export default class ProductSalesReport extends React.Component {
   constructor(props) {
     super(props);
@@ -31,8 +36,8 @@ export default class ProductSalesReport extends React.Component {
   }
 
   componentDidMount() {
-    const fromDate = dateFormat(new Date(Date.now()));
-    const toDate = dateFormat(new Date(Date.now()));
+    const fromDate = dateFormat((new Date()).addHours(-8));
+    const toDate = dateFormat((new Date()).addHours(-8));
     this.setState({
       fromDate,
       toDate,
@@ -219,7 +224,9 @@ export default class ProductSalesReport extends React.Component {
       rowsPerPage: 25,
     };
 
-    const { reportData, productSalesDetailData, fromDate, toDate } = this.state;
+    const {
+      reportData, productSalesDetailData, fromDate, toDate,
+    } = this.state;
 
     return (
       <div>
@@ -260,19 +267,19 @@ export default class ProductSalesReport extends React.Component {
                   </GridItem>
                 </GridContainer>
                 <MuiThemeProvider theme={this.getMuiTheme()}>
-                <MUIDataTable
-                  title="Product Sales Report"
-                  data={reportData}
-                  columns={columns}
-                  options={options}
+                  <MUIDataTable
+                    title="Product Sales Report"
+                    data={reportData}
+                    columns={columns}
+                    options={options}
                   />
                 </MuiThemeProvider>
                 <MuiThemeProvider theme={this.getMuiTheme()}>
-                <MUIDataTable
-                  title="Product Sales Detail Report"
-                  data={productSalesDetailData}
-                  columns={productSalesDetailColumns}
-                  options={options}
+                  <MUIDataTable
+                    title="Product Sales Detail Report"
+                    data={productSalesDetailData}
+                    columns={productSalesDetailColumns}
+                    options={options}
                   />
                 </MuiThemeProvider>
               </CardBody>

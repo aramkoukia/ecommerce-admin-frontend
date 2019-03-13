@@ -19,6 +19,11 @@ function dateFormat(dateString) {
   return stringDate;
 }
 
+Date.prototype.addHours = function (h) {
+  this.setHours(this.getHours() + h);
+  return this;
+}
+
 export default class PaymentReport extends React.Component {
   constructor(props) {
     super(props);
@@ -31,8 +36,8 @@ export default class PaymentReport extends React.Component {
   }
 
   componentDidMount() {
-    const fromDate = dateFormat(new Date(Date.now()));
-    const toDate = dateFormat(new Date(Date.now()));
+    const fromDate = dateFormat((new Date()).addHours(-8));
+    const toDate = dateFormat((new Date()).addHours(-8));
     this.setState({
       fromDate,
       toDate,
@@ -238,25 +243,25 @@ export default class PaymentReport extends React.Component {
                     data={paymentsTotalData}
                     columns={paymentsTotalColumns}
                     options={paymentsTotalOptions}
-                    />
+                  />
                 </MuiThemeProvider>
                 <br />
                 <MuiThemeProvider theme={this.getMuiTheme()}>
-                <MUIDataTable
-                  title={paymentsByOrderStatusTitle}
-                  data={paymentsSummaryData}
-                  columns={paymentsSummaryColumns}
-                  options={paymentsSummaryOptions}
-                />
+                  <MUIDataTable
+                    title={paymentsByOrderStatusTitle}
+                    data={paymentsSummaryData}
+                    columns={paymentsSummaryColumns}
+                    options={paymentsSummaryOptions}
+                  />
                 </MuiThemeProvider>
                 <br />
-                  <MuiThemeProvider theme={this.getMuiTheme()}>
-                <MUIDataTable
-                  title={paymentDetailsTitle}
-                  data={paymentDetailsData}
-                  columns={paymentDetailsColumns}
-                  options={paymentDetailsOptions}
-                />
+                <MuiThemeProvider theme={this.getMuiTheme()}>
+                  <MUIDataTable
+                    title={paymentDetailsTitle}
+                    data={paymentDetailsData}
+                    columns={paymentDetailsColumns}
+                    options={paymentDetailsOptions}
+                  />
                 </MuiThemeProvider>
               </CardBody>
             </Card>

@@ -14,9 +14,14 @@ function dateFormat(dateString) {
   const date = new Date(dateString);
   const year = date.getFullYear();
   const month = `${date.getMonth() + 1}`.padStart(2, 0);
-  const day = `${date.getDate()}`.padStart(2, 0);
+  const day = `${date.getUTCDate()}`.padStart(2, 0);
   const stringDate = [year, month, day].join('-');
   return stringDate;
+}
+
+Date.prototype.addHours = function (h) {
+  this.setHours(this.getHours() + h);
+  return this;
 }
 
 export default class CustomerReport extends React.Component {
@@ -31,8 +36,8 @@ export default class CustomerReport extends React.Component {
   }
 
   componentDidMount() {
-    const fromDate = dateFormat(new Date(Date.now()));
-    const toDate = dateFormat(new Date(Date.now()));
+    const fromDate = dateFormat((new Date()).addHours(-8));
+    const toDate = dateFormat((new Date()).addHours(-8));
     this.setState({
       fromDate,
       toDate,
@@ -110,56 +115,56 @@ export default class CustomerReport extends React.Component {
     };
 
     const customerPaidColumns = ['Invoice Id', 'PO Number', 'Total Sale ($)', 'Status', 'Date', 'Payment Amount($)', 'Paid By', 'Company Name',
-    {
-      name: 'Address',
-      options: {
-        display: false,
+      {
+        name: 'Address',
+        options: {
+          display: false,
+        },
       },
-    },
-    {
-      name: 'City',
-      options: {
-        display: false,
+      {
+        name: 'City',
+        options: {
+          display: false,
+        },
       },
-    },
-    {
-      name: 'Province',
-      options: {
-        display: false,
+      {
+        name: 'Province',
+        options: {
+          display: false,
+        },
       },
-    },
-    {
-      name: 'PostalCode',
-      options: {
-        display: false,
-      },
-    },];
+      {
+        name: 'PostalCode',
+        options: {
+          display: false,
+        },
+      }];
 
     const customerUnPaidColumns = ['Invoice Id', 'PO Number', 'Total Sale ($)', 'Status', 'Date', 'Due Date', 'Company Name',
-    {
-      name: 'Address',
-      options: {
-        display: false,
+      {
+        name: 'Address',
+        options: {
+          display: false,
+        },
       },
-    },
-    {
-      name: 'City',
-      options: {
-        display: false,
+      {
+        name: 'City',
+        options: {
+          display: false,
+        },
       },
-    },
-    {
-      name: 'Province',
-      options: {
-        display: false,
+      {
+        name: 'Province',
+        options: {
+          display: false,
+        },
       },
-    },
-    {
-      name: 'PostalCode',
-      options: {
-        display: false,
-      },
-    },];
+      {
+        name: 'PostalCode',
+        options: {
+          display: false,
+        },
+      }];
 
     const options = {
       filterType: 'checkbox',
@@ -170,7 +175,9 @@ export default class CustomerReport extends React.Component {
       rowsPerPage: 25,
     };
 
-    const { customerPaidData, customerUnPaidData, fromDate, toDate } = this.state;
+    const {
+      customerPaidData, customerUnPaidData, fromDate, toDate,
+    } = this.state;
     // const paidTitle = `Paid Orders - From Date: ${dateFormat(fromDate)} To Date: ${dateFormat(toDate)}`;
     // const unpaidTitle = `Awaiting Patment - Until Date: ${dateFormat(toDate)}`;
     const paidTitle = 'Paid Orders';
@@ -215,20 +222,20 @@ export default class CustomerReport extends React.Component {
                   </GridItem>
                 </GridContainer>
                 <MuiThemeProvider theme={this.getMuiTheme()}>
-                <MUIDataTable
-                  title={paidTitle}
-                  data={customerPaidData}
-                  columns={customerPaidColumns}
-                  options={options}
-                />
+                  <MUIDataTable
+                    title={paidTitle}
+                    data={customerPaidData}
+                    columns={customerPaidColumns}
+                    options={options}
+                  />
                 </MuiThemeProvider>
                 <MuiThemeProvider theme={this.getMuiTheme()}>
-                <MUIDataTable
-                  title={unpaidTitle}
-                  data={customerUnPaidData}
-                  columns={customerUnPaidColumns}
-                  options={options}
-                />
+                  <MUIDataTable
+                    title={unpaidTitle}
+                    data={customerUnPaidData}
+                    columns={customerUnPaidColumns}
+                    options={options}
+                  />
                 </MuiThemeProvider>
               </CardBody>
             </Card>

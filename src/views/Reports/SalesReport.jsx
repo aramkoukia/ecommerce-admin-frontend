@@ -19,6 +19,11 @@ function dateFormat(dateString) {
   return stringDate;
 }
 
+Date.prototype.addHours = function (h) {
+  this.setHours(this.getHours() + h);
+  return this;
+}
+
 export default class SalesReport extends React.Component {
   constructor(props) {
     super(props);
@@ -31,8 +36,8 @@ export default class SalesReport extends React.Component {
   }
 
   componentDidMount() {
-    const fromDate = dateFormat(new Date(Date.now()));
-    const toDate = dateFormat(new Date(Date.now()));
+    const fromDate = dateFormat((new Date()).addHours(-8));
+    const toDate = dateFormat((new Date()).addHours(-8));
     this.setState({
       fromDate,
       toDate,
@@ -175,12 +180,12 @@ export default class SalesReport extends React.Component {
                 </GridContainer>
 
                 <MuiThemeProvider theme={this.getMuiTheme()}>
-                <MUIDataTable
-                  title={salesReportTitle}
-                  data={reportData}
-                  columns={columns}
-                  options={options}
-                />
+                  <MUIDataTable
+                    title={salesReportTitle}
+                    data={reportData}
+                    columns={columns}
+                    options={options}
+                  />
                 </MuiThemeProvider>
               </CardBody>
             </Card>
