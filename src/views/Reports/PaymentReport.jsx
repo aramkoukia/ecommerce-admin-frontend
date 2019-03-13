@@ -1,6 +1,7 @@
 import React from 'react';
 import MUIDataTable from 'mui-datatables';
 import TextField from '@material-ui/core/TextField';
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import Button from '../../components/CustomButtons/Button';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -37,6 +38,16 @@ export default class PaymentReport extends React.Component {
       toDate,
     });
   }
+
+  getMuiTheme = () => createMuiTheme({
+    overrides: {
+      MUIDataTableBodyCell: {
+        root: {
+          fontSize: '15px',
+        },
+      },
+    },
+  })
 
   handleChange = name => (event) => {
     this.setState({
@@ -221,28 +232,32 @@ export default class PaymentReport extends React.Component {
                     <Button color="info" onClick={this.search}>Search</Button>
                   </GridItem>
                 </GridContainer>
-                <MUIDataTable
-                  title={paymentSummaryTitle}
-                  data={paymentsTotalData}
-                  columns={paymentsTotalColumns}
-                  options={paymentsTotalOptions}
-                />
+                <MuiThemeProvider theme={this.getMuiTheme()}>
+                  <MUIDataTable
+                    title={paymentSummaryTitle}
+                    data={paymentsTotalData}
+                    columns={paymentsTotalColumns}
+                    options={paymentsTotalOptions}
+                    />
+                </MuiThemeProvider>
                 <br />
-
+                <MuiThemeProvider theme={this.getMuiTheme()}>
                 <MUIDataTable
                   title={paymentsByOrderStatusTitle}
                   data={paymentsSummaryData}
                   columns={paymentsSummaryColumns}
                   options={paymentsSummaryOptions}
                 />
+                </MuiThemeProvider>
                 <br />
-
+                  <MuiThemeProvider theme={this.getMuiTheme()}>
                 <MUIDataTable
                   title={paymentDetailsTitle}
                   data={paymentDetailsData}
                   columns={paymentDetailsColumns}
                   options={paymentDetailsOptions}
                 />
+                </MuiThemeProvider>
               </CardBody>
             </Card>
           </GridItem>

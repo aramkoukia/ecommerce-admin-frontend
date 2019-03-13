@@ -1,6 +1,7 @@
 import React from 'react';
 import MUIDataTable from 'mui-datatables';
 import TextField from '@material-ui/core/TextField';
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
@@ -28,6 +29,16 @@ export default class PurchaseReport extends React.Component {
   componentDidMount() {
     this.purchasesList();
   }
+
+  getMuiTheme = () => createMuiTheme({
+    overrides: {
+      MUIDataTableBodyCell: {
+        root: {
+          fontSize: '15px',
+        },
+      },
+    },
+  })
 
   purchasesList() {
     const columns = ['purchaseId', 'purchaseDate', 'supplier', 'deliveryDate', 'status', 'total', 'createdByUserId'];

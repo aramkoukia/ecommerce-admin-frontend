@@ -1,6 +1,7 @@
 import React from 'react';
 import MUIDataTable from 'mui-datatables';
 import TextField from '@material-ui/core/TextField';
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import Button from '../../components/CustomButtons/Button';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -37,6 +38,16 @@ export default class SalesReport extends React.Component {
       toDate,
     });
   }
+
+  getMuiTheme = () => createMuiTheme({
+    overrides: {
+      MUIDataTableBodyCell: {
+        root: {
+          fontSize: '15px',
+        },
+      },
+    },
+  })
 
   handleChange = name => (event) => {
     this.setState({
@@ -162,12 +173,15 @@ export default class SalesReport extends React.Component {
                     <Button color="info" onClick={this.search}>Search</Button>
                   </GridItem>
                 </GridContainer>
+
+                <MuiThemeProvider theme={this.getMuiTheme()}>
                 <MUIDataTable
                   title={salesReportTitle}
                   data={reportData}
                   columns={columns}
                   options={options}
                 />
+                </MuiThemeProvider>
               </CardBody>
             </Card>
           </GridItem>
