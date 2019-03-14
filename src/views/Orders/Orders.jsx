@@ -84,8 +84,7 @@ export default class Orders extends React.Component {
   }
 
   rowClicked(rowData) {
-    const { history } = this.props;
-    history.push(`/order/${rowData[1]}`);
+    window.open(`/order/${rowData[1]}`, "_blank")
   }
 
   render() {
