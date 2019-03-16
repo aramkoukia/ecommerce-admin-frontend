@@ -29,6 +29,7 @@ import AddOrder from '../views/Orders/AddOrder';
 import Orders from '../views/Orders/Orders';
 import Discounts from '../views/Discounts/Discounts';
 import Taxes from '../views/Taxes/Taxes';
+import CustomerStoreCredit from '../views/Customers/CustomerStoreCredit';
 import Users from '../views/Users/Users';
 import AddUser from '../views/Users/AddUser';
 import Inventory from '../views/Inventory/Inventory';
@@ -275,6 +276,13 @@ const dashboardRoutes = [
     navbarName: '',
     icon: Person,
     component: Product,
+  },
+  {
+    path: '/customerstorecredit/:id',
+    sidebarName: '',
+    navbarName: '',
+    icon: ContactMail,
+    component: CustomerStoreCredit,
   },
   {
     redirect: true, path: '/', to: '/login', navbarName: 'Redirect',
