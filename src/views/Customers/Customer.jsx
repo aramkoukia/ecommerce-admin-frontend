@@ -30,6 +30,7 @@ export default class Customer extends React.Component {
     this.editCustomer = this.editCustomer.bind(this);
     this.printStatement = this.printStatement.bind(this);
     this.emailStatement = this.emailStatement.bind(this);
+    this.storeCredit = this.storeCredit.bind(this);
   }
 
   async componentDidMount() {
@@ -45,8 +46,13 @@ export default class Customer extends React.Component {
   }
 
   editCustomer() {
-    const { match } = this.props;
-    return this.props.history.push(`/editcustomer/${match.params.id}`);
+    const { match, history } = this.props;
+    return history.push(`/editcustomer/${match.params.id}`);
+  }
+
+  storeCredit() {
+    const { match, history } = this.props;
+    return history.push(`/customerstorecredit/${match.params.id}`);
   }
 
   async printStatement() {
@@ -182,6 +188,10 @@ export default class Customer extends React.Component {
             <Button color="secondary" onClick={this.emailStatement}>
               <Email />
               Email Statement
+            </Button>
+            <Button color="secondary" onClick={this.storeCredit}>
+              <Email />
+              Store Credit
             </Button>
             {loading && <CircularProgress />}
           </GridItem>
