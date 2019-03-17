@@ -3,6 +3,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Print from '@material-ui/icons/Print';
 import Email from '@material-ui/icons/Email';
 import Money from '@material-ui/icons/Money';
+import Edit from '@material-ui/icons/Edit';
 import MUIDataTable from 'mui-datatables';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -181,7 +182,14 @@ export default class Customer extends React.Component {
             <CustomerInfo customer={customer} />
           </GridItem>
           <GridItem xs={2}>
-            <Button color="primary" onClick={this.editCustomer}>Edit</Button>
+            <Button color="primary" onClick={this.editCustomer}>
+              <Edit />
+              Edit
+            </Button>
+            <Button color="info" onClick={this.storeCredit}>
+              <Money />
+              Store Credit
+            </Button>
             <Button color="secondary" onClick={this.printStatement}>
               <Print />
               Print Statement
@@ -189,10 +197,6 @@ export default class Customer extends React.Component {
             <Button color="secondary" onClick={this.emailStatement}>
               <Email />
               Email Statement
-            </Button>
-            <Button color="secondary" onClick={this.storeCredit}>
-              <Money />
-              Store Credit
             </Button>
             {loading && <CircularProgress />}
           </GridItem>

@@ -146,7 +146,7 @@ export default class CustomerStoreCredit extends React.Component {
 
     const columns = [
       {
-        name: 'Amount',
+        name: 'Amount ($)',
         options: {
           filter: false,
         },
@@ -191,7 +191,7 @@ export default class CustomerStoreCredit extends React.Component {
             <CustomerInfo customer={customer} />
           </GridItem>
           <GridItem>
-            <Button color="secondary" onClick={this.updateStoreCredit}>
+            <Button color="primary" onClick={this.updateStoreCredit}>
               <Money />
               Add / Deduct Store Credit
             </Button>
