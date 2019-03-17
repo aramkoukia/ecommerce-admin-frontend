@@ -28,7 +28,7 @@ function CustomerInfo(props) {
         { customer && (
         <Table
           tableHeaderColor="primary"
-          tableHead={['Email', 'Name', 'Company Name', 'Awaiting Payment', 'Credit Limit', 'PST Number', 'Phone Number', 'Segment', 'province']}
+          tableHead={['Email', 'Name', 'Company Name', 'Awaiting Payment', 'Credit Limit', 'PST Number', 'Phone Number', 'Store Credit', 'Segment']}
           tableData={[
             [customer.email,
               `${customer.firstName} ${customer.lastName}`,
@@ -37,8 +37,8 @@ function CustomerInfo(props) {
               customer.creditLimit,
               customer.pstNumber,
               customer.phoneNumber,
-              customer.segment,
-              customer.province],
+              customer.storeCredit,
+              customer.segment],
           ]}
         />
         ) }

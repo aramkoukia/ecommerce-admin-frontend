@@ -1,5 +1,6 @@
 import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Money from '@material-ui/icons/Money';
 import MUIDataTable from 'mui-datatables';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -16,20 +17,44 @@ export default class CustomerStoreCredit extends React.Component {
     super(props);
 
     this.state = {
+      amount: 0,
+      notes: '',
       customerStoreCredits: [],
       customer: {},
+      showStoreCreditDialog: false,
     };
     this.updateStoreCredit = this.updateStoreCredit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   async componentDidMount() {
     const { match } = this.props;
     const customerId = match.params.id;
     const customer = await CustomerService.getCustomer(customerId);
-    const customerStoreCredits = await CustomerStoreCreditService.getCustomerStoreCredit(customerId);
+    const customerStoreCredits = await CustomerStoreCreditService.getCustomerStoreCredits(customerId);
     this.setState({
       customerStoreCredits,
       customer,
+    });
+  }
+
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
+  }
+
+  async updateStoreCredit() {
+    const { amount, notes } = this.state;
+    const { match } = this.props;
+    const customerId = match.params.id;
+
+    const storeCredit = {
+      customerId,
+      amount,
+      notes,
+    };
+    await CustomerStoreCreditService.updateStoreCredit(storeCredit);
+    this.setState({
+      showStoreCreditDialog: false,
     });
   }
 
@@ -101,8 +126,14 @@ export default class CustomerStoreCredit extends React.Component {
     return (
       <div>
         <GridContainer>
-          <GridItem xs={12}>
+          <GridItem xs={10}>
             <CustomerInfo customer={customer} />
+          </GridItem>
+          <GridItem>
+            <Button color="secondary" onClick={this.updateStoreCredit}>
+              <Money />
+              Add/Deduct Store Credit
+            </Button>
           </GridItem>
           <GridItem xs={12} sm={12} md={12}>
             <Card>
