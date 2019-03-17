@@ -103,6 +103,8 @@ export default class AddOrder extends React.Component {
       cashAmount: 0,
       chequeAmount: 0,
       paypalAmazonUsdAmount: 0,
+      payStoreCredit: false,
+      storeCreditAmount: 0,
       cashPaid: 0,
       cashChange: 0,
       validationResult: [],
@@ -150,8 +152,16 @@ export default class AddOrder extends React.Component {
 
   getOrderPayments() {
     const {
-      payCash, payCreditDebit, payCheque, payAmazonUsd,
-      cashAmount, creditDebitAmount, chequeAmount, paypalAmazonUsdAmount,
+      payCash,
+      payCreditDebit,
+      payCheque,
+      payAmazonUsd,
+      payStoreCredit,
+      cashAmount,
+      creditDebitAmount,
+      chequeAmount,
+      paypalAmazonUsdAmount,
+      storeCreditAmount,
       chequeNo,
     } = this.state;
 
@@ -181,6 +191,13 @@ export default class AddOrder extends React.Component {
         paymentAmount: paypalAmazonUsdAmount,
       });
     }
+    if (payStoreCredit) {
+      orderPayments.push({
+        paymentTypeId: 26,
+        paymentAmount: storeCreditAmount,
+      });
+    }
+
     return orderPayments;
   }
 
@@ -303,12 +320,19 @@ export default class AddOrder extends React.Component {
 
   handleCheckChange(event) {
     const {
-      total, cashAmount, creditDebitAmount, chequeAmount, paypalAmazonUsdAmount,
+      total,
+      cashAmount,
+      creditDebitAmount,
+      chequeAmount,
+      paypalAmazonUsdAmount,
+      storeCreditAmount,
     } = this.state;
+
     const paymentAmount = (
       Number(cashAmount)
       + Number(creditDebitAmount)
       + Number(chequeAmount)
+      + Number(storeCreditAmount)
       + Number(paypalAmazonUsdAmount)).toFixed(2);
 
     const remain = (total - paymentAmount).toFixed(2);
@@ -322,6 +346,8 @@ export default class AddOrder extends React.Component {
         this.setState({ chequeAmount: remain });
       } else if (event.target.name === 'payAmazonUsd') {
         this.setState({ paypalAmazonUsdAmount: remain });
+      } else if (event.target.name === 'payStoreCredit') {
+        this.setState({ storeCreditAmount: remain });
       }
     } else if (event.target.name === 'payCash') {
       this.setState({ cashAmount: 0 });
@@ -331,6 +357,8 @@ export default class AddOrder extends React.Component {
       this.setState({ chequeAmount: 0 });
     } else if (event.target.name === 'payAmazonUsd') {
       this.setState({ paypalAmazonUsdAmount: 0 });
+    } else if (event.target.name === 'payStoreCredit') {
+      this.setState({ storeCreditAmount: 0 });
     }
   }
 
@@ -412,6 +440,19 @@ export default class AddOrder extends React.Component {
 
     let orderPayment = [];
     if (orderStatus === 'Paid') {
+      const {
+        payStoreCredit,
+        storeCreditAmount,
+      } = this.state;
+      if (payStoreCredit && storeCreditAmount > customer.storeCredit) {
+        this.setState({
+          openSnackbar: true,
+          snackbarMessage: `Customer Store Credit ${customer.storeCredit}, is less than Store Credit Specified : ${storeCreditAmount}!`,
+          snackbarColor: 'danger',
+        });
+        return false;
+      }
+
       orderPayment = this.getOrderPayments();
     }
 
@@ -447,12 +488,18 @@ export default class AddOrder extends React.Component {
 
   async pay() {
     const {
-      total, cashAmount, creditDebitAmount, chequeAmount, paypalAmazonUsdAmount,
+      total,
+      cashAmount,
+      creditDebitAmount,
+      chequeAmount,
+      paypalAmazonUsdAmount,
+      storeCreditAmount,
     } = this.state;
 
     const paidAmount = Number(cashAmount)
       + Number(creditDebitAmount)
       + Number(chequeAmount)
+      + Number(storeCreditAmount)
       + Number(paypalAmazonUsdAmount);
 
     if ((Number(paidAmount)).toFixed(2) !== (Number(total)).toFixed(2)) {
@@ -615,10 +662,12 @@ export default class AddOrder extends React.Component {
       payCheque,
       payCreditDebit,
       payAmazonUsd,
+      payStoreCredit,
       cashAmount,
       chequeAmount,
       creditDebitAmount,
       paypalAmazonUsdAmount,
+      storeCreditAmount,
       cashChange,
       cashPaid,
       showValidationDialog,
@@ -671,18 +720,6 @@ export default class AddOrder extends React.Component {
                             </GridItem>
                             <GridItem xs={12} sm={12} md={3}>
                               <CustomInput
-                                labelText="User Name"
-                                formControlProps={{
-                                  fullWidth: true,
-                                }}
-                                inputProps={{
-                                  disabled: true,
-                                  value: `${customer.userName} `,
-                                }}
-                              />
-                            </GridItem>
-                            <GridItem xs={12} sm={12} md={3}>
-                              <CustomInput
                                 labelText="Email"
                                 formControlProps={{
                                   fullWidth: true,
@@ -705,6 +742,19 @@ export default class AddOrder extends React.Component {
                                 }}
                               />
                             </GridItem>
+                            <GridItem xs={12} sm={12} md={3}>
+                              <CustomInput
+                                labelText="Store Credit($)"
+                                formControlProps={{
+                                  fullWidth: true,
+                                }}
+                                inputProps={{
+                                  disabled: true,
+                                  value: `${customer.storeCredit} `,
+                                }}
+                              />
+                            </GridItem>
+
                           </GridContainer>
                           <GridContainer alignItems="flex-end">
                             <GridItem xs={12} sm={12} md={3}>
@@ -986,6 +1036,30 @@ export default class AddOrder extends React.Component {
                         value={paypalAmazonUsdAmount}
                       />
                     </GridItem>
+                    <GridItem md={6}>
+                      <FormControlLabel
+                        control={(
+                          <Checkbox
+                            disabled={!customer || customer.storeCredit <= 0}
+                            checked={payStoreCredit}
+                            onChange={this.handleCheckChange}
+                            value="payStoreCredit"
+                            name="payStoreCredit"
+                          />
+                        )}
+                        label="Store Credit"
+                      />
+                    </GridItem>
+                    <GridItem md={6}>
+                      <TextField
+                        disabled={!payStoreCredit}
+                        name="storeCreditAmount"
+                        label="Store Credit"
+                        type="text"
+                        onChange={this.handleChange}
+                        value={storeCreditAmount}
+                      />
+                    </GridItem>
                     <GridItem md={12}>
                       <br />
                       <hr />
@@ -1010,7 +1084,7 @@ export default class AddOrder extends React.Component {
                       <h5>
                         { total && total.toFixed(2) }
                         {' '}
-$
+                        $
                       </h5>
                     </GridItem>
                   </GridContainer>
