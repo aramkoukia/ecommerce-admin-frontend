@@ -1072,6 +1072,7 @@ export default class AddOrder extends React.Component {
                         {(Number(cashAmount)
                           + Number(creditDebitAmount)
                           + Number(chequeAmount)
+                          + Number(storeCreditAmount)
                           + Number(paypalAmazonUsdAmount)).toFixed(2)}
                         {' '}
                         $

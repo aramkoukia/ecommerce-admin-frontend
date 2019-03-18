@@ -62,6 +62,7 @@ export class Return extends React.Component {
       creditDebitAmount: 0,
       cashAmount: 0,
       chequeAmount: 0,
+      storeCreditAmount: 0,
       paypalAmazonUsdAmount: 0,
       restockingFeePercent: 10,
       restockingFeeAmount: 0,
@@ -94,8 +95,9 @@ export class Return extends React.Component {
 
   getOrderPayments() {
     const {
-      payCash, payCreditDebit, payCheque, payAmazonUsd,
+      payCash, payCreditDebit, payCheque, payAmazonUsd, payStoreCredit,
       cashAmount, creditDebitAmount, chequeAmount, paypalAmazonUsdAmount,
+      storeCreditAmount,
       chequeNo,
     } = this.state;
 
@@ -123,6 +125,12 @@ export class Return extends React.Component {
       orderPayments.push({
         paymentTypeId: 25,
         paymentAmount: paypalAmazonUsdAmount,
+      });
+    }
+    if (payStoreCredit) {
+      orderPayments.push({
+        paymentTypeId: 26,
+        paymentAmount: storeCreditAmount,
       });
     }
     return orderPayments;
@@ -169,10 +177,12 @@ export class Return extends React.Component {
   handleCheckChange(event) {
     const {
       total, cashAmount, creditDebitAmount, chequeAmount, paypalAmazonUsdAmount,
+      storeCreditAmount,
     } = this.state;
     const paymentAmount = (Number(cashAmount)
       + Number(creditDebitAmount)
       + Number(chequeAmount)
+      + Number(storeCreditAmount)
       + Number(paypalAmazonUsdAmount)).toFixed(2);
 
     const remain = (total - paymentAmount).toFixed(2);
@@ -186,6 +196,8 @@ export class Return extends React.Component {
         this.setState({ chequeAmount: remain });
       } else if (event.target.name === 'payAmazonUsd') {
         this.setState({ paypalAmazonUsdAmount: remain });
+      } else if (event.target.name === 'payStoreCredit') {
+        this.setState({ storeCreditAmount: remain });
       }
     } else if (event.target.name === 'payCash') {
       this.setState({ cashAmount: 0 });
@@ -195,6 +207,8 @@ export class Return extends React.Component {
       this.setState({ chequeAmount: 0 });
     } else if (event.target.name === 'payAmazonUsd') {
       this.setState({ paypalAmazonUsdAmount: 0 });
+    } else if (event.target.name === 'payStoreCredit') {
+      this.setState({ storeCreditAmount: 0 });
     }
   }
 
@@ -282,16 +296,27 @@ export class Return extends React.Component {
   async pay() {
     const {
       total, cashAmount, creditDebitAmount, chequeAmount, paypalAmazonUsdAmount,
+      storeCreditAmount, payStoreCredit, order,
     } = this.state;
     const paidAmount = Number(cashAmount)
       + Number(creditDebitAmount)
       + Number(chequeAmount)
+      + Number(storeCreditAmount)
       + Number(paypalAmazonUsdAmount);
 
     if ((Number(paidAmount)).toFixed(2) !== (Number(total)).toFixed(2)) {
       this.setState({
         openSnackbar: true,
         snackbarMessage: `Total Paid Amount: ${paidAmount.toFixed(2)} $, must be the same as Order Total:${total.toFixed(2)} $`,
+        snackbarColor: 'danger',
+      });
+      return;
+    }
+
+    if (payStoreCredit && storeCreditAmount > order.customer.storeCredit) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: `Customer Store Credit ${order.customer.storeCredit}, is less than Store Credit Specified : ${storeCreditAmount}!`,
         snackbarColor: 'danger',
       });
       return;
@@ -322,7 +347,8 @@ export class Return extends React.Component {
 
   render() {
     const {
-      order, openSnackbar,
+      order,
+      openSnackbar,
       snackbarMessage,
       snackbarColor,
       loading,
@@ -337,10 +363,12 @@ export class Return extends React.Component {
       payCheque,
       payCreditDebit,
       payAmazonUsd,
+      payStoreCredit,
       cashAmount,
       chequeAmount,
       creditDebitAmount,
       paypalAmazonUsdAmount,
+      storeCreditAmount,
     } = this.state;
 
     return (
@@ -539,6 +567,31 @@ export class Return extends React.Component {
                           value={paypalAmazonUsdAmount}
                         />
                       </GridItem>
+                      <GridItem md={6}>
+                        <FormControlLabel
+                          control={(
+                            <Checkbox
+                              disabled={!order.customer || order.customer.storeCredit <= 0}
+                              checked={payStoreCredit}
+                              onChange={this.handleCheckChange}
+                              value="payStoreCredit"
+                              name="payStoreCredit"
+                            />
+                          )}
+                          label="Store Credit"
+                        />
+                      </GridItem>
+                      <GridItem md={6}>
+                        <TextField
+                          disabled={!payStoreCredit}
+                          name="storeCreditAmount"
+                          label="Store Credit"
+                          type="text"
+                          onChange={this.handleChange}
+                          value={storeCreditAmount}
+                        />
+                      </GridItem>
+
                       <GridItem xs={12} sm={12} md={12}>
                         <br />
                         <hr />
@@ -551,6 +604,7 @@ export class Return extends React.Component {
                           {(Number(cashAmount)
                             + Number(creditDebitAmount)
                             + Number(chequeAmount)
+                            + Number(storeCreditAmount)
                             + Number(paypalAmazonUsdAmount)).toFixed(2)}
                           {' '}
 $
