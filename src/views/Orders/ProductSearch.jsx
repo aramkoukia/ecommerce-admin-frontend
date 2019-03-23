@@ -111,14 +111,16 @@ class ProductSearch extends React.Component {
   }
 
   onKeyPress(e) {
-    const { filteredSuggestions } = this.state;
-    if (e.key === 'Enter'
-      && filteredSuggestions
-      && filteredSuggestions.length > 0) {
-      this.getSuggestionValue(filteredSuggestions[0]);
-      this.setState({
-        value: '',
-      });
+    const { filteredSuggestions, value } = this.state;
+    if (e.key === 'Enter' && filteredSuggestions) {
+      if (filteredSuggestions.length === 1) {
+        this.getSuggestionValue(filteredSuggestions[0]);
+        this.setState({
+          value: '',
+        });
+      } else if (filteredSuggestions.length > 1) {
+        this.getSuggestions(value);
+      }
     }
   }
 
