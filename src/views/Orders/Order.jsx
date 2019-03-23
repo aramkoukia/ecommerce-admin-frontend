@@ -463,25 +463,25 @@ export class Order extends React.Component {
                         { order.status === 'Draft' || order.status === 'OnHold' || order.status === 'Account'
                           ? (
                             <GridItem xs>
-                              <Button color="info" onClick={this.saveAsPaid}>Mark As Paid</Button>
+                              <Button color="info" disabled={loading} onClick={this.saveAsPaid}>Mark As Paid</Button>
                             </GridItem>
                           ) : <div />}
 
                         { order.status === 'Draft' && (
                         <GridItem xs>
-                          <Button color="info" onClick={this.saveAsHold}>Put On Hold</Button>
+                          <Button color="info" disabled={loading} onClick={this.saveAsHold}>Put On Hold</Button>
                         </GridItem>
                         )}
 
                         { order.status === 'Paid' && (
                         <GridItem xs>
-                          <Button color="info" onClick={this.refundOrder}>Return</Button>
+                          <Button color="info" disabled={loading} onClick={this.refundOrder}>Return</Button>
                         </GridItem>
                         )}
 
                         { order.status === 'OnHold' && (
                         <GridItem xs>
-                          <Button color="info" onClick={this.cancelHold}>Cancel On Hold</Button>
+                          <Button color="info" disabled={loading} onClick={this.cancelHold}>Cancel On Hold</Button>
                         </GridItem>
                         )}
                         <GridItem xs>
@@ -725,8 +725,8 @@ $
               <Button onClick={this.handleClose} color="info">
                   Cancel
               </Button>
-              <Button onClick={this.pay} color="primary">
-                  Pay
+              <Button disabled={loading} onClick={this.pay} color="primary">
+                Pay
               </Button>
             </DialogActions>
           </Dialog>
