@@ -2,6 +2,15 @@ import React from 'react';
 import Check from '@material-ui/icons/Check';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import Select from '@material-ui/core/Select';
+import FormControl from '@material-ui/core/FormControl';
+import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
 import PropTypes from 'prop-types';
 import MUIDataTable from 'mui-datatables';
 import Button from '../../components/CustomButtons/Button';
@@ -20,6 +29,25 @@ const styles = {
     margin: 5,
   },
 };
+
+
+function getLocations() {
+  return [
+    {
+      locationId: 1,
+      locationName: 'Vancouver',
+    },
+    {
+      locationId: 2,
+      locationName: 'Abbotsford',
+    },
+    {
+      locationId: 3,
+      locationName: 'Victoria',
+    },
+  ];
+  // return LocationService.getLocationsForUser();
+}
 
 function dateFormat(dateString) {
   const date = new Date(dateString);
@@ -47,10 +75,25 @@ export class Product extends React.Component {
       snackbarColor: '',
       fromDate: '',
       toDate: '',
+      openDialog: false,
+      vancouverQuantity: 0,
+      vancouverStorageCode: '',
+      vancouverNotes: '',
+      abbotsfordQuantity: 0,
+      abbotsfordStorageCode: '',
+      abbotsfordNotes: '',
+      loading: false,
+      transferNotes: '',
+      transferQuantity: 0,
+      fromLocation: 1,
+      toLocation: 2,
     };
 
     this.enableDisableProducts = this.enableDisableProducts.bind(this);
+    this.handleUpdate = this.handleUpdate.bind(this);
+    this.handleTransfer = this.handleTransfer.bind(this);
     this.search = this.search.bind(this);
+    this.updateTransferClicked = this.updateTransferClicked.bind(this);
   }
 
   async componentDidMount() {
@@ -66,6 +109,160 @@ export class Product extends React.Component {
     });
 
     this.search();
+  }
+
+  handleClose = () => {
+    this.setState({
+      openDialog: false,
+      vancouverQuantity: 0,
+      vancouverStorageCode: '',
+      vancouverNotes: '',
+      abbotsfordQuantity: 0,
+      abbotsfordStorageCode: '',
+      abbotsfordNotes: '',
+    });
+  };
+
+  updateTransferClicked() {
+    const { product } = this.state;
+
+    this.setState({
+      openDialog: true,
+      vancouverQuantity: product.vancouverBalance,
+      vancouverStorageCode: product.vancouverStorageCode,
+      vancouverNotes: '',
+      abbotsfordQuantity: product.abbotsfordBalance,
+      abbotsfordStorageCode: product.abbotsfordStorageCode,
+      abbotsfordNotes: '',
+    });
+  }
+
+
+  async handleTransfer() {
+    const {
+      product,
+      transferQuantity,
+      transferNotes,
+      fromLocation,
+      toLocation,
+      vancouverQuantity,
+      abbotsfordQuantity,
+    } = this.state;
+
+    if (fromLocation === toLocation) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Select different locations to transfer!',
+        snackbarColor: 'danger',
+      });
+      return;
+    }
+
+    if (transferNotes === '') {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Please enter some Notes to transfer!',
+        snackbarColor: 'danger',
+      });
+      return;
+    }
+
+    if ((fromLocation === 1 && vancouverQuantity < transferQuantity)
+      || (fromLocation === 2 && abbotsfordQuantity < transferQuantity)) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'This location doesn\'t have enough inventory to transfer!',
+        snackbarColor: 'danger',
+      });
+      return;
+    }
+
+    if (transferQuantity > 0) {
+      const inventoryTransfer = {
+        fromLocationId: fromLocation,
+        toLocationId: toLocation,
+        productId: product.productId,
+        notes: transferNotes,
+        transferQuantity,
+        transferNotes,
+      };
+      const result = await ProductService.transferInventory(inventoryTransfer);
+      if (result && result.orderId) {
+        this.setState({
+          openSnackbar: true,
+          snackbarMessage: 'Inventory was successfully transferred!',
+          snackbarColor: 'success',
+        });
+      }
+    }
+
+    this.setState({
+      openDialog: false,
+      transferQuantity: 0,
+      transferNotes: '',
+      fromLocation: 1,
+      toLocation: 2,
+    });
+    window.location.reload();
+  }
+
+  async handleUpdate() {
+    const {
+      vancouverQuantity,
+      vancouverStorageCode,
+      vancouverNotes,
+      abbotsfordQuantity,
+      abbotsfordStorageCode,
+      abbotsfordNotes,
+      product,
+    } = this.state;
+
+    if (vancouverQuantity !== product.vancouverBalance || vancouverStorageCode !== product.vancouverStorageCode) {
+      const productInventoryHistory = {
+        locationId: 1, // vancouver
+        productId: product.productId,
+        balance: vancouverQuantity,
+        binCode: vancouverStorageCode,
+        notes: vancouverNotes,
+      };
+      const result = await ProductService.updateInventory(productInventoryHistory);
+      if (result && result.orderId) {
+        this.setState({
+          openSnackbar: true,
+          snackbarMessage: 'Vancouver\'s Inventory and Storage location was successfully updated!',
+          snackbarColor: 'success',
+        });
+      }
+    }
+
+    if (abbotsfordQuantity !== product.abbotsfordBalance || abbotsfordStorageCode !== product.abbotsfordStorageCode) {
+      const productInventoryHistory = {
+        locationId: 2, // abbotsford
+        productId: product.productId,
+        balance: abbotsfordQuantity,
+        binCode: abbotsfordStorageCode,
+        notes: abbotsfordNotes,
+      };
+      const result = await ProductService.updateInventory(productInventoryHistory);
+      if (result && result.orderId) {
+        this.setState({
+          openSnackbar: true,
+          snackbarMessage: 'Abbotsford\'s Inventory and Storage location was successfully updated!',
+          snackbarColor: 'success',
+        });
+      }
+    }
+
+    this.setState({
+      openDialog: false,
+      vancouverQuantity: 0,
+      vancouverStorageCode: '',
+      vancouverNotes: '',
+      abbotsfordQuantity: 0,
+      abbotsfordStorageCode: '',
+      abbotsfordNotes: '',
+    });
+    window.location.reload();
   }
 
   handleChange = name => (event) => {
@@ -105,6 +302,18 @@ export class Product extends React.Component {
       snackbarColor,
       fromDate,
       toDate,
+      openDialog,
+      vancouverQuantity,
+      vancouverStorageCode,
+      vancouverNotes,
+      abbotsfordQuantity,
+      abbotsfordStorageCode,
+      abbotsfordNotes,
+      loading,
+      transferNotes,
+      transferQuantity,
+      fromLocation,
+      toLocation,
     } = this.state;
 
     const columns = ['Date', 'Transaction Type', 'Amount', 'LocationName', 'Notes', 'User'];
@@ -118,6 +327,8 @@ export class Product extends React.Component {
       rowsPerPageOptions: [25, 50, 100],
       rowsPerPage: 25,
     };
+
+    const locations = getLocations();
 
     return (
       <div>
@@ -153,6 +364,9 @@ export class Product extends React.Component {
                                   Enable Product
                           </Button>
                           )}
+                          <Button color="info" onClick={this.updateTransferClicked}>
+                            Update / Transfer
+                          </Button>
                           <Table
                             tableHeaderColor="primary"
                             tableHead={['Product Type', 'Code', 'Name', 'Sale Price', 'Vancouver Balance', 'Abbotsford Balance', 'Disabled']}
@@ -224,7 +438,191 @@ export class Product extends React.Component {
             />
           </GridItem>
         </GridContainer>
-        ) }
+        )}
+        <Dialog
+          open={openDialog}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <DialogContentText>
+              Code:
+              {product && product.productCode}
+              <br />
+              Name:
+              {product && product.productName}
+              <br />
+            </DialogContentText>
+            <Card>
+              <CardHeader color="info">
+                Inventory Transfer
+              </CardHeader>
+              <CardBody>
+                <GridContainer>
+                  <GridItem xs={12} sm={12} md={6}>
+                    <FormControl>
+                      <InputLabel htmlFor="fromLocation">From</InputLabel>
+                      <Select
+                        value={fromLocation}
+                        onChange={this.handleChange}
+                        inputProps={{
+                          name: 'fromLocation',
+                          id: 'fromLocation',
+                        }}
+                      >
+                        {locations && (
+                          locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))
+                        }
+                      </Select>
+                    </FormControl>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={6}>
+                    <FormControl>
+                      <InputLabel htmlFor="toLocation">To</InputLabel>
+                      <Select
+                        value={toLocation}
+                        onChange={this.handleChange}
+                        inputProps={{
+                          name: 'toLocation',
+                          id: 'toLocation',
+                        }}
+                      >
+                        {locations && (
+                          locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))
+                        }
+                      </Select>
+                    </FormControl>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={6}>
+                    <FormControl>
+                      <TextField
+                        name="transferQuantity"
+                        label="Quantity"
+                        type="number"
+                        onChange={this.handleChange}
+                        value={transferQuantity}
+                      />
+                    </FormControl>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={6}>
+                    <TextField
+                      required
+                      name="transferNotes"
+                      label="Notes"
+                      type="text"
+                      onChange={this.handleChange}
+                      fullWidth
+                      value={transferNotes}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={9}>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={2}>
+                    <Button onClick={this.handleTransfer} color="primary">
+                      Transfer
+                    </Button>
+                  </GridItem>
+                </GridContainer>
+              </CardBody>
+            </Card>
+
+            <Card>
+              <CardHeader color="info">
+                Inventory Update
+              </CardHeader>
+              <CardBody>
+                <GridContainer>
+                  <GridItem xs={12} sm={12} md={12}>
+                    <h4><b>Vancouver</b></h4>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={6}>
+                    <TextField
+                      name="vancouverQuantity"
+                      label="Quantity"
+                      type="number"
+                      onChange={this.handleChange}
+                      value={vancouverQuantity}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={6}>
+                    <TextField
+                      name="vancouverStorageCode"
+                      label="Storage Codes"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={vancouverStorageCode}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={11}>
+                    <TextField
+                      required
+                      name="vancouverNotes"
+                      label="Notes"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={vancouverNotes}
+                      fullWidth
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={12}>
+                    <h4><b>Abbotsford</b></h4>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={6}>
+                    <TextField
+                      name="abbotsfordQuantity"
+                      label="Quantity"
+                      type="number"
+                      onChange={this.handleChange}
+                      value={abbotsfordQuantity}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={6}>
+                    <TextField
+                      name="abbotsfordStorageCode"
+                      label="Storage Codes"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={abbotsfordStorageCode}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={11}>
+                    <TextField
+                      required
+                      name="abbotsfordNotes"
+                      label="Notes"
+                      type="text"
+                      onChange={this.handleChange}
+                      fullWidth
+                      value={abbotsfordNotes}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={9}>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={2}>
+                    <Button onClick={this.handleUpdate} color="primary">
+                      Update
+                    </Button>
+                  </GridItem>
+                </GridContainer>
+              </CardBody>
+            </Card>
+            {loading && (<LinearProgress />)}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Snackbar
+          place="tl"
+          color={snackbarColor}
+          icon={Check}
+          message={snackbarMessage}
+          open={openSnackbar}
+          closeNotification={() => this.setState({ openSnackbar: false })}
+          close
+        />
       </div>
     );
   }
