@@ -31,6 +31,10 @@ function getLocations() {
       locationId: 2,
       locationName: 'Abbotsford',
     },
+    {
+      locationId: 3,
+      locationName: 'Victoria',
+    },
   ];
   // return LocationService.getLocationsForUser();
 }

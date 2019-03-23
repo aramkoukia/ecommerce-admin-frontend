@@ -110,6 +110,7 @@ export default class AddOrder extends React.Component {
       validationResult: [],
       showValidationDialog: false,
       orderStatus: '',
+      loading: false,
     };
 
     this.productChanged = this.productChanged.bind(this);
@@ -413,6 +414,10 @@ export default class AddOrder extends React.Component {
   }
 
   async saveOrder(orderStatus) {
+    this.setState({
+      loading: true,
+    });
+
     const {
       customer, rows, total, subTotal, notes, taxes, poNumber, authCode,
     } = this.state;
@@ -447,6 +452,7 @@ export default class AddOrder extends React.Component {
       if (payStoreCredit && storeCreditAmount > customer.storeCredit) {
         this.setState({
           openSnackbar: true,
+          loading: false,
           snackbarMessage: `Customer Store Credit ${customer.storeCredit}, is less than Store Credit Specified : ${storeCreditAmount}!`,
           snackbarColor: 'danger',
         });
@@ -480,9 +486,15 @@ export default class AddOrder extends React.Component {
         openSnackbar: true,
         snackbarMessage: 'Oops, looks like something went wrong!',
         snackbarColor: 'danger',
+        loading: false,
       });
       return false;
     }
+
+    this.setState({
+      loading: false,
+    });
+
     return result;
   }
 
@@ -577,6 +589,10 @@ export default class AddOrder extends React.Component {
   }
 
   async saveAsDraft() {
+    this.setState({
+      loading: true,
+    });
+
     const result = await this.saveOrder('Draft');
     const { history } = this.props;
     if (result && result.orderId) {
@@ -587,9 +603,16 @@ export default class AddOrder extends React.Component {
       });
       history.push(`/order/${result.orderId}`);
     }
+    this.setState({
+      loading: false,
+    });
   }
 
   async saveAsHold() {
+    this.setState({
+      loading: true,
+    });
+
     const result = await this.saveOrder('OnHold');
     const { history } = this.props;
     if (result && result.orderId) {
@@ -600,9 +623,17 @@ export default class AddOrder extends React.Component {
       });
       history.push(`/order/${result.orderId}`);
     }
+
+    this.setState({
+      loading: false,
+    });
   }
 
   async saveAsHoldClicked() {
+    this.setState({
+      loading: true,
+    });
+
     const { rows } = this.state;
     const locationId = Location.getStoreLocation();
     const validationExecuted = await this.validateInventory(rows, 'OnHold', locationId);
@@ -610,9 +641,17 @@ export default class AddOrder extends React.Component {
       return;
     }
     await this.saveAsHold();
+
+    this.setState({
+      loading: false,
+    });
   }
 
   async saveAsAccount() {
+    this.setState({
+      loading: true,
+    });
+
     const result = await this.saveOrder('Account');
     const { history } = this.props;
 
@@ -624,6 +663,10 @@ export default class AddOrder extends React.Component {
       });
       history.push(`/order/${result.orderId}`);
     }
+
+    this.setState({
+      loading: false,
+    });
   }
 
   async saveAsAccountClicked() {
@@ -674,6 +717,7 @@ export default class AddOrder extends React.Component {
       validationResult,
       warnInSufficientStockOnOrder,
       blockInSufficientStockOnOrder,
+      loading,
     } = this.state;
 
     return (
@@ -869,20 +913,20 @@ export default class AddOrder extends React.Component {
               <CardFooter>
                 <GridContainer>
                   <GridItem xs>
-                    <Button color="primary" onClick={this.saveAsPaidClicked}>Mark As Paid</Button>
+                    <Button color="primary" disabled={loading} onClick={this.saveAsPaidClicked}>Mark As Paid</Button>
                   </GridItem>
                   <GridItem xs>
-                    <Button color="info" onClick={this.saveAsDraft}>Save As Draft</Button>
+                    <Button color="info" disabled={loading} onClick={this.saveAsDraft}>Save As Draft</Button>
                   </GridItem>
                   { customer && customer.creditLimit > 0 ? (
                     <GridItem xs>
-                      <Button color="info" onClick={this.saveAsAccountClicked}>Use Customers Account</Button>
+                      <Button color="info" disabled={loading} onClick={this.saveAsAccountClicked}>Use Customers Account</Button>
                     </GridItem>
                   ) : (<div />)
                   }
                   { customer ? (
                     <GridItem xs>
-                      <Button color="info" onClick={this.saveAsHoldClicked}>Put On Hold</Button>
+                      <Button color="info" disabled={loading} onClick={this.saveAsHoldClicked}>Put On Hold</Button>
                     </GridItem>
                   ) : (<div />)
                   }
@@ -1097,7 +1141,7 @@ export default class AddOrder extends React.Component {
             <Button onClick={this.handleClose} color="info">
               Cancel
             </Button>
-            <Button onClick={this.pay} color="primary">
+            <Button disabled={loading} onClick={this.pay} color="primary">
               Pay
             </Button>
           </DialogActions>
@@ -1147,25 +1191,25 @@ export default class AddOrder extends React.Component {
                 <Table>
                   <TableHead>
                     <TableRow>
-              <TableCell>Code</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Balance</TableCell>
-              <TableCell>Order Amount</TableCell>
-              <TableCell>Short</TableCell>
-              <TableCell>On Hold</TableCell>
-            </TableRow>
+                      <TableCell>Code</TableCell>
+                      <TableCell>Name</TableCell>
+                      <TableCell>Balance</TableCell>
+                      <TableCell>Order Amount</TableCell>
+                      <TableCell>Short</TableCell>
+                      <TableCell>On Hold</TableCell>
+                    </TableRow>
                   </TableHead>
                   <TableBody>
                     {validationResult.map(row => (
-              <TableRow key={row.productId}>
-                <TableCell>{row.productCode}</TableCell>
-                <TableCell>{row.productName}</TableCell>
-                <TableCell>{row.amount}</TableCell>
-                <TableCell>{row.amountRequested}</TableCell>
-                <TableCell>{row.amountShort}</TableCell>
-                <TableCell>{row.onHold}</TableCell>
-              </TableRow>
-            ))}
+                      <TableRow key={row.productId}>
+                        <TableCell>{row.productCode}</TableCell>
+                        <TableCell>{row.productName}</TableCell>
+                        <TableCell>{row.amount}</TableCell>
+                        <TableCell>{row.amountRequested}</TableCell>
+                        <TableCell>{row.amountShort}</TableCell>
+                        <TableCell>{row.onHold}</TableCell>
+                      </TableRow>
+                    ))}
                   </TableBody>
                 </Table>
                 { warnInSufficientStockOnOrder && !blockInSufficientStockOnOrder && (
@@ -1182,7 +1226,7 @@ export default class AddOrder extends React.Component {
               <div>
                 <Button onClick={this.continueOrder} color="danger">
                   Yes
-                 </Button>
+                </Button>
                 <Button onClick={this.cancelOrder} color="info">
                   No
                 </Button>
@@ -1192,7 +1236,7 @@ export default class AddOrder extends React.Component {
               <Button onClick={this.cancelOrder} color="info">
                 Ok
               </Button>
-)}
+            )}
           </DialogActions>
         </Dialog>
 
