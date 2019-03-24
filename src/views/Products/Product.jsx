@@ -91,6 +91,7 @@ export class Product extends React.Component {
 
     this.enableDisableProducts = this.enableDisableProducts.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.handleTransfer = this.handleTransfer.bind(this);
     this.search = this.search.bind(this);
     this.updateTransferClicked = this.updateTransferClicked.bind(this);
@@ -129,10 +130,10 @@ export class Product extends React.Component {
     this.setState({
       openDialog: true,
       vancouverQuantity: product.vancouverBalance,
-      vancouverStorageCode: product.vancouverStorageCode,
+      vancouverStorageCode: product.vancouverBinCode,
       vancouverNotes: '',
       abbotsfordQuantity: product.abbotsfordBalance,
-      abbotsfordStorageCode: product.abbotsfordStorageCode,
+      abbotsfordStorageCode: product.vancouverBinCode,
       abbotsfordNotes: '',
     });
   }
@@ -265,10 +266,8 @@ export class Product extends React.Component {
     window.location.reload();
   }
 
-  handleChange = name => (event) => {
-    this.setState({
-      [name]: event.target.value,
-    });
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   enableDisableProducts() {
@@ -282,7 +281,7 @@ export class Product extends React.Component {
     const { fromDate, toDate } = this.state;
     const { match } = this.props;
     const productId = match.params.id;
-    const columns = ['date', 'transactionType', 'amount', 'locationName', 'notes', 'userName'];
+    const columns = ['date', 'transactionType', 'amount', 'balance', 'locationName', 'notes', 'userName'];
     ProductService.getProductTransactions(productId, fromDate, toDate)
       .then(results => results.map(row => columns.map((column) => {
         if (column === 'date') {
@@ -316,7 +315,7 @@ export class Product extends React.Component {
       toLocation,
     } = this.state;
 
-    const columns = ['Date', 'Transaction Type', 'Amount', 'LocationName', 'Notes', 'User'];
+    const columns = ['Date', 'Transaction Type', 'Amount', 'Balance', 'LocationName', 'Notes', 'User'];
 
     const options = {
       filterType: 'checkbox',
@@ -389,7 +388,8 @@ export class Product extends React.Component {
                     <GridContainer>
                       <GridItem xs={12} sm={12} md={3}>
                         <TextField
-                          onChange={this.handleChange('fromDate')}
+                          onChange={this.handleChange}
+                          name="fromDate"
                           id="date"
                           label="From Date"
                           type="date"
@@ -401,7 +401,8 @@ export class Product extends React.Component {
                       </GridItem>
                       <GridItem xs={12} sm={12} md={3}>
                         <TextField
-                          onChange={this.handleChange('toDate')}
+                          onChange={this.handleChange}
+                          name="toDaye"
                           id="date"
                           label="To Date"
                           type="date"
