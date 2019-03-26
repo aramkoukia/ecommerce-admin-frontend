@@ -37,6 +37,18 @@ export default class OrderService {
     }
   }
 
+  static async updateOrderLocation(orderId, locationId) {
+    try {
+      const response = await RestUtilities.put(
+        `orders/${orderId}/move/${locationId}`,
+        {},
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async updateOrderInfo(orderId, orderInfo) {
     try {
       const response = await RestUtilities.put(
