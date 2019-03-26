@@ -45,7 +45,7 @@ import Permissions from '../stores/Permissions';
 
 const dashboardRoutes = [
   {
-    path: '/neworder',
+    path: '/neworder/:id',
     sidebarName: 'New Order',
     navbarName: '',
     icon: NewReleases,

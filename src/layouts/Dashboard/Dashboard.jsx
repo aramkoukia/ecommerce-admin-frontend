@@ -38,7 +38,7 @@ class App extends React.Component {
   permissionsChanged() {
     this.setState({ permissionsChanged: true })
   }
-  
+
   handleDrawerToggle = () => {
     this.setState({ mobileOpen: !this.state.mobileOpen });
   };
@@ -87,15 +87,15 @@ class App extends React.Component {
           if (prop.redirect) {
             return <Redirect from={prop.path} to={prop.to} key={key} />;
           }
-    
-          if(prop.path === '/neworder') {
+
+          if(prop.path === '/neworder/:id') {
             return <Route path={prop.path} key={key} onEnter={requireAuth} render={ (props) => ( <AddOrder {...props} permissionsChanged={this.permissionsChanged} />) } />;
           }
-    
+
           if (prop.path === '/return/:id') {
             return <Route path={prop.path} key={key} onEnter={requireAuth} render={ (props) => ( <Return {...props} permissionsChanged={this.permissionsChanged} />) } />;
           }
-    
+
           return <Route path={prop.path} component={prop.component} key={key} onEnter={requireAuth} />;
         })}
       </Switch>
