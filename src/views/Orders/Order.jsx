@@ -85,6 +85,7 @@ export class Order extends React.Component {
     this.customerChanged = this.customerChanged.bind(this);
     this.updateCustomer = this.updateCustomer.bind(this);
     this.editDraft = this.editDraft.bind(this);
+    this.updatePayment = this.updatePayment.bind(this);
   }
 
   async componentDidMount() {
@@ -96,6 +97,7 @@ export class Order extends React.Component {
       openEmailDialog: false,
       customerEmail: order.customer.email,
       chequeNo: '',
+      isUpdatePayment: false,
     });
   }
 
@@ -174,6 +176,15 @@ export class Order extends React.Component {
     return history.push(`/neworder/${match.params.id}`);
   }
 
+  updatePayment() {
+    const { order } = this.state;
+    this.setState({
+      openDialog: true,
+      isUpdatePayment: true,
+      creditDebitAmount: order.total.toFixed(2),
+    });
+  }
+
   customerChanged(customer) {
     const { order } = this.state;
     order.customer = customer;
@@ -245,6 +256,46 @@ export class Order extends React.Component {
     } else if (event.target.name === 'payStoreCredit') {
       this.setState({ storeCreditAmount: 0 });
     }
+  }
+
+  async updateOrderPayment() {
+    this.setState({
+      loading: true,
+    });
+
+    const { order } = this.state;
+    let orderPayment = [];
+    const {
+      payStoreCredit,
+      storeCreditAmount,
+    } = this.state;
+    if (payStoreCredit && storeCreditAmount > order.customer.storeCredit) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: `Customer Store Credit ${order.customer.storeCredit}, is less than Store Credit Specified : ${storeCreditAmount}!`,
+        snackbarColor: 'danger',
+      });
+      return false;
+    }
+
+    orderPayment = this.getOrderPayments();
+
+    const result = await OrderService.updateOrderPayment(order.orderId, { orderPayment });
+    if (result === false || result === null || result.StatusCode === 500 || result.StatusCode === 400) {
+      this.setState({
+        openSnackbar: true,
+        loading: false,
+        snackbarMessage: 'Oops, looks like something went wrong!',
+        snackbarColor: 'danger',
+      });
+      return false;
+    }
+
+    this.setState({
+      loading: false,
+    });
+
+    return result;
   }
 
   async updateOrderStatus(orderStatus) {
@@ -333,13 +384,20 @@ export class Order extends React.Component {
     const { order } = this.state;
     this.setState({
       openDialog: true,
+      isUpdatePayment: false,
       creditDebitAmount: order.total.toFixed(2),
     });
   }
 
   async pay() {
     const {
-      order, cashAmount, creditDebitAmount, chequeAmount, paypalAmazonUsdAmount, storeCreditAmount,
+      order,
+      cashAmount,
+      creditDebitAmount,
+      chequeAmount,
+      paypalAmazonUsdAmount,
+      storeCreditAmount,
+      isUpdatePayment,
     } = this.state;
     const paidAmount = Number(cashAmount) + Number(creditDebitAmount) + Number(chequeAmount) + Number(storeCreditAmount) + Number(paypalAmazonUsdAmount);
     if ((Number(paidAmount)).toFixed(2) !== (Number(order.total)).toFixed(2)) {
@@ -351,17 +409,30 @@ export class Order extends React.Component {
       return;
     }
 
-    const status = 'Paid';
-    const result = await this.updateOrderStatus(status);
-    if (result && result.orderId) {
-      this.setState({
-        openSnackbar: true,
-        snackbarMessage: 'Order was marked as Paid successfully!',
-        snackbarColor: 'success',
-        openDialog: false,
-      });
+    if (isUpdatePayment) {
+      const orderPaymetResult = await this.updateOrderPayment();
+      if (orderPaymetResult && orderPaymetResult.orderId) {
+        this.setState({
+          openSnackbar: true,
+          snackbarMessage: 'Order Payment was updated successfully!',
+          snackbarColor: 'success',
+          openDialog: false,
+        });
+        window.location.reload();
+      }
+    } else {
+      const status = 'Paid';
+      const resultStatusResult = await this.updateOrderStatus(status);
+      if (resultStatusResult && resultStatusResult.orderId) {
+        this.setState({
+          openSnackbar: true,
+          snackbarMessage: 'Order was marked as Paid successfully!',
+          snackbarColor: 'success',
+          openDialog: false,
+        });
 
-      window.location.reload();
+        window.location.reload();
+      }
     }
   }
 
@@ -496,6 +567,11 @@ export class Order extends React.Component {
                         <GridItem xs>
                           <Button color="info" disabled={loading} onClick={this.editDraft}>Edit</Button>
                         </GridItem>
+                        )}
+                        {(order.status === 'Paid' || order.status === 'Return') && (
+                          <GridItem xs>
+                            <Button color="info" disabled={loading} onClick={this.updatePayment}>Update Payment</Button>
+                          </GridItem>
                         )}
                         <GridItem xs>
                           { loading && <CircularProgress /> }
