@@ -84,6 +84,7 @@ export class Order extends React.Component {
     this.handleCashChange = this.handleCashChange.bind(this);
     this.customerChanged = this.customerChanged.bind(this);
     this.updateCustomer = this.updateCustomer.bind(this);
+    this.editDraft = this.editDraft.bind(this);
   }
 
   async componentDidMount() {
@@ -166,6 +167,11 @@ export class Order extends React.Component {
       });
       window.location.reload();
     }
+  }
+
+  editDraft() {
+    const { match, history } = this.props;
+    return history.push(`/neworder/${match.params.id}`);
   }
 
   customerChanged(customer) {
@@ -426,7 +432,9 @@ export class Order extends React.Component {
                   Order #
                   &nbsp;
                     <b>{order.orderId}</b>
+                  &nbsp;&nbsp;
                     {dateFormat(order.orderDate)}
+                  &nbsp;&nbsp;&nbsp;
                     <Chip label={order.status} color="primary" />
                   </div>
                 </CardHeader>
@@ -482,6 +490,11 @@ export class Order extends React.Component {
                         { order.status === 'OnHold' && (
                         <GridItem xs>
                           <Button color="info" disabled={loading} onClick={this.cancelHold}>Cancel On Hold</Button>
+                        </GridItem>
+                        )}
+                        { order.status === 'Draft' && (
+                        <GridItem xs>
+                          <Button color="info" disabled={loading} onClick={this.editDraft}>Edit</Button>
                         </GridItem>
                         )}
                         <GridItem xs>
@@ -723,7 +736,7 @@ $
             </DialogContent>
             <DialogActions>
               <Button onClick={this.handleClose} color="info">
-                  Cancel
+                Cancel
               </Button>
               <Button disabled={loading} onClick={this.pay} color="primary">
                 Pay
