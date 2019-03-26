@@ -8,6 +8,9 @@ import Print from '@material-ui/icons/Print';
 import Email from '@material-ui/icons/Email';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -25,6 +28,7 @@ import OrderItems from './OrderItems';
 import CustomerInfo from './CustomerInfo';
 import OrderService from '../../services/OrderService';
 import CustomerSearch from './CustomerSearch';
+import LocationService from '../../services/LocationService';
 
 const styles = {
   chip: {
@@ -66,6 +70,7 @@ export class Order extends React.Component {
       storeCreditAmount: 0,
       cashChange: 0,
       cashPaid: 0,
+      locations: [],
     };
 
     this.saveAsPaid = this.saveAsPaid.bind(this);
@@ -86,11 +91,17 @@ export class Order extends React.Component {
     this.updateCustomer = this.updateCustomer.bind(this);
     this.editDraft = this.editDraft.bind(this);
     this.updatePayment = this.updatePayment.bind(this);
+    this.updateLocationClicked = this.updateLocationClicked.bind(this);
+    this.updateLocation = this.updateLocation.bind(this);
+    this.handleUpdateLocationClose = this.handleUpdateLocationClose.bind(this);
+    this.handleLocationChange = this.handleLocationChange.bind(this);
   }
 
   async componentDidMount() {
     const orderId = this.props.match.params.id;
     const order = await OrderService.getOrderDetail(orderId);
+    await this.getLocations();
+
     this.setState({
       order,
       openDialog: false,
@@ -98,7 +109,17 @@ export class Order extends React.Component {
       customerEmail: order.customer.email,
       chequeNo: '',
       isUpdatePayment: false,
+      openUpdateLocationDialog: false,
+      locations: [],
     });
+  }
+
+  async getLocations() {
+    const { locations } = this.state;
+    LocationService.getLocationsForUser()
+      .then(results => this.setState({
+        locations: [...locations, ...results],
+      }));
   }
 
   getOrderPayments() {
@@ -185,12 +206,71 @@ export class Order extends React.Component {
     });
   }
 
+  updateLocationClicked() {
+    this.setState({
+      openUpdateLocationDialog: true,
+    });
+  }
+
+  async updateLocation() {
+    this.setState({
+      loading: true,
+    });
+
+    const {
+      locationId,
+      order,
+    } = this.state;
+    if (order.locationId === locationId) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Please select a different location!',
+        snackbarColor: 'danger',
+      });
+      return;
+    }
+
+    if (locationId <= 0) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Please select a location to transfer the Order!',
+        snackbarColor: 'danger',
+      });
+      return;
+    }
+
+    const result = await OrderService.updateOrderLocation(order.orderId, locationId);
+    if (result === false || result === null || result.StatusCode === 500 || result.StatusCode === 400) {
+      this.setState({
+        openSnackbar: true,
+        loading: false,
+        snackbarMessage: 'Oops, looks like something went wrong!',
+        snackbarColor: 'danger',
+      });
+    }
+
+    this.setState({
+      loading: false,
+    });
+    window.location.reload();
+  }
+
+  handleUpdateLocationClose() {
+    this.setState({
+      openUpdateLocationDialog: false,
+    });
+  }
+
   customerChanged(customer) {
     const { order } = this.state;
     order.customer = customer;
     this.setState({
       order,
     });
+  }
+
+  handleLocationChange = (event) => {
+    this.setState({ locationId: event.target.value });
   }
 
   handleEmailOrderDialog() {
@@ -489,6 +569,9 @@ export class Order extends React.Component {
       storeCreditAmount,
       cashChange,
       cashPaid,
+      openUpdateLocationDialog,
+      locations,
+      locationId,
     } = this.state;
 
     return (
@@ -505,6 +588,8 @@ export class Order extends React.Component {
                     <b>{order.orderId}</b>
                   &nbsp;&nbsp;
                     {dateFormat(order.orderDate)}
+                  &nbsp;&nbsp;&nbsp;
+                    {order.location.locationName}
                   &nbsp;&nbsp;&nbsp;
                     <Chip label={order.status} color="primary" />
                   </div>
@@ -573,6 +658,9 @@ export class Order extends React.Component {
                             <Button color="info" disabled={loading} onClick={this.updatePayment}>Update Payment</Button>
                           </GridItem>
                         )}
+                        <GridItem xs>
+                          <Button color="info" disabled={loading} onClick={this.updateLocationClicked}>Update Location</Button>
+                        </GridItem>
                         <GridItem xs>
                           { loading && <CircularProgress /> }
                         </GridItem>
@@ -854,6 +942,51 @@ $
               </Button>
             </DialogActions>
           </Dialog>
+          <Dialog
+            open={openUpdateLocationDialog}
+            onClose={this.handleUpdateLocationClose}
+            aria-labelledby="form-dialog-title"
+          >
+            <DialogContent>
+              <Card>
+                <CardHeader color="info">
+                  <div>Update Order Location</div>
+                </CardHeader>
+                <CardBody>
+                  <InputLabel htmlFor="location">Location</InputLabel>
+                  <FormControl className={styles.formControl}>
+                    <Select
+                      value={locationId}
+                      onChange={this.handleLocationChange}
+                      style={{
+                        minWidth: 300,
+                        padding: 5,
+                        margin: 5,
+                      }}
+                      inputProps={{
+                        name: 'location',
+                        id: 'location',
+                        width: '300',
+                      }}
+                    >
+                      {locations && (
+                        locations.map((l, key) => (l.locationId !== order.locationId && <MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))
+                      }
+                    </Select>
+                  </FormControl>
+                </CardBody>
+              </Card>
+            </DialogContent>
+            <DialogActions>
+                <Button disabled={loading} onClick={this.handleUpdateLocationClose} color="info">
+                Cancel
+              </Button>
+              <Button disabled={loading} onClick={this.updateLocation} color="primary">
+                Update
+              </Button>
+            </DialogActions>
+          </Dialog>
+
         </div>
         ) }
       </div>
