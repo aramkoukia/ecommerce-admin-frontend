@@ -149,6 +149,35 @@ export default class AddOrder extends React.Component {
       userGivenName: '',
       chequeNo: '',
     });
+    const { match } = this.props;
+    const orderId = match.params.id;
+    if (orderId && !isNaN(orderId)) {
+      const order = await OrderService.getOrderDetail(orderId);
+      if (order && order.status === 'Draft') {
+        if (order.customer.customerId) {
+          this.customerChanged(order.customer);
+        }
+        // const {
+        //   customer, rows, total, subTotal, notes, taxes, poNumber, authCode,
+        // } = this.state;
+        this.setState({
+          rows: order.orderDetail.map(row => (
+            {
+              productId: row.productId,
+              qty: row.amount,
+              salesPrice: row.unitPrice,
+              productName: row.product.productName,
+              discountType: row.discountType,
+              discountAmount: row.discountAmount,
+              discountPercent: row.discountPercent,
+              total: row.total,
+            })),
+          notes: order.notes,
+          subTotal: order.subTotal,
+          total: order.total,
+        });
+      }
+    }
   }
 
   getOrderPayments() {
@@ -263,7 +292,11 @@ export default class AddOrder extends React.Component {
       openAuthDialog: false,
       userGivenName: result.user.givenName,
     });
-    permissionsChanged();
+
+    // TODO: this is temp, and is null for the scenario that user edits a Draft order
+    if (permissionsChanged) {
+      permissionsChanged();
+    }
   }
 
   updateTaxes(customer, chargePst) {
