@@ -119,6 +119,7 @@ export default class AddOrder extends React.Component {
     this.customerChanged = this.customerChanged.bind(this);
     this.clearCustomer = this.clearCustomer.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleAuthCodeChange = this.handleAuthCodeChange.bind(this);
     this.handleCashChange = this.handleCashChange.bind(this);
     this.saveAsPaid = this.saveAsPaid.bind(this);
     this.saveAsPaidClicked = this.saveAsPaidClicked.bind(this);
@@ -268,8 +269,14 @@ export default class AddOrder extends React.Component {
     }
   }
 
-  async handleAuthUpdate() {
-    const { authCode } = this.state;
+  async handleAuthUpdate(passedAuthCode) {
+    let authCode = '';
+    if (passedAuthCode) {
+      authCode = passedAuthCode;
+    } else {
+      authCode = this.state.authCode;
+    }
+
     const { permissionsChanged } = this.props;
 
     const result = await UserService.getUserByAuthCode(authCode);
@@ -336,6 +343,13 @@ export default class AddOrder extends React.Component {
 
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
+  }
+
+  handleAuthCodeChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
+    if (event.target.value.length === 6) {
+      this.handleAuthUpdate(event.target.value);
+    }
   }
 
   handleCashChange(event) {
@@ -1196,7 +1210,7 @@ export default class AddOrder extends React.Component {
                   label="Auth Code"
                   type="text"
                   autoFocus
-                  onChange={this.handleChange}
+                  onChange={this.handleAuthCodeChange}
                   onKeyPress={this.handleAuthEnter}
                   value={authCode}
                 />

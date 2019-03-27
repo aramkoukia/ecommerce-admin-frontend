@@ -75,6 +75,7 @@ export class Return extends React.Component {
     this.handleAuthEnter = this.handleAuthEnter.bind(this);
     this.selectPaymentToReturn = this.selectPaymentToReturn.bind(this);
     this.handleCheckChange = this.handleCheckChange.bind(this);
+    this.handleAuthCodeChange = this.handleAuthCodeChange.bind(this);
   }
 
   async componentDidMount() {
@@ -148,8 +149,14 @@ export class Return extends React.Component {
     }
   }
 
-  async handleAuthUpdate() {
-    const { authCode } = this.state;
+  async handleAuthUpdate(passedAuthCode) {
+    let authCode = '';
+    if (passedAuthCode) {
+      authCode = passedAuthCode;
+    } else {
+      authCode = this.state.authCode;
+    }
+
     const { permissionsChanged } = this.props;
     const result = await UserService.getUserByAuthCode(authCode);
     if (result === false
@@ -214,6 +221,13 @@ export class Return extends React.Component {
 
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
+  }
+
+  handleAuthCodeChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
+    if (event.target.value.length === 6) {
+      this.handleAuthUpdate(event.target.value);
+    }
   }
 
   async saveOrder(orderStatus) {
@@ -649,7 +663,7 @@ $
                     label="Auth Code"
                     type="text"
                     autoFocus
-                    onChange={this.handleChange}
+                    onChange={this.handleAuthCodeChange}
                     onKeyPress={this.handleAuthEnter}
                     value={authCode}
                   />
