@@ -368,14 +368,16 @@ export class Product extends React.Component {
                           </Button>
                           <Table
                             tableHeaderColor="primary"
-                            tableHead={['Product Type', 'Code', 'Name', 'Sale Price', 'Vancouver Balance', 'Abbotsford Balance', 'Disabled']}
+                            tableHead={['Product Type', 'Code', 'Name', 'Sale Price', 'Van Balance', 'Van OnHold', 'Abb Balance', 'Abb OnHold', 'Disabled']}
                             tableData={
                               [[product.productTypeName,
                                 product.productCode,
                                 product.productName,
                                 product.salesPrice,
                                 product.vancouverBalance,
+                                product.vancouverOnHold,
                                 product.abbotsfordBalance,
+                                product.abbotsfordOnHold,
                                 product.disabled]]
                           }
                           />
