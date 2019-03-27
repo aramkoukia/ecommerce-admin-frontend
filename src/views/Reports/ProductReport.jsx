@@ -62,12 +62,12 @@ export default class ProductSalesReport extends React.Component {
 
   search() {
     const { fromDate, toDate } = this.state;
-    const columns = ['productTypeName', 'productCode', 'productName', 'vanTotalSales', 'vanAmount', 'vanBalance', 'abbTotalSales', 'abbAmount', 'abbBalance'];
+    const columns = ['locationName', 'productTypeName', 'productCode', 'productName', 'totalSales', 'amount', 'balance', 'onHold'];
     ReportService.getProductSales(fromDate, toDate)
       .then(results => results.map(row => columns.map(column => row[column] || '')))
       .then(data => this.setState({ reportData: data }));
 
-    const productSalesDetailColumns = ['locationName', 'productTypeName', 'productCode', 'productName', 'orderId', 'customerCode', 'companyName', 'totalSales', 'amount'];
+    const productSalesDetailColumns = ['locationName', 'productTypeName', 'productCode', 'productName', 'orderId', 'customerCode', 'companyName', 'totalSales', 'amount', 'status'];
     ReportService.getProductSalesDetail(fromDate, toDate)
       .then(results => results.map(row => productSalesDetailColumns.map(column => row[column] || '')))
       .then(data => this.setState({ productSalesDetailData: data }));
@@ -106,6 +106,9 @@ export default class ProductSalesReport extends React.Component {
 
     const columns = [
       {
+        name: 'Location',
+      },
+      {
         name: 'Category',
         options: {
           display: false,
@@ -124,37 +127,25 @@ export default class ProductSalesReport extends React.Component {
         },
       },
       {
-        name: 'Van Sales ($)',
+        name: 'Sales ($)',
         options: {
           filter: false,
         },
       },
       {
-        name: 'Van Sales Amount',
+        name: 'Amount',
         options: {
           filter: false,
         },
       },
       {
-        name: 'Van Balance',
+        name: 'Balance',
         options: {
           filter: false,
         },
       },
       {
-        name: 'Abb Sales ($)',
-        options: {
-          filter: true,
-        },
-      },
-      {
-        name: 'Abb Sales Amount',
-        options: {
-          filter: true,
-        },
-      },
-      {
-        name: 'Abb Balance',
+        name: 'On Hold',
         options: {
           filter: true,
         },
@@ -162,7 +153,7 @@ export default class ProductSalesReport extends React.Component {
 
     const productSalesDetailColumns = [
       {
-        name: 'Location Name',
+        name: 'Location',
       },
       {
         name: 'Category',
@@ -213,6 +204,9 @@ export default class ProductSalesReport extends React.Component {
         options: {
           filter: false,
         },
+      },
+      {
+        name: 'Status',
       }];
 
     const options = {
