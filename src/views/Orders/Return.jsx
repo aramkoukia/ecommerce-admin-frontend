@@ -151,7 +151,7 @@ export class Return extends React.Component {
 
   async handleAuthUpdate(passedAuthCode) {
     let authCode = '';
-    if (passedAuthCode) {
+    if (passedAuthCode && passedAuthCode.type !== 'click') {
       authCode = passedAuthCode;
     } else {
       authCode = this.state.authCode;
