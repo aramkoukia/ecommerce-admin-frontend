@@ -53,6 +53,7 @@ export default class PurchaseItems extends React.Component {
       openMarkAsArrivedDialog: false,
       loading: false,
       locations: [],
+      purchase: this.props.purchase,
     };
 
     this.markAsPaidClicked = this.markAsPaidClicked.bind(this);
@@ -69,23 +70,15 @@ export default class PurchaseItems extends React.Component {
   }
 
   async componentDidMount() {
-    this.setState({
-      openMarkAsPaidDialog: false,
-      openMarkAsOnDeliveryDialog: false,
-      openMarkAsCustomClearanceDialog: false,
-      openMarkAsArrivedDialog: false,
-      loading: false,
-    });
-
-    await this.getLocations();
-  }
-
-  async getLocations() {
-    const { locations } = this.state;
-    LocationService.getLocationsForUser()
-      .then(results => this.setState({
-        locations: [...locations, ...results],
-      }));
+    // const { purchase } = this.props;
+    // this.setState({
+    //   openMarkAsPaidDialog: false,
+    //   openMarkAsOnDeliveryDialog: false,
+    //   openMarkAsCustomClearanceDialog: false,
+    //   openMarkAsArrivedDialog: false,
+    //   loading: false,
+    //   purchase,
+    // });
   }
 
   handleClose() {
@@ -187,15 +180,19 @@ export default class PurchaseItems extends React.Component {
 
   markAsArrivedClicked(amount, unitPrice, poNumber, purchaseDetailId) {
     const { purchase } = this.props;
-    this.setState({
-      openMarkAsArrivedDialog: true,
-      amount,
-      unitPrice,
-      poNumber,
-      arrivedDate: dateFormat((new Date()).addHours(-8)),
-      estimatedDelivery: dateFormat(purchase.deliveryDate),
-      purchaseDetailId,
-    });
+    const { locations } = this.state;
+
+    LocationService.getLocationsForUser()
+      .then(results => this.setState({
+        locations: [...locations, ...results],
+        openMarkAsArrivedDialog: true,
+        amount,
+        unitPrice,
+        poNumber,
+        arrivedDate: dateFormat((new Date()).addHours(-8)),
+        estimatedDelivery: dateFormat(purchase.deliveryDate),
+        purchaseDetailId,
+      }));
   }
 
   async markAsArrived() {
@@ -228,6 +225,7 @@ export default class PurchaseItems extends React.Component {
       amount,
       unitPrice,
       paidDate,
+      arrivedDate,
       estimatedDelivery,
       poNumber,
       purchaseStatus: status,
@@ -281,7 +279,6 @@ export default class PurchaseItems extends React.Component {
       },
     };
 
-    const { purchase } = this.props;
     const {
       openMarkAsArrivedDialog,
       openMarkAsCustomClearanceDialog,
@@ -299,6 +296,7 @@ export default class PurchaseItems extends React.Component {
       snackbarColor,
       locations,
       locationId,
+      purchase,
     } = this.state;
 
     return (
@@ -492,7 +490,7 @@ export default class PurchaseItems extends React.Component {
                     <TableCell numeric align="right">{row.amount}</TableCell>
                     <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
                     <TableCell numeric>{ccyFormat(row.totalPrice)}</TableCell>
-                    <TableCell>{row.arrivedDate}</TableCell>
+                    <TableCell>{dateFormat(row.arrivedDate)}</TableCell>
                     <TableCell>{row.location.locationName}</TableCell>
                   </TableRow>
                 ))}
