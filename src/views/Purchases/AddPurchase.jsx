@@ -151,7 +151,7 @@ export default class AddPurchase extends React.Component {
 
   render() {
     const {
-      rows, openSnackbar, snackbarMessage, snackbarColor, notes, supplier, deliveryDate, poNumber
+      rows, openSnackbar, snackbarMessage, snackbarColor, notes, supplier, deliveryDate, poNumber,
     } = this.state;
 
     return (
