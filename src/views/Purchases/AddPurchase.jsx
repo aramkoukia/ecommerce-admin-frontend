@@ -1,9 +1,5 @@
 import React from 'react';
 import Check from '@material-ui/icons/Check';
-// @material-ui/core components
-import { withStyles } from '@material-ui/core/styles';
-// core components
-import PropTypes from 'prop-types';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
 import Button from '../../components/CustomButtons/Button';

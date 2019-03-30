@@ -34,4 +34,16 @@ export default class PurchaseService {
       return false;
     }
   }
+
+  static async updatePurchaseDetailStatus(purchaseDetailId, updatePurchaseDetailStatus) {
+    try {
+      const response = await RestUtilities.put(
+        `purchases/${purchaseDetailId}/status`,
+        updatePurchaseDetailStatus,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }

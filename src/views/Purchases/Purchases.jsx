@@ -5,7 +5,6 @@ import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
-
 import PurchaseService from '../../services/PurchaseService';
 
 function dateFormat(dateString) {
@@ -32,19 +31,18 @@ export default class Purchases extends React.Component {
   purchasesList() {
     const columns = ['purchaseId', 'purchaseDate', 'supplier', 'deliveryDate', 'status', 'total', 'createdByUserId'];
     PurchaseService.getPurchases()
-      .then((results) => results.map(row => {
-          return columns.map(column => {
-            if(column === "purchaseDate") {
-              return dateFormat(row[column]);
-            }
-            return row[column] || "";
-          });
-        }))
+      .then(results => results.map(row => columns.map((column) => {
+        if (column === 'purchaseDate' || column === 'deliveryDate') {
+          return dateFormat(row[column]);
+        }
+        return row[column] || '';
+      })))
       .then(data => this.setState({ purchases: data }));
   }
 
-  rowClicked(rowData, _rowMeta) {
-    this.props.history.push(`/purchase/${rowData[0]}`);
+  rowClicked(rowData) {
+    const { history } = this.props;
+    history.push(`/purchase/${rowData[0]}`);
   }
 
   render() {
