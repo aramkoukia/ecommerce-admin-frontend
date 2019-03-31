@@ -171,14 +171,14 @@ const dashboardRoutes = [
     component: PaymentReport,
     permission: Permissions.ViewReports,
   },
-  // {
-  //   path: '/purchasereport',
-  //   sidebarName: 'Purchase Report',
-  //   navbarName: '',
-  //   icon: InsertChart,
-  //   component: PurchaseReport,
-  //   permission: Permissions.ViewReports,
-  // },
+  {
+    path: '/purchasereport',
+    sidebarName: 'Purchase Report',
+    navbarName: '',
+    icon: InsertChart,
+    component: PurchaseReport,
+    permission: Permissions.ViewPurchaseReports,
+  },
   {
     path: '/locations',
     sidebarName: 'Locations',

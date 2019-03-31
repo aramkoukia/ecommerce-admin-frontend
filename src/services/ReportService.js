@@ -133,10 +133,21 @@ export default class ReportService {
     }
   }
 
-  static async getPurchases(fromDate, toDate) {
+  static async getPurchaseSummary(fromDate, toDate) {
     try {
       const response = await RestUtilities.get(
-        `reports/purchases?fromDate=${fromDate}&toDate=${toDate}`,
+        `reports/purchasesummary?fromDate=${fromDate}&toDate=${toDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async getPurchaseDetail(fromDate, toDate) {
+    try {
+      const response = await RestUtilities.get(
+        `reports/purchasedetail?fromDate=${fromDate}&toDate=${toDate}`,
       );
       return response.content;
     } catch (err) {
