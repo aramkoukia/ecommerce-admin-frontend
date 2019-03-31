@@ -53,7 +53,6 @@ export default class PurchaseItems extends React.Component {
       openMarkAsArrivedDialog: false,
       loading: false,
       locations: [],
-      purchase: this.props.purchase,
     };
 
     this.markAsPaidClicked = this.markAsPaidClicked.bind(this);
@@ -70,7 +69,6 @@ export default class PurchaseItems extends React.Component {
   }
 
   async componentDidMount() {
-    // const { purchase } = this.props;
     // this.setState({
     //   openMarkAsPaidDialog: false,
     //   openMarkAsOnDeliveryDialog: false,
@@ -125,13 +123,14 @@ export default class PurchaseItems extends React.Component {
     window.location.reload();
   }
 
-  markAsOnDeliveryClicked(amount, unitPrice, poNumber, purchaseDetailId) {
+  markAsOnDeliveryClicked(amount, unitPrice, poNumber, purchaseDetailId, paidDate) {
     const { purchase } = this.props;
     this.setState({
       openMarkAsOnDeliveryDialog: true,
       amount,
       unitPrice,
       poNumber,
+      paidDate: dateFormat(paidDate),
       estimatedDelivery: dateFormat(purchase.deliveryDate),
       purchaseDetailId,
     });
@@ -200,13 +199,27 @@ export default class PurchaseItems extends React.Component {
       loading: true,
     });
 
-    const result = await this.updatePurchaseDetailStatus('Arrived');
+    const { locationId } = this.state;
+    if (locationId && locationId > 0) {
+      const result = await this.updatePurchaseDetailStatus('Arrived');
+
+      this.setState({
+        openMarkAsArrivedDialog: false,
+        loading: false,
+      });
+
+      window.location.reload();
+    } else {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Please select a location!',
+        snackbarColor: 'danger',
+      });
+    }
 
     this.setState({
-      openMarkAsArrivedDialog: false,
       loading: false,
     });
-    window.location.reload();
   }
 
   async updatePurchaseDetailStatus(status) {
@@ -296,8 +309,9 @@ export default class PurchaseItems extends React.Component {
       snackbarColor,
       locations,
       locationId,
-      purchase,
     } = this.state;
+
+    const { purchase } = this.props;
 
     return (
       <div>
@@ -317,7 +331,7 @@ export default class PurchaseItems extends React.Component {
               </TableHead>
               <TableBody>
                 {purchase.purchaseDetail.map(row => row.status === 'Plan' && (
-                  <TableRow key={row.productId}>
+                  <TableRow key={row.purchaseDetailId}>
                     <TableCell>
                       <Button color="primary" onClick={() => this.markAsPaidClicked(row.amount, row.unitPrice, purchase.poNumber, row.purchaseDetailId)}>Paid</Button>
                       &nbsp;
@@ -359,9 +373,9 @@ export default class PurchaseItems extends React.Component {
               </TableHead>
               <TableBody>
                 {purchase.purchaseDetail.map(row => row.status === 'Paid' && (
-                  <TableRow key={row.productId}>
+                  <TableRow key={row.purchaseDetailId}>
                     <TableCell>
-                      <Button color="primary" onClick={() => this.markAsOnDeliveryClicked(row.amount, row.unitPrice, purchase.poNumber, row.purchaseDetailId)}>On Delivery</Button>
+                      <Button color="primary" onClick={() => this.markAsOnDeliveryClicked(row.amount, row.unitPrice, purchase.poNumber, row.purchaseDetailId, row.paidDate)}>On Delivery</Button>
                       &nbsp;
                       &nbsp;
                       {row.product.productCode}
@@ -402,7 +416,7 @@ export default class PurchaseItems extends React.Component {
               </TableHead>
               <TableBody>
                 {purchase.purchaseDetail.map(row => row.status === 'OnDelivery' && (
-                  <TableRow key={row.productId}>
+                  <TableRow key={row.purchaseDetailId}>
                     <TableCell>
                       <Button color="primary" onClick={() => this.markAsCustomClearanceClicked(row.amount, row.unitPrice, purchase.poNumber, row.purchaseDetailId)}>Custom Clearance</Button>
                       &nbsp;
@@ -443,7 +457,7 @@ export default class PurchaseItems extends React.Component {
               </TableHead>
               <TableBody>
                 {purchase.purchaseDetail.map(row => row.status === 'CustomClearance' && (
-                  <TableRow key={row.productId}>
+                  <TableRow key={row.purchaseDetailId}>
                     <TableCell>
                       <Button color="primary" onClick={() => this.markAsArrivedClicked(row.amount, row.unitPrice, purchase.poNumber, row.purchaseDetailId)}>Arrived</Button>
                       &nbsp;
@@ -485,7 +499,7 @@ export default class PurchaseItems extends React.Component {
               </TableHead>
               <TableBody>
                 {purchase.purchaseDetail.map(row => row.status === 'Arrived' && (
-                  <TableRow key={row.productId}>
+                  <TableRow key={row.purchaseDetailId}>
                     <TableCell>{row.product.productName}</TableCell>
                     <TableCell numeric align="right">{row.amount}</TableCell>
                     <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
