@@ -11,6 +11,10 @@ import CardBody from '../../components/Card/CardBody';
 import ReportService from '../../services/ReportService';
 
 function dateFormat(dateString) {
+  if (dateString === '0001-01-01T00:00:00') {
+    return '';
+  }
+
   const date = new Date(dateString);
   const year = date.getFullYear();
   const month = `${date.getMonth() + 1}`.padStart(2, 0);
@@ -69,7 +73,12 @@ export default class PuchaseReport extends React.Component {
 
     const purchaseDetailColumns = ['purchaseId', 'productCode', 'productName', 'supplier', 'status', 'amount', 'unitPrice', 'totalPrice', 'poNumber', 'estimatedDelivery', 'paidDate', 'arrivedDate', 'locationName'];
     ReportService.getPurchaseDetail(fromDate, toDate)
-      .then(results => results.map(row => purchaseDetailColumns.map(column => row[column] || '')))
+      .then(results => results.map(row => purchaseDetailColumns.map((column) => {
+        if (column === 'estimatedDelivery' || column === 'paidDate' || column === 'arrivedDate') {
+          return dateFormat(row[column]);
+        }
+        return row[column] || '';
+      })))
       .then(data => this.setState({ purchaseDetailData: data }));
   }
 
