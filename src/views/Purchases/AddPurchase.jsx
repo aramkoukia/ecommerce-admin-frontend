@@ -102,6 +102,9 @@ export default class AddPurchase extends React.Component {
         productId: row.productId,
         amount: row.qty,
         unitPrice: row.unitPrice,
+        poNumber,
+        status: 'Plan',
+
         totalPrice: row.qty * row.unitPrice,
       }));
 
