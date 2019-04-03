@@ -128,7 +128,7 @@ export default class ReturnOrderItems extends React.Component {
     if (orderRows.length === 0) {
       return 0;
     }
-    return orderRows.map(({ totalDiscount }) => totalDiscount * -1).reduce((sum, i) => sum + i, 0);
+    return orderRows.map(({ amount, totalDiscount }) => Number(amount) > 0 && totalDiscount * -1).reduce((sum, i) => sum + i, 0);
   }
 
   total(subTotal, taxes, restockingFeeAmount) {
