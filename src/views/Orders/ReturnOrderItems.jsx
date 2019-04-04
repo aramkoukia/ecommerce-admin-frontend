@@ -5,6 +5,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TextField from '@material-ui/core/TextField';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
@@ -70,7 +72,7 @@ export default class ReturnOrderItems extends React.Component {
     });
   };
 
-  handleRestockingFeeChanged (event) {
+  handleRestockingFeeChanged(event) {
     const { taxes, priceChanged } = this.props;
     const orderRows = this.state.orderRows.slice();
     const totalDiscount = this.discount(orderRows);
@@ -97,7 +99,11 @@ export default class ReturnOrderItems extends React.Component {
     for (const i in orderRows) {
       if (orderRows[i].productId == event.target.name) {
         orderRows[i].amount = event.target.value;
-        orderRows[i].total = event.target.value * orderRows[i].unitPrice * -1;
+        orderRows[i].subTotal = event.target.value * orderRows[i].unitPrice * -1;
+        let discountAmount = orderRows[i].discountAmount === "" ? 0 : orderRows[i].discountAmount;
+        let discountPercent = orderRows[i].discountPercent === "" ? 0 : orderRows[i].discountPercent;
+        orderRows[i].totalDiscount = -1 * ((orderRows[i].discountType === 'percent') ? (discountPercent / 100) * orderRows[i].subTotal : Number(discountAmount));
+        orderRows[i].total = event.target.value * orderRows[i].unitPrice * -1 + orderRows[i].totalDiscount;
         this.setState({ orderRows });
         break;
       }
@@ -118,17 +124,21 @@ export default class ReturnOrderItems extends React.Component {
   }
 
   subtotal(items, totalDiscount) {
-    if (items.length === 0) {
+    if(items.length === 0) {
       return 0;
     }
-    return items.map(({ unitPrice, amount }) => unitPrice * amount * -1).reduce((sum, i) => sum + i, 0) - totalDiscount;
+    return items.map(({ total }) => total).reduce((sum, i) => sum + i, 0);
   }
 
   discount(orderRows) {
-    if (orderRows.length === 0) {
-      return 0;
+     let totalDiscount= 0;
+    for(let i in orderRows) {
+      let discountAmount = orderRows[i].discountAmount === "" ? 0 : orderRows[i].discountAmount;
+      let discountPercent = orderRows[i].discountPercent === "" ? 0 : orderRows[i].discountPercent;
+      totalDiscount += (orderRows[i].discountType === 'percent') ?
+        (discountPercent / 100) * orderRows[i].total : Number(discountAmount);
     }
-    return orderRows.map(({ amount, totalDiscount }) => Number(amount) > 0 && totalDiscount * -1).reduce((sum, i) => sum + i, 0);
+    return totalDiscount * -1;
   }
 
   total(subTotal, taxes, restockingFeeAmount) {
@@ -139,7 +149,8 @@ export default class ReturnOrderItems extends React.Component {
   render() {
     const { taxes, order } = this.props;
     const {
-      orderRows, total, subTotal, totalDiscount, restockingFeeAmount, restockingFeePercent
+      orderRows, total, subTotal, totalDiscount, restockingFeeAmount,
+      restockingFeePercent,
     } = this.state;
     return (
       <Card>
@@ -154,6 +165,7 @@ export default class ReturnOrderItems extends React.Component {
                 <TableCell numeric>Amount</TableCell>
                 <TableCell numeric>Unit Price</TableCell>
                 <TableCell numeric>Discount</TableCell>
+                <TableCell numeric>Discount Amount</TableCell>
                 <TableCell numeric>Total Price</TableCell>
               </TableRow>
             </TableHead>
@@ -171,12 +183,53 @@ export default class ReturnOrderItems extends React.Component {
                     />
                   </TableCell>
                   <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
+                  <TableCell>
+                    <ToggleButtonGroup
+                      hidden
+                      name={row.productId}
+                      value={row.discountType}
+                      exclusive
+                      onChange={this.handleDiscountTypeChanged}
+                      style={{ width: 50 }}
+                    >
+                      <ToggleButton value="percent" name={row.productId}>
+                        %
+                      </ToggleButton>
+                      {/* <ToggleButton value="amount" name={row.productId}>
+                      $
+                    </ToggleButton> */}
+                    </ToggleButtonGroup>
+                    {row.discountType === 'amount'
+                      && (
+                      <TextField
+                        disabled
+                        name={row.productId}
+                        value={row.discountAmount}
+                        onChange={this.handleDiscountAmountChanged}
+                        type="number"
+                        style={{ width: 50 }}
+                      />
+                      )}
+                    {row.discountType === 'percent'
+                      && (
+                      <TextField
+                        disabled
+                        name={row.productId}
+                        value={row.discountPercent}
+                        onChange={this.handleDiscountPercentChanged}
+                        type="number"
+                        style={{ width: 50 }}
+                      />
+                      )}
+                    {' '}
+                       %
+                  </TableCell>
                   <TableCell numeric>{ccyFormat(row.totalDiscount)}</TableCell>
                   <TableCell numeric>{ccyFormat(row.total)}</TableCell>
                 </TableRow>
               ))}
               <TableRow>
-                <TableCell rowSpan={5} />
+                <TableCell rowSpan={6} />
                 <TableCell colSpan={3}>Subtotal</TableCell>
                 <TableCell numeric>{ccyFormat(subTotal)}</TableCell>
               </TableRow>
@@ -185,20 +238,22 @@ export default class ReturnOrderItems extends React.Component {
                 <TableCell numeric>{ccyFormat(totalDiscount)}</TableCell>
               </TableRow>
               <TableRow>
-                  <TableCell><b>Re-Stocking Fee (%)</b></TableCell>
-                  <TableCell numeric>
+                <TableCell><b>Re-Stocking Fee (%)</b></TableCell>
+                <TableCell numeric>
                   <TextField
                     name="restockingFeePercent"
                     value={restockingFeePercent}
                     onChange={this.handleRestockingFeeChanged}
                     type="number"
                     style={{ width: 70 }}
-                    /> %
-                  </TableCell>
-                  <TableCell numeric>
-                    <b>
-                      {ccyFormat(restockingFeeAmount)}
-                    </b>
+                  />
+                  {' '}
+%
+                </TableCell>
+                <TableCell numeric>
+                  <b>
+                    {ccyFormat(restockingFeeAmount)}
+                  </b>
                 </TableCell>
               </TableRow>
               {taxes.map(tax => (
@@ -211,7 +266,7 @@ export default class ReturnOrderItems extends React.Component {
               <TableRow>
                 <TableCell colSpan={3}><h4>Refund Total</h4></TableCell>
                 <TableCell numeric><Success><h4>{ccyFormat(total)}</h4></Success></TableCell>
-                </TableRow>
+              </TableRow>
                 {order.orderPayment && order.orderPayment.map(orderPayment => (
                   <TableRow>
                     <TableCell><h4>Payment</h4></TableCell>
