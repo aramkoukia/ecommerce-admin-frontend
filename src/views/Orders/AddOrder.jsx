@@ -333,8 +333,22 @@ export default class AddOrder extends React.Component {
     }
   }
 
-  customerChanged(customer) {
+  async customerChanged(customer) {
     const { chargePst } = this.state;
+
+    if (customer.country === 'USA' || customer.country === 'OTHER') {
+      this.setState({
+        taxes: [],
+        allTaxes: [],
+      });
+    } else if (customer && customer.province && customer.province !== 'BC') {
+      const taxes = await TaxService.getTaxes('Canada', customer.province);
+      this.setState({
+        taxes,
+        allTaxes: taxes,
+      });
+    }
+
     this.updateTaxes(customer, chargePst);
     this.setState({
       customer,
