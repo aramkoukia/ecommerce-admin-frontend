@@ -79,6 +79,11 @@ export default class PurchaseItems extends React.Component {
     // });
   }
 
+
+  handleLocationChange = (event) => {
+    this.setState({ locationId: event.target.value });
+  }
+
   handleClose() {
     this.setState({
       openMarkAsPaidDialog: false,
@@ -90,10 +95,6 @@ export default class PurchaseItems extends React.Component {
 
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
-  }
-
-  handleLocationChange = (event) => {
-    this.setState({ locationId: event.target.value });
   }
 
   markAsPaidClicked(amount, unitPrice, poNumber, purchaseDetailId) {
@@ -326,6 +327,7 @@ export default class PurchaseItems extends React.Component {
                   <TableCell>Product</TableCell>
                   <TableCell numeric>Amount</TableCell>
                   <TableCell numeric>Unit Price</TableCell>
+                  <TableCell numeric>Overhead Cost</TableCell>
                   <TableCell numeric>Total Price</TableCell>
                 </TableRow>
               </TableHead>
@@ -343,11 +345,12 @@ export default class PurchaseItems extends React.Component {
                     </TableCell>
                     <TableCell numeric align="right">{row.amount}</TableCell>
                     <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
+                    <TableCell numeric>{ccyFormat(row.overheadCost)}</TableCell>
                     <TableCell numeric>{ccyFormat(row.totalPrice)}</TableCell>
                   </TableRow>
                 ))}
                 <TableRow>
-                  <TableCell colSpan={3}><h5>Total</h5></TableCell>
+                  <TableCell colSpan={4}><h5>Total</h5></TableCell>
                   <TableCell numeric><Success><h5>{ccyFormat(purchase.purchaseDetail.map(item => item.status === 'Plan' && item.totalPrice).reduce((prev, next) => prev + next))}</h5></Success></TableCell>
                 </TableRow>
               </TableBody>

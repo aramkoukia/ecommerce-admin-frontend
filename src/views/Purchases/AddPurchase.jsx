@@ -32,16 +32,17 @@ const styles = {
   },
 };
 
-function priceRow(qty, unit) {
-  return qty * unit;
+function priceRow(qty, unit, overheadCost) {
+  return Number(qty * unit) + Number(overheadCost);
 }
 
 function createRow(productId, productName) {
   const qty = 1;
   const unitPrice = 0;
-  const price = priceRow(qty, unitPrice);
+  const overheadCost = 0;
+  const price = priceRow(qty, unitPrice, overheadCost);
   return {
-    productId, productName, qty, unitPrice, price,
+    productId, productName, qty, unitPrice, overheadCost, price,
   };
 }
 
@@ -70,7 +71,7 @@ export default class AddPurchase extends React.Component {
     const foundProduct = newRows.find(row => row.productId === product.productId);
     if (foundProduct) {
       foundProduct.qty = Number(foundProduct.qty) + 1;
-      foundProduct.total = foundProduct.qty * foundProduct.unitPrice;
+      foundProduct.total = Number(foundProduct.qty * foundProduct.unitPrice) + Number(foundProduct.overheadCost);
       this.setState({ rows: newRows });
     } else {
       const newRow = createRow(product.productId, product.productName, product.salesPrice);
@@ -102,10 +103,10 @@ export default class AddPurchase extends React.Component {
         productId: row.productId,
         amount: row.qty,
         unitPrice: row.unitPrice,
+        overheadCost: row.overheadCost,
         poNumber,
         status: 'Plan',
-
-        totalPrice: row.qty * row.unitPrice,
+        totalPrice: Number(row.qty * row.unitPrice) + Number(row.overheadCost),
       }));
 
     const purchase = {

@@ -1,6 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -8,10 +6,13 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import TextField from '@material-ui/core/TextField';
-// import Checkbox from "@material-ui/core/Checkbox";
 import Success from "components/Typography/Success.jsx";
 
-export default class PurchaseTable extends React.Component {  
+function ccyFormat(num) {
+  return num && !isNaN(num) ? `${num} $` : '';
+}
+
+export default class PurchaseTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,6 +30,7 @@ export default class PurchaseTable extends React.Component {
 
     this.handleQuantityChanged = this.handleQuantityChanged.bind(this);
     this.handleUnitPriceChanged = this.handleUnitPriceChanged.bind(this);
+    this.handleOverheadCostChanged = this.handleOverheadCostChanged.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -42,7 +44,7 @@ export default class PurchaseTable extends React.Component {
       this.setState({
         purchaseRows: rows,
         subTotal: subTotal,
-        total: total,  
+        total: total,
       });
       priceChanged(subTotal, total);
     }
@@ -71,13 +73,36 @@ export default class PurchaseTable extends React.Component {
     priceChanged(subTotal, total);
   }
 
+
+  handleOverheadCostChanged(event) {
+    let { priceChanged } = this.props;
+    let purchaseRows = this.state.purchaseRows.slice();
+    for(let i in purchaseRows) {
+      if(purchaseRows[i].productId == event.target.name) {
+          purchaseRows[i].overheadCost = event.target.value;
+          this.setState ({purchaseRows});
+          break;
+      }
+    }
+
+    const subTotal = this.subtotal(purchaseRows);
+    const total = this.total(subTotal);
+    this.setState(
+      {
+        subTotal: subTotal,
+        total: total,
+      }
+    )
+
+    priceChanged(subTotal, total);
+  }
+
   handleQuantityChanged(event) {
     let { priceChanged } = this.props;
     let purchaseRows = this.state.purchaseRows.slice();
     for(let i in purchaseRows) {
         if(purchaseRows[i].productId == event.target.name){
           purchaseRows[i].qty = event.target.value;
-          // purchaseRows[i].unitPrice = event.target.value;
           this.setState ({purchaseRows});
           break;
         }
@@ -101,15 +126,12 @@ export default class PurchaseTable extends React.Component {
     });
   };
 
-  ccyFormat(num) {
-    return `${num.toFixed(2)} $`;
-  }
-
   subtotal(items) {
     if(items.length === 0) {
       return 0;
     }
-    return items.map(({ unitPrice, qty }) => unitPrice * qty).reduce((sum, i) => sum + i, 0);
+
+    return items.map(({ unitPrice, qty, overheadCost }) => Number(unitPrice * qty) + Number(overheadCost) ).reduce((sum, i) => sum + i, 0);
   }
 
   total(subTotal) {
@@ -127,6 +149,7 @@ export default class PurchaseTable extends React.Component {
             <TableCell>Product</TableCell>
             <TableCell numeric>Amount</TableCell>
             <TableCell numeric>Unit Price</TableCell>
+            <TableCell numeric>Overhead Cost (Total)</TableCell>
             <TableCell numeric>Total Price</TableCell>
           </TableRow>
         </TableHead>
@@ -151,18 +174,26 @@ export default class PurchaseTable extends React.Component {
                         type="number"
                       />
                 </TableCell>
-                <TableCell numeric>{this.ccyFormat(row.unitPrice * row.qty)}</TableCell>
+                <TableCell numeric align="right">
+                  <TextField
+                        name={row.productId}
+                        value={row.overheadCost}
+                        onChange={this.handleOverheadCostChanged}
+                        type="number"
+                      />
+                </TableCell>
+                <TableCell numeric>{ccyFormat(Number(row.unitPrice * row.qty) + Number(row.overheadCost))}</TableCell>
               </TableRow>
             );
           })}
           <TableRow>
             <TableCell rowSpan={5} />
-            <TableCell colSpan={2}>Subtotal</TableCell>
-            <TableCell numeric>{this.ccyFormat(subTotal)}</TableCell>
+            <TableCell colSpan={3}>Subtotal</TableCell>
+            <TableCell numeric>{ccyFormat(subTotal)}</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell colSpan={2}><h3>Total</h3></TableCell>
-            <TableCell numeric><Success><h3>{this.ccyFormat(total)}</h3></Success></TableCell>
+            <TableCell colSpan={3}><h3>Total</h3></TableCell>
+            <TableCell numeric><Success><h3>{ccyFormat(total)}</h3></Success></TableCell>
           </TableRow>
         </TableBody>
       </Table>
