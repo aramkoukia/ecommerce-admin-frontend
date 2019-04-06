@@ -35,6 +35,28 @@ export default class PurchaseService {
     }
   }
 
+  static async deletePurchase(purchaseId) {
+    try {
+      const response = await RestUtilities.delete(
+        `purchases/${purchaseId}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async deletePurchaseDetail(purchaseDetailId) {
+    try {
+      const response = await RestUtilities.delete(
+        `purchases/purchasedetail/${purchaseDetailId}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async updatePurchaseDetailStatus(purchaseDetailId, updatePurchaseDetailStatus) {
     try {
       const response = await RestUtilities.put(

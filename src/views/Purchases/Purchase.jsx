@@ -12,6 +12,7 @@ import Snackbar from '../../components/Snackbar/Snackbar';
 import PurchaseNotes from './PurchaseNotes';
 import PurchaseItems from './PurchaseItems';
 import PurchaseService from '../../services/PurchaseService';
+import Button from '../../components/CustomButtons/Button';
 
 const styles = {
   chip: {
@@ -39,6 +40,8 @@ export class Purchase extends React.Component {
       snackbarColor: '',
       loading: false,
     };
+
+    this.deletePurchase = this.deletePurchase.bind(this);
   }
 
   async componentDidMount() {
@@ -51,6 +54,23 @@ export class Purchase extends React.Component {
 
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
+  }
+
+  async deletePurchase() {
+    this.setState({
+      loading: true,
+    });
+    const { history, match } = this.props;
+    const purchaseId = match.params.id;
+    const result = await PurchaseService.deletePurchase(purchaseId);
+
+    if (result) {
+      history.push('/purchases');
+    }
+
+    this.setState({
+      loading: false,
+    });
   }
 
   render() {
@@ -75,6 +95,7 @@ export class Purchase extends React.Component {
               <CardBody>
                 <GridContainer>
                   <GridItem xs={12}>
+                    <Button color="info" disabled={loading} onClick={this.deletePurchase}>Delete Purchase</Button>
                     <PurchaseItems purchase={purchase} />
                   </GridItem>
                   <GridItem xs={4}>

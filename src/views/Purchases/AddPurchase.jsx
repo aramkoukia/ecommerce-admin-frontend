@@ -57,6 +57,7 @@ export default class AddPurchase extends React.Component {
       poNumber: '',
       deliveryDate: today.getDate(),
       openSnackbar: false,
+      loading: false,
     };
 
     this.productChanged = this.productChanged.bind(this);
@@ -120,15 +121,6 @@ export default class AddPurchase extends React.Component {
       purchaseDetail: purchaseDetails,
     };
 
-    // if (!(deliveryDate instanceof Date)) {
-    //   this.setState({
-    //     openSnackbar: true,
-    //     snackbarMessage: 'Enter a valid Delivery Date!',
-    //     snackbarColor: 'danger',
-    //   });
-    //   return false;
-    // }
-
     const result = await PurchaseService.savePurchase(purchase);
     if (result === false || result === null || result.StatusCode === 500 || result.StatusCode === 400) {
       this.setState({
@@ -142,6 +134,10 @@ export default class AddPurchase extends React.Component {
   }
 
   async savePurchase() {
+    this.setState({
+      loading: true,
+    });
+
     const result = await this.save();
     if (result && result.purchaseId) {
       this.setState({
@@ -151,11 +147,16 @@ export default class AddPurchase extends React.Component {
       });
       this.props.history.push(`/purchase/${result.purchaseId}`);
     }
+
+    this.setState({
+      loading: false,
+    });
   }
 
   render() {
     const {
       rows, openSnackbar, snackbarMessage, snackbarColor, notes, supplier, deliveryDate, poNumber,
+      loading,
     } = this.state;
 
     return (
@@ -244,7 +245,7 @@ export default class AddPurchase extends React.Component {
               <CardFooter>
                 <GridContainer>
                   <GridItem xs>
-                    <Button color="primary" onClick={this.savePurchase}>Save</Button>
+                    <Button color="primary" disabled={loading} onClick={this.savePurchase}>Save</Button>
                   </GridItem>
                 </GridContainer>
               </CardFooter>
