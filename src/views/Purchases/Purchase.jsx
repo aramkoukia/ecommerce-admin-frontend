@@ -64,8 +64,8 @@ export class Purchase extends React.Component {
     const purchaseId = match.params.id;
     const result = await PurchaseService.deletePurchase(purchaseId);
 
-    if (result) {
-      history.push('/purchases');
+    if (result === '') {
+      history.push('/purchases/');
     }
 
     this.setState({
