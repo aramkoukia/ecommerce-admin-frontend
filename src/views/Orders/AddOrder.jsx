@@ -538,7 +538,16 @@ export default class AddOrder extends React.Component {
       orderPayment,
     };
 
-    const result = await OrderService.saveOrder(order);
+    const { match } = this.props;
+    const orderId = match.params.id;
+
+    let result;
+    if (status === 'Draft' && orderId && !isNaN(orderId)) {
+      result = await OrderService.updateOrder(orderId, order);
+    } else {
+      result = await OrderService.saveOrder(order);
+    }
+
     if (result === false
         || result === null
         || result.StatusCode === 500

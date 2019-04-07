@@ -13,6 +13,18 @@ export default class OrderService {
     }
   }
 
+  static async updateOrder(orderId, order) {
+    try {
+      const response = await RestUtilities.put(
+        `orders/${orderId}`,
+        order,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async updateOrderStatus(orderId, orderStatus) {
     try {
       const response = await RestUtilities.put(
