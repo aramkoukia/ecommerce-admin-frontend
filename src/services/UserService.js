@@ -45,6 +45,18 @@ export default class UserService {
     }
   }
 
+  static async UpdateUser(userInfo) {
+    try {
+      const response = await RestUtilities.put(
+        'users/info',
+        userInfo,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async UpdateUserRolesAndLocations(userInfo) {
     try {
       const response = await RestUtilities.put(

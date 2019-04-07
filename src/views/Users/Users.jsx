@@ -29,6 +29,7 @@ export default class Users extends React.Component {
     this.state = {
       users: [],
       openDialog: false,
+      openUserEditDialog: false,
       selectedRow: null,
       openSnackbar: false,
       snackbarMessage: '',
@@ -44,15 +45,44 @@ export default class Users extends React.Component {
       locationChecked: [0],
     };
 
-    this.rowClicked = this.rowClicked.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
+    this.handleUpdateUser = this.handleUpdateUser.bind(this);
     this.handleResetPassword = this.handleResetPassword.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.editClicked = this.editClicked.bind(this);
+    this.permissionsClicked = this.permissionsClicked.bind(this);
   }
 
   componentDidMount() {
     this.usersList();
     this.rolesList();
+  }
+
+  permissionsClicked(tableMeta) {
+    const { users } = this.state;
+    const user = users[tableMeta.rowIndex];
+    this.getUserRoles(user[1]);
+    this.getUserLocations(user[1]);
+    setTimeout(() => {
+      this.setState({
+        openDialog: true,
+        selectedRow: user,
+      });
+    }, 1000);
+  }
+
+  editClicked(tableMeta) {
+    const { users } = this.state;
+    const user = users[tableMeta.rowIndex];
+    setTimeout(() => {
+      this.setState({
+        openUserEditDialog: true,
+        selectedRow: user,
+        givenName: user[0],
+        userName: user[2],
+        email: user[1],
+      });
+    }, 1000);
   }
 
   getUserRoles(email) {
@@ -113,11 +143,41 @@ export default class Users extends React.Component {
   handleClose = () => {
     this.setState({
       openDialog: false,
+      openUserEditDialog: false,
       selectedRow: null,
       roleChecked: [0],
       locationChecked: [0],
     });
   };
+
+  async handleUpdateUser() {
+    const {
+      email,
+      userName,
+      givenName,
+    } = this.state;
+
+    const userInfo = {
+      email,
+      userName,
+      givenName,
+    };
+
+    const result = await UserService.UpdateUser(userInfo);
+    if (result && result.email) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Users\'s Information was successfully updated!',
+        snackbarColor: 'success',
+      });
+    }
+
+    this.setState({
+      openUserEditDialog: false,
+      selectedRow: null,
+    });
+    window.location.reload();
+  }
 
   async handleUpdate() {
     const {
@@ -145,6 +205,8 @@ export default class Users extends React.Component {
       openDialog: false,
       selectedRow: null,
     });
+
+    window.location.reload();
   }
 
   async handleResetPassword() {
@@ -174,9 +236,7 @@ export default class Users extends React.Component {
         snackbarColor: 'success',
       });
     } else {
-      const message = result.errors.map((error) => {
-        return error.description;
-      }).join('. ');
+      const message = result.errors.map(error => error.description).join('. ');
 
       this.setState({
         openSnackbar: true,
@@ -188,17 +248,6 @@ export default class Users extends React.Component {
 
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
-  }
-
-  rowClicked(rowData) {
-    this.getUserRoles(rowData[1]);
-    this.getUserLocations(rowData[1]);
-    setTimeout(() => {
-      this.setState({
-        openDialog: true,
-        selectedRow: rowData,
-      });
-    }, 1000);
   }
 
   usersList() {
@@ -244,11 +293,46 @@ export default class Users extends React.Component {
       },
     };
 
-    const columns = ['Given Name', 'Email', 'User Name', 'Roles', 'Locations', 'Pass Code'];
+    const columns = ['Given Name', 'Email', 'User Name', 'Roles', 'Locations', 'Pass Code',
+      {
+        name: 'edit',
+        options: {
+          filter: true,
+          customBodyRender: (value, tableMeta) => (
+            <Button
+              color="primary"
+              index={tableMeta.columnIndex}
+              onClick={event => {
+                this.editClicked(tableMeta, tableMeta.columnIndex, value, event);
+              }}
+            >
+              Edit
+            </Button>
+          ),
+        },
+      },
+      {
+        name: 'permission',
+        options: {
+          filter: true,
+          customBodyRender: (value, tableMeta) => (
+            <Button
+              color="primary"
+              index={tableMeta.columnIndex}
+              onClick={event =>
+                this.permissionsClicked(tableMeta, tableMeta.columnIndex, value, event)
+              }
+            >
+              Permissions
+            </Button>
+          ),
+        },
+      },
+    ];
 
     const options = {
       filterType: 'checkbox',
-      onRowClick: this.rowClicked,
+      // onRowClick: this.rowClicked,
       rowHover: true,
       resizableColumns: true,
       selectableRows: false,
@@ -265,10 +349,20 @@ export default class Users extends React.Component {
       snackbarMessage,
       snackbarColor,
       openDialog,
+      openUserEditDialog,
       locationChecked,
       roleChecked,
       newPassword,
+      givenName,
+      email,
+      userName,
     } = this.state;
+
+
+    users.forEach((u) => {
+      u.push('edit');
+      u.push('permissions');
+    });
 
     return (
       <div>
@@ -295,7 +389,7 @@ export default class Users extends React.Component {
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
         >
-          <DialogTitle id="form-dialog-title">User Update</DialogTitle>
+          <DialogTitle id="form-dialog-title">User Permissions</DialogTitle>
           <DialogContent>
             <DialogContentText>
               Given Name:
@@ -319,7 +413,13 @@ export default class Users extends React.Component {
                     { roles && (
                     <List>
                       {roles.map(role => (
-                        <ListItem key={role.id} role={undefined} dense button onClick={this.handleRoleToggle(role.id)}>
+                        <ListItem
+                          key={role.id}
+                          role={undefined}
+                          dense
+                          button
+                          onClick={this.handleRoleToggle(role.id)}
+                        >
                           <Checkbox
                             checked={roleChecked.indexOf(role.id) !== -1}
                             tabIndex={-1}
@@ -342,7 +442,13 @@ export default class Users extends React.Component {
                   <CardBody>
                     <List>
                       {locations.map(location => (
-                        <ListItem key={location.locationId} role={undefined} dense button onClick={this.handleLocationToggle(location.locationId)}>
+                        <ListItem
+                          key={location.locationId}
+                          role={undefined}
+                          dense
+                          button
+                          onClick={this.handleLocationToggle(location.locationId)}
+                        >
                           <Checkbox
                             checked={locationChecked.indexOf(location.locationId) !== -1}
                             tabIndex={-1}
@@ -388,16 +494,80 @@ export default class Users extends React.Component {
           </DialogActions>
         </Dialog>
         )}
+
+        <Dialog
+          open={openUserEditDialog}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">User Update</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Given Name:
+              {' '}
+              {selectedRow && (selectedRow[0])}
+              {' '}
+              <br />
+              Email:
+              {' '}
+              {selectedRow && (selectedRow[1])}
+              {' '}
+              <br />
+            </DialogContentText>
+            <GridContainer>
+              <GridItem xs={12}>
+                <Card>
+                  <CardHeader color="info">
+                    <div>User Info</div>
+                  </CardHeader>
+                  <CardBody>
+                    <CustomInput
+                      labelText="Given Name"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                      inputProps={{
+                        onChange: this.handleChange,
+                        name: 'givenName',
+                        value: givenName,
+                      }}
+                    />
+                    <CustomInput
+                      labelText="Email"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                      inputProps={{
+                        onChange: this.handleChange,
+                        name: 'email',
+                        value: email,
+                      }}
+                    />
+                  </CardBody>
+                </Card>
+              </GridItem>
+            </GridContainer>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+            <Button onClick={this.handleUpdateUser} color="primary">
+              Update
+            </Button>
+          </DialogActions>
+        </Dialog>
+
         <Portal>
-        <Snackbar
-          place="tl"
-          color={snackbarColor}
-          icon={Check}
-          message={snackbarMessage}
-          open={openSnackbar}
-          closeNotification={() => this.setState({ openSnackbar: false })}
-          close
-        />
+          <Snackbar
+            place="tl"
+            color={snackbarColor}
+            icon={Check}
+            message={snackbarMessage}
+            open={openSnackbar}
+            closeNotification={() => this.setState({ openSnackbar: false })}
+            close
+          />
         </Portal>
       </div>
     );
