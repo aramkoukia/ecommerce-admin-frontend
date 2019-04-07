@@ -661,7 +661,7 @@ $
                   <TextField
                     name="authCode"
                     label="Auth Code"
-                    type="text"
+                    type="password"
                     autoFocus
                     onChange={this.handleAuthCodeChange}
                     onKeyPress={this.handleAuthEnter}
