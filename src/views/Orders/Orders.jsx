@@ -6,7 +6,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
-import MUIDataTable from 'mui-datatables';
+// import MUIDataTable from 'mui-datatables';
+import MaterialTable from 'material-table';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
@@ -14,15 +15,6 @@ import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import OrderService from '../../services/OrderService';
 import LocationService from '../../services/LocationService';
-
-function dateFormat(dateString) {
-  const date = new Date(dateString);
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, 0);
-  const day = `${date.getDate()}`.padStart(2, 0);
-  const stringDate = [day, month, year].join('/');
-  return `${stringDate} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-}
 
 export default class Orders extends React.Component {
   constructor(props) {
@@ -68,22 +60,15 @@ export default class Orders extends React.Component {
   }
 
   ordersList(locationId) {
-    const columns = ['locationName', 'orderId', 'orderDate', 'subTotal', 'total', 'status', 'poNumber', 'paidAmount', 'givenName', 'paymentTypeName', 'companyName'];
     const { showAllOrders } = this.state;
     this.setState({ loading: true });
 
     OrderService.getOrdersByLocation(locationId, showAllOrders)
-      .then(results => results.map(row => columns.map((column) => {
-        if (column === 'orderDate') {
-          return dateFormat(row[column]);
-        }
-        return row[column] || '';
-      })))
       .then(data => this.setState({ orders: data, loading: false }));
   }
 
-  rowClicked(rowData) {
-    window.open(`/order/${rowData[1]}`, "_blank")
+  rowClicked(_event, rowData) {
+    window.open(`/order/${rowData.orderId}`, "_blank")
   }
 
   render() {
@@ -126,68 +111,25 @@ export default class Orders extends React.Component {
     };
 
     const columns = [
-      'Location',
-      {
-        name: 'Order Number',
-        options: {
-          filter: false,
-        },
-      },
-      {
-        name: 'Order Date',
-        options: {
-          filter: false,
-        },
-      },
-      {
-        name: 'Sub Total',
-        options: {
-          filter: false,
-          display: false,
-        },
-      },
-      {
-        name: 'Total',
-        options: {
-          filter: false,
-        },
-      },
-      'Status',
-      {
-        name: 'PO Number',
-        options: {
-          filter: false,
-        },
-      },
-      {
-        name: 'Paid Amount',
-        options: {
-          filter: false,
-        },
-      },
-      'Created By',
-      {
-        name: 'Payment Type',
-        options: {
-          display: false,
-        },
-      },
-      {
-        name: 'Company Name',
-        options: {
-          filter: false,
-        },
-      },
+      { title: 'Location', field: 'locationName' },
+      { title: 'Order Id', field: 'orderId' },
+      { title: 'Order Date', field: 'orderDate' },
+      { title: 'Sub Total', field: 'subTotal' },
+      { title: 'Total', field: 'total' },
+      { title: 'Status', field: 'status' },
+      { title: 'PO Number', field: 'poNumber' },
+      { title: 'Paid Amount', field: 'paidAmount' },
+      { title: 'User', field: 'givenName' },
+      { title: 'Payment Type', field: 'paymentTypeName' },
+      { title: 'Company Name', field: 'companyName' },
     ];
 
     const options = {
-      filterType: 'checkbox',
-      onRowClick: this.rowClicked,
-      rowHover: true,
-      resizableColumns: true,
-      selectableRows: false,
-      rowsPerPageOptions: [25, 50, 100],
-      rowsPerPage: 25,
+      paging: true,
+      pageSizeOptions: [25, 50, 100],
+      pageSize: 25,
+      columnsButton: true,
+      exportButton: true,
     };
 
     const {
@@ -245,11 +187,20 @@ export default class Orders extends React.Component {
                     {loading && <CircularProgress />}
                   </GridItem>
                 </GridContainer>
-                <MUIDataTable
+                {/* <MUIDataTable
                   title="Click on each order to navigate to the order details"
                   data={orders}
                   columns={columns}
                   options={options}
+                /> */}
+
+                <MaterialTable
+                  columns={columns}
+                  data={orders}
+                  options={options}
+                  onRowClick={this.rowClicked}
+                  title=""
+                  // title="Click on each order to navigate to the order details"
                 />
               </CardBody>
             </Card>
