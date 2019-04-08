@@ -374,7 +374,7 @@ export default class Users extends React.Component {
               </CardHeader>
               <CardBody>
                 <MUIDataTable
-                  title="To update the permission and location assignment for each user, click on the user record bellow."
+                  title=""
                   data={users}
                   columns={columns}
                   options={options}
