@@ -116,11 +116,23 @@ export default class Orders extends React.Component {
       { title: 'Order Date', field: 'orderDate' },
       { title: 'Sub Total', field: 'subTotal' },
       { title: 'Total', field: 'total' },
-      { title: 'Status', field: 'status' },
+      {
+        title: 'Status',
+        field: 'status',
+        lookup: {
+          Paid: 'Paid', Return: 'Return', Account: 'Account', Draft: 'Draft', OnHold: 'OnHold',
+        },
+      },
       { title: 'PO Number', field: 'poNumber' },
       { title: 'Paid Amount', field: 'paidAmount' },
       { title: 'User', field: 'givenName' },
-      { title: 'Payment Type', field: 'paymentTypeName' },
+      {
+        title: 'Payment Type',
+        field: 'paymentTypeName',
+        // lookup: {
+        //   'Credit Card / Debit': 'Credit Card / Debit', Cash: 'Cash', Cheque: 'Cheque', 'Store Credit': 'Store Credit', 'Paypal and Amazon + USD Account': 'Paypal and Amazon + USD Account',
+        // },
+      },
       { title: 'Company Name', field: 'companyName' },
     ];
 
@@ -130,6 +142,7 @@ export default class Orders extends React.Component {
       pageSize: 25,
       columnsButton: true,
       exportButton: true,
+      filtering: true,
     };
 
     const {
