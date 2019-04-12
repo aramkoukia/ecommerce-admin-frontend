@@ -131,12 +131,9 @@ export default class ReturnOrderItems extends React.Component {
   }
 
   discount(orderRows) {
-     let totalDiscount= 0;
+    let totalDiscount= 0;
     for(let i in orderRows) {
-      let discountAmount = orderRows[i].discountAmount === "" ? 0 : orderRows[i].discountAmount;
-      let discountPercent = orderRows[i].discountPercent === "" ? 0 : orderRows[i].discountPercent;
-      totalDiscount += (orderRows[i].discountType === 'percent') ?
-        (discountPercent / 100) * orderRows[i].total : Number(discountAmount);
+      totalDiscount += orderRows[i].totalDiscount === "" ? 0 : orderRows[i].totalDiscount;
     }
     return totalDiscount * -1;
   }

@@ -249,9 +249,9 @@ export class Return extends React.Component {
         discountPercent: row.discountPercent,
         discountAmount: row.discountAmount,
         discountType: row.discountType,
-        total: row.total - (row.discountType === 'percent' ? (row.discountPercent / 100) * row.total : row.discountAmount),
-        totalDiscount: (row.discountType === 'percent' ? (row.discountPercent / 100) * row.total : row.discountAmount),
-        subTotal: row.total,
+        total: row.total,
+        totalDiscount: row.totalDiscount,
+        subTotal: row.total - row.totalDiscount,
       }));
 
     const orderTaxes = order.orderTax.map(tax => (
