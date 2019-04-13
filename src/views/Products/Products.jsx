@@ -2,6 +2,7 @@ import React from 'react';
 import MUIDataTable from 'mui-datatables';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Check from '@material-ui/icons/Check';
+import TextField from '@material-ui/core/TextField';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
@@ -21,13 +22,19 @@ export default class Products extends React.Component {
       openSnackbar: false,
       snackbarMessage: '',
       snackbarColor: '',
+      page: 1,
     };
     this.rowClicked = this.rowClicked.bind(this);
     this.syncProducts = this.syncProducts.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
     this.productsList();
+  }
+
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   syncProducts() {
@@ -92,6 +99,16 @@ export default class Products extends React.Component {
       },
     ];
 
+    const {
+      products,
+      loading,
+      openSnackbar,
+      snackbarMessage,
+      snackbarColor,
+      page,
+    } = this.state;
+
+    const gridPage = page && Number(page) > 0 ? Number(page) : 0;
     const options = {
       filterType: 'checkbox',
       onRowClick: this.rowClicked,
@@ -100,15 +117,8 @@ export default class Products extends React.Component {
       selectableRows: false,
       rowsPerPageOptions: [25, 50, 100],
       rowsPerPage: 25,
+      page: gridPage - 1,
     };
-
-    const {
-      products,
-      loading,
-      openSnackbar,
-      snackbarMessage,
-      snackbarColor,
-    } = this.state;
 
     return (
       <div>
@@ -122,6 +132,16 @@ export default class Products extends React.Component {
                 <Button color="info" disabled={loading} onClick={this.syncProducts}>
                   Sync Products From Wordpress
                 </Button>
+                &nbsp;
+                &nbsp;
+                <TextField
+                  name="page"
+                  label="Page Number"
+                  type="number"
+                  onChange={this.handleChange}
+                  value={page}
+                  min="1"
+                />
 
                 <MUIDataTable
                   title="Click on each product to see all the transactions for that product."
