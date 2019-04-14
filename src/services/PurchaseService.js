@@ -13,6 +13,18 @@ export default class PurchaseService {
     }
   }
 
+  static async updatePurchase(purchaseId, purchase) {
+    try {
+      const response = await RestUtilities.put(
+        `purchases/${purchaseId}`,
+        purchase,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getPurchases() {
     try {
       const response = await RestUtilities.get(

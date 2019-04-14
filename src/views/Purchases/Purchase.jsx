@@ -42,6 +42,7 @@ export class Purchase extends React.Component {
     };
 
     this.deletePurchase = this.deletePurchase.bind(this);
+    this.editPurchase = this.editPurchase.bind(this);
   }
 
   async componentDidMount() {
@@ -54,6 +55,11 @@ export class Purchase extends React.Component {
 
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
+  }
+
+  async editPurchase() {
+    const { match, history } = this.props;
+    return history.push(`/addpurchase/${match.params.id}`);
   }
 
   async deletePurchase() {
@@ -96,6 +102,7 @@ export class Purchase extends React.Component {
                 <GridContainer>
                   <GridItem xs={12}>
                     <Button color="info" disabled={loading} onClick={this.deletePurchase}>Delete Purchase</Button>
+                    <Button color="info" disabled={loading} onClick={this.editPurchase}>Edit Purchase</Button>
                     <PurchaseItems purchase={purchase} />
                   </GridItem>
                   <GridItem xs={4}>

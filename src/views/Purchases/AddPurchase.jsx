@@ -66,6 +66,33 @@ export default class AddPurchase extends React.Component {
     this.savePurchase = this.savePurchase.bind(this);
   }
 
+  async componentDidMount() {
+    const { match } = this.props;
+    const purchaseId = match.params.id;
+    if (purchaseId && !isNaN(purchaseId)) {
+      const purchase = await PurchaseService.getPurchaseDetail(purchaseId);
+      if (purchase) {
+        this.setState({
+          rows: purchase.purchaseDetail.map(row => row.status === 'Plan' && (
+            {
+              productId: row.productId,
+              qty: row.amount,
+              unitPrice: row.unitPrice,
+              productName: row.product.productName,
+              total: row.total,
+              overheadCost: row.overheadCost,
+            })),
+          notes: purchase.notes,
+          subTotal: purchase.subTotal,
+          total: purchase.total,
+          supplier: purchase.supplier,
+          deliveryDate: purchase.deliveryDate.replace('T00:00:00', ''),
+          poNumber: purchase.poNumber,
+        });
+      }
+    }
+  }
+
   productChanged(product) {
     const { rows } = this.state;
     const newRows = JSON.parse(JSON.stringify(rows));
@@ -121,8 +148,19 @@ export default class AddPurchase extends React.Component {
       purchaseDetail: purchaseDetails,
     };
 
-    const result = await PurchaseService.savePurchase(purchase);
-    if (result === false || result === null || result.StatusCode === 500 || result.StatusCode === 400) {
+    let result;
+    const { match } = this.props;
+    const purchaseId = match.params.id;
+    if (purchaseId && !isNaN(purchaseId)) {
+      result = await PurchaseService.updatePurchase(purchaseId, purchase);
+    } else {
+      result = await PurchaseService.savePurchase(purchase);
+    }
+
+    if (result === false
+      || result === null
+      || result.StatusCode === 500
+      || result.StatusCode === 400) {
       this.setState({
         openSnackbar: true,
         snackbarMessage: 'Oops, looks like something went wrong!',
@@ -159,13 +197,21 @@ export default class AddPurchase extends React.Component {
       loading,
     } = this.state;
 
+    const { match } = this.props;
+
+    const purchaseId = match.params.id;
+    let pageTitle = 'New Purchase';
+    if (purchaseId && !isNaN(purchaseId)) {
+      pageTitle = `Update Purchase: ${purchaseId}`;
+    }
+
     return (
       <div>
         <GridContainer>
           <GridItem xs={12} sm={12} md={12}>
             <Card>
               <CardHeader color="primary">
-                <div className={styles.cardTitleWhite}>New Purchase</div>
+                <div className={styles.cardTitleWhite}>{pageTitle}</div>
               </CardHeader>
               <CardBody>
                 <GridContainer>
@@ -190,6 +236,7 @@ export default class AddPurchase extends React.Component {
                 </GridContainer>
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={12}>
+                    Planned Items
                     <PurchaseTable
                       rows={rows}
                       priceChanged={this.priceChanged}

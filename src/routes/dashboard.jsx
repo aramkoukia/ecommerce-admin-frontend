@@ -101,7 +101,7 @@ const dashboardRoutes = [
     permission: Permissions.ViewCustomers,
   },
   {
-    path: '/addpurchase',
+    path: '/addpurchase/:id',
     sidebarName: 'New Purchase',
     navbarName: '',
     icon: Highlight,
