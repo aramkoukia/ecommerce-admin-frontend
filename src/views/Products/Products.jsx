@@ -90,7 +90,15 @@ export default class Products extends React.Component {
       },
     };
 
-    const columns = ['Type', 'Product Code', 'Product Name', 'Sales Price ($)', 'Van Balance', 'Van OnHold', 'Abb Balance', 'Abb OnHold', 'Disabled',
+    const columns = [
+      {
+        name: 'Type',
+        options: {
+          display: false,
+        },
+      },
+      'Product Code',
+      'Product Name', 'Sales Price ($)', 'Van Balance', 'Van OnHold', 'Abb Balance', 'Abb OnHold', 'Disabled',
       {
         name: 'productId',
         options: {
@@ -113,11 +121,12 @@ export default class Products extends React.Component {
       filterType: 'checkbox',
       onRowClick: this.rowClicked,
       rowHover: true,
-      resizableColumns: true,
+      resizableColumns: false,
       selectableRows: false,
       rowsPerPageOptions: [25, 50, 100],
       rowsPerPage: 25,
       page: gridPage - 1,
+      responsive: 'scroll',
     };
 
     return (
@@ -142,16 +151,17 @@ export default class Products extends React.Component {
                   value={page}
                   min="1"
                 />
-
-                <MUIDataTable
-                  title="Click on each product to see all the transactions for that product."
-                  data={products}
-                  columns={columns}
-                  options={options}
-                />
               </CardBody>
             </Card>
-            { loading && (<LinearProgress />) }
+
+            <MUIDataTable
+              title="Click on each product to see all the transactions for that product."
+              data={products}
+              columns={columns}
+              options={options}
+            />
+
+            {loading && (<LinearProgress />)}
           </GridItem>
           <Snackbar
             place="tl"
