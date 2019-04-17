@@ -120,14 +120,14 @@ export default class PuchaseReport extends React.Component {
     const purchaseSummaryOptions = {
       filterType: 'checkbox',
       rowHover: true,
-      resizableColumns: true,
+      resizableColumns: false,
       selectableRows: false,
     };
 
     const purchaseDetailOptions = {
       filterType: 'checkbox',
       rowHover: true,
-      resizableColumns: true,
+      resizableColumns: false,
       selectableRows: false,
     };
 

@@ -175,21 +175,21 @@ export default class PaymentReport extends React.Component {
     const paymentsTotalOptions = {
       filterType: 'checkbox',
       rowHover: true,
-      resizableColumns: true,
+      resizableColumns: false,
       selectableRows: false,
     };
 
     const paymentsSummaryOptions = {
       filterType: 'checkbox',
       rowHover: true,
-      resizableColumns: true,
+      resizableColumns: false,
       selectableRows: false,
     };
 
     const paymentDetailsOptions = {
       filterType: 'checkbox',
       rowHover: true,
-      resizableColumns: true,
+      resizableColumns: false,
       selectableRows: false,
     };
 

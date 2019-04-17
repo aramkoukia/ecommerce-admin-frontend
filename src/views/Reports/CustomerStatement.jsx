@@ -97,67 +97,69 @@ export default class CustomerStatement extends React.Component {
     };
 
     const customerPaidColumns = ['Invoice Id', 'PO Number', 'Total Sale ($)', 'Status', 'Date', 'Payment Amount($)', 'Paid By', 'Company Name',
-    {
-      name: 'Address',
-      options: {
-        display: false,
+      {
+        name: 'Address',
+        options: {
+          display: false,
+        },
       },
-    },
-    {
-      name: 'City',
-      options: {
-        display: false,
+      {
+        name: 'City',
+        options: {
+          display: false,
+        },
       },
-    },
-    {
-      name: 'Province',
-      options: {
-        display: false,
+      {
+        name: 'Province',
+        options: {
+          display: false,
+        },
       },
-    },
-    {
-      name: 'PostalCode',
-      options: {
-        display: false,
-      },
-    },];
+      {
+        name: 'PostalCode',
+        options: {
+          display: false,
+        },
+      }];
 
     const customerUnPaidColumns = ['Invoice Id', 'PO Number', 'Total Sale ($)', 'Status', 'Date', 'Due Date', 'Company Name',
-    {
-      name: 'Address',
-      options: {
-        display: false,
+      {
+        name: 'Address',
+        options: {
+          display: false,
+        },
       },
-    },
-    {
-      name: 'City',
-      options: {
-        display: false,
+      {
+        name: 'City',
+        options: {
+          display: false,
+        },
       },
-    },
-    {
-      name: 'Province',
-      options: {
-        display: false,
+      {
+        name: 'Province',
+        options: {
+          display: false,
+        },
       },
-    },
-    {
-      name: 'PostalCode',
-      options: {
-        display: false,
-      },
-    },];
+      {
+        name: 'PostalCode',
+        options: {
+          display: false,
+        },
+      }];
 
     const options = {
       filterType: 'checkbox',
       rowHover: true,
-      resizableColumns: true,
+      resizableColumns: false,
       selectableRows: false,
       rowsPerPageOptions: [25, 50, 100],
       rowsPerPage: 25,
     };
 
-    const { customerPaidData, customerUnPaidData, fromDate, toDate } = this.state;
+    const {
+      customerPaidData, customerUnPaidData, fromDate, toDate,
+    } = this.state;
     // const paidTitle = `Paid Orders - From Date: ${dateFormat(fromDate)} To Date: ${dateFormat(toDate)}`;
     // const unpaidTitle = `Awaiting Patment - Until Date: ${dateFormat(toDate)}`;
     const paidTitle = 'Paid Orders';

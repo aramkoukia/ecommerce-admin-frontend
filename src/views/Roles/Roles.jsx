@@ -171,7 +171,7 @@ export default class Roles extends React.Component {
       filterType: 'checkbox',
       onRowClick: this.rowClicked,
       rowHover: true,
-      resizableColumns: true,
+      resizableColumns: false,
       selectableRows: false,
       rowsPerPageOptions: [25, 50, 100],
       rowsPerPage: 25,

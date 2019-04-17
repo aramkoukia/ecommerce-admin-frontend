@@ -169,7 +169,7 @@ export default class CustomerReport extends React.Component {
     const options = {
       filterType: 'checkbox',
       rowHover: true,
-      resizableColumns: true,
+      resizableColumns: false,
       selectableRows: false,
       rowsPerPageOptions: [25, 50, 100],
       rowsPerPage: 25,
