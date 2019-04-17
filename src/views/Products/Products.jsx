@@ -55,8 +55,7 @@ export default class Products extends React.Component {
   }
 
   rowClicked(rowData) {
-    const { history } = this.props;
-    history.push(`/product/${rowData[9]}`);
+    window.open(`/product/${rowData[9]}`, "_blank")
   }
 
   render() {
