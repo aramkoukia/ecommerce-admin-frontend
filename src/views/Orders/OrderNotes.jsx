@@ -19,6 +19,8 @@ export default class OrderNotes extends React.Component {
     this.state = {
       orderNotes: '',
       orderPoNumber: '',
+      cardAuthCode: '',
+      cardLastFourDigits: '',
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -39,7 +41,9 @@ export default class OrderNotes extends React.Component {
 
   async updateOrderInfo() {
     const { order } = this.props;
-    const { orderPoNumber, orderNotes } = this.state;
+    const {
+      orderPoNumber, orderNotes, cardAuthCode, cardLastFourDigits,
+    } = this.state;
 
     this.setState({
       loading: true,
@@ -48,6 +52,8 @@ export default class OrderNotes extends React.Component {
     const orderInfo = {
       poNumber: orderPoNumber,
       notes: orderNotes,
+      cardAuthCode,
+      cardLastFourDigits,
     };
 
     const result = await OrderService.updateOrderInfo(order.orderId, orderInfo);
@@ -55,7 +61,7 @@ export default class OrderNotes extends React.Component {
     if (result && result.orderId) {
       this.setState({
         openSnackbar: true,
-        snackbarMessage: 'Order Notes and PO Number was updated successfully!',
+        snackbarMessage: 'Order Information was updated successfully!',
         snackbarColor: 'success',
         loading: false,
       });
@@ -67,59 +73,88 @@ export default class OrderNotes extends React.Component {
   }
 
   render() {
-    const { orderNotes, orderPoNumber, loading, snackbarColor, snackbarMessage, openSnackbar } = this.state;
+    const {
+      orderNotes,
+      orderPoNumber,
+      loading,
+      snackbarColor,
+      snackbarMessage,
+      openSnackbar,
+      cardAuthCode,
+      cardLastFourDigits,
+    } = this.state;
 
     return (
       <Card>
         <CardHeader color="info">
           Order Info
         </CardHeader>
-      <CardBody>
-      <GridContainer>
-      <GridItem md={12}>
-         <TextField
-            name="orderPoNumber"
-            label="PO Number"
-            type="text"
-            onChange={this.handleChange}
-            value={orderPoNumber}
-            fullWidth="true"
-          /> 
-          </GridItem>
-        <GridItem  md={12}>
-        <TextField
-            name="orderNotes"
-            label="Notes"
-            type="text"
-            onChange={this.handleChange}
-            value={orderNotes}
-            multiline="true"
-            rows="3"
-            fullWidth="true"
-          />
-          </GridItem>
-          <GridItem md={7}>
-            { loading && <CircularProgress /> }
-          </GridItem>          
-          <GridItem md={5}>
-            <Button color="primary" onClick={this.updateOrderInfo}>
-              <Save />
+        <CardBody>
+          <GridContainer>
+            <GridItem md={6}>
+              <TextField
+                name="cardAuthCode"
+                label="Auth Code"
+                type="text"
+                onChange={this.handleChange}
+                value={cardAuthCode}
+                fullWidth="true"
+              />
+            </GridItem>
+            <GridItem md={6}>
+              <TextField
+                name="cardLastFourDigits"
+                label="Card Last Four Digits"
+                type="text"
+                onChange={this.handleChange}
+                value={cardLastFourDigits}
+                fullWidth="true"
+              />
+            </GridItem>
+            <GridItem md={12}>
+              <TextField
+                name="orderPoNumber"
+                label="PO Number"
+                type="text"
+                onChange={this.handleChange}
+                value={orderPoNumber}
+                fullWidth="true"
+              />
+            </GridItem>
+            <GridItem md={12}>
+              <TextField
+                name="orderNotes"
+                label="Notes"
+                type="text"
+                onChange={this.handleChange}
+                value={orderNotes}
+                multiline="true"
+                rows="3"
+                fullWidth="true"
+              />
+            </GridItem>
+            <GridItem md={7}>
+              { loading && <CircularProgress /> }
+            </GridItem>
+            <GridItem md={5}>
+              <Button color="primary" onClick={this.updateOrderInfo}>
+                <Save />
                &nbsp;
                Save
-             </Button>
-          </GridItem> 
+              </Button>
+            </GridItem>
           </GridContainer>
           <Snackbar
-              place="tl"
-              color={snackbarColor}
-              icon={Check}
-              message={snackbarMessage}
-              open={openSnackbar}
-              closeNotification={() => this.setState({ openSnackbar: false })}
-              close
-            />
-      </CardBody>
-    </Card>
+            place="tl"
+            color={snackbarColor}
+            icon={Check}
+            message={snackbarMessage}
+            open={openSnackbar}
+            closeNotification={() => this.setState({ openSnackbar: false })}
+            close
+          />
+        </CardBody>
+      </Card>
     );
   }
 }
