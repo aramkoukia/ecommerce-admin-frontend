@@ -133,6 +133,11 @@ export default class Orders extends React.Component {
         //   'Credit Card / Debit': 'Credit Card / Debit', Cash: 'Cash', Cheque: 'Cheque', 'Store Credit': 'Store Credit', 'Paypal and Amazon + USD Account': 'Paypal and Amazon + USD Account',
         // },
       },
+      { title: 'Due Date', field: 'dueDate' },
+      {
+        title: 'Over Due',
+        field: 'overDue',
+      },
       { title: 'Company Name', field: 'companyName' },
     ];
 
@@ -143,6 +148,13 @@ export default class Orders extends React.Component {
       columnsButton: true,
       exportButton: true,
       filtering: true,
+      rowStyle: data => {
+        if (data.overDue === 'Yes') {
+          return {
+            backgroundColor: '#ffcccc',
+          }
+        }
+      }
     };
 
     const {
