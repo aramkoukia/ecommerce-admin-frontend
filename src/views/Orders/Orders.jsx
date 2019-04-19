@@ -137,6 +137,7 @@ export default class Orders extends React.Component {
       {
         title: 'Over Due',
         field: 'overDue',
+        hidden: true,
       },
       { title: 'Company Name', field: 'companyName' },
     ];

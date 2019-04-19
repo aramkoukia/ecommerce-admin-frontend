@@ -98,6 +98,9 @@ export default class ReturnOrderItems extends React.Component {
     const { restockingFeePercent } = this.state;
     for (const i in orderRows) {
       if (orderRows[i].productId == event.target.name) {
+        if (event.target.value < 0) {
+          event.target.value = event.target.value * -1
+        }
         orderRows[i].amount = event.target.value;
         orderRows[i].subTotal = event.target.value * orderRows[i].unitPrice * -1;
         let discountAmount = orderRows[i].discountAmount === "" ? 0 : orderRows[i].discountAmount;
@@ -177,6 +180,9 @@ export default class ReturnOrderItems extends React.Component {
                       value={row.amount}
                       onChange={this.handleQuantityChanged}
                       type="number"
+                      inputProps={{
+                        min: '0',
+                      }}
                     />
                   </TableCell>
                   <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
