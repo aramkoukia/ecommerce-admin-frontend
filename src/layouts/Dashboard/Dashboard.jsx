@@ -36,7 +36,7 @@ class App extends React.Component {
   }
 
   permissionsChanged() {
-    this.setState({ permissionsChanged: true })
+    this.setState({ permissionsChanged: true });
   }
 
   handleDrawerToggle = () => {
@@ -88,12 +88,12 @@ class App extends React.Component {
             return <Redirect from={prop.path} to={prop.to} key={key} />;
           }
 
-          if(prop.path === '/neworder/:id') {
-            return <Route path={prop.path} key={key} onEnter={requireAuth} render={ (props) => ( <AddOrder {...props} permissionsChanged={this.permissionsChanged} />) } />;
+          if (prop.path === '/neworder/:id') {
+            return <Route path={prop.path} key={key} onEnter={requireAuth} render={props => (<AddOrder {...props} permissionsChanged={this.permissionsChanged} />)} />;
           }
 
           if (prop.path === '/return/:id') {
-            return <Route path={prop.path} key={key} onEnter={requireAuth} render={ (props) => ( <Return {...props} permissionsChanged={this.permissionsChanged} />) } />;
+            return <Route path={prop.path} key={key} onEnter={requireAuth} render={props => (<Return {...props} permissionsChanged={this.permissionsChanged} />)} />;
           }
 
           return <Route path={prop.path} component={prop.component} key={key} onEnter={requireAuth} />;
@@ -108,7 +108,7 @@ class App extends React.Component {
           <Sidebar
             routes={dashboardRoutes}
             permissionsChanged={permissionsChanged}
-            logoText={"Lights and Parts"}
+            logoText="Lights and Parts"
             logo={logo}
             image={image}
             handleDrawerToggle={this.handleDrawerToggle}
@@ -116,7 +116,7 @@ class App extends React.Component {
             color="blue"
             {...rest}
           />
-) : <div />
+        ) : <div />
         }
 
         <div className={classes.mainPanel} ref="mainPanel">
@@ -127,7 +127,10 @@ class App extends React.Component {
             {...rest}
           />
 
-          {/* On the /maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}
+          {/* On the /maps route we want the map to be on full screen -
+          this is not possible if the content and conatiner
+          classes are present because they have some
+          paddings which would make the map smaller */}
           {this.getRoute() ? (
             <div className={classes.content}>
               <div className={classes.container}>{switchRoutes}</div>
