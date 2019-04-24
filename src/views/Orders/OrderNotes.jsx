@@ -32,6 +32,10 @@ export default class OrderNotes extends React.Component {
     this.setState({
       orderNotes: order.notes,
       orderPoNumber: order.poNumber,
+      authorizedBy: order.authorizedBy,
+      phoneNumber: order.phoneNumber,
+      cardAuthCode: order.cardAuthCode,
+      cardLastFourDigits: order.cardLastFourDigits,
     });
   }
 
@@ -42,7 +46,12 @@ export default class OrderNotes extends React.Component {
   async updateOrderInfo() {
     const { order } = this.props;
     const {
-      orderPoNumber, orderNotes, cardAuthCode, cardLastFourDigits,
+      orderPoNumber,
+      orderNotes,
+      cardAuthCode,
+      cardLastFourDigits,
+      authorizedBy,
+      phoneNumber,
     } = this.state;
 
     this.setState({
@@ -54,6 +63,8 @@ export default class OrderNotes extends React.Component {
       notes: orderNotes,
       cardAuthCode,
       cardLastFourDigits,
+      authorizedBy,
+      phoneNumber,
     };
 
     const result = await OrderService.updateOrderInfo(order.orderId, orderInfo);
@@ -82,7 +93,11 @@ export default class OrderNotes extends React.Component {
       openSnackbar,
       cardAuthCode,
       cardLastFourDigits,
+      authorizedBy,
+      phoneNumber,
     } = this.state;
+
+    const { order } = this.props;
 
     return (
       <Card>
@@ -111,6 +126,30 @@ export default class OrderNotes extends React.Component {
                 fullWidth="true"
               />
             </GridItem>
+            {order.status === 'Return' && (
+            <GridItem md={6}>
+              <TextField
+                name="authorizedBy"
+                label="Authorized By"
+                type="text"
+                onChange={this.handleChange}
+                value={authorizedBy}
+                fullWidth="true"
+              />
+            </GridItem>
+            )}
+            {order.status === 'Return' && (
+              <GridItem md={6}>
+                <TextField
+                  name="phoneNumber"
+                  label="Phone Number"
+                  type="text"
+                  onChange={this.handleChange}
+                  value={phoneNumber}
+                  fullWidth="true"
+                />
+              </GridItem>
+            )}
             <GridItem md={12}>
               <TextField
                 name="orderPoNumber"
