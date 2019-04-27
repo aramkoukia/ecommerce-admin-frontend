@@ -96,10 +96,10 @@ export default class OrderService {
     }
   }
 
-  static async getOrdersByLocation(locationId, showAllOrders) {
+  static async getOrdersByLocation(locationId, fromDate, toDate) {
     try {
       const response = await RestUtilities.get(
-        `orders/location/${locationId}?showAllOrders=${showAllOrders}`,
+        `orders/location/${locationId}?fromDate=${fromDate}&todate=${toDate}`,
       );
       return response.content;
     } catch (err) {

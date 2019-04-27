@@ -1,13 +1,13 @@
 import React from 'react';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Select from '@material-ui/core/Select';
+import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MaterialTable from 'material-table';
 import GridItem from '../../components/Grid/GridItem';
+import Button from '../../components/CustomButtons/Button';
 import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
@@ -15,13 +15,26 @@ import CardBody from '../../components/Card/CardBody';
 import OrderService from '../../services/OrderService';
 import LocationService from '../../services/LocationService';
 
+function dateFormat(dateString) {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, 0);
+  const day = `${date.getUTCDate()}`.padStart(2, 0);
+  const stringDate = [year, month, day].join('-');
+  return stringDate;
+}
+
+Date.prototype.addHours = function (h) {
+  this.setHours(this.getHours() + h);
+  return this;
+}
+
 export default class Orders extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       orders: [],
-      showAllOrders: false,
       loading: false,
       locationId: 0,
       locations: [
@@ -33,11 +46,19 @@ export default class Orders extends React.Component {
     };
 
     this.rowClicked = this.rowClicked.bind(this);
+    this.searchClicked = this.searchClicked.bind(this);
   }
 
   async componentDidMount() {
+    const lastMonthDate = new Date().addHours(-8);
+    const fromDate = dateFormat(new Date(lastMonthDate.setMonth(lastMonthDate.getMonth() - 1)));
+    const toDate = dateFormat((new Date()).addHours(-8));
+    this.setState({
+      fromDate,
+      toDate,
+    });
     await this.getLocations();
-    this.ordersList(0);
+    this.ordersList(0, fromDate, toDate);
   }
 
   async getLocations() {
@@ -49,25 +70,31 @@ export default class Orders extends React.Component {
   }
 
   handleChange = name => (event) => {
-    this.setState({ [name]: event.target.checked });
-    this.ordersList();
+    this.setState({
+      [name]: event.target.value,
+    });
   };
 
   handleLocationChange = (event) => {
     this.setState({ locationId: event.target.value });
-    this.ordersList(event.target.value);
+    const { fromDate, toDate } = this.state;
+    this.ordersList(event.target.value, fromDate, toDate);
   }
 
-  ordersList(locationId) {
-    const { showAllOrders } = this.state;
+  ordersList(locationId, fromDate, toDate) {
     this.setState({ loading: true });
 
-    OrderService.getOrdersByLocation(locationId, showAllOrders)
+    OrderService.getOrdersByLocation(locationId, fromDate, toDate)
       .then(data => this.setState({ orders: data, loading: false }));
   }
 
   rowClicked(_event, rowData) {
     window.open(`/order/${rowData.orderId}`, "_blank")
+  }
+
+  searchClicked() {
+    const { fromDate, toDate, locationId } = this.state;
+    this.ordersList(locationId, fromDate, toDate);
   }
 
   render() {
@@ -158,7 +185,9 @@ export default class Orders extends React.Component {
     };
 
     const {
-      orders, showAllOrders, loading, locations, locationId,
+      orders, loading, locations, locationId,
+      fromDate,
+      toDate,
     } = this.state;
 
     return (
@@ -194,7 +223,34 @@ export default class Orders extends React.Component {
                       </Select>
                     </FormControl>
                   </GridItem>
-                  <GridItem md={3}>
+                  <GridItem md={2}>
+                    <TextField
+                      onChange={this.handleChange('fromDate')}
+                      id="date"
+                      label="From Date"
+                      type="date"
+                      value={fromDate}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem md={2}>
+                    <TextField
+                      onChange={this.handleChange('toDate')}
+                      id="date"
+                      label="To Date"
+                      type="date"
+                      value={toDate}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem md={1}>
+                    <Button color="info" onClick={this.searchClicked}>Search</Button>
+                  </GridItem>
+                  {/* <GridItem md={3}>
                     <FormControlLabel
                       control={(
                         <Checkbox
@@ -207,7 +263,7 @@ export default class Orders extends React.Component {
                       )}
                       label="Load orders older than 3 month"
                     />
-                  </GridItem>
+                  </GridItem> */}
                   <GridItem md={1}>
                     {loading && <CircularProgress />}
                   </GridItem>
