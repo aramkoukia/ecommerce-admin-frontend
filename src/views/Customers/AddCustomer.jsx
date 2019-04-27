@@ -1,10 +1,15 @@
 import React from 'react';
 import Check from '@material-ui/icons/Check';
-import SchemaForm from 'jsonschema-form-for-material-ui';
-import ReactTimeout from 'react-timeout';
+import TextField from '@material-ui/core/TextField';
+import Select from '@material-ui/core/Select';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
 import CardHeader from '../../components/Card/CardHeader';
+import Button from '../../components/CustomButtons/Button';
 import CardBody from '../../components/Card/CardBody';
 import Card from '../../components/Card/Card';
 import Snackbar from '../../components/Snackbar/Snackbar';
@@ -20,6 +25,9 @@ class AddCustomer extends React.Component {
       openSnackbar: false,
       snackbarMessage: '',
       snackbarColor: '',
+      country: 'Canada',
+      province: 'BC',
+      segment: 'None',
     };
   }
 
@@ -31,166 +39,52 @@ class AddCustomer extends React.Component {
     });
   }
 
-  async onSubmit(form) {
-    const result = await CustomerService.addCustomer(form.formData);
+  handleChange = event => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
+
+  async onSubmit() {
+    const {
+      firstName,
+      lastName,
+      companyName,
+      phoneNumber,
+      mobile,
+      country,
+      address,
+      city,
+      province,
+      postalCode,
+      pstNumber,
+      creditLimit,
+      email,
+      segment,
+    } = this.state;
+
+    const customer = {
+      firstName,
+      lastName,
+      companyName,
+      phoneNumber,
+      mobile,
+      country,
+      address,
+      city,
+      province,
+      postalCode,
+      pstNumber,
+      creditLimit,
+      email,
+      segment,
+      accountBalance: 0,
+      storeCredit: 0,
+    };
+
+    const result = await CustomerService.addCustomer(customer);
     this.setState({
       openSnackbar: true,
       snackbarMessage: 'New customer is saved!',
       snackbarColor: 'success',
-    });
-
-    this.props.history.goBack();
-    // return this.props.setTimeout(this.props.history.push(`/customer/${result.customerId}`, 2000));
-  }
-
-  render() {
-    const { openSnackbar, snackbarMessage, snackbarColor } = this.state;
-    const styles = {
-      field: {
-        display: 'grid',
-      },
-      root: {
-        display: 'grid',
-      },
-    };
-
-    const schema = {
-      // "title": "A registration form",
-      // "description": "A simple form example.",
-      type: 'object',
-      required: [
-        'firstName',
-        'phoneNumber',
-        'country',
-      ],
-      properties: {
-        firstName: {
-          type: 'string',
-          title: 'First Name',
-        },
-        lastName: {
-          type: 'string',
-          title: 'Last Name',
-        },
-        companyName: {
-          type: 'string',
-          title: 'Company Name',
-        },
-        phoneNumber: {
-          type: 'string',
-          title: 'Phone Number',
-        },
-        mobile: {
-          type: 'string',
-          title: 'Mobile',
-        },
-        country: {
-          type: 'string',
-          title: 'Country',
-          enum: ['Canada', 'United States', 'Other'],
-        },
-        address: {
-          type: 'string',
-          title: 'Address',
-        },
-        city: {
-          type: 'string',
-          title: 'City',
-        },
-        province: {
-          type: 'string',
-          title: 'Province',
-          enum: ['BC', 'AB', 'MB', 'NB', 'NL', 'NT', 'NS', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT', 'OTHER'],
-        },
-        postalCode: {
-          type: 'string',
-          title: 'Postal Code',
-        },
-        pstNumber: {
-          type: 'string',
-          title: 'PST Number',
-        },
-        creditLimit: {
-          type: 'number',
-          title: 'Credit Limit',
-        },
-        email: {
-          type: 'string',
-          title: 'Email',
-        },
-        segment: {
-          type: 'string',
-          title: 'Customer Segment (Used for discounts etc)',
-          enum: ['None', 'Segment 1', 'Segment 2', 'Segment 3', 'Segment 4'],
-        },
-      },
-    };
-
-    const uiSchema = {
-      // "ui:orientation": "row",
-      firstName: {
-        'ui:autofocus': true,
-        'ui:emptyValue': '',
-      },
-      lastName: {
-        'ui:autofocus': true,
-        'ui:emptyValue': '',
-      },
-      companyName: {
-        'ui:autofocus': true,
-        'ui:emptyValue': '',
-      },
-      phoneNumber: {
-        'ui:autofocus': true,
-        'ui:emptyValue': '',
-      },
-      mobile: {
-        'ui:autofocus': true,
-        'ui:emptyValue': '',
-      },
-      country: {
-        'ui:autofocus': true,
-        'ui:emptyValue': '',
-      },
-      address: {
-        'ui:autofocus': true,
-        'ui:emptyValue': '',
-      },
-      city: {
-        'ui:autofocus': true,
-        'ui:emptyValue': '',
-      },
-      province: {
-        'ui:autofocus': true,
-        'ui:emptyValue': '',
-      },
-      postalCode: {
-        'ui:autofocus': true,
-        'ui:emptyValue': '',
-      },
-      pstNumber: {
-        'ui:autofocus': true,
-        'ui:emptyValue': '',
-      },
-      creditLimit: {
-        'ui:autofocus': true,
-        'ui:emptyValue': 0,
-      },
-      userName: {
-        'ui:autofocus': true,
-        'ui:emptyValue': '',
-      },
-      email: {
-        'ui:autofocus': true,
-        'ui:emptyValue': '',
-      },
-      website: {
-        'ui:autofocus': true,
-        'ui:emptyValue': '',
-      },
-    };
-
-    const initialFormData = {
       firstName: '',
       lastName: '',
       companyName: '',
@@ -203,29 +97,226 @@ class AddCustomer extends React.Component {
       postalCode: '',
       pstNumber: '',
       creditLimit: 0,
-      userName: '',
       email: '',
-      website: '',
       segment: 'None',
-    };
+    });
+
+    customer.customerId = result.customerId;
+    customer.customerCode = result.customerCode;
+
+    const { customerSaved } = this.props;
+    if (customerSaved) {
+      customerSaved(customer);
+    }
+  }
+
+  render() {
+    const {
+      openSnackbar,
+      snackbarMessage,
+      snackbarColor,
+      firstName,
+      lastName,
+      companyName,
+      phoneNumber,
+      mobile,
+      country,
+      address,
+      city,
+      province,
+      postalCode,
+      pstNumber,
+      creditLimit,
+      email,
+      segment,
+    } = this.state;
 
     return (
       <div>
         <GridContainer>
-          <GridItem xs={12} sm={12} md={9}>
+          <GridItem md={12}>
             <Card>
               <CardHeader color="primary">
-                <div className={styles.cardTitleWhite}>New Customer</div>
+                New Customer
               </CardHeader>
               <CardBody>
-                <SchemaForm
-                  classes={styles}
-                  schema={schema}
-                  uiSchema={uiSchema}
-                  formData={initialFormData}
-                  onSubmit={this.onSubmit}
-                />
+                <GridContainer md={12}>
+                  <GridItem md={4}>
+                    <TextField
+                      name="firstName"
+                      label="First Name"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={firstName}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={4}>
+                    <TextField
+                      name="lastName"
+                      label="Last Name"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={lastName}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={4}>
+                    <TextField
+                      name="companyName"
+                      label="Company Name"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={companyName}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={4}>
+                    <TextField
+                      name="email"
+                      label="Email"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={email}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={4}>
+                    <TextField
+                      name="phoneNumber"
+                      label="Phone Number"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={phoneNumber}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={4}>
+                    <TextField
+                      name="mobile"
+                      label="Mobile"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={mobile}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={4}>
+                    <FormControl>
+                      <InputLabel htmlFor="country">Country</InputLabel>
+                      <Select
+                        value={country}
+                        onChange={this.handleChange}
+                        input={<Input name="country" id="country" />}
+                        fullWidth="true"
+                      >
+                        <MenuItem value="Canada">Canada</MenuItem>
+                        <MenuItem value="United States">United States</MenuItem>
+                        <MenuItem value="Other">Other</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </GridItem>
+                  <GridItem md={4}>
+                    <FormControl>
+                      <InputLabel htmlFor="province">Province</InputLabel>
+                      <Select
+                        value={province}
+                        onChange={this.handleChange}
+                        input={<Input name="province" id="province" />}
+                        fullWidth="true"
+                      >
+                        <MenuItem value="BC">BC</MenuItem>
+                        <MenuItem value="AB">AB</MenuItem>
+                        <MenuItem value="MB">MB</MenuItem>
+                        <MenuItem value="NB">NB</MenuItem>
+                        <MenuItem value="NL">NL</MenuItem>
+                        <MenuItem value="NS">NS</MenuItem>
+                        <MenuItem value="NU">NU</MenuItem>
+                        <MenuItem value="ON">ON</MenuItem>
+                        <MenuItem value="PE">PE</MenuItem>
+                        <MenuItem value="QC">QC</MenuItem>
+                        <MenuItem value="SK">SK</MenuItem>
+                        <MenuItem value="YT">YT</MenuItem>
+                        <MenuItem value="Other">Other</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </GridItem>
+                  <GridItem md={4}>
+                    <TextField
+                      name="city"
+                      label="City"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={city}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={4}>
+                    <TextField
+                      name="address"
+                      label="Address"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={address}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={4}>
+                    <TextField
+                      name="postalCode"
+                      label="Postal Code"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={postalCode}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={4}>
+                  </GridItem>
+                  <GridItem md={4}>
+                    <TextField
+                      name="creditLimit"
+                      label="CreditLimit"
+                      type="number"
+                      onChange={this.handleChange}
+                      value={creditLimit}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={4}>
+                    <TextField
+                      name="pstNumber"
+                      label="PST Number"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={pstNumber}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={4}>
+                    <FormControl>
+                      <InputLabel htmlFor="segment">Segment</InputLabel>
+                      <Select
+                        value={segment}
+                        onChange={this.handleChange}
+                        input={<Input name="segment" id="segment" />}
+                        fullWidth="true"
+                      >
+                        <MenuItem value="None">None</MenuItem>
+                        <MenuItem value="Segment 1">Segment 1</MenuItem>
+                        <MenuItem value="Segment 2">Segment 2</MenuItem>
+                        <MenuItem value="Segment 3">Segment 3</MenuItem>
+                        <MenuItem value="Segment 4">Segment 4</MenuItem>
+                      </Select>
+                    </FormControl>
 
+                  </GridItem>
+                  <GridItem md={12}>
+                    <Button color="primary" onClick={this.onSubmit}>
+                      Save
+                    </Button>
+                  </GridItem>
+                </GridContainer>
               </CardBody>
             </Card>
           </GridItem>
@@ -244,4 +335,4 @@ class AddCustomer extends React.Component {
   }
 }
 
-export default ReactTimeout(AddCustomer);
+export default AddCustomer;

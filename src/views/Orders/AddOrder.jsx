@@ -13,6 +13,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Slide from '@material-ui/core/Slide';
 import PropTypes from 'prop-types';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -25,6 +26,7 @@ import CustomInput from '../../components/CustomInput/CustomInput';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import ProductSearch from './ProductSearch';
 import CustomerSearch from './CustomerSearch';
+import AddCustomer from '../Customers/AddCustomer';
 import OrderTable from './OrderTable';
 import OrderService from '../../services/OrderService';
 import TaxService from '../../services/TaxService';
@@ -96,6 +98,7 @@ export default class AddOrder extends React.Component {
       openSnackbar: false,
       chargePst: true,
       openDialog: false,
+      openCustomerDialog: false,
       userGivenName: '',
       chequeNo: '',
       payCreditDebit: true,
@@ -137,6 +140,8 @@ export default class AddOrder extends React.Component {
     this.newCustomer = this.newCustomer.bind(this);
     this.continueOrder = this.continueOrder.bind(this);
     this.cancelOrder = this.cancelOrder.bind(this);
+    this.customerSaved = this.customerSaved.bind(this);
+    this.handleCustomerDialogClose = this.handleCustomerDialogClose.bind(this);
   }
 
   async componentDidMount() {
@@ -238,6 +243,12 @@ export default class AddOrder extends React.Component {
     });
   }
 
+  handleCustomerDialogClose() {
+    this.setState({
+      openCustomerDialog: false,
+    });
+  }
+
   handleClose = () => {
     this.setState({
       openDialog: false,
@@ -259,8 +270,7 @@ export default class AddOrder extends React.Component {
   }
 
   newCustomer() {
-    const { history } = this.props;
-    return history.push('newcustomer');
+    this.setState({ openCustomerDialog: true });
   }
 
   async handleAuthEnter(event) {
@@ -658,6 +668,14 @@ export default class AddOrder extends React.Component {
     }
   }
 
+  async customerSaved(customer) {
+    this.setState({
+      openCustomerDialog: false,
+    });
+
+    await this.customerChanged(customer);
+  }
+
   async saveAsDraft() {
     this.setState({
       loading: true,
@@ -767,6 +785,7 @@ export default class AddOrder extends React.Component {
       chargePst,
       openDialog,
       openAuthDialog,
+      openCustomerDialog,
       total,
       authCode,
       userGivenName,
@@ -840,7 +859,7 @@ export default class AddOrder extends React.Component {
                                 }}
                                 inputProps={{
                                   disabled: true,
-                                  value: `${customer.userName} `,
+                                  value: `${customer.email} `,
                                 }}
                               />
                             </GridItem>
@@ -1309,7 +1328,21 @@ export default class AddOrder extends React.Component {
             )}
           </DialogActions>
         </Dialog>
-
+        <Dialog
+          open={openCustomerDialog}
+          aria-labelledby="form-dialog-title"
+          maxWidth="xl"
+          onClose={this.handleCustomerDialogClose}
+        >
+          <DialogContent>
+            <AddCustomer customerSaved={this.customerSaved} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleCustomerDialogClose} color="info">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }
