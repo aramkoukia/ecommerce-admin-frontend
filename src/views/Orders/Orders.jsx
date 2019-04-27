@@ -6,7 +6,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
-// import MUIDataTable from 'mui-datatables';
 import MaterialTable from 'material-table';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -213,13 +212,6 @@ export default class Orders extends React.Component {
                     {loading && <CircularProgress />}
                   </GridItem>
                 </GridContainer>
-                {/* <MUIDataTable
-                  title="Click on each order to navigate to the order details"
-                  data={orders}
-                  columns={columns}
-                  options={options}
-                /> */}
-
                 <MaterialTable
                   columns={columns}
                   data={orders}

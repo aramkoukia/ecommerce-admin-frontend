@@ -675,12 +675,12 @@ export class Order extends React.Component {
                           <CustomerInfo customer={order.customer} />
                         </GridItem>
                         <GridItem xs={9}>
-                          {order.status === 'Draft' && (
+                          {(order.status === 'Draft' || order.status === 'Paid') && (
                           <CustomerSearch customerChanged={this.customerChanged} />
                           )}
                         </GridItem>
                         <GridItem xs={3}>
-                          {order.status === 'Draft' && (
+                          {(order.status === 'Draft' || order.status === 'Paid') && (
                             <Button color="info" onClick={this.updateCustomer}>Update Customer</Button>
                           )}
                         </GridItem>

@@ -13,7 +13,7 @@ import image from 'assets/img/sidebar-2.jpg';
 import logo from 'assets/img/logo.png';
 import Auth from '../../services/Auth';
 import AddOrder from '../../views/Orders/AddOrder';
-import Return from '../../views/Orders/Return';
+import { Return } from '../../views/Orders/Return';
 
 function requireAuth(nextState, replace) {
   if (!Auth.isSignedIn) {

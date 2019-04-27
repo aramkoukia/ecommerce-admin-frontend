@@ -91,5 +91,15 @@ export default class ProductService {
     }
   }
 
-
+  static async updateProduct(product) {
+    try {
+      const response = await RestUtilities.put(
+        `products/${product.productId}`,
+        product,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }

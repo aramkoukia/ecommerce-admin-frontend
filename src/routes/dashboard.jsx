@@ -42,6 +42,7 @@ import { Order } from '../views/Orders/Order';
 import { Return } from '../views/Orders/Return';
 import Roles from '../views/Roles/Roles';
 import Settings from '../views/Settings/Settings';
+import UpdateProducts from '../views/Products/UpdateProducts';
 import Permissions from '../stores/Permissions';
 
 const dashboardRoutes = [
@@ -107,6 +108,14 @@ const dashboardRoutes = [
     icon: Highlight,
     component: AddPurchase,
     permission: Permissions.ViewNewPurchase,
+  },
+  {
+    path: '/updateproducts',
+    sidebarName: 'Update Products',
+    navbarName: '',
+    icon: ListAlt,
+    component: UpdateProducts,
+    permission: Permissions.ViewPurchases,
   },
   {
     path: '/purchases',
