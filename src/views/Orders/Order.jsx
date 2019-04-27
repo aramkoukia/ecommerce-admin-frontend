@@ -637,7 +637,7 @@ export class Order extends React.Component {
                         </GridItem>
                         )}
 
-                        { order.status === 'Paid' && (
+                        {(order.status === 'Paid' || order.status === 'Account') && (
                         <GridItem xs>
                           <Button color="info" disabled={loading} onClick={this.refundOrder}>Return</Button>
                         </GridItem>
@@ -978,7 +978,7 @@ $
               </Card>
             </DialogContent>
             <DialogActions>
-                <Button disabled={loading} onClick={this.handleUpdateLocationClose} color="info">
+              <Button disabled={loading} onClick={this.handleUpdateLocationClose} color="info">
                 Cancel
               </Button>
               <Button disabled={loading} onClick={this.updateLocation} color="primary">

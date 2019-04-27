@@ -76,6 +76,7 @@ export class Return extends React.Component {
     this.selectPaymentToReturn = this.selectPaymentToReturn.bind(this);
     this.handleCheckChange = this.handleCheckChange.bind(this);
     this.handleAuthCodeChange = this.handleAuthCodeChange.bind(this);
+    this.returnToCustomerAccount = this.returnToCustomerAccount.bind(this);
   }
 
   async componentDidMount() {
@@ -230,7 +231,7 @@ export class Return extends React.Component {
     }
   }
 
-  async saveOrder(orderStatus) {
+  async saveOrder(orderStatus, useCustomerAccount) {
     const {
       rows,
       total, subTotal, totalDiscount, notes, poNumber, order, authCode,
@@ -261,7 +262,7 @@ export class Return extends React.Component {
       }));
 
     let orderPayment = [];
-    if (orderStatus === 'Return') {
+    if (orderStatus === 'Return' && !useCustomerAccount) {
       orderPayment = this.getOrderPayments();
     }
 
@@ -336,7 +337,20 @@ export class Return extends React.Component {
       return;
     }
 
-    const result = await this.saveOrder('Return');
+    const result = await this.saveOrder('Return', false);
+    if (result && result.orderId) {
+      this.setState({
+        openSnackbar: true,
+        openDialog: false,
+        snackbarMessage: 'Order was returned successfully!',
+        snackbarColor: 'success',
+      });
+      this.props.history.push(`/order/${result.orderId}`);
+    }
+  }
+
+  async returnToCustomerAccount() {
+    const result = await this.saveOrder('Return', true);
     if (result && result.orderId) {
       this.setState({
         openSnackbar: true,
@@ -412,9 +426,18 @@ export class Return extends React.Component {
                         <Button color="primary" onClick={this.selectPaymentToReturn}>
                           <Save />
                           &nbsp;
-                          Save
+                          Pay
                         </Button>
                       </GridItem>
+                      {order.customer && order.customer.creditLimit > 0 && (
+                      <GridItem>
+                        <Button color="primary" onClick={this.returnToCustomerAccount}>
+                          <Save />
+                          &nbsp;
+                          Return To Customer Account
+                        </Button>
+                      </GridItem>
+                      )}
                       <GridItem xs>
                         { loading && <CircularProgress /> }
                       </GridItem>
@@ -585,7 +608,7 @@ export class Return extends React.Component {
                         <FormControlLabel
                           control={(
                             <Checkbox
-                              disabled={!order.customer || order.customer.storeCredit <= 0}
+                              disabled={!order.customer}
                               checked={payStoreCredit}
                               onChange={this.handleCheckChange}
                               value="payStoreCredit"
@@ -621,7 +644,7 @@ export class Return extends React.Component {
                             + Number(storeCreditAmount)
                             + Number(paypalAmazonUsdAmount)).toFixed(2)}
                           {' '}
-$
+                          $
                         </h5>
                       </GridItem>
                       <GridItem xs={12} sm={12} md={6}>
@@ -631,7 +654,7 @@ $
                         <h5>
                           {total && total.toFixed(2)}
                           {' '}
-$
+                          $
                         </h5>
                       </GridItem>
                     </GridContainer>
