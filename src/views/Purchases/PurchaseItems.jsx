@@ -66,6 +66,7 @@ export default class PurchaseItems extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleLocationChange = this.handleLocationChange.bind(this);
+    this.deleteClicked = this.deleteClicked.bind(this);
   }
 
   async componentDidMount() {
@@ -108,6 +109,19 @@ export default class PurchaseItems extends React.Component {
       estimatedDelivery: dateFormat(purchase.deliveryDate),
       purchaseDetailId,
     });
+  }
+
+  async deleteClicked(purchaseDetailId) {
+    this.setState({
+      loading: true,
+    });
+
+    const result = await PurchaseService.deletePurchaseDetail(purchaseDetailId);
+
+    this.setState({
+      loading: false,
+    });
+    window.location.reload();
   }
 
   async markAsPaid() {
@@ -337,6 +351,8 @@ export default class PurchaseItems extends React.Component {
                     <TableCell>
                       <Button color="primary" onClick={() => this.markAsPaidClicked(row.amount, row.unitPrice, purchase.poNumber, row.purchaseDetailId)}>Paid</Button>
                       &nbsp;
+                      <Button color="info" onClick={() => this.deleteClicked(row.purchaseDetailId)}>Delete</Button>
+                      &nbsp;
                       &nbsp;
                       {row.product.productCode}
                       &nbsp;
@@ -379,6 +395,8 @@ export default class PurchaseItems extends React.Component {
                   <TableRow key={row.purchaseDetailId}>
                     <TableCell>
                       <Button color="primary" onClick={() => this.markAsOnDeliveryClicked(row.amount, row.unitPrice, purchase.poNumber, row.purchaseDetailId, row.paidDate)}>On Delivery</Button>
+                      &nbsp;
+                      <Button color="info" onClick={() => this.deleteClicked(row.purchaseDetailId)}>Delete</Button>
                       &nbsp;
                       &nbsp;
                       {row.product.productCode}
@@ -423,6 +441,8 @@ export default class PurchaseItems extends React.Component {
                     <TableCell>
                       <Button color="primary" onClick={() => this.markAsCustomClearanceClicked(row.amount, row.unitPrice, purchase.poNumber, row.purchaseDetailId)}>Custom Clearance</Button>
                       &nbsp;
+                      <Button color="info" onClick={() => this.deleteClicked(row.purchaseDetailId)}>Delete</Button>
+                      &nbsp;
                       &nbsp;
                       {row.product.productCode}
                       &nbsp;
@@ -463,6 +483,8 @@ export default class PurchaseItems extends React.Component {
                   <TableRow key={row.purchaseDetailId}>
                     <TableCell>
                       <Button color="primary" onClick={() => this.markAsArrivedClicked(row.amount, row.unitPrice, purchase.poNumber, row.purchaseDetailId)}>Arrived</Button>
+                      &nbsp;
+                      <Button color="info" onClick={() => this.deleteClicked(row.purchaseDetailId)}>Delete</Button>
                       &nbsp;
                       &nbsp;
                       {row.product.productCode}
