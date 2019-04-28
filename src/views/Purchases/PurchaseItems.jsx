@@ -367,7 +367,7 @@ export default class PurchaseItems extends React.Component {
                 ))}
                 <TableRow>
                   <TableCell colSpan={4}><h5>Total</h5></TableCell>
-                  <TableCell numeric><Success><h5>{ccyFormat(purchase.purchaseDetail.map(item => item.status === 'Plan' && item.totalPrice).reduce((prev, next) => prev + next))}</h5></Success></TableCell>
+                  <TableCell numeric><Success><h5>{ccyFormat(purchase.purchaseDetail.map(item => item.status === 'Plan' && item.totalPrice).reduce((prev, next) => prev + next, 0))}</h5></Success></TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -414,7 +414,7 @@ export default class PurchaseItems extends React.Component {
                 ))}
                 <TableRow>
                   <TableCell colSpan={6}><h5>Total</h5></TableCell>
-                  <TableCell numeric><Success><h5>{ccyFormat(purchase.purchaseDetail.map(item => item.status === 'Paid' && item.totalPrice).reduce((prev, next) => prev + next))}</h5></Success></TableCell>
+                  <TableCell numeric><Success><h5>{ccyFormat(purchase.purchaseDetail.map(item => item.status === 'Paid' && item.totalPrice).reduce((prev, next) => prev + next, 0))}</h5></Success></TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -457,7 +457,7 @@ export default class PurchaseItems extends React.Component {
                 ))}
                 <TableRow>
                   <TableCell colSpan={4}><h3>Total</h3></TableCell>
-                  <TableCell numeric><Success><h3>{ccyFormat(purchase.purchaseDetail.map(item => item.status === 'OnDelivery' && item.totalPrice).reduce((prev, next) => prev + next))}</h3></Success></TableCell>
+                  <TableCell numeric><Success><h3>{ccyFormat(purchase.purchaseDetail.map(item => item.status === 'OnDelivery' && item.totalPrice).reduce((prev, next) => prev + next, 0))}</h3></Success></TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -500,7 +500,7 @@ export default class PurchaseItems extends React.Component {
                 ))}
                 <TableRow>
                   <TableCell colSpan={4}><h3>Total</h3></TableCell>
-                  <TableCell numeric><Success><h3>{ccyFormat(purchase.purchaseDetail.map(item => item.status === 'CustomClearance' && item.totalPrice).reduce((prev, next) => prev + next))}</h3></Success></TableCell>
+                  <TableCell numeric><Success><h3>{ccyFormat(purchase.purchaseDetail.map(item => item.status === 'CustomClearance' && item.totalPrice).reduce((prev, next) => prev + next, 0))}</h3></Success></TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -535,7 +535,7 @@ export default class PurchaseItems extends React.Component {
                 ))}
                 <TableRow>
                   <TableCell colSpan={5}><h3>Total</h3></TableCell>
-                  <TableCell numeric><Success><h3>{ccyFormat(purchase.purchaseDetail.map(item => item.status === 'Arrived' && item.totalPrice).reduce((prev, next) => prev + next))}</h3></Success></TableCell>
+                  <TableCell numeric><Success><h3>{ccyFormat(purchase.purchaseDetail.map(item => item.status === 'Arrived' && item.totalPrice).reduce((prev, next) => prev + next, 0))}</h3></Success></TableCell>
                 </TableRow>
               </TableBody>
             </Table>
