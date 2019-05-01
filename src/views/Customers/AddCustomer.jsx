@@ -28,6 +28,17 @@ class AddCustomer extends React.Component {
       country: 'Canada',
       province: 'BC',
       segment: 'None',
+      firstName: '',
+      lastName: '',
+      companyName: '',
+      phoneNumber: '',
+      mobile: '',
+      address: '',
+      city: '',
+      postalCode: '',
+      pstNumber: '',
+      creditLimit: 0,
+      email: '',
     };
   }
 

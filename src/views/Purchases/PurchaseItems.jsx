@@ -525,7 +525,12 @@ export default class PurchaseItems extends React.Component {
               <TableBody>
                 {purchase.purchaseDetail.map(row => row.status === 'Arrived' && (
                   <TableRow key={row.purchaseDetailId}>
-                    <TableCell>{row.product.productName}</TableCell>
+                    <TableCell>
+                      &nbsp;
+                      <Button color="info" onClick={() => this.deleteClicked(row.purchaseDetailId)}>Delete</Button>
+                      &nbsp;
+                      {row.product.productName}
+                    </TableCell>
                     <TableCell numeric align="right">{row.amount}</TableCell>
                     <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
                     <TableCell numeric>{ccyFormat(row.totalPrice)}</TableCell>
