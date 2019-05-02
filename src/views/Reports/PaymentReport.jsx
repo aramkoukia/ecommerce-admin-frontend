@@ -196,9 +196,9 @@ export default class PaymentReport extends React.Component {
     const {
       paymentsSummaryData, paymentDetailsData, paymentsTotalData, fromDate, toDate,
     } = this.state;
-    const paymentSummaryTitle = `Payment Summary. From: ${dateFormat(fromDate)} To: ${dateFormat(toDate)}`;
-    const paymentsByOrderStatusTitle = `Payments By Order Status. From: ${dateFormat(fromDate)} To: ${dateFormat(toDate)}`;
-    const paymentDetailsTitle = `Payment Details. From: ${dateFormat(fromDate)} To: ${dateFormat(toDate)}`;
+    const paymentSummaryTitle = `Payment Summary. From: ${fromDate} To: ${toDate}`;
+    const paymentsByOrderStatusTitle = `Payments By Order Status. From: ${fromDate} To: ${toDate}`;
+    const paymentDetailsTitle = `Payment Details. From: ${fromDate} To: ${toDate}`;
     return (
       <div>
         <GridContainer>

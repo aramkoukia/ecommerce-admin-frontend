@@ -138,7 +138,7 @@ export default class SalesReport extends React.Component {
     };
 
     const { reportData, fromDate, toDate } = this.state;
-    const salesReportTitle = `Sales Report. From: ${dateFormat(fromDate)} To: ${dateFormat(toDate)}`;
+    const salesReportTitle = `Sales Report. From: ${fromDate} To: ${toDate}`;
 
     return (
       <div>

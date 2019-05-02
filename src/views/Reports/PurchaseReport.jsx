@@ -134,8 +134,8 @@ export default class PuchaseReport extends React.Component {
     const {
       purchaseSummaryData, purchaseDetailData, fromDate, toDate,
     } = this.state;
-    const purchaseSummaryTitle = `Purchases Summary. From: ${dateFormat(fromDate)} To: ${dateFormat(toDate)}`;
-    const purchaseDetailTitle = `Purchases Details. From: ${dateFormat(fromDate)} To: ${dateFormat(toDate)}`;
+    const purchaseSummaryTitle = `Purchases Summary. From: ${fromDate} To: ${toDate}`;
+    const purchaseDetailTitle = `Purchases Details. From: ${fromDate} To: ${toDate}`;
     return (
       <div>
         <GridContainer>
