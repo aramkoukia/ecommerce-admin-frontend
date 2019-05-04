@@ -71,9 +71,10 @@ export default class AddPurchase extends React.Component {
     const purchaseId = match.params.id;
     if (purchaseId && !isNaN(purchaseId)) {
       const purchase = await PurchaseService.getPurchaseDetail(purchaseId);
+      const details = purchase.purchaseDetail.filter(row => row.status === 'Plan');
       if (purchase) {
         this.setState({
-          rows: purchase.purchaseDetail.map(row => row.status === 'Plan' && (
+          rows: details.map(row => (
             {
               productId: row.productId,
               qty: row.amount,
