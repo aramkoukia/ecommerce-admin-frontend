@@ -58,10 +58,10 @@ export default class CustomerService {
     }
   }
 
-  static async emailStatement(customerId) {
+  static async emailStatement(customerId, fromDate, toDate) {
     try {
       const response = await RestUtilities.get(
-        `customers/${customerId}/emailstatement`,
+        `customers/${customerId}/emailstatement?fromDate=${fromDate}&toDate=${toDate}`,
       );
       return response.content;
     } catch (err) {
@@ -69,10 +69,10 @@ export default class CustomerService {
     }
   }
 
-  static async printStatement(customerId) {
+  static async printStatement(customerId, fromDate, toDate) {
     try {
       const response = await RestUtilities.getBlob(
-        `customers/${customerId}/printstatement`,
+        `customers/${customerId}/printstatement?fromDate=${fromDate}&toDate=${toDate}`,
       );
       return response;
     } catch (err) {

@@ -5,6 +5,7 @@ import Email from '@material-ui/icons/Email';
 import Money from '@material-ui/icons/Money';
 import Edit from '@material-ui/icons/Edit';
 import MUIDataTable from 'mui-datatables';
+import TextField from '@material-ui/core/TextField';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
@@ -15,6 +16,20 @@ import OrderService from '../../services/OrderService';
 import CustomerInfo from '../Orders/CustomerInfo';
 import CustomerService from '../../services/CustomerService';
 
+function dateFormat(dateString) {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, 0);
+  const day = `${date.getUTCDate()}`.padStart(2, 0);
+  const stringDate = [year, month, day].join('-');
+  return stringDate;
+}
+
+Date.prototype.addHours = function (h) {
+  this.setHours(this.getHours() + h);
+  return this;
+}
+
 export default class Customer extends React.Component {
   constructor(props) {
     super(props);
@@ -22,6 +37,8 @@ export default class Customer extends React.Component {
     this.state = {
       orders: [],
       customer: {},
+      fromDate: '',
+      toDate: '',
     };
     this.rowClicked = this.rowClicked.bind(this);
     this.editCustomer = this.editCustomer.bind(this);
@@ -34,13 +51,25 @@ export default class Customer extends React.Component {
     const { match } = this.props;
     const customerId = match.params.id;
     const customer = await CustomerService.getCustomer(customerId);
+    const lastMonthDate = new Date().addHours(-8);
+    const fromDate = dateFormat(new Date(lastMonthDate.setMonth(lastMonthDate.getMonth() - 1)));
+    const toDate = dateFormat((new Date()).addHours(-8));
+
     this.setState({
       customer,
       loading: false,
+      fromDate,
+      toDate,
     });
 
     this.ordersList(customerId);
   }
+
+  handleChange = name => (event) => {
+    this.setState({
+      [name]: event.target.value,
+    });
+  };
 
   editCustomer() {
     const { match, history } = this.props;
@@ -55,16 +84,18 @@ export default class Customer extends React.Component {
   async printStatement() {
     const { match } = this.props;
     const customerId = match.params.id;
+    const { fromDate, toDate } = this.state;
     this.setState({ loading: true });
-    await CustomerService.printStatement(customerId);
+    await CustomerService.printStatement(customerId, fromDate, toDate);
     this.setState({ loading: false });
   }
 
   async emailStatement() {
     const { match } = this.props;
     const customerId = match.params.id;
+    const { fromDate, toDate } = this.state;
     this.setState({ loading: true });
-    await CustomerService.emailStatement(customerId);
+    await CustomerService.emailStatement(customerId, fromDate, toDate);
     this.setState({ loading: false });
   }
 
@@ -165,7 +196,13 @@ export default class Customer extends React.Component {
       rowsPerPage: 25,
     };
 
-    const { orders, customer, loading } = this.state;
+    const {
+      orders,
+      customer,
+      loading,
+      fromDate,
+      toDate,
+    } = this.state;
 
     return (
       <div>
@@ -182,16 +219,56 @@ export default class Customer extends React.Component {
               <Money />
               Store Credit
             </Button>
-            <Button color="secondary" onClick={this.printStatement}>
-              <Print />
-              Print Statement
-            </Button>
-            <Button color="secondary" onClick={this.emailStatement}>
-              <Email />
-              Email Statement
-            </Button>
             {loading && <CircularProgress />}
           </GridItem>
+          <GridItem xs={12} sm={12} md={12}>
+            <Card>
+              <CardBody>
+                <GridContainer>
+                  <GridItem md={2}>
+                    <TextField
+                      onChange={this.handleChange('fromDate')}
+                      id="date"
+                      label="From Date"
+                      type="date"
+                      value={fromDate}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem md={2}>
+                    <TextField
+                      onChange={this.handleChange('toDate')}
+                      id="date"
+                      label="To Date"
+                      type="date"
+                      value={toDate}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem>
+                    <Button color="secondary" onClick={this.printStatement}>
+                      <Print />
+                      Print Statement
+                    </Button>
+                  </GridItem>
+                  <GridItem>
+                    <Button color="secondary" onClick={this.emailStatement}>
+                      <Email />
+                        Email Statement
+                    </Button>
+                  </GridItem>
+                  <GridItem md={1}>
+                    {loading && <CircularProgress />}
+                  </GridItem>
+                </GridContainer>
+              </CardBody>
+            </Card>
+          </GridItem>
+
           <GridItem xs={12} sm={12} md={12}>
             <Card>
               <CardHeader color="primary">
