@@ -71,7 +71,7 @@ function OrderItems(props) {
             </TableRow>
             <TableRow>
               <TableCell colSpan={3}>Total Discount</TableCell>
-              <TableCell numeric>{ccyFormat(order.totalDiscount)}</TableCell>
+              <TableCell numeric>{ccyFormat(order.orderDetail.map(item => item.totalDiscount).reduce((prev, next) => prev + next, 0))}</TableCell>
             </TableRow>
             {order.status === 'Return' && (
               <TableRow>
@@ -80,7 +80,7 @@ function OrderItems(props) {
                   <b>
                     {order.restockingFeePercent}
                     %
-                </b>
+                  </b>
                 </TableCell>
                 <TableCell numeric>
                   <b>

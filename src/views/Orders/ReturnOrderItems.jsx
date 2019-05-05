@@ -99,12 +99,12 @@ export default class ReturnOrderItems extends React.Component {
     for (const i in orderRows) {
       if (orderRows[i].productId == event.target.name) {
         if (event.target.value < 0) {
-          event.target.value = event.target.value * -1
+          event.target.value = event.target.value * -1;
         }
         orderRows[i].amount = event.target.value;
         orderRows[i].subTotal = event.target.value * orderRows[i].unitPrice * -1;
-        let discountAmount = orderRows[i].discountAmount === "" ? 0 : orderRows[i].discountAmount;
-        let discountPercent = orderRows[i].discountPercent === "" ? 0 : orderRows[i].discountPercent;
+        const discountAmount = orderRows[i].discountAmount === '' ? 0 : orderRows[i].discountAmount;
+        const discountPercent = orderRows[i].discountPercent === '' ? 0 : orderRows[i].discountPercent;
         orderRows[i].totalDiscount = -1 * ((orderRows[i].discountType === 'percent') ? (discountPercent / 100) * orderRows[i].subTotal : Number(discountAmount));
         orderRows[i].total = event.target.value * orderRows[i].unitPrice * -1 + orderRows[i].totalDiscount;
         this.setState({ orderRows });
@@ -127,16 +127,16 @@ export default class ReturnOrderItems extends React.Component {
   }
 
   subtotal(items, totalDiscount) {
-    if(items.length === 0) {
+    if (items.length === 0) {
       return 0;
     }
     return items.map(({ total }) => total).reduce((sum, i) => sum + i, 0);
   }
 
   discount(orderRows) {
-    let totalDiscount= 0;
-    for(let i in orderRows) {
-      totalDiscount += orderRows[i].totalDiscount === "" ? 0 : orderRows[i].totalDiscount;
+    let totalDiscount = 0;
+    for (const i in orderRows) {
+      totalDiscount += orderRows[i].totalDiscount === '' ? 0 : orderRows[i].totalDiscount;
     }
     return totalDiscount * -1;
   }
@@ -187,45 +187,38 @@ export default class ReturnOrderItems extends React.Component {
                   </TableCell>
                   <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
                   <TableCell>
-                    <ToggleButtonGroup
-                      hidden
-                      name={row.productId}
-                      value={row.discountType}
-                      exclusive
-                      onChange={this.handleDiscountTypeChanged}
-                      style={{ width: 50 }}
-                    >
-                      <ToggleButton value="percent" name={row.productId}>
-                        %
-                      </ToggleButton>
-                      {/* <ToggleButton value="amount" name={row.productId}>
-                      $
-                    </ToggleButton> */}
-                    </ToggleButtonGroup>
                     {row.discountType === 'amount'
                       && (
-                      <TextField
-                        disabled
-                        name={row.productId}
-                        value={row.discountAmount}
-                        onChange={this.handleDiscountAmountChanged}
-                        type="number"
-                        style={{ width: 50 }}
-                      />
+                      <div>
+                        <TextField
+                          disabled
+                          name={row.productId}
+                          value={row.discountAmount}
+                          onChange={this.handleDiscountAmountChanged}
+                          type="number"
+                          style={{ width: 50 }}
+                        />
+                        <div>
+                        $
+                        </div>
+                      </div>
                       )}
                     {row.discountType === 'percent'
                       && (
-                      <TextField
-                        disabled
-                        name={row.productId}
-                        value={row.discountPercent}
-                        onChange={this.handleDiscountPercentChanged}
-                        type="number"
-                        style={{ width: 50 }}
-                      />
+                      <div>
+                        <TextField
+                          disabled
+                          name={row.productId}
+                          value={row.discountPercent}
+                          onChange={this.handleDiscountPercentChanged}
+                          type="number"
+                          style={{ width: 50 }}
+                        />
+                        <div>
+                        %
+                        </div>
+                      </div>
                       )}
-                    {' '}
-                       %
                   </TableCell>
                   <TableCell numeric>{ccyFormat(row.totalDiscount)}</TableCell>
                   <TableCell numeric>{ccyFormat(row.total)}</TableCell>
