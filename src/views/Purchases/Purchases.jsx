@@ -1,5 +1,6 @@
 import React from 'react';
-import MUIDataTable from 'mui-datatables';
+import MaterialTable from 'material-table';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
@@ -7,14 +8,14 @@ import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import PurchaseService from '../../services/PurchaseService';
 
-function dateFormat(dateString) {
-  const date = new Date(dateString);
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, 0);
-  const day = `${date.getDate()}`.padStart(2, 0);
-  const stringDate = [day, month, year].join('/');
-  return `${stringDate} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-}
+// function dateFormat(dateString) {
+//   const date = new Date(dateString);
+//   const year = date.getFullYear();
+//   const month = `${date.getMonth() + 1}`.padStart(2, 0);
+//   const day = `${date.getDate()}`.padStart(2, 0);
+//   const stringDate = [day, month, year].join('/');
+//   return `${stringDate} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+// }
 
 export default class Purchases extends React.Component {
   constructor(props) {
@@ -29,20 +30,14 @@ export default class Purchases extends React.Component {
   }
 
   purchasesList() {
-    const columns = ['purchaseId', 'purchaseDate', 'supplier', 'deliveryDate', 'status', 'total', 'poNumber', 'createdByUserId'];
-    PurchaseService.getPurchases()
-      .then(results => results.map(row => columns.map((column) => {
-        if (column === 'purchaseDate' || column === 'deliveryDate') {
-          return dateFormat(row[column]);
-        }
-        return row[column] || '';
-      })))
-      .then(data => this.setState({ purchases: data }));
+    this.setState({ loading: true });
+
+    PurchaseService.getPurchaseDetails()
+      .then(data => this.setState({ purchases: data, loading: false }));
   }
 
-  rowClicked(rowData) {
-    const { history } = this.props;
-    history.push(`/purchase/${rowData[0]}`);
+  rowClicked(_event, rowData) {
+    window.open(`/purchase/${rowData[0]}`, "_blank")
   }
 
   render() {
@@ -77,61 +72,49 @@ export default class Purchases extends React.Component {
     };
 
     const columns = [
-      {
-        name: 'Purchase Number',
-        options: {
-          filter: false,
-        },
-      },
-      {
-        name: 'Purchase Date',
-        options: {
-          filter: false,
-        },
-      },
-      {
-        name: 'Supplier',
-        options: {
-          filter: true,
-        },
-      },
-      {
-        name: 'Delivery Date',
-        options: {
-          filter: false,
-        },
-      },
-      {
-        name: 'Status',
-        options: {
-          filter: true,
-        },
-      },
-      {
-        name: 'Total',
-        options: {
-          filter: false,
-        },
-      },
-      {
-        name: 'PO Number',
-        options: {
-          filter: false,
-        },
-      },
-      'Created By'];
+      { title: 'Purchase Id', field: 'purchaseId' },
+      { title: 'PO Number', field: 'poNumber' },
+      { title: 'Supplier', field: 'supplier', hidden: true },
+      { title: 'Product Code', field: 'productCode' },
+      { title: 'Product Name', field: 'productName' },
+      { title: 'Plan Amount', field: 'planAmount' },
+      { title: 'Plan Price', field: 'planPrice', hidden: true },
+      { title: 'Plan Overhead Cost', field: 'planOverheadCost', hidden: true },
+      { title: 'Paid Amount', field: 'paidAmount' },
+      { title: 'Paid Price', field: 'paidPrice', hidden: true },
+      { title: 'Paid Overhead Cost', field: 'paidOverheadCost', hidden: true },
+      { title: 'Remain To Pay', field: 'remainToPay' },
+      { title: 'OnDelivery Amount', field: 'onDeliveryAmount' },
+      { title: 'OnDelivery Price', field: 'onDeliveryPrice', hidden: true },
+      { title: 'OnDelivery Overhead Cost', field: 'onDeliveryOverheadCost', hidden: true },
+      { title: 'Custom Clearance Amount', field: 'customClearanceAmount' },
+      { title: 'Custom Clearance Price', field: 'customClearancePrice', hidden: true },
+      { title: 'Custom Clearance Overhead Cost', field: 'customClearanceOverheadCost', hidden: true },
+      { title: 'Arrived Amount', field: 'arrivedAmount' },
+      { title: 'Arrived Price', field: 'arrivedPrice', hidden: true },
+      { title: 'Arrived Overhead Cost', field: 'arrivedOverheadCost', hidden: true },
+      { title: 'Location', field: 'locationName', hidden: true },
+      { title: 'Remain To Arrive', field: 'remainToArrive' },
+      { title: 'Arrived Date', field: 'arrivedDate', hidden: true },
+    ];
 
     const options = {
-      filterType: 'checkbox',
-      onRowClick: this.rowClicked,
-      rowHover: true,
-      resizableColumns: false,
-      selectableRows: false,
-      rowsPerPageOptions: [25, 50, 100],
-      rowsPerPage: 25,
+      paging: true,
+      pageSizeOptions: [25, 50, 100],
+      pageSize: 25,
+      columnsButton: true,
+      exportButton: true,
+      filtering: true,
+      rowStyle: data => {
+        if (data.overDue === 'Yes') {
+          return {
+            backgroundColor: '#ffcccc',
+          }
+        }
+      }
     };
 
-    const { purchases } = this.state;
+    const { purchases, loading } = this.state;
 
     return (
       <div>
@@ -140,13 +123,17 @@ export default class Purchases extends React.Component {
             <Card>
               <CardHeader color="primary">
                 <div className={styles.cardTitleWhite}>Purchases</div>
+                {loading && <CircularProgress />}
               </CardHeader>
               <CardBody>
-                <MUIDataTable
-                  title="Click on each purchase to navigate to the purchase details"
-                  data={purchases}
+
+                <MaterialTable
                   columns={columns}
+                  data={purchases}
                   options={options}
+                  onRowClick={this.rowClicked}
+                  title=""
+                // title="Click on each order to navigate to the order details"
                 />
               </CardBody>
             </Card>

@@ -36,6 +36,17 @@ export default class PurchaseService {
     }
   }
 
+  static async getPurchaseDetails() {
+    try {
+      const response = await RestUtilities.get(
+        'purchases/purchasedetail',
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getPurchaseDetail(purchaseId) {
     try {
       const response = await RestUtilities.get(
