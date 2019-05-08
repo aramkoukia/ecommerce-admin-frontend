@@ -37,7 +37,7 @@ export default class Purchases extends React.Component {
   }
 
   rowClicked(_event, rowData) {
-    window.open(`/purchase/${rowData[0]}`, "_blank")
+    window.open(`/purchase/${rowData.purchaseId}`, "_blank")
   }
 
   render() {
