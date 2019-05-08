@@ -80,17 +80,61 @@ export default class Purchases extends React.Component {
       { title: 'Plan Amount', field: 'planAmount' },
       { title: 'Plan Price', field: 'planPrice', hidden: true },
       { title: 'Plan Overhead Cost', field: 'planOverheadCost', hidden: true },
-      { title: 'Paid Amount', field: 'paidAmount' },
+      {
+        title: 'Paid Amount',
+        field: 'paidAmount',
+        cellStyle: {
+          backgroundColor: '#00acc1',
+          color: '#FFF',
+        },
+        headerStyle: {
+          backgroundColor: '#00acc1',
+          color: '#FFF',
+        },
+      },
       { title: 'Paid Price', field: 'paidPrice', hidden: true },
       { title: 'Paid Overhead Cost', field: 'paidOverheadCost', hidden: true },
       { title: 'Remain To Pay', field: 'remainToPay' },
-      { title: 'OnDelivery Amount', field: 'onDeliveryAmount' },
+      {
+        title: 'OnDelivery Amount',
+        field: 'onDeliveryAmount',
+        cellStyle: {
+          backgroundColor: '#e53935',
+          color: '#FFF',
+        },
+        headerStyle: {
+          backgroundColor: '#e53935',
+          color: '#FFF',
+        },
+      },
       { title: 'OnDelivery Price', field: 'onDeliveryPrice', hidden: true },
       { title: 'OnDelivery Overhead Cost', field: 'onDeliveryOverheadCost', hidden: true },
-      { title: 'Custom Clearance Amount', field: 'customClearanceAmount' },
+      {
+        title: 'Custom Clearance Amount',
+        field: 'customClearanceAmount',
+        cellStyle: {
+          backgroundColor: '#fb8c00',
+          color: '#FFF',
+        },
+        headerStyle: {
+          backgroundColor: '#fb8c00',
+          color: '#FFF',
+        },
+      },
       { title: 'Custom Clearance Price', field: 'customClearancePrice', hidden: true },
       { title: 'Custom Clearance Overhead Cost', field: 'customClearanceOverheadCost', hidden: true },
-      { title: 'Arrived Amount', field: 'arrivedAmount' },
+      {
+        title: 'Arrived Amount',
+        field: 'arrivedAmount',
+        cellStyle: {
+          backgroundColor: '#43a047',
+          color: '#FFF',
+        },
+        headerStyle: {
+          backgroundColor: '#43a047',
+          color: '#FFF',
+        },
+      },
       { title: 'Arrived Price', field: 'arrivedPrice', hidden: true },
       { title: 'Arrived Overhead Cost', field: 'arrivedOverheadCost', hidden: true },
       { title: 'Location', field: 'locationName', hidden: true },
@@ -106,10 +150,15 @@ export default class Purchases extends React.Component {
       exportButton: true,
       filtering: true,
       rowStyle: data => {
-        if (data.overDue === 'Yes') {
-          return {
-            backgroundColor: '#ffcccc',
-          }
+        if (data.remainToPay > 0) {
+           return {
+             backgroundColor: '#e5e3ff',
+           }
+        }
+        if (data.remainToArrive > 0) {
+           return {
+             backgroundColor: '#fde1e1',
+           }
         }
       }
     };
