@@ -51,7 +51,7 @@ function OrderItems(props) {
               <TableCell numeric>Amount</TableCell>
               <TableCell numeric>Unit Price</TableCell>
               <TableCell numeric>Discount</TableCell>
-              <TableCell numeric>Total Price</TableCell>
+              <TableCell numeric>Total Price (After discount)</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -66,7 +66,7 @@ function OrderItems(props) {
             ))}
             <TableRow>
               <TableCell rowSpan={4} />
-              <TableCell colSpan={3}>Subtotal</TableCell>
+              <TableCell colSpan={3}>Subtotal (after discount)</TableCell>
               <TableCell numeric>{ccyFormat(order.subTotal)}</TableCell>
             </TableRow>
             <TableRow>
