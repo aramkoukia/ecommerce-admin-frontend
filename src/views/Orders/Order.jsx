@@ -592,7 +592,7 @@ export class Order extends React.Component {
                     {order.location.locationName}
                   &nbsp;&nbsp;&nbsp;
                     <Chip label={order.status} color="primary" />
-                      &nbsp;&nbsp;
+                    &nbsp;&nbsp;
                     {order.status === 'Return' && order.isAccountReturn && (
                       <Chip label="Added to customer account" color="secondary" />
                     )}
