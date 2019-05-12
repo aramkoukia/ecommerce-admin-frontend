@@ -91,4 +91,16 @@ export default class PurchaseService {
       return false;
     }
   }
+
+  static async updatePurchaseDetail(updatePurchaseDetailStatus) {
+    try {
+      const response = await RestUtilities.put(
+        `purchases/${updatePurchaseDetailStatus.purchaseDetailId}/detail`,
+        updatePurchaseDetailStatus,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }

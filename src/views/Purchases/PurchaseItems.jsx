@@ -12,10 +12,12 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import PrintIcon from '@material-ui/icons/Print';
 import IconButton from '@material-ui/core/IconButton';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
+import MaterialTable from 'material-table';
 import ReactToPrint from 'react-to-print';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import GridItem from '../../components/Grid/GridItem';
@@ -351,6 +353,76 @@ export default class PurchaseItems extends React.Component {
       },
     };
 
+    const options = {
+      paging: false,
+      // pageSizeOptions: [25, 50, 100],
+      // pageSize: 25,
+      columnsButton: true,
+      exportButton: true,
+      // filtering: true,
+    };
+
+    const plannedItemsColumns = [
+      { title: 'Product Code', field: 'product.productCode', readonly: true },
+      { title: 'Product Name', field: 'product.productName', readonly: true },
+      { title: 'Amount', field: 'amount', type: 'numeric' },
+      { title: 'Unit Price ($)', field: 'unitPrice', type: 'numeric' },
+      { title: 'Overhead Cost ($)', field: 'overheadCost', type: 'numeric' },
+      { title: 'Total Price($)', field: 'totalPrice', type: 'numeric', readonly: true },
+      { title: 'Estimated Delivery', field: 'estimatedDelivery', hidden: true },
+      { title: 'PO Number', field: 'poNumber', hidden: true },
+      { title: 'purchaseDetailId', field: 'purchaseDetailId', hidden: true, readonly: true },
+    ];
+
+    const paidItemsColumns = [
+      { title: 'Product Code', field: 'product.productCode', readonly: true },
+      { title: 'Product Name', field: 'product.productName', readonly: true },
+      { title: 'Amount', field: 'amount', type: 'numeric' },
+      { title: 'Unit Price ($)', field: 'unitPrice', type: 'numeric' },
+      { title: 'Overhead Cost ($)', field: 'overheadCost', type: 'numeric' },
+      { title: 'Total Price($)', field: 'totalPrice', type: 'numeric', readonly: true },
+      { title: 'Estimated Delivery', field: 'estimatedDelivery', hidden: true },
+      { title: 'PO Number', field: 'poNumber', hidden: true },
+      { title: 'purchaseDetailId', field: 'purchaseDetailId', hidden: true, readonly: true },
+    ];
+
+    const onDeliveryItemsColumns = [
+      { title: 'Product Code', field: 'product.productCode', readonly: true },
+      { title: 'Product Name', field: 'product.productName', readonly: true },
+      { title: 'Amount', field: 'amount', type: 'numeric' },
+      { title: 'Unit Price ($)', field: 'unitPrice', type: 'numeric' },
+      { title: 'Overhead Cost ($)', field: 'overheadCost', type: 'numeric' },
+      { title: 'Total Price($)', field: 'totalPrice', type: 'numeric', readonly: true },
+      { title: 'Estimated Delivery', field: 'estimatedDelivery', hidden: true },
+      { title: 'PO Number', field: 'poNumber', hidden: true },
+      { title: 'purchaseDetailId', field: 'purchaseDetailId', hidden: true, readonly: true },
+    ];
+
+    const customClearanceItemsColumns = [
+      { title: 'Product Code', field: 'product.productCode', readonly: true },
+      { title: 'Product Name', field: 'product.productName', readonly: true },
+      { title: 'Amount', field: 'amount', type: 'numeric' },
+      { title: 'Unit Price ($)', field: 'unitPrice', type: 'numeric' },
+      { title: 'Overhead Cost ($)', field: 'overheadCost', type: 'numeric' },
+      { title: 'Total Price($)', field: 'totalPrice', type: 'numeric', readonly: true },
+      { title: 'Estimated Delivery', field: 'estimatedDelivery', hidden: true },
+      { title: 'PO Number', field: 'poNumber', hidden: true },
+      { title: 'purchaseDetailId', field: 'purchaseDetailId', hidden: true, readonly: true },
+    ];
+
+    const arrivedItemsColumns = [
+      { title: 'Product Code', field: 'product.productCode', readonly: true },
+      { title: 'Product Name', field: 'product.productName', readonly: true },
+      { title: 'Amount', field: 'amount', type: 'numeric', readonly: true },
+      { title: 'Unit Price ($)', field: 'unitPrice', type: 'numeric' },
+      { title: 'Overhead Cost ($)', field: 'overheadCost', type: 'numeric' },
+      { title: 'Total Price($)', field: 'totalPrice', type: 'numeric', readonly: true },
+      { title: 'Location', field: 'location.locationName', readonly: true },
+      { title: 'Estimated Delivery', field: 'estimatedDelivery', hidden: true },
+      { title: 'PO Number', field: 'poNumber', hidden: true },
+      { title: 'purchaseDetailId', field: 'purchaseDetailId', hidden: true, readonly: true },
+    ];
+
     const {
       openMarkAsArrivedDialog,
       openMarkAsCustomClearanceDialog,
@@ -395,55 +467,49 @@ export default class PurchaseItems extends React.Component {
             </div>
           </CardHeader>
           <CardBody>
+            <MaterialTable
+              columns={plannedItemsColumns}
+              data={plannedItems}
+              options={options}
+              title=""
+              actions={[{
+                icon: 'arrow_downward',
+                tooltip: 'Mark as Paid',
+                onClick: (event, rowData) =>
+                  this.markAsPaidClicked(
+                    rowData.amount,
+                    rowData.unitPrice, rowData.overheadCost, purchase.poNumber, rowData.purchaseDetailId),
+              }]}
+              editable={{
+                onRowUpdate: (newData, oldData) =>
+                  new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                      {
+                        const index = plannedItems.indexOf(oldData);
+                        newData.totalPrice = Number(newData.amount) * Number(newData.unitPrice) + Number(newData.overheadCost);
+                        plannedItems[index] = newData;
+                        PurchaseService.updatePurchaseDetail(newData);
+                        this.setState({ plannedItems }, () => resolve());
+                      }
+                      resolve();
+                    }, 1000);
+                  }),
+                onRowDelete: oldData =>
+                  new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                      {
+                        this.deleteClicked(oldData.purchaseDetailId);
+                        const index = plannedItems.indexOf(oldData);
+                        plannedItems.splice(index, 1);
+                        this.setState({ plannedItems }, () => resolve());
+                      }
+                      resolve();
+                    }, 1000);
+                  }),
+              }}
+            />
             <Table className={styles.table}>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Product</TableCell>
-                  <TableCell numeric>Amount</TableCell>
-                  <TableCell numeric>Unit Price</TableCell>
-                  <TableCell numeric>Overhead Cost</TableCell>
-                  <TableCell numeric>Total Price</TableCell>
-                </TableRow>
-              </TableHead>
               <TableBody>
-                {plannedItems.map(row => (
-                  <TableRow key={row.purchaseDetailId}>
-                    <TableCell>
-                      <Button color="primary"
-                        size="small"
-                        onClick={() => this.markAsPaidClicked(row.amount, row.unitPrice, row.overheadCost, purchase.poNumber, row.purchaseDetailId)}>
-                        Paid
-                      </Button>
-                      &nbsp;
-                      <IconButton
-                        aria-label="Delete"
-                        name={row.productId}
-                        onClick={() => {
-                          this.deleteClicked(row.purchaseDetailId);
-                          const newPlannedItems = plannedItems.filter(function (obj) {
-                            return obj.purchaseDetailId !== row.purchaseDetailId;
-                          });
-                          this.setState({ plannedItems: newPlannedItems });
-                        }}
-                      >
-                        <DeleteIcon
-                          name={row.productId}
-                          fontSize="small"
-                        />
-                      </IconButton>
-                      &nbsp;
-                      &nbsp;
-                      {row.product.productCode}
-                      &nbsp;
-                      &nbsp;
-                      {row.product.productName}
-                    </TableCell>
-                    <TableCell numeric align="right">{row.amount}</TableCell>
-                    <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
-                    <TableCell numeric>{ccyFormat(row.overheadCost)}</TableCell>
-                    <TableCell numeric>{ccyFormat(row.totalPrice)}</TableCell>
-                  </TableRow>
-                ))}
                 <TableRow>
                   <TableCell colSpan={4}><h5>Total</h5></TableCell>
                   <TableCell numeric><Success><h5>{ccyFormat(plannedItems.map(item => item.totalPrice).reduce((prev, next) => prev + next, 0))}</h5></Success></TableCell>
@@ -467,61 +533,53 @@ export default class PurchaseItems extends React.Component {
             </div>
           </CardHeader>
           <CardBody>
-            <Table
-              className={styles.table}
-              >
-              <TableHead>
-                <TableRow>
-                  <TableCell>Product</TableCell>
-                  <TableCell numeric>Amount</TableCell>
-                  <TableCell numeric>Unit Price</TableCell>
-                  <TableCell numeric>Overhead Cost</TableCell>
-                  <TableCell numeric>Total Price</TableCell>
-                  {/* <TableCell>Paid Date</TableCell> */}
-                </TableRow>
-              </TableHead>
+            <MaterialTable
+              columns={paidItemsColumns}
+              data={paidItems}
+              options={options}
+              title=""
+              actions={[{
+                icon: 'arrow_downward',
+                tooltip: 'Mark as On Delivery',
+                onClick: (event, rowData) =>
+                  this.markAsOnDeliveryClicked(
+                    rowData.amount,
+                    rowData.unitPrice,
+                    rowData.overheadCost,
+                    purchase.poNumber,
+                    rowData.purchaseDetailId,
+                    rowData.paidDate),
+              }]}
+              editable={{
+                onRowUpdate: (newData, oldData) =>
+                  new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                      {
+                        const index = paidItems.indexOf(oldData);
+                        newData.totalPrice = Number(newData.amount) * Number(newData.unitPrice) + Number(newData.overheadCost);
+                        paidItems[index] = newData;
+                        PurchaseService.updatePurchaseDetail(newData);
+                        this.setState({ paidItems }, () => resolve());
+                      }
+                      resolve();
+                    }, 1000);
+                  }),
+                onRowDelete: oldData =>
+                  new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                      {
+                        this.deleteClicked(oldData.purchaseDetailId);
+                        const index = paidItems.indexOf(oldData);
+                        paidItems.splice(index, 1);
+                        this.setState({ paidItems }, () => resolve());
+                      }
+                      resolve();
+                    }, 1000);
+                  }),
+              }}
+            />
+            <Table className={styles.table}>
               <TableBody>
-                {paidItems.map(row => (
-                  <TableRow key={row.purchaseDetailId}>
-                    <TableCell>
-                      <Button
-                        size="small"
-                        color="primary" onClick={() => this.markAsOnDeliveryClicked(row.amount, row.unitPrice, row.overheadCost, purchase.poNumber, row.purchaseDetailId, row.paidDate)}>
-                        Delivery
-                      </Button>
-                      &nbsp;
-                      <IconButton
-                        aria-label="Delete"
-                        name={row.productId}
-                        onClick={() => {
-                          this.deleteClicked(row.purchaseDetailId);
-                          const newPaidItems = paidItems.filter(function (obj) {
-                            return obj.purchaseDetailId !== row.purchaseDetailId;
-                          });
-                          this.setState({ paidItems: newPaidItems });
-                        }}
-                      >
-                        <DeleteIcon
-                          name={row.productId}
-                          fontSize="small"
-                        />
-                      </IconButton>
-                      &nbsp;
-                      &nbsp;
-                      {row.product.productCode}
-                      &nbsp;
-                      &nbsp;
-                      {row.product.productName}
-                    </TableCell>
-                    <TableCell numeric align="right">{row.amount}</TableCell>
-                    <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
-                    <TableCell numeric>{ccyFormat(row.overheadCost)}</TableCell>
-                    <TableCell numeric>{ccyFormat(row.totalPrice)}</TableCell>
-                    {/* <TableCell>{row.poNumber}</TableCell>
-                    <TableCell>{dateFormat(row.paidDate)}</TableCell>
-                    <TableCell>{dateFormat(row.estimatedDelivery)}</TableCell> */}
-                  </TableRow>
-                ))}
                 <TableRow>
                   <TableCell colSpan={4}><h5>Total</h5></TableCell>
                   <TableCell numeric><Success><h5>{ccyFormat(paidItems.map(item => item.totalPrice).reduce((prev, next) => prev + next, 0))}</h5></Success></TableCell>
@@ -545,60 +603,52 @@ export default class PurchaseItems extends React.Component {
             </div>
           </CardHeader>
           <CardBody>
+            <MaterialTable
+              columns={onDeliveryItemsColumns}
+              data={onDeliveryItems}
+              options={options}
+              title=""
+              actions={[{
+                icon: 'arrow_downward',
+                tooltip: 'Mark as Custom Clearance',
+                onClick: (event, rowData) =>
+                  this.markAsCustomClearanceClicked(
+                    rowData.amount,
+                    rowData.unitPrice, rowData.overheadCost, purchase.poNumber, rowData.purchaseDetailId),
+              }]}
+              editable={{
+                onRowUpdate: (newData, oldData) =>
+                  new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                      {
+                        const index = onDeliveryItems.indexOf(oldData);
+                        newData.totalPrice = Number(newData.amount) * Number(newData.unitPrice) + Number(newData.overheadCost);
+                        onDeliveryItems[index] = newData;
+                        PurchaseService.updatePurchaseDetail(newData);
+                        this.setState({ onDeliveryItems }, () => resolve());
+                      }
+                      resolve();
+                    }, 1000);
+                  }),
+                onRowDelete: oldData =>
+                  new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                      {
+                        this.deleteClicked(oldData.purchaseDetailId);
+                        const index = onDeliveryItems.indexOf(oldData);
+                        onDeliveryItems.splice(index, 1);
+                        this.setState({ onDeliveryItems }, () => resolve());
+                      }
+                      resolve();
+                    }, 1000);
+                  }),
+              }}
+            />
             <Table className={styles.table}>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Product</TableCell>
-                  <TableCell numeric>Amount</TableCell>
-                  <TableCell numeric>Unit Price</TableCell>
-                  <TableCell numeric>Overhead Cost</TableCell>
-                  <TableCell numeric>Total Price</TableCell>
-                  {/* <TableCell>Estimated Delivery</TableCell> */}
-                </TableRow>
-              </TableHead>
               <TableBody>
-                {onDeliveryItems.map(row => (
-                  <TableRow key={row.purchaseDetailId}>
-                    <TableCell>
-                      <Button color="primary"
-                        size="small"
-                        onClick={() => this.markAsCustomClearanceClicked(row.amount, row.unitPrice, row.overheadCost, purchase.poNumber, row.purchaseDetailId)}>
-                        Custom
-                      </Button>
-                      &nbsp;
-                      <IconButton
-                        aria-label="Delete"
-                        name={row.productId}
-                        onClick={() => {
-                          this.deleteClicked(row.purchaseDetailId);
-                          const newOnDeliveryItems = onDeliveryItems.filter(function (obj) {
-                            return obj.purchaseDetailId !== row.purchaseDetailId;
-                          });
-                          this.setState({ onDeliveryItems: newOnDeliveryItems });
-                        }}
-                      >
-                        <DeleteIcon
-                          name={row.productId}
-                          fontSize="small"
-                        />
-                      </IconButton>
-                      &nbsp;
-                      &nbsp;
-                      {row.product.productCode}
-                      &nbsp;
-                      &nbsp;
-                      {row.product.productName}
-                    </TableCell>
-                    <TableCell numeric align="right">{row.amount}</TableCell>
-                    <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
-                    <TableCell numeric>{ccyFormat(row.overheadCost)}</TableCell>
-                    <TableCell numeric>{ccyFormat(row.totalPrice)}</TableCell>
-                    {/* <TableCell>{dateFormat(row.estimatedDelivery)}</TableCell> */}
-                  </TableRow>
-                ))}
                 <TableRow>
                   <TableCell colSpan={4}><h5>Total</h5></TableCell>
-                  <TableCell numeric><Success><h5>{ccyFormat(purchase.purchaseDetail.map(item => item.totalPrice).reduce((prev, next) => prev + next, 0))}</h5></Success></TableCell>
+                  <TableCell numeric><Success><h5>{ccyFormat(onDeliveryItems.map(item => item.totalPrice).reduce((prev, next) => prev + next, 0))}</h5></Success></TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -619,56 +669,53 @@ export default class PurchaseItems extends React.Component {
             </div>
           </CardHeader>
           <CardBody>
+            <MaterialTable
+              columns={customClearanceItemsColumns}
+              data={customClearanceItems}
+              options={options}
+              title=""
+              actions={[{
+                icon: 'arrow_downward',
+                tooltip: 'Mark as Arrived',
+                onClick: (event, rowData) =>
+                  this.markAsArrivedClicked(
+                    rowData.amount,
+                    rowData.unitPrice,
+                    rowData.overheadCost,
+                    purchase.poNumber,
+                    rowData.purchaseDetailId,
+                    rowData.paidDate),
+              }]}
+              editable={{
+                onRowUpdate: (newData, oldData) =>
+                  new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                      {
+                        const index = customClearanceItems.indexOf(oldData);
+                        newData.totalPrice = Number(newData.amount) * Number(newData.unitPrice) + Number(newData.overheadCost);
+                        customClearanceItems[index] = newData;
+                        PurchaseService.updatePurchaseDetail(newData);
+                        this.setState({ customClearanceItems }, () => resolve());
+                      }
+                      resolve();
+                    }, 1000);
+                  }),
+                onRowDelete: oldData =>
+                  new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                      {
+                        this.deleteClicked(oldData.purchaseDetailId);
+                        const index = customClearanceItems.indexOf(oldData);
+                        customClearanceItems.splice(index, 1);
+                        this.setState({ customClearanceItems }, () => resolve());
+                      }
+                      resolve();
+                    }, 1000);
+                  }),
+              }}
+            />
             <Table className={styles.table}>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Product</TableCell>
-                  <TableCell numeric>Amount</TableCell>
-                  <TableCell numeric>Unit Price</TableCell>
-                  <TableCell numeric>Overhead Cost</TableCell>
-                  <TableCell numeric>Total Price</TableCell>
-                </TableRow>
-              </TableHead>
               <TableBody>
-                {customClearanceItems.map(row => (
-                  <TableRow key={row.purchaseDetailId}>
-                    <TableCell>
-                      <Button color="primary"
-                        size="small"
-                        onClick={() => this.markAsArrivedClicked(row.amount, row.unitPrice, row.overheadCost, purchase.poNumber, row.purchaseDetailId)}>
-                        Arrived
-                      </Button>
-                      &nbsp;
-                      <IconButton
-                        aria-label="Delete"
-                        name={row.productId}
-                        onClick={() => {
-                          this.deleteClicked(row.purchaseDetailId);
-                          const newCustomClearanceItems = customClearanceItems.filter(function (obj) {
-                            return obj.purchaseDetailId !== row.purchaseDetailId;
-                          });
-                          this.setState({ customClearanceItems: newCustomClearanceItems });
-                        }}
-                      >
-                        <DeleteIcon
-                          name={row.productId}
-                          fontSize="small"
-                        />
-                      </IconButton>
-                      &nbsp;
-                      &nbsp;
-                      {row.product.productCode}
-                      &nbsp;
-                      &nbsp;
-                      {row.product.productName}
-                    </TableCell>
-                    <TableCell numeric align="right">{row.amount}</TableCell>
-                    <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
-                    <TableCell numeric>{ccyFormat(row.overheadCost)}</TableCell>
-                    <TableCell numeric>{ccyFormat(row.totalPrice)}</TableCell>
-                    {/* <TableCell>{dateFormat(row.estimatedDelivery)}</TableCell> */}
-                  </TableRow>
-                ))}
                 <TableRow>
                   <TableCell colSpan={4}><h5>Total</h5></TableCell>
                   <TableCell numeric><Success><h5>{ccyFormat(customClearanceItems.map(item => item.totalPrice).reduce((prev, next) => prev + next, 0))}</h5></Success></TableCell>
@@ -692,52 +739,41 @@ export default class PurchaseItems extends React.Component {
             </div>
           </CardHeader>
           <CardBody>
-            <Table
-              className={styles.table}
-              ref={el => (this.arrivedTable = el)}>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Product</TableCell>
-                  <TableCell numeric>Amount</TableCell>
-                  <TableCell numeric>Unit Price</TableCell>
-                  <TableCell numeric>Overhead Cost</TableCell>
-                  <TableCell numeric>Total Price</TableCell>
-                  <TableCell>Arrived Date</TableCell>
-                  <TableCell>Location</TableCell>
-                </TableRow>
-              </TableHead>
+            <MaterialTable
+              columns={arrivedItemsColumns}
+              data={arrivedItems}
+              options={options}
+              title=""
+              editable={{
+                onRowUpdate: (newData, oldData) =>
+                  new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                      {
+                        const index = arrivedItems.indexOf(oldData);
+                        newData.totalPrice = Number(newData.amount) * Number(newData.unitPrice) + Number(newData.overheadCost);
+                        arrivedItems[index] = newData;
+                        PurchaseService.updatePurchaseDetail(newData);
+                        this.setState({ arrivedItems }, () => resolve());
+                      }
+                      resolve();
+                    }, 1000);
+                  }),
+                onRowDelete: oldData =>
+                  new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                      {
+                        this.deleteClicked(oldData.purchaseDetailId);
+                        const index = arrivedItems.indexOf(oldData);
+                        arrivedItems.splice(index, 1);
+                        this.setState({ arrivedItems }, () => resolve());
+                      }
+                      resolve();
+                    }, 1000);
+                  }),
+              }}
+            />
+            <Table className={styles.table}>
               <TableBody>
-                {arrivedItems.map(row => (
-                  <TableRow key={row.purchaseDetailId}>
-                    <TableCell>
-                      &nbsp;
-                      <IconButton
-                        aria-label="Delete"
-                        name={row.productId}
-                        onClick={() => {
-                          this.deleteClicked(row.purchaseDetailId);
-                          const newArrivedItems = arrivedItems.filter(function (obj) {
-                            return obj.purchaseDetailId !== row.purchaseDetailId;
-                          });
-                          this.setState({ arrivedItems: newArrivedItems });
-                        }}
-                      >
-                        <DeleteIcon
-                          name={row.productId}
-                          fontSize="small"
-                        />
-                      </IconButton>
-                      &nbsp;
-                      {row.product.productName}
-                    </TableCell>
-                    <TableCell numeric align="right">{row.amount}</TableCell>
-                    <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
-                    <TableCell numeric>{ccyFormat(row.overheadCost)}</TableCell>
-                    <TableCell numeric>{ccyFormat(row.totalPrice)}</TableCell>
-                    <TableCell>{dateFormat(row.arrivedDate)}</TableCell>
-                    <TableCell>{row.location.locationName}</TableCell>
-                  </TableRow>
-                ))}
                 <TableRow>
                   <TableCell colSpan={6}><h5>Total</h5></TableCell>
                   <TableCell numeric><Success><h5>{ccyFormat(arrivedItems.map(item => item.totalPrice).reduce((prev, next) => prev + next, 0))}</h5></Success></TableCell>
