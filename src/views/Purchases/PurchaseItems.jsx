@@ -293,7 +293,7 @@ export default class PurchaseItems extends React.Component {
       purchaseDetailStatusUpdate.productId = result.productId;
       purchaseDetailStatusUpdate.product = {
         productId: result.product.productId,
-        productCode: result.productId,
+        productCode: result.product.productCode,
         productName: result.product.productName,
       };
       purchaseDetailStatusUpdate.location = {
