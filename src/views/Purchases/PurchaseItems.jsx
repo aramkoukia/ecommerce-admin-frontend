@@ -27,7 +27,7 @@ import PurchaseService from '../../services/PurchaseService';
 import LocationService from '../../services/LocationService';
 
 function ccyFormat(num) {
-  return num && !isNaN(num) ? `${num.toFixed(2)} $` : '';
+  return num && !isNaN(num) ? `${Number(num).toFixed(2)} $` : '';
 }
 
 function dateFormat(dateString) {
@@ -88,7 +88,13 @@ export default class PurchaseItems extends React.Component {
   }
 
   handleLocationChange = (event) => {
-    this.setState({ locationId: event.target.value });
+    const { locations } = this.state;
+    const locationName = locations.find(m => m.locationId == event.target.value).locationName;
+
+    this.setState({
+      locationId: event.target.value,
+      locationName,
+    });
   }
 
   handleClose() {
@@ -128,7 +134,6 @@ export default class PurchaseItems extends React.Component {
     this.setState({
       loading: false,
     });
-    window.location.reload();
   }
 
   async markAsPaid() {
@@ -142,7 +147,6 @@ export default class PurchaseItems extends React.Component {
       openMarkAsPaidDialog: false,
       loading: false,
     });
-    window.location.reload();
   }
 
   markAsOnDeliveryClicked(amount, unitPrice, overheadCost, poNumber, purchaseDetailId, paidDate) {
@@ -170,7 +174,6 @@ export default class PurchaseItems extends React.Component {
       openMarkAsOnDeliveryDialog: false,
       loading: false,
     });
-    window.location.reload();
   }
 
   markAsCustomClearanceClicked(amount, unitPrice, overheadCost, poNumber, purchaseDetailId) {
@@ -198,7 +201,6 @@ export default class PurchaseItems extends React.Component {
       openMarkAsCustomClearanceDialog: false,
       loading: false,
     });
-    window.location.reload();
   }
 
   markAsArrivedClicked(amount, unitPrice, overheadCost, poNumber, purchaseDetailId) {
@@ -207,7 +209,7 @@ export default class PurchaseItems extends React.Component {
 
     LocationService.getLocationsForUser()
       .then(results => this.setState({
-        locations: [...locations, ...results],
+        locations: results,
         openMarkAsArrivedDialog: true,
         amount,
         unitPrice,
@@ -232,8 +234,6 @@ export default class PurchaseItems extends React.Component {
         openMarkAsArrivedDialog: false,
         loading: false,
       });
-
-      window.location.reload();
     } else {
       this.setState({
         openSnackbar: true,
@@ -258,6 +258,7 @@ export default class PurchaseItems extends React.Component {
       estimatedDelivery,
       poNumber,
       locationId,
+      locationName,
     } = this.state;
 
     const purchaseDetailStatusUpdate = {
@@ -269,20 +270,49 @@ export default class PurchaseItems extends React.Component {
       estimatedDelivery,
       poNumber,
       purchaseStatus: status,
-      totalPrice: (Number(unitPrice) * Number(amount) + Number(overheadCost)).toFixed(2),
+      totalPrice: Number(unitPrice) * Number(amount) + Number(overheadCost),
       arrivedAtLocationId: locationId,
     };
 
     const result = await PurchaseService.updatePurchaseDetailStatus(purchaseDetailId, purchaseDetailStatusUpdate);
     if (result === false
-        || result === null
-        || result.StatusCode === 500
-        || result.StatusCode === 400) {
+      || result === null
+      || result.StatusCode === 500
+      || result.StatusCode === 400) {
       this.setState({
         openSnackbar: true,
         snackbarMessage: 'Oops, looks like something went wrong!',
         snackbarColor: 'danger',
       });
+    } else {
+      purchaseDetailStatusUpdate.purchaseDetailId = result.purchaseDetailId,
+      purchaseDetailStatusUpdate.productId = result.productId;
+      purchaseDetailStatusUpdate.product = {
+        productId: result.product.productId,
+        productCode: result.productId,
+        productName: result.product.productName,
+      };
+      purchaseDetailStatusUpdate.location = {
+        locationName: locationName,
+      };
+
+      if (status === 'Paid') {
+        this.setState({
+          paidItems: [...this.state.paidItems, purchaseDetailStatusUpdate]
+        });
+      } else if (status === 'OnDelivery') {
+        this.setState({
+          onDeliveryItems: [...this.state.onDeliveryItems, purchaseDetailStatusUpdate]
+        });
+      } else if (status === 'CustomClearance') {
+        this.setState({
+          customClearanceItems: [...this.state.customClearanceItems, purchaseDetailStatusUpdate]
+        });
+      } else if (status === 'Arrived') {
+        this.setState({
+          arrivedItems: [...this.state.arrivedItems, purchaseDetailStatusUpdate]
+        });
+      }
     }
 
     return true;
@@ -376,7 +406,13 @@ export default class PurchaseItems extends React.Component {
                       <IconButton
                         aria-label="Delete"
                         name={row.productId}
-                        onClick={() => this.deleteClicked(row.purchaseDetailId)}
+                        onClick={() => {
+                          this.deleteClicked(row.purchaseDetailId);
+                          const newPlannedItems = plannedItems.filter(function (obj) {
+                            return obj.purchaseDetailId !== row.purchaseDetailId;
+                          });
+                          this.setState({ plannedItems: newPlannedItems });
+                        }}
                       >
                         <DeleteIcon
                           name={row.productId}
@@ -433,7 +469,13 @@ export default class PurchaseItems extends React.Component {
                       <IconButton
                         aria-label="Delete"
                         name={row.productId}
-                        onClick={() => this.deleteClicked(row.purchaseDetailId)}
+                        onClick={() => {
+                          this.deleteClicked(row.purchaseDetailId);
+                          const newPaidItems = paidItems.filter(function (obj) {
+                            return obj.purchaseDetailId !== row.purchaseDetailId;
+                          });
+                          this.setState({ paidItems: newPaidItems });
+                        }}
                       >
                         <DeleteIcon
                           name={row.productId}
@@ -493,7 +535,13 @@ export default class PurchaseItems extends React.Component {
                       <IconButton
                         aria-label="Delete"
                         name={row.productId}
-                        onClick={() => this.deleteClicked(row.purchaseDetailId)}
+                        onClick={() => {
+                          this.deleteClicked(row.purchaseDetailId);
+                          const newOnDeliveryItems = onDeliveryItems.filter(function (obj) {
+                            return obj.purchaseDetailId !== row.purchaseDetailId;
+                          });
+                          this.setState({ onDeliveryItems: newOnDeliveryItems });
+                        }}
                       >
                         <DeleteIcon
                           name={row.productId}
@@ -550,7 +598,13 @@ export default class PurchaseItems extends React.Component {
                       <IconButton
                         aria-label="Delete"
                         name={row.productId}
-                        onClick={() => this.deleteClicked(row.purchaseDetailId)}
+                        onClick={() => {
+                          this.deleteClicked(row.purchaseDetailId);
+                          const newCustomClearanceItems = customClearanceItems.filter(function (obj) {
+                            return obj.purchaseDetailId !== row.purchaseDetailId;
+                          });
+                          this.setState({ customClearanceItems: newCustomClearanceItems });
+                        }}
                       >
                         <DeleteIcon
                           name={row.productId}
@@ -604,7 +658,13 @@ export default class PurchaseItems extends React.Component {
                       <IconButton
                         aria-label="Delete"
                         name={row.productId}
-                        onClick={() => this.deleteClicked(row.purchaseDetailId)}
+                        onClick={() => {
+                          this.deleteClicked(row.purchaseDetailId);
+                          const newArrivedItems = arrivedItems.filter(function (obj) {
+                            return obj.purchaseDetailId !== row.purchaseDetailId;
+                          });
+                          this.setState({ arrivedItems: newArrivedItems });
+                        }}
                       >
                         <DeleteIcon
                           name={row.productId}
