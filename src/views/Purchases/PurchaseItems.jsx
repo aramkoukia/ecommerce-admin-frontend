@@ -11,6 +11,8 @@ import Dialog from '@material-ui/core/Dialog';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import DeleteIcon from '@material-ui/icons/Delete';
+import IconButton from '@material-ui/core/IconButton';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import Snackbar from '../../components/Snackbar/Snackbar';
@@ -53,6 +55,11 @@ export default class PurchaseItems extends React.Component {
       openMarkAsArrivedDialog: false,
       loading: false,
       locations: [],
+      plannedItems: [],
+      paidItems: [],
+      onDeliveryItems: [],
+      customClearanceItems: [],
+      arrivedItems: [],
     };
 
     this.markAsPaidClicked = this.markAsPaidClicked.bind(this);
@@ -70,16 +77,15 @@ export default class PurchaseItems extends React.Component {
   }
 
   async componentDidMount() {
-    // this.setState({
-    //   openMarkAsPaidDialog: false,
-    //   openMarkAsOnDeliveryDialog: false,
-    //   openMarkAsCustomClearanceDialog: false,
-    //   openMarkAsArrivedDialog: false,
-    //   loading: false,
-    //   purchase,
-    // });
+    const { purchase } = this.props;
+    this.setState({
+      plannedItems: purchase.purchaseDetail.filter(m => m.status === 'Plan'),
+      paidItems: purchase.purchaseDetail.filter(m => m.status === 'Paid'),
+      onDeliveryItems: purchase.purchaseDetail.filter(m => m.status === 'OnDelivery'),
+      customClearanceItems: purchase.purchaseDetail.filter(m => m.status === 'CustomClearance'),
+      arrivedItems: purchase.purchaseDetail.filter(m => m.status === 'Arrived'),
+    });
   }
-
 
   handleLocationChange = (event) => {
     this.setState({ locationId: event.target.value });
@@ -98,12 +104,13 @@ export default class PurchaseItems extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
   }
 
-  markAsPaidClicked(amount, unitPrice, poNumber, purchaseDetailId) {
+  markAsPaidClicked(amount, unitPrice, overheadCost, poNumber, purchaseDetailId) {
     const { purchase } = this.props;
     this.setState({
       openMarkAsPaidDialog: true,
       amount,
       unitPrice,
+      overheadCost,
       poNumber,
       paidDate: dateFormat((new Date()).addHours(-8)),
       estimatedDelivery: dateFormat(purchase.deliveryDate),
@@ -138,12 +145,13 @@ export default class PurchaseItems extends React.Component {
     window.location.reload();
   }
 
-  markAsOnDeliveryClicked(amount, unitPrice, poNumber, purchaseDetailId, paidDate) {
+  markAsOnDeliveryClicked(amount, unitPrice, overheadCost, poNumber, purchaseDetailId, paidDate) {
     const { purchase } = this.props;
     this.setState({
       openMarkAsOnDeliveryDialog: true,
       amount,
       unitPrice,
+      overheadCost,
       poNumber,
       paidDate: dateFormat(paidDate),
       estimatedDelivery: dateFormat(purchase.deliveryDate),
@@ -165,12 +173,13 @@ export default class PurchaseItems extends React.Component {
     window.location.reload();
   }
 
-  markAsCustomClearanceClicked(amount, unitPrice, poNumber, purchaseDetailId) {
+  markAsCustomClearanceClicked(amount, unitPrice, overheadCost, poNumber, purchaseDetailId) {
     const { purchase } = this.props;
     this.setState({
       openMarkAsCustomClearanceDialog: true,
       amount,
       unitPrice,
+      overheadCost,
       poNumber,
       paidDate: dateFormat((new Date()).addHours(-8)),
       estimatedDelivery: dateFormat(purchase.deliveryDate),
@@ -192,7 +201,7 @@ export default class PurchaseItems extends React.Component {
     window.location.reload();
   }
 
-  markAsArrivedClicked(amount, unitPrice, poNumber, purchaseDetailId) {
+  markAsArrivedClicked(amount, unitPrice, overheadCost, poNumber, purchaseDetailId) {
     const { purchase } = this.props;
     const { locations } = this.state;
 
@@ -202,6 +211,7 @@ export default class PurchaseItems extends React.Component {
         openMarkAsArrivedDialog: true,
         amount,
         unitPrice,
+        overheadCost,
         poNumber,
         arrivedDate: dateFormat((new Date()).addHours(-8)),
         estimatedDelivery: dateFormat(purchase.deliveryDate),
@@ -242,6 +252,7 @@ export default class PurchaseItems extends React.Component {
       purchaseDetailId,
       amount,
       unitPrice,
+      overheadCost,
       paidDate,
       arrivedDate,
       estimatedDelivery,
@@ -252,12 +263,13 @@ export default class PurchaseItems extends React.Component {
     const purchaseDetailStatusUpdate = {
       amount,
       unitPrice,
+      overheadCost,
       paidDate,
       arrivedDate,
       estimatedDelivery,
       poNumber,
       purchaseStatus: status,
-      totalPrice: (unitPrice * amount).toFixed(2),
+      totalPrice: (Number(unitPrice) * Number(amount) + Number(overheadCost)).toFixed(2),
       arrivedAtLocationId: locationId,
     };
 
@@ -315,6 +327,7 @@ export default class PurchaseItems extends React.Component {
       loading,
       poNumber,
       amount,
+      overheadCost,
       unitPrice,
       estimatedDelivery,
       paidDate,
@@ -324,6 +337,11 @@ export default class PurchaseItems extends React.Component {
       snackbarColor,
       locations,
       locationId,
+      plannedItems,
+      paidItems,
+      onDeliveryItems,
+      customClearanceItems,
+      arrivedItems,
     } = this.state;
 
     const { purchase } = this.props;
@@ -346,12 +364,25 @@ export default class PurchaseItems extends React.Component {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {purchase.purchaseDetail.map(row => row.status === 'Plan' && (
+                {plannedItems.map(row => (
                   <TableRow key={row.purchaseDetailId}>
                     <TableCell>
-                      <Button color="primary" onClick={() => this.markAsPaidClicked(row.amount, row.unitPrice, purchase.poNumber, row.purchaseDetailId)}>Paid</Button>
+                      <Button color="primary"
+                        size="small"
+                        onClick={() => this.markAsPaidClicked(row.amount, row.unitPrice, row.overheadCost, purchase.poNumber, row.purchaseDetailId)}>
+                        Paid
+                      </Button>
                       &nbsp;
-                      <Button color="info" onClick={() => this.deleteClicked(row.purchaseDetailId)}>Delete</Button>
+                      <IconButton
+                        aria-label="Delete"
+                        name={row.productId}
+                        onClick={() => this.deleteClicked(row.purchaseDetailId)}
+                      >
+                        <DeleteIcon
+                          name={row.productId}
+                          fontSize="small"
+                        />
+                      </IconButton>
                       &nbsp;
                       &nbsp;
                       {row.product.productCode}
@@ -367,7 +398,7 @@ export default class PurchaseItems extends React.Component {
                 ))}
                 <TableRow>
                   <TableCell colSpan={4}><h5>Total</h5></TableCell>
-                  <TableCell numeric><Success><h5>{ccyFormat(purchase.purchaseDetail.map(item => item.status === 'Plan' && item.totalPrice).reduce((prev, next) => prev + next, 0))}</h5></Success></TableCell>
+                  <TableCell numeric><Success><h5>{ccyFormat(plannedItems.map(item => item.totalPrice).reduce((prev, next) => prev + next, 0))}</h5></Success></TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -384,19 +415,31 @@ export default class PurchaseItems extends React.Component {
                   <TableCell>Product</TableCell>
                   <TableCell numeric>Amount</TableCell>
                   <TableCell numeric>Unit Price</TableCell>
+                  <TableCell numeric>Overhead Cost</TableCell>
                   <TableCell numeric>Total Price</TableCell>
-                  <TableCell>PO Number</TableCell>
-                  <TableCell>Paid Date</TableCell>
-                  <TableCell>Estimated Delivery</TableCell>
+                  {/* <TableCell>Paid Date</TableCell> */}
                 </TableRow>
               </TableHead>
               <TableBody>
-                {purchase.purchaseDetail.map(row => row.status === 'Paid' && (
+                {paidItems.map(row => (
                   <TableRow key={row.purchaseDetailId}>
                     <TableCell>
-                      <Button color="primary" onClick={() => this.markAsOnDeliveryClicked(row.amount, row.unitPrice, purchase.poNumber, row.purchaseDetailId, row.paidDate)}>On Delivery</Button>
+                      <Button
+                        size="small"
+                        color="primary" onClick={() => this.markAsOnDeliveryClicked(row.amount, row.unitPrice, row.overheadCost, purchase.poNumber, row.purchaseDetailId, row.paidDate)}>
+                        Delivery
+                      </Button>
                       &nbsp;
-                      <Button color="info" onClick={() => this.deleteClicked(row.purchaseDetailId)}>Delete</Button>
+                      <IconButton
+                        aria-label="Delete"
+                        name={row.productId}
+                        onClick={() => this.deleteClicked(row.purchaseDetailId)}
+                      >
+                        <DeleteIcon
+                          name={row.productId}
+                          fontSize="small"
+                        />
+                      </IconButton>
                       &nbsp;
                       &nbsp;
                       {row.product.productCode}
@@ -406,15 +449,16 @@ export default class PurchaseItems extends React.Component {
                     </TableCell>
                     <TableCell numeric align="right">{row.amount}</TableCell>
                     <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
+                    <TableCell numeric>{ccyFormat(row.overheadCost)}</TableCell>
                     <TableCell numeric>{ccyFormat(row.totalPrice)}</TableCell>
-                    <TableCell>{row.poNumber}</TableCell>
+                    {/* <TableCell>{row.poNumber}</TableCell>
                     <TableCell>{dateFormat(row.paidDate)}</TableCell>
-                    <TableCell>{dateFormat(row.estimatedDelivery)}</TableCell>
+                    <TableCell>{dateFormat(row.estimatedDelivery)}</TableCell> */}
                   </TableRow>
                 ))}
                 <TableRow>
-                  <TableCell colSpan={6}><h5>Total</h5></TableCell>
-                  <TableCell numeric><Success><h5>{ccyFormat(purchase.purchaseDetail.map(item => item.status === 'Paid' && item.totalPrice).reduce((prev, next) => prev + next, 0))}</h5></Success></TableCell>
+                  <TableCell colSpan={4}><h5>Total</h5></TableCell>
+                  <TableCell numeric><Success><h5>{ccyFormat(paidItems.map(item => item.totalPrice).reduce((prev, next) => prev + next, 0))}</h5></Success></TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -431,17 +475,31 @@ export default class PurchaseItems extends React.Component {
                   <TableCell>Product</TableCell>
                   <TableCell numeric>Amount</TableCell>
                   <TableCell numeric>Unit Price</TableCell>
+                  <TableCell numeric>Overhead Cost</TableCell>
                   <TableCell numeric>Total Price</TableCell>
-                  <TableCell>Estimated Delivery</TableCell>
+                  {/* <TableCell>Estimated Delivery</TableCell> */}
                 </TableRow>
               </TableHead>
               <TableBody>
-                {purchase.purchaseDetail.map(row => row.status === 'OnDelivery' && (
+                {onDeliveryItems.map(row => (
                   <TableRow key={row.purchaseDetailId}>
                     <TableCell>
-                      <Button color="primary" onClick={() => this.markAsCustomClearanceClicked(row.amount, row.unitPrice, purchase.poNumber, row.purchaseDetailId)}>Custom Clearance</Button>
+                      <Button color="primary"
+                        size="small"
+                        onClick={() => this.markAsCustomClearanceClicked(row.amount, row.unitPrice, row.overheadCost, purchase.poNumber, row.purchaseDetailId)}>
+                        Custom
+                      </Button>
                       &nbsp;
-                      <Button color="info" onClick={() => this.deleteClicked(row.purchaseDetailId)}>Delete</Button>
+                      <IconButton
+                        aria-label="Delete"
+                        name={row.productId}
+                        onClick={() => this.deleteClicked(row.purchaseDetailId)}
+                      >
+                        <DeleteIcon
+                          name={row.productId}
+                          fontSize="small"
+                        />
+                      </IconButton>
                       &nbsp;
                       &nbsp;
                       {row.product.productCode}
@@ -451,13 +509,14 @@ export default class PurchaseItems extends React.Component {
                     </TableCell>
                     <TableCell numeric align="right">{row.amount}</TableCell>
                     <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
+                    <TableCell numeric>{ccyFormat(row.overheadCost)}</TableCell>
                     <TableCell numeric>{ccyFormat(row.totalPrice)}</TableCell>
-                    <TableCell>{dateFormat(row.estimatedDelivery)}</TableCell>
+                    {/* <TableCell>{dateFormat(row.estimatedDelivery)}</TableCell> */}
                   </TableRow>
                 ))}
                 <TableRow>
-                  <TableCell colSpan={4}><h3>Total</h3></TableCell>
-                  <TableCell numeric><Success><h3>{ccyFormat(purchase.purchaseDetail.map(item => item.status === 'OnDelivery' && item.totalPrice).reduce((prev, next) => prev + next, 0))}</h3></Success></TableCell>
+                  <TableCell colSpan={4}><h5>Total</h5></TableCell>
+                  <TableCell numeric><Success><h5>{ccyFormat(purchase.purchaseDetail.map(item => item.totalPrice).reduce((prev, next) => prev + next, 0))}</h5></Success></TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -474,17 +533,30 @@ export default class PurchaseItems extends React.Component {
                   <TableCell>Product</TableCell>
                   <TableCell numeric>Amount</TableCell>
                   <TableCell numeric>Unit Price</TableCell>
+                  <TableCell numeric>Overhead Cost</TableCell>
                   <TableCell numeric>Total Price</TableCell>
-                  <TableCell>Estimated Delivery</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {purchase.purchaseDetail.map(row => row.status === 'CustomClearance' && (
+                {customClearanceItems.map(row => (
                   <TableRow key={row.purchaseDetailId}>
                     <TableCell>
-                      <Button color="primary" onClick={() => this.markAsArrivedClicked(row.amount, row.unitPrice, purchase.poNumber, row.purchaseDetailId)}>Arrived</Button>
+                      <Button color="primary"
+                        size="small"
+                        onClick={() => this.markAsArrivedClicked(row.amount, row.unitPrice, row.overheadCost, purchase.poNumber, row.purchaseDetailId)}>
+                        Arrived
+                      </Button>
                       &nbsp;
-                      <Button color="info" onClick={() => this.deleteClicked(row.purchaseDetailId)}>Delete</Button>
+                      <IconButton
+                        aria-label="Delete"
+                        name={row.productId}
+                        onClick={() => this.deleteClicked(row.purchaseDetailId)}
+                      >
+                        <DeleteIcon
+                          name={row.productId}
+                          fontSize="small"
+                        />
+                      </IconButton>
                       &nbsp;
                       &nbsp;
                       {row.product.productCode}
@@ -494,13 +566,14 @@ export default class PurchaseItems extends React.Component {
                     </TableCell>
                     <TableCell numeric align="right">{row.amount}</TableCell>
                     <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
+                    <TableCell numeric>{ccyFormat(row.overheadCost)}</TableCell>
                     <TableCell numeric>{ccyFormat(row.totalPrice)}</TableCell>
-                    <TableCell>{dateFormat(row.estimatedDelivery)}</TableCell>
+                    {/* <TableCell>{dateFormat(row.estimatedDelivery)}</TableCell> */}
                   </TableRow>
                 ))}
                 <TableRow>
-                  <TableCell colSpan={4}><h3>Total</h3></TableCell>
-                  <TableCell numeric><Success><h3>{ccyFormat(purchase.purchaseDetail.map(item => item.status === 'CustomClearance' && item.totalPrice).reduce((prev, next) => prev + next, 0))}</h3></Success></TableCell>
+                  <TableCell colSpan={4}><h5>Total</h5></TableCell>
+                  <TableCell numeric><Success><h5>{ccyFormat(customClearanceItems.map(item => item.totalPrice).reduce((prev, next) => prev + next, 0))}</h5></Success></TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -517,30 +590,41 @@ export default class PurchaseItems extends React.Component {
                   <TableCell>Product</TableCell>
                   <TableCell numeric>Amount</TableCell>
                   <TableCell numeric>Unit Price</TableCell>
+                  <TableCell numeric>Overhead Cost</TableCell>
                   <TableCell numeric>Total Price</TableCell>
                   <TableCell>Arrived Date</TableCell>
                   <TableCell>Location</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {purchase.purchaseDetail.map(row => row.status === 'Arrived' && (
+                {arrivedItems.map(row => (
                   <TableRow key={row.purchaseDetailId}>
                     <TableCell>
                       &nbsp;
-                      <Button color="info" onClick={() => this.deleteClicked(row.purchaseDetailId)}>Delete</Button>
+                      <IconButton
+                        aria-label="Delete"
+                        name={row.productId}
+                        onClick={() => this.deleteClicked(row.purchaseDetailId)}
+                      >
+                        <DeleteIcon
+                          name={row.productId}
+                          fontSize="small"
+                        />
+                      </IconButton>
                       &nbsp;
                       {row.product.productName}
                     </TableCell>
                     <TableCell numeric align="right">{row.amount}</TableCell>
                     <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
+                    <TableCell numeric>{ccyFormat(row.overheadCost)}</TableCell>
                     <TableCell numeric>{ccyFormat(row.totalPrice)}</TableCell>
                     <TableCell>{dateFormat(row.arrivedDate)}</TableCell>
                     <TableCell>{row.location.locationName}</TableCell>
                   </TableRow>
                 ))}
                 <TableRow>
-                  <TableCell colSpan={5}><h3>Total</h3></TableCell>
-                  <TableCell numeric><Success><h3>{ccyFormat(purchase.purchaseDetail.map(item => item.status === 'Arrived' && item.totalPrice).reduce((prev, next) => prev + next, 0))}</h3></Success></TableCell>
+                  <TableCell colSpan={6}><h5>Total</h5></TableCell>
+                  <TableCell numeric><Success><h5>{ccyFormat(arrivedItems.map(item => item.totalPrice).reduce((prev, next) => prev + next, 0))}</h5></Success></TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -587,9 +671,22 @@ export default class PurchaseItems extends React.Component {
                       <br />
                     </GridItem>
                     <GridItem md={12}>
+                      <TextField
+                        onChange={this.handleChange}
+                        name="overheadCost"
+                        label="Overhead Cost ($)"
+                        type="number"
+                        value={overheadCost}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                      <br />
+                    </GridItem>
+                    <GridItem md={12}>
                       <h4>
                         Total:
-                        {unitPrice * amount}
+                        {Number(unitPrice) * Number(amount) + Number(overheadCost)}
                       </h4>
                       <br />
                     </GridItem>
@@ -689,9 +786,22 @@ export default class PurchaseItems extends React.Component {
                       <br />
                     </GridItem>
                     <GridItem md={12}>
+                      <TextField
+                        onChange={this.handleChange}
+                        name="overheadCost"
+                        label="Overhead Cost ($)"
+                        type="number"
+                        value={overheadCost}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                      <br />
+                    </GridItem>
+                    <GridItem md={12}>
                       <h4>
                         Total:
-                        {unitPrice * amount}
+                        {Number(unitPrice) * Number(amount) + Number(overheadCost)}
                       </h4>
                       <br />
                     </GridItem>
@@ -709,7 +819,7 @@ export default class PurchaseItems extends React.Component {
                       <br />
                       <br />
                     </GridItem>
-                    <GridItem md={12}>
+                    {/* <GridItem md={12}>
                       <TextField
                         disabled
                         onChange={this.handleChange}
@@ -723,8 +833,8 @@ export default class PurchaseItems extends React.Component {
                       />
                       <br />
                       <br />
-                    </GridItem>
-                    <GridItem md={12}>
+                    </GridItem> */}
+                    {/* <GridItem md={12}>
                       <TextField
                         disabled
                         onChange={this.handleChange}
@@ -736,7 +846,7 @@ export default class PurchaseItems extends React.Component {
                           shrink: true,
                         }}
                       />
-                    </GridItem>
+                    </GridItem> */}
                   </GridContainer>
                 </FormControl>
               </CardBody>
@@ -793,9 +903,22 @@ export default class PurchaseItems extends React.Component {
                       <br />
                     </GridItem>
                     <GridItem md={12}>
+                      <TextField
+                        onChange={this.handleChange}
+                        name="overheadCost"
+                        label="Overhead Cost ($)"
+                        type="number"
+                        value={overheadCost}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                      <br />
+                    </GridItem>
+                    <GridItem md={12}>
                       <h4>
                         Total:
-                        {unitPrice * amount}
+                        {Number(unitPrice) * Number(amount) + Number(overheadCost)}
                       </h4>
                       <br />
                     </GridItem>
@@ -828,7 +951,7 @@ export default class PurchaseItems extends React.Component {
                       <br />
                       <br />
                     </GridItem>
-                    <GridItem md={12}>
+                    {/* <GridItem md={12}>
                       <TextField
                         disabled
                         onChange={this.handleChange}
@@ -840,7 +963,7 @@ export default class PurchaseItems extends React.Component {
                           shrink: true,
                         }}
                       />
-                    </GridItem>
+                    </GridItem> */}
                   </GridContainer>
                 </FormControl>
               </CardBody>
@@ -897,9 +1020,22 @@ export default class PurchaseItems extends React.Component {
                       <br />
                     </GridItem>
                     <GridItem md={12}>
+                      <TextField
+                        onChange={this.handleChange}
+                        name="overheadCost"
+                        label="Overhead Cost ($)"
+                        type="number"
+                        value={overheadCost}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                      <br />
+                    </GridItem>
+                    <GridItem md={12}>
                       <h4>
                         Total:
-                        {unitPrice * amount}
+                        {Number(unitPrice) * Number(amount) + Number(overheadCost)}
                       </h4>
                       <br />
                     </GridItem>
@@ -931,7 +1067,7 @@ export default class PurchaseItems extends React.Component {
                       <br />
                       <br />
                     </GridItem>
-                    <GridItem md={12}>
+                    {/* <GridItem md={12}>
                       <TextField
                         disabled
                         onChange={this.handleChange}
@@ -943,7 +1079,7 @@ export default class PurchaseItems extends React.Component {
                           shrink: true,
                         }}
                       />
-                    </GridItem>
+                    </GridItem> */}
                     <GridItem md={12}>
                       <FormControl className={styles.formControl}>
                         <InputLabel htmlFor="location">Arrived at Location</InputLabel>
