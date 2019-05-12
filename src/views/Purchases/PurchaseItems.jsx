@@ -12,9 +12,11 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import DeleteIcon from '@material-ui/icons/Delete';
+import PrintIcon from '@material-ui/icons/Print';
 import IconButton from '@material-ui/core/IconButton';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
+import ReactToPrint from 'react-to-print';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -378,9 +380,19 @@ export default class PurchaseItems extends React.Component {
 
     return (
       <div>
-        <Card>
+        <Card ref={el => (this.plannedTable = el)}>
           <CardHeader color="info">
-            <div className={styles.cardTitleWhite}>Planned Items</div>
+            <div className={styles.cardTitleWhite}>
+              Planned Items
+              <ReactToPrint
+                trigger={() =>
+                  <IconButton aria-label="Print">
+                    <PrintIcon fontSize="small" />
+                  </IconButton>
+                }
+                content={() => this.plannedTable}
+              />
+            </div>
           </CardHeader>
           <CardBody>
             <Table className={styles.table}>
@@ -440,12 +452,24 @@ export default class PurchaseItems extends React.Component {
             </Table>
           </CardBody>
         </Card>
-        <Card>
+        <Card ref={el => (this.paidTable = el)}>
           <CardHeader color="info">
-            <div className={styles.cardTitleWhite}>Paid Items</div>
+            <div className={styles.cardTitleWhite}>
+              Paid Items
+              <ReactToPrint
+                trigger={() =>
+                  <IconButton aria-label="Print">
+                    <PrintIcon fontSize="small" />
+                  </IconButton>
+                }
+                content={() => this.paidTable}
+              />
+            </div>
           </CardHeader>
           <CardBody>
-            <Table className={styles.table}>
+            <Table
+              className={styles.table}
+              >
               <TableHead>
                 <TableRow>
                   <TableCell>Product</TableCell>
@@ -506,9 +530,19 @@ export default class PurchaseItems extends React.Component {
             </Table>
           </CardBody>
         </Card>
-        <Card>
+        <Card ref={el => (this.onDeliveryTable = el)}>
           <CardHeader color="danger">
-            <div className={styles.cardTitleWhite}>On Delivery Items</div>
+            <div className={styles.cardTitleWhite}>
+              On Delivery Items
+              <ReactToPrint
+                trigger={() =>
+                  <IconButton aria-label="Print">
+                    <PrintIcon fontSize="small" />
+                  </IconButton>
+                }
+              content={() => this.onDeliveryTable}
+              />
+            </div>
           </CardHeader>
           <CardBody>
             <Table className={styles.table}>
@@ -570,9 +604,19 @@ export default class PurchaseItems extends React.Component {
             </Table>
           </CardBody>
         </Card>
-        <Card>
+        <Card ref={el => (this.customClearanceTable = el)}>
           <CardHeader color="warning">
-            <div className={styles.cardTitleWhite}>Custom Clearance Items</div>
+            <div className={styles.cardTitleWhite}>
+              Custom Clearance Items
+              <ReactToPrint
+                trigger={() =>
+                  <IconButton aria-label="Print">
+                    <PrintIcon fontSize="small" />
+                  </IconButton>
+                }
+                content={() => this.customClearanceTable}
+              />
+            </div>
           </CardHeader>
           <CardBody>
             <Table className={styles.table}>
@@ -633,12 +677,24 @@ export default class PurchaseItems extends React.Component {
             </Table>
           </CardBody>
         </Card>
-        <Card>
+        <Card ref={el => (this.arrivedTable = el)}>
           <CardHeader color="success">
-            <div className={styles.cardTitleWhite}>Arrived Items</div>
+            <div className={styles.cardTitleWhite}>
+              Arrived Items
+              <ReactToPrint
+                trigger={() =>
+                  <IconButton aria-label="Print">
+                    <PrintIcon fontSize="small" />
+                  </IconButton>
+                }
+                content={() => this.arrivedTable}
+              />
+            </div>
           </CardHeader>
           <CardBody>
-            <Table className={styles.table}>
+            <Table
+              className={styles.table}
+              ref={el => (this.arrivedTable = el)}>
               <TableHead>
                 <TableRow>
                   <TableCell>Product</TableCell>
