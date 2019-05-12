@@ -5,6 +5,8 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import GridContainer from '../../components/Grid/GridContainer';
+import GridItem from '../../components/Grid/GridItem';
 import Success from '../../components/Typography/Success';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
@@ -64,42 +66,54 @@ function OrderItems(props) {
                 <TableCell numeric>{ccyFormat(row.total)}</TableCell>
               </TableRow>
             ))}
-            <TableRow>
-              <TableCell rowSpan={4} />
-              <TableCell colSpan={3}>Subtotal (after discount)</TableCell>
-              <TableCell numeric>{ccyFormat(order.subTotal)}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell colSpan={3}>Total Discount</TableCell>
-              <TableCell numeric>{ccyFormat(order.orderDetail.map(item => item.totalDiscount).reduce((prev, next) => prev + next, 0))}</TableCell>
-            </TableRow>
-            {order.status === 'Return' && (
-              <TableRow>
-                <TableCell><b>Re-Stocking Fee (%)</b></TableCell>
-                <TableCell numeric>
-                  <b>
-                    {order.restockingFeePercent}
-                    %
-                  </b>
-                </TableCell>
-                <TableCell numeric>
-                  <b>
-                    {ccyFormat(order.restockingFeeAmount)}
-                  </b>
-                </TableCell>
-              </TableRow>
-            )}
-            {order.orderTax.map(tax => (
-              <TableRow>
-                <TableCell>{tax.tax.taxName}</TableCell>
-                <TableCell numeric>{`${(tax.tax.percentage).toFixed(0)} %`}</TableCell>
-                <TableCell numeric>{ccyFormat(tax.taxAmount)}</TableCell>
-              </TableRow>
-            ))}
-            <TableRow>
-              <TableCell colSpan={4}><h3>Total</h3></TableCell>
-              <TableCell numeric><Success><h3>{ccyFormat(order.total)}</h3></Success></TableCell>
-            </TableRow>
+          </TableBody>
+        </Table>
+        <GridContainer>
+          <GridItem md={6} />
+          <GridItem md={6}>
+            <Table className={classes.table}>
+              <TableBody>
+                <TableRow>
+                  <TableCell colspan="2">Subtotal (after discount)</TableCell>
+                  <TableCell numeric>{ccyFormat(order.subTotal)}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell colspan="2">Total Discount</TableCell>
+                  <TableCell numeric>{ccyFormat(order.orderDetail.map(item => item.totalDiscount).reduce((prev, next) => prev + next, 0))}</TableCell>
+                </TableRow>
+                {order.status === 'Return' && (
+                <TableRow>
+                  <TableCell><b>Re-Stocking Fee (%)</b></TableCell>
+                  <TableCell numeric>
+                    <b>
+                      {order.restockingFeePercent}
+                        %
+                    </b>
+                  </TableCell>
+                  <TableCell numeric>
+                    <b>
+                      {ccyFormat(order.restockingFeeAmount)}
+                    </b>
+                  </TableCell>
+                </TableRow>
+                )}
+                {order.orderTax.map(tax => (
+                  <TableRow>
+                    <TableCell>{tax.tax.taxName}</TableCell>
+                    <TableCell numeric>{`${(tax.tax.percentage).toFixed(0)} %`}</TableCell>
+                    <TableCell numeric>{ccyFormat(tax.taxAmount)}</TableCell>
+                  </TableRow>
+                ))}
+                <TableRow>
+                  <TableCell colspan="2"><h3>Total</h3></TableCell>
+                  <TableCell numeric><Success><h3>{ccyFormat(order.total)}</h3></Success></TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </GridItem>
+        </GridContainer>
+        <Table className={classes.table}>
+          <TableBody>
             {order.orderPayment && order.orderPayment.map(orderPayment => (
               <TableRow>
                 <TableCell><h4>Payment</h4></TableCell>
