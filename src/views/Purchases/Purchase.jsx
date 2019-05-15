@@ -1,6 +1,10 @@
 import React from 'react';
 import Check from '@material-ui/icons/Check';
 import { withStyles } from '@material-ui/core/styles';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
@@ -57,6 +61,14 @@ export class Purchase extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
   }
 
+  handleClickOpen = () => {
+    this.setState({ open: true });
+  };
+
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
   async editPurchase() {
     const { match, history } = this.props;
     return history.push(`/addpurchase/${match.params.id}`);
@@ -81,7 +93,12 @@ export class Purchase extends React.Component {
 
   render() {
     const {
-      purchase, openSnackbar, snackbarMessage, snackbarColor, loading,
+      purchase,
+      openSnackbar,
+      snackbarMessage,
+      snackbarColor,
+      loading,
+      open,
     } = this.state;
 
     return (
@@ -105,7 +122,8 @@ export class Purchase extends React.Component {
               <CardBody>
                 <GridContainer>
                   <GridItem xs={12}>
-                    <Button color="info" disabled={loading} onClick={this.deletePurchase}>Delete Purchase</Button>
+                    <Button color="primary" disabled={loading} onClick={this.handleClickOpen}>Delete Purchase</Button>
+                    {'   '}
                     <Button color="info" disabled={loading} onClick={this.editPurchase}>Edit Purchase</Button>
                     <PurchaseItems purchase={purchase} />
                   </GridItem>
@@ -125,6 +143,24 @@ export class Purchase extends React.Component {
               closeNotification={() => this.setState({ openSnackbar: false })}
               close
             />
+            <Dialog
+              open={open}
+              onClose={this.handleClose}
+            >
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  Are you sure you want to delete this Purchase?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={this.handleClose} color="info">
+                  Cancel
+                </Button>
+                <Button onClick={this.deletePurchase} color="primary" autoFocus>
+                  Yes
+                </Button>
+              </DialogActions>
+            </Dialog>
           </GridItem>
         </GridContainer>
         ) }

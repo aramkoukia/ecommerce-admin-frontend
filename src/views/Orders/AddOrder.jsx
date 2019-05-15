@@ -1311,7 +1311,7 @@ export default class AddOrder extends React.Component {
             </Card>
           </DialogContent>
           <DialogActions>
-            {warnInSufficientStockOnOrder && !blockInSufficientStockOnOrder && (
+            {warnInSufficientStockOnOrder && (
               <div>
                 <Button onClick={this.continueOrder} color="danger">
                   Yes
@@ -1321,7 +1321,7 @@ export default class AddOrder extends React.Component {
                 </Button>
               </div>
             )}
-            {warnInSufficientStockOnOrder && blockInSufficientStockOnOrder && (
+            {blockInSufficientStockOnOrder && (
               <Button onClick={this.cancelOrder} color="info">
                 Ok
               </Button>
