@@ -137,7 +137,6 @@ export default class Orders extends React.Component {
     };
 
     const columns = [
-      { title: 'Location', field: 'locationName' },
       { title: 'Order Id', field: 'orderId' },
       { title: 'Order Date', field: 'orderDate' },
       { title: 'Sub Total', field: 'subTotal' },
@@ -151,7 +150,6 @@ export default class Orders extends React.Component {
       },
       { title: 'PO Number', field: 'poNumber' },
       { title: 'Paid Amount', field: 'paidAmount' },
-      { title: 'User', field: 'givenName' },
       {
         title: 'Payment Type',
         field: 'paymentTypeName',
@@ -160,12 +158,14 @@ export default class Orders extends React.Component {
         // },
       },
       { title: 'Due Date', field: 'dueDate' },
+      { title: 'Company Name', field: 'companyName' },
       {
         title: 'Over Due',
         field: 'overDue',
         hidden: true,
       },
-      { title: 'Company Name', field: 'companyName' },
+      { title: 'Location', field: 'locationName' },
+      { title: 'User', field: 'givenName' },
     ];
 
     const options = {
