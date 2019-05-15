@@ -126,7 +126,6 @@ export default class OrderNotes extends React.Component {
                 fullWidth="true"
               />
             </GridItem>
-            {order.status === 'Return' && (
             <GridItem md={6}>
               <TextField
                 name="authorizedBy"
@@ -137,19 +136,16 @@ export default class OrderNotes extends React.Component {
                 fullWidth="true"
               />
             </GridItem>
-            )}
-            {order.status === 'Return' && (
-              <GridItem md={6}>
-                <TextField
-                  name="phoneNumber"
-                  label="Phone Number"
-                  type="text"
-                  onChange={this.handleChange}
-                  value={phoneNumber}
-                  fullWidth="true"
-                />
-              </GridItem>
-            )}
+            <GridItem md={6}>
+              <TextField
+                name="phoneNumber"
+                label="Phone Number"
+                type="text"
+                onChange={this.handleChange}
+                value={phoneNumber}
+                fullWidth="true"
+              />
+            </GridItem>
             <GridItem md={12}>
               <TextField
                 name="orderPoNumber"
