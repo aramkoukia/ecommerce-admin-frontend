@@ -92,6 +92,10 @@ export class Purchase extends React.Component {
             <Card>
               <CardHeader color="primary">
                 <div>
+                  PO Number:
+                  {' '}
+                  <b>{purchase.poNumber}</b>
+                  &nbsp;&nbsp;
                   Purchase #
                   {' '}
                   <b>{purchase.purchaseId}</b>

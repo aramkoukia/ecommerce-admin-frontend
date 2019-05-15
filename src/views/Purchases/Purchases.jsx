@@ -72,7 +72,7 @@ export default class Purchases extends React.Component {
     };
 
     const columns = [
-      { title: 'Purchase Id', field: 'purchaseId' },
+      { title: 'Purchase Id', field: 'purchaseId', hidden: true },
       { title: 'PO Number', field: 'poNumber' },
       { title: 'Supplier', field: 'supplier', hidden: true },
       { title: 'Product Code', field: 'productCode' },
@@ -136,7 +136,7 @@ export default class Purchases extends React.Component {
         },
       },
       { title: 'Arrived Price', field: 'arrivedPrice', hidden: true },
-      { title: 'Arrived Overhead Cost', field: 'arrivedOverheadCost', hidden: true },
+      { title: 'Arrived Overhead Cost', field: 'arrivedOverheadCost' },
       { title: 'Location', field: 'locationName', hidden: true },
       { title: 'Remain To Arrive', field: 'remainToArrive' },
       { title: 'Arrived Date', field: 'arrivedDate', hidden: true },

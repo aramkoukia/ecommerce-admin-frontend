@@ -456,6 +456,12 @@ export default class PurchaseItems extends React.Component {
           <CardHeader color="info">
             <div className={styles.cardTitleWhite}>
               Planned Items
+              {' '}
+              {'  ('}
+              PO Number:
+              {' '}
+              <b>{purchase.poNumber}</b>
+              {' )'}
               <ReactToPrint
                 trigger={() =>
                   <IconButton aria-label="Print">
@@ -522,6 +528,11 @@ export default class PurchaseItems extends React.Component {
           <CardHeader color="info">
             <div className={styles.cardTitleWhite}>
               Paid Items
+              {'   ('}
+              PO Number:
+              {' '}
+              <b>{purchase.poNumber}</b>
+              {' )  '}
               <ReactToPrint
                 trigger={() =>
                   <IconButton aria-label="Print">
@@ -592,6 +603,11 @@ export default class PurchaseItems extends React.Component {
           <CardHeader color="danger">
             <div className={styles.cardTitleWhite}>
               On Delivery Items
+              {'   ('}
+              PO Number:
+              {' '}
+              <b>{purchase.poNumber}</b>
+              {' )  '}
               <ReactToPrint
                 trigger={() =>
                   <IconButton aria-label="Print">
@@ -658,6 +674,11 @@ export default class PurchaseItems extends React.Component {
           <CardHeader color="warning">
             <div className={styles.cardTitleWhite}>
               Custom Clearance Items
+              {'   ('}
+              PO Number:
+              {' '}
+              <b>{purchase.poNumber}</b>
+              {' )  '}
               <ReactToPrint
                 trigger={() =>
                   <IconButton aria-label="Print">
@@ -728,6 +749,11 @@ export default class PurchaseItems extends React.Component {
           <CardHeader color="success">
             <div className={styles.cardTitleWhite}>
               Arrived Items
+              {'   ('}
+              PO Number:
+              {' '}
+              <b>{purchase.poNumber}</b>
+              {' )  '}
               <ReactToPrint
                 trigger={() =>
                   <IconButton aria-label="Print">
