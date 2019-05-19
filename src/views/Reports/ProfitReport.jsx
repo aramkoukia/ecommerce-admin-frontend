@@ -128,15 +128,15 @@ export default class ProfitReport extends React.Component {
       'Product Code',
       'Product Name',
       'Purchase Amount',
-      'Avg Purchase Price',
-      'Avg Overhead Cost',
-      'Avg Total Cost',
+      'Avg Purchase Price($)',
+      'Avg Overhead Cost($)',
+      'Avg Total Cost($)',
       'Sales Amount',
-      'Total Sales',
-      'Avg Sales Price',
-      'Total Cost',
-      'Avg Profit Per Item',
-      'Total Profit'];
+      'Total Sales($)',
+      'Avg Sales Price($)',
+      'Total Cost($)',
+      'Avg Profit Per Item($)',
+      'Total Profit($)'];
 
     const purchaseSummaryOptions = {
       filterType: 'checkbox',
