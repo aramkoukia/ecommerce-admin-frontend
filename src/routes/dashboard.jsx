@@ -199,12 +199,12 @@ const dashboardRoutes = [
     permission: Permissions.ViewPurchaseReports,
   },
   {
-    path: '/purchasereport',
+    path: '/profitreport',
     sidebarName: 'Profit Report',
     navbarName: '',
     icon: InsertChart,
     component: ProfitReport,
-    permission: Permissions.Purchase,
+    permission: Permissions.ViewPurchaseReports,
   },
   {
     path: '/locations',

@@ -75,7 +75,7 @@ export default class ProfitReport extends React.Component {
     const {
       salesFromDate, salesToDate, purchaseFromDate, purchaseToDate,
     } = this.state;
-    const purchaseSummaryColumns = ['productTypeName', 'productCode', 'productName', 'purchaseAmount', 'avgPurchasePrice',
+    const purchaseSummaryColumns = ['productCode', 'productName', 'purchaseAmount', 'avgPurchasePrice',
       'plannedTotalPrice', 'avgOverheadCost', 'avgTotalCost', 'salesAmount',
       'totalSales', 'avgSalesPrice', 'totalCost', 'avgProfitPerItem', 'totalProfit'];
     ReportService.getProductSalesProfit(salesFromDate, salesToDate, purchaseFromDate, purchaseToDate)
