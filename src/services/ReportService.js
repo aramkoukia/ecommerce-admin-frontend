@@ -187,4 +187,15 @@ export default class ReportService {
       return false;
     }
   }
+
+  static async getProductSalesProfit(fromSalesDate, toSalesDate, fromPurchaseDate, toPurchaseDate) {
+    try {
+      const response = await RestUtilities.get(
+        `reports/purchaseprofit?fromSalesDate=${fromSalesDate}&toSalesDate=${toSalesDate}&fromPurchaseDate=${fromPurchaseDate}&toPurchaseDate=${toPurchaseDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }

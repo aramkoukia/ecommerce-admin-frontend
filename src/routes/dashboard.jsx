@@ -26,6 +26,7 @@ import SalesForecastReport from '../views/Reports/SalesForecastReport';
 import CustomerReport from '../views/Reports/CustomerReport';
 import PaymentReport from '../views/Reports/PaymentReport';
 import PurchaseReport from '../views/Reports/PurchaseReport';
+import ProfitReport from '../views/Reports/ProfitReport';
 import AddOrder from '../views/Orders/AddOrder';
 import Orders from '../views/Orders/Orders';
 import Discounts from '../views/Discounts/Discounts';
@@ -196,6 +197,14 @@ const dashboardRoutes = [
     icon: InsertChart,
     component: PurchaseReport,
     permission: Permissions.ViewPurchaseReports,
+  },
+  {
+    path: '/purchasereport',
+    sidebarName: 'Profit Report',
+    navbarName: '',
+    icon: InsertChart,
+    component: ProfitReport,
+    permission: Permissions.Purchase,
   },
   {
     path: '/locations',
