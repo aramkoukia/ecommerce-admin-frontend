@@ -75,9 +75,19 @@ export default class ProfitReport extends React.Component {
     const {
       salesFromDate, salesToDate, purchaseFromDate, purchaseToDate,
     } = this.state;
-    const purchaseSummaryColumns = ['productCode', 'productName', 'purchaseAmount', 'avgPurchasePrice',
-      'plannedTotalPrice', 'avgOverheadCost', 'avgTotalCost', 'salesAmount',
-      'totalSales', 'avgSalesPrice', 'totalCost', 'avgProfitPerItem', 'totalProfit'];
+    const purchaseSummaryColumns = [
+      'productCode',
+      'productName',
+      'purchaseAmount',
+      'avgPurchasePrice',
+      'avgOverheadCost',
+      'avgTotalCost',
+      'salesAmount',
+      'totalSales',
+      'avgSalesPrice',
+      'totalCost',
+      'avgProfitPerItem',
+      'totalProfit'];
     ReportService.getProductSalesProfit(salesFromDate, salesToDate, purchaseFromDate, purchaseToDate)
       .then(results => results.map(row => purchaseSummaryColumns.map(column => row[column] || '')))
       .then(data => this.setState({ purchaseSummaryData: data }));
@@ -117,8 +127,16 @@ export default class ProfitReport extends React.Component {
     const purchaseSummaryColumns = [
       'Product Code',
       'Product Name',
-      'Purchase Amount', 'Avg Purchase Price', 'Avg Overhead Cost', 'Avg Total Cost',
-      'Sales Amount', 'Avg Sales Price', 'Total Cost', 'Avg Profit Per Item', 'Total Profit'];
+      'Purchase Amount',
+      'Avg Purchase Price',
+      'Avg Overhead Cost',
+      'Avg Total Cost',
+      'Sales Amount',
+      'Total Sales',
+      'Avg Sales Price',
+      'Total Cost',
+      'Avg Profit Per Item',
+      'Total Profit'];
 
     const purchaseSummaryOptions = {
       filterType: 'checkbox',
