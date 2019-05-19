@@ -134,7 +134,7 @@ export default class ProfitReport extends React.Component {
       purchaseFromDate,
       purchaseToDate,
     } = this.state;
-    const purchaseSummaryTitle = `Product Sales Profit. Sales From: ${salesFromDate} To: ${salesToDate}. Purchase From: ${purchaseFromDate} To: ${purchaseToDate}`;
+    const purchaseSummaryTitle = `Sales From: ${salesFromDate} To: ${salesToDate}. Purchase From: ${purchaseFromDate} To: ${purchaseToDate}`;
     return (
       <div>
         <GridContainer>
