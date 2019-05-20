@@ -29,6 +29,7 @@ export default class Products extends React.Component {
       snackbarColor: '',
       page: 1,
       openDialog: false,
+      productPackages: [],
     };
     this.showTransactions = this.showTransactions.bind(this);
     this.updateVariations = this.updateVariations.bind(this);
@@ -39,6 +40,9 @@ export default class Products extends React.Component {
 
   componentDidMount() {
     this.productsList();
+    this.setState({
+      productPackages: [],
+    });
   }
 
   handleChange(event) {
@@ -46,7 +50,10 @@ export default class Products extends React.Component {
   }
 
   handleClose() {
-    this.setState({ openDialog: false });
+    this.setState({
+      openDialog: false,
+      productPackages: [],
+    });
   }
 
   syncProducts() {
