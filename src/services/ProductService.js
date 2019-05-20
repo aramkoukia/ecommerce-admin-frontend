@@ -102,4 +102,50 @@ export default class ProductService {
       return false;
     }
   }
+
+  static async getProductPackages(id) {
+    try {
+      const response = await RestUtilities.get(
+        `products/${id}/productpackage`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async createProductPackage(productId, productPackage) {
+    try {
+      const response = await RestUtilities.post(
+        `products/${productId}/productPackage`,
+        productPackage,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async updateProductPackage(productId, productPackage) {
+    try {
+      const response = await RestUtilities.put(
+        `products/${productId}/productPackage`,
+        productPackage,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async deleteProductPackage(productId, productPackage) {
+    try {
+      const response = await RestUtilities.delete(
+        `products/${productId}/productPackage/${productPackage.productPackageId}/delete`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }

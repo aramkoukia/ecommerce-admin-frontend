@@ -1,7 +1,12 @@
 import React from 'react';
-import MUIDataTable from 'mui-datatables';
+import MaterialTable from 'material-table';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Check from '@material-ui/icons/Check';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import Typography from '@material-ui/core/Typography';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import TextField from '@material-ui/core/TextField';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import Card from '../../components/Card/Card';
@@ -23,10 +28,13 @@ export default class Products extends React.Component {
       snackbarMessage: '',
       snackbarColor: '',
       page: 1,
+      openDialog: false,
     };
-    this.rowClicked = this.rowClicked.bind(this);
+    this.showTransactions = this.showTransactions.bind(this);
+    this.updateVariations = this.updateVariations.bind(this);
     this.syncProducts = this.syncProducts.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   componentDidMount() {
@@ -35,6 +43,10 @@ export default class Products extends React.Component {
 
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
+  }
+
+  handleClose() {
+    this.setState({ openDialog: false });
   }
 
   syncProducts() {
@@ -48,14 +60,22 @@ export default class Products extends React.Component {
 
   productsList() {
     this.setState({ loading: true });
-    const columns = ['productTypeName', 'productCode', 'productName', 'salesPrice', 'vancouverBalance', 'vancouverOnHold', 'abbotsfordBalance', 'abbotsfordOnHold', 'disabled', 'productId'];
     ProductService.getProducts()
-      .then(results => results.map(row => columns.map(column => (row[column] === null ? '' : row[column]))))
       .then(data => this.setState({ products: data, loading: false }));
   }
 
-  rowClicked(rowData) {
-    window.open(`/product/${rowData[9]}`, "_blank")
+  showTransactions(productId) {
+    window.open(`/product/${productId}`, '_blank');
+  }
+
+  updateVariations(rowData) {
+    ProductService.getProductPackages(rowData.productId)
+      .then(data => this.setState({ productPackages: data }));
+
+    this.setState({
+      openDialog: true,
+      product: rowData,
+    });
   }
 
   render() {
@@ -91,41 +111,63 @@ export default class Products extends React.Component {
 
     const columns = [
       {
-        name: 'Type',
-        options: {
-          display: false,
-        },
+        title: 'Product Type', field: 'productTypeName', hidden: true, readonly: true,
       },
-      'Product Code',
-      'Product Name', 'Sales Price ($)', 'Van Balance', 'Van OnHold', 'Abb Balance', 'Abb OnHold', 'Disabled',
+      { title: 'Product Code', field: 'productCode', readonly: true },
+      { title: 'Product Name', field: 'productName', readonly: true },
       {
-        name: 'productId',
-        options: {
-          display: false,
-        },
+        title: 'Sales Price ($)', field: 'salesPrice', type: 'numeric', readonly: true,
       },
+      {
+        title: 'Van Balance', field: 'vancouverBalance', type: 'numeric', readonly: true,
+      },
+      {
+        title: 'Van OnHold', field: 'vancouverOnHold', type: 'numeric', hidden: true, readonly: true,
+      },
+      {
+        title: 'Abb Balance', field: 'abbotsfordBalance', type: 'numeric', hidden: true, readonly: true,
+      },
+      { title: 'Abb OnHold', field: 'abbotsfordOnHold', readonly: true },
+      { title: 'Disabled', field: 'disabled', readonly: true },
+      {
+        title: 'Product Id', field: 'productId', hidden: true, readonly: true,
+      },
+    ];
+
+    const packageColumns = [
+      { title: 'Package Name', field: 'package' },
+      { title: 'Amount in main package', field: 'amountInMainPackage', type: 'numberic' },
+      { title: 'Package Price', field: 'packagePrice', type: 'numberic' },
+      { title: 'Package Id', field: 'productPackageId', hidden: true },
     ];
 
     const {
       products,
+      productPackages,
+      product,
       loading,
       openSnackbar,
       snackbarMessage,
       snackbarColor,
       page,
+      openDialog,
     } = this.state;
 
-    const gridPage = page && Number(page) > 0 ? Number(page) : 0;
     const options = {
-      filterType: 'checkbox',
-      onRowClick: this.rowClicked,
-      rowHover: true,
-      resizableColumns: false,
-      selectableRows: false,
-      rowsPerPageOptions: [25, 50, 100],
-      rowsPerPage: 25,
-      page: gridPage - 1,
-      responsive: 'scroll',
+      paging: true,
+      pageSizeOptions: [25, 50, 100],
+      pageSize: 25,
+      columnsButton: true,
+      exportButton: true,
+      filtering: true,
+    };
+
+    const packageOptions = {
+      paging: false,
+      columnsButton: false,
+      exportButton: false,
+      filtering: false,
+      search: false,
     };
 
     return (
@@ -152,14 +194,24 @@ export default class Products extends React.Component {
                 />
               </CardBody>
             </Card>
-
-            <MUIDataTable
-              title="Click on each product to see all the transactions for that product."
-              data={products}
+            <MaterialTable
               columns={columns}
+              data={products}
+              actions={[
+                {
+                  icon: 'menu',
+                  tooltip: 'Transactions',
+                  onClick: (event, rowData) => this.showTransactions(rowData.productId),
+                },
+                {
+                  icon: 'attach_money',
+                  tooltip: 'Variations',
+                  onClick: (event, rowData) => this.updateVariations(rowData),
+                },
+              ]}
               options={options}
+              title=""
             />
-
             {loading && (<LinearProgress />)}
           </GridItem>
           <Snackbar
@@ -172,6 +224,88 @@ export default class Products extends React.Component {
             close
           />
         </GridContainer>
+        <Dialog
+          open={openDialog}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <DialogContentText>
+              <Card>
+                <CardHeader color="primary">
+                    Product Variations:
+                </CardHeader>
+                <CardBody>
+                  {product && (
+                    <div>
+                      <Typography variant="subheading" gutterBottom>
+                        Code:
+                        {' '}
+                        {product.productCode}
+                      </Typography>
+                      <Typography variant="subheading" gutterBottom>
+                        Name:
+                        {' '}
+                        {product.productName}
+                      </Typography>
+                      <Typography variant="subheading" gutterBottom>
+                        Sales Price ($):
+                        {' '}
+                        {product.salesPrice}
+                      </Typography>
+                    </div>
+                  )}
+                  <MaterialTable
+                    columns={packageColumns}
+                    data={productPackages}
+                    options={packageOptions}
+                    title=""
+                    editable={{
+                      onRowAdd: newData => new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                          productPackages.push(newData);
+                          ProductService.createProductPackage(product.productId, newData);
+                          this.setState({ productPackages }, () => resolve());
+                          resolve();
+                        }, 1000);
+                      }),
+                      onRowUpdate: (newData, oldData) => new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                          {
+                            const index = productPackages.indexOf(oldData);
+                            productPackages[index] = newData;
+                            ProductService.updateProductPackage(product.productId, newData);
+                            this.setState({ productPackages }, () => resolve());
+                          }
+                          resolve();
+                        }, 1000);
+                      }),
+                      onRowDelete: oldData => new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                          {
+                            const index = productPackages.indexOf(oldData);
+                            productPackages.splice(index, 1);
+                            ProductService.deleteProductPackage(oldData.productId, oldData);
+                            this.setState({ productPackages }, () => resolve());
+                          }
+                          resolve();
+                        }, 1000);
+                      }),
+                    }}
+                  />
+                </CardBody>
+              </Card>
+            </DialogContentText>
+            <DialogActions>
+              {/* <Button onClick={this.handlePasswordReset} color="primary">
+                Reset
+            </Button> */}
+              <Button onClick={this.handleClose} color="secondary">
+                Close
+              </Button>
+            </DialogActions>
+          </DialogContent>
+        </Dialog>
       </div>
     );
   }
