@@ -69,6 +69,7 @@ class Settings extends React.Component {
         'smtpUseSsl',
         'warnInSufficientStockOnOrder',
         'blockInSufficientStockOnOrder',
+        'allowedIPAddresses',
       ],
       properties: {
         adminEmail: {
@@ -106,6 +107,10 @@ class Settings extends React.Component {
         blockInSufficientStockOnOrder: {
           type: 'boolean',
           title: 'Block InSufficient Stock On Order',
+        },
+        allowedIPAddresses: {
+          type: 'string',
+          title: 'Allowed IP Addresses (Comma seperated)',
         },
       },
     };
@@ -151,6 +156,11 @@ class Settings extends React.Component {
         'ui:emptyValue': '',
         'ui:widget': 'checkbox',
       },
+      allowedIPAddresses: {
+        'ui:autofocus': true,
+        'ui:emptyValue': '',
+      },
+
     };
 
     const initialFormData = {
@@ -163,6 +173,7 @@ class Settings extends React.Component {
       smtpUseSsl: settings.smtpUseSsl,
       warnInSufficientStockOnOrder: settings.warnInSufficientStockOnOrder,
       blockInSufficientStockOnOrder: settings.blockInSufficientStockOnOrder,
+      allowedIPAddresses: settings.allowedIPAddresses,
     };
 
     return (
