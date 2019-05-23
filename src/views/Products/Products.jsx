@@ -129,10 +129,10 @@ export default class Products extends React.Component {
         title: 'Van Balance', field: 'vancouverBalance', type: 'numeric', readonly: true,
       },
       {
-        title: 'Van OnHold', field: 'vancouverOnHold', type: 'numeric', hidden: true, readonly: true,
+        title: 'Van OnHold', field: 'vancouverOnHold', type: 'numeric', readonly: true,
       },
       {
-        title: 'Abb Balance', field: 'abbotsfordBalance', type: 'numeric', hidden: true, readonly: true,
+        title: 'Abb Balance', field: 'abbotsfordBalance', type: 'numeric', readonly: true,
       },
       { title: 'Abb OnHold', field: 'abbotsfordOnHold', readonly: true },
       { title: 'Disabled', field: 'disabled', readonly: true },
