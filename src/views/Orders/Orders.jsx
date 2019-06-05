@@ -160,6 +160,19 @@ export default class Orders extends React.Component {
       { title: 'Due Date', field: 'dueDate' },
       { title: 'Company Name', field: 'companyName' },
       {
+        title: 'PST Charged',
+        field: 'pstCharged',
+        lookup: {
+          Yes: 'Yes',
+          No: 'No',
+        },
+      },
+      {
+        title: 'PST Amount',
+        field: 'pstAmount',
+        hidden: true,
+      },
+      {
         title: 'Over Due',
         field: 'overDue',
         hidden: true,
