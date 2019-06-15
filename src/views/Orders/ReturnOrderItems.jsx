@@ -173,7 +173,12 @@ export default class ReturnOrderItems extends React.Component {
             <TableBody>
               {orderRows.map(row => (
                 <TableRow key={row.productId}>
-                  <TableCell>{row.product.productName}</TableCell>
+                  <TableCell>
+                    {row.product.productName}
+                    {row.package && (
+                      ` ( pkg: ${row.package} ) ${row.amountInMainPackage}x`
+                    )}
+                  </TableCell>
                   <TableCell numeric align="right">
                     <TextField
                       name={row.productId}
@@ -243,8 +248,7 @@ export default class ReturnOrderItems extends React.Component {
                     type="number"
                     style={{ width: 70 }}
                   />
-                  {' '}
-%
+                  {' %'}
                 </TableCell>
                 <TableCell numeric>
                   <b>

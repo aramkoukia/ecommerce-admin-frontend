@@ -252,6 +252,8 @@ export class Return extends React.Component {
         discountType: row.discountType,
         total: row.total,
         totalDiscount: row.totalDiscount,
+        package: row.package,
+        amountInMainPackage: row.amountInMainPackage,
         subTotal: row.total - row.totalDiscount,
       }));
 

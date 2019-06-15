@@ -59,7 +59,12 @@ function OrderItems(props) {
           <TableBody>
             {order.orderDetail.map(row => (
               <TableRow key={row.productId}>
-                <TableCell>{row.product.productName}</TableCell>
+                <TableCell>
+                  {row.product.productName}
+                  {row.package && (
+                    ` ( pkg: ${row.package} ) ${row.amountInMainPackage}x`
+                  )}
+                </TableCell>
                 <TableCell numeric align="right">{row.amount}</TableCell>
                 <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
                 <TableCell numeric>{ccyFormat(row.totalDiscount)}</TableCell>

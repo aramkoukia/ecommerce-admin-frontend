@@ -13,7 +13,6 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Slide from '@material-ui/core/Slide';
 import PropTypes from 'prop-types';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -57,28 +56,41 @@ const styles = {
   },
 };
 
-function priceRow(qty, unit) {
-  return qty * unit;
-}
-
-function createRow(productId, productName, salesPrice) {
+function createRow(productId, productName, salesPrice, productPackages) {
   const qty = 1;
   const discountPercent = 0;
   const discountAmount = 0;
   const discountType = 'percent';
 
-  const price = priceRow(qty, salesPrice);
+  const price = productPackages && productPackages.length > 0
+    ? productPackages[0].packagePrice
+    : salesPrice;
+
   const total = qty * price;
+  const productPackageId = productPackages && productPackages.length > 0
+    ? productPackages[0].productPackageId
+    : null;
+  const pkg = productPackages && productPackages.length > 0
+    ? productPackages[0].package
+    : null;
+  const amountInMainPackage = productPackages && productPackages.length > 0
+    ? productPackages[0].amountInMainPackage
+    : null;
+
   return {
     productId,
     productName,
     qty,
-    salesPrice,
+    salesPrice: price,
     price,
     discountPercent,
     discountAmount,
     discountType,
     total,
+    productPackages,
+    productPackageId,
+    package: pkg,
+    amountInMainPackage,
   };
 }
 
@@ -177,6 +189,12 @@ export default class AddOrder extends React.Component {
               discountAmount: row.discountAmount,
               discountPercent: row.discountPercent,
               total: row.total,
+              productPackages: row.product.productPackage,
+              package: row.package,
+              productPackageId: row.product.productPackage && row.product.productPackage.length > 0
+                ? row.product.productPackage.find(p => p.package === row.package).productPackageId
+                : null,
+              amountInMainPackage: row.amountInMainPackage,
             })),
           notes: order.notes,
           subTotal: order.subTotal,
@@ -465,11 +483,14 @@ export default class AddOrder extends React.Component {
     });
 
     if (warnInSufficientStockOnOrder || blockInSufficientStockOnOrder) {
+
       const orderItems = rows.map(row => (
         {
           locationId,
           productId: row.productId,
-          amount: row.qty,
+          amount: row.amountInMainPackage !== null && row.amountInMainPackage > 0
+            ? Number(row.qty) * Number(row.amountInMainPackage)
+            : row.qty,
         }));
 
       const result = await OrderService.validateInventory({ orderItems });
@@ -505,6 +526,8 @@ export default class AddOrder extends React.Component {
         discountAmount: row.discountAmount,
         discountType: row.discountType,
         subTotal: row.total,
+        package: row.package,
+        amountInMainPackage: row.amountInMainPackage,
         totalDiscount: (row.discountType === 'percent' ? (row.discountPercent / 100) * row.total : row.discountAmount),
         total: row.total - (row.discountType === 'percent' ? (row.discountPercent / 100) * row.total : row.discountAmount),
       }));
@@ -661,7 +684,7 @@ export default class AddOrder extends React.Component {
       foundProduct.total = foundProduct.qty * foundProduct.price;
       this.setState({ rows: newRows });
     } else {
-      const newRow = createRow(product.productId, product.productName, product.salesPrice);
+      const newRow = createRow(product.productId, product.productName, product.salesPrice, product.productPackages);
       this.setState(prevState => ({
         rows: [...prevState.rows, newRow],
       }));
