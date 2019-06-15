@@ -278,7 +278,7 @@ export class Return extends React.Component {
       customerId: order.customer !== null ? order.customer.customerId : null,
       status,
       notes,
-      poNumber,
+      poNumber: order.poNumber,
       pstNumber: order.customer !== null ? order.customer.pstNumber : null,
       orderTax: orderTaxes,
       orderDetail: orderDetails,
