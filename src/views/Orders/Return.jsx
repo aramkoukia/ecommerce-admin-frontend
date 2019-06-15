@@ -240,22 +240,24 @@ export class Return extends React.Component {
     } = this.state;
     const originalOrderId = this.props.match.params.id;
     const status = orderStatus;
-    const orderDetails = rows.map(row => (
-      {
-        orderId: 0,
-        orderDetailId: 0,
-        productId: row.productId,
-        amount: row.amount,
-        unitPrice: row.unitPrice,
-        discountPercent: row.discountPercent,
-        discountAmount: row.discountAmount,
-        discountType: row.discountType,
-        total: row.total,
-        totalDiscount: row.totalDiscount,
-        package: row.package,
-        amountInMainPackage: row.amountInMainPackage,
-        subTotal: row.total - row.totalDiscount,
-      }));
+    const orderDetails = rows
+      .filter(row => Number(row.amount) !== 0)
+      .map(row => (
+        {
+          orderId: 0,
+          orderDetailId: 0,
+          productId: row.productId,
+          amount: row.amount,
+          unitPrice: row.unitPrice,
+          discountPercent: row.discountPercent,
+          discountAmount: row.discountAmount,
+          discountType: row.discountType,
+          total: row.total,
+          totalDiscount: row.totalDiscount,
+          package: row.package,
+          amountInMainPackage: row.amountInMainPackage,
+          subTotal: row.total - row.totalDiscount,
+        }));
 
     const orderTaxes = order.orderTax.map(tax => (
       {

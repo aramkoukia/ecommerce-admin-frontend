@@ -483,7 +483,6 @@ export default class AddOrder extends React.Component {
     });
 
     if (warnInSufficientStockOnOrder || blockInSufficientStockOnOrder) {
-
       const orderItems = rows.map(row => (
         {
           locationId,
