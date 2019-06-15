@@ -156,7 +156,7 @@ const dashboardRoutes = [
     navbarName: '',
     icon: InsertChart,
     component: ProductReport,
-    permission: Permissions.ViewReports,
+    permission: Permissions.ViewProductReports,
   },
   {
     path: '/producttypereport',
