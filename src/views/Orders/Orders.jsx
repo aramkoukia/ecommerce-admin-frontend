@@ -5,6 +5,11 @@ import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import MaterialTable from 'material-table';
 import GridItem from '../../components/Grid/GridItem';
 import Button from '../../components/CustomButtons/Button';
@@ -24,10 +29,14 @@ function dateFormat(dateString) {
   return stringDate;
 }
 
+function ccyFormat(num) {
+  return `${num.toFixed(2)} $`;
+}
+
 Date.prototype.addHours = function (h) {
   this.setHours(this.getHours() + h);
   return this;
-}
+};
 
 export default class Orders extends React.Component {
   constructor(props) {
@@ -89,7 +98,7 @@ export default class Orders extends React.Component {
   }
 
   rowClicked(_event, rowData) {
-    window.open(`/order/${rowData.orderId}`, "_blank")
+    window.open(`/order/${rowData.orderId}`, '_blank');
   }
 
   searchClicked() {
@@ -153,9 +162,6 @@ export default class Orders extends React.Component {
       {
         title: 'Payment Type',
         field: 'paymentTypeName',
-        // lookup: {
-        //   'Credit Card / Debit': 'Credit Card / Debit', Cash: 'Cash', Cheque: 'Cheque', 'Store Credit': 'Store Credit', 'Paypal and Amazon + USD Account': 'Paypal and Amazon + USD Account',
-        // },
       },
       { title: 'Due Date', field: 'dueDate' },
       { title: 'Company Name', field: 'companyName' },
@@ -188,14 +194,56 @@ export default class Orders extends React.Component {
       columnsButton: true,
       exportButton: true,
       filtering: true,
-      rowStyle: data => {
+      rowStyle: (data) => {
         if (data.overDue === 'Yes') {
           return {
             backgroundColor: '#ffcccc',
-          }
+          };
         }
-      }
+      },
     };
+
+    const detailPanel = [
+      {
+        tooltip: 'Details',
+        render: rowData => (
+          <div
+            style={{
+              width: '60%',
+              backgroundColor: '#ccf9ff',
+            }}
+          >
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Product</TableCell>
+                <TableCell numeric>Amount</TableCell>
+                <TableCell numeric>Unit Price</TableCell>
+                <TableCell numeric>Discount</TableCell>
+                <TableCell numeric>Total Price (After discount)</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rowData.orderDetail.map(row => (
+                <TableRow key={row.productId}>
+                  <TableCell>
+                    {row.productName}
+                    {row.package && (
+                      ` ( pkg: ${row.package} ) ${row.amountInMainPackage}x`
+                    )}
+                  </TableCell>
+                  <TableCell numeric align="right">{row.amount}</TableCell>
+                  <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
+                  <TableCell numeric>{ccyFormat(row.totalDiscount)}</TableCell>
+                  <TableCell numeric>{ccyFormat(row.total)}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          </div>
+        ),
+      },
+    ];
 
     const {
       orders, loading, locations, locationId,
@@ -263,20 +311,6 @@ export default class Orders extends React.Component {
                   <GridItem md={1}>
                     <Button color="info" onClick={this.searchClicked}>Search</Button>
                   </GridItem>
-                  {/* <GridItem md={3}>
-                    <FormControlLabel
-                      control={(
-                        <Checkbox
-                          checked={showAllOrders}
-                          onChange={this.handleChange('showAllOrders')}
-                          name="showAllOrders"
-                          value="showAllOrders"
-                          color="primary"
-                        />
-                      )}
-                      label="Load orders older than 3 month"
-                    />
-                  </GridItem> */}
                   <GridItem md={1}>
                     {loading && <CircularProgress />}
                   </GridItem>
@@ -284,10 +318,10 @@ export default class Orders extends React.Component {
                 <MaterialTable
                   columns={columns}
                   data={orders}
+                  detailPanel={detailPanel}
                   options={options}
                   onRowClick={this.rowClicked}
                   title=""
-                  // title="Click on each order to navigate to the order details"
                 />
               </CardBody>
             </Card>
