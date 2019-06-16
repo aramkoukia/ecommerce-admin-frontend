@@ -4,6 +4,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import GridItem from '../../components/Grid/GridItem';
+import Button from '../../components/CustomButtons/Button';
 import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
@@ -33,6 +34,7 @@ export default class Purchases extends React.Component {
 
     this.rowClicked = this.rowClicked.bind(this);
     this.handleCheckChange = this.handleCheckChange.bind(this);
+    this.searchClicked = this.searchClicked.bind(this);
   }
 
   componentDidMount() {
@@ -62,6 +64,9 @@ export default class Purchases extends React.Component {
 
   handleCheckChange(event) {
     this.setState({ [event.target.name]: event.target.checked });
+  }
+
+  searchClicked() {
     this.purchasesList();
   }
 
@@ -212,7 +217,7 @@ export default class Purchases extends React.Component {
               </CardHeader>
               <CardBody>
                 <GridContainer alignItems="flex-end">
-                  <GridItem xs={12} sm={12} md={3}>
+                  <GridItem xs={12} sm={12} md={2}>
                     <FormControlLabel
                       control={(
                         <Checkbox
@@ -225,7 +230,7 @@ export default class Purchases extends React.Component {
                       label="Show Not Paid"
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={12} md={3}>
+                  <GridItem xs={12} sm={12} md={2}>
                     <FormControlLabel
                       control={(
                         <Checkbox
@@ -238,7 +243,7 @@ export default class Purchases extends React.Component {
                       label="Show On Delivery"
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={12} md={3}>
+                  <GridItem xs={12} sm={12} md={2}>
                     <FormControlLabel
                       control={(
                         <Checkbox
@@ -251,7 +256,7 @@ export default class Purchases extends React.Component {
                       label="Show Custom Clearance"
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={12} md={3}>
+                  <GridItem xs={12} sm={12} md={2}>
                     <FormControlLabel
                       control={(
                         <Checkbox
@@ -263,6 +268,11 @@ export default class Purchases extends React.Component {
                       )}
                       label="Show Not Arrived"
                     />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={2}>
+                    <Button color="primary" onClick={this.searchClicked}>
+                      Search
+                    </Button>
                   </GridItem>
                 </GridContainer>
                 <MaterialTable
