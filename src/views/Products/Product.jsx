@@ -23,31 +23,13 @@ import CardFooter from '../../components/Card/CardFooter';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import GridItem from '../../components/Grid/GridItem';
 import ProductService from '../../services/ProductService';
+import LocationService from '../../services/LocationService';
 
 const styles = {
   chip: {
     margin: 5,
   },
 };
-
-
-function getLocations() {
-  return [
-    {
-      locationId: 1,
-      locationName: 'Vancouver',
-    },
-    {
-      locationId: 2,
-      locationName: 'Abbotsford',
-    },
-    {
-      locationId: 3,
-      locationName: 'Victoria',
-    },
-  ];
-  // return LocationService.getLocationsForUser();
-}
 
 function dateFormat(dateString) {
   const date = new Date(dateString);
@@ -87,6 +69,13 @@ export class Product extends React.Component {
       transferQuantity: 0,
       fromLocation: 1,
       toLocation: 2,
+      locationId: 0,
+      locations: [
+        {
+          locationId: 0,
+          locationName: 'All',
+        },
+      ],
     };
 
     this.enableDisableProducts = this.enableDisableProducts.bind(this);
@@ -95,6 +84,7 @@ export class Product extends React.Component {
     this.handleTransfer = this.handleTransfer.bind(this);
     this.search = this.search.bind(this);
     this.updateTransferClicked = this.updateTransferClicked.bind(this);
+    this.handleLocationChange = this.handleLocationChange.bind(this)
   }
 
   async componentDidMount() {
@@ -108,8 +98,8 @@ export class Product extends React.Component {
       fromDate,
       toDate,
     });
-
-    this.search();
+    this.getLocations();
+    this.search(0);
   }
 
   handleClose = () => {
@@ -124,6 +114,14 @@ export class Product extends React.Component {
     });
   };
 
+  async getLocations() {
+    const { locations } = this.state;
+    LocationService.getLocationsForUser()
+      .then(results => this.setState({
+        locations: [...locations, ...results],
+      }));
+  }
+
   updateTransferClicked() {
     const { product } = this.state;
 
@@ -137,7 +135,6 @@ export class Product extends React.Component {
       abbotsfordNotes: '',
     });
   }
-
 
   async handleTransfer() {
     const {
@@ -277,12 +274,12 @@ export class Product extends React.Component {
     window.location.reload();
   }
 
-  search() {
+  search(locationId) {
     const { fromDate, toDate } = this.state;
     const { match } = this.props;
     const productId = match.params.id;
     const columns = ['date', 'transactionType', 'amount', 'balance', 'locationName', 'notes', 'userName'];
-    ProductService.getProductTransactions(productId, fromDate, toDate)
+    ProductService.getProductTransactions(productId, fromDate, toDate, locationId)
       .then(results => results.map(row => columns.map((column) => {
         if (column === 'date') {
           return dateFormat(row[column]);
@@ -290,6 +287,11 @@ export class Product extends React.Component {
         return row[column] || '';
       })))
       .then(data => this.setState({ productTransactions: data }));
+  }
+
+  handleLocationChange = (event) => {
+    this.setState({ locationId: event.target.value });
+    this.search(event.target.value);
   }
 
   render() {
@@ -313,6 +315,8 @@ export class Product extends React.Component {
       transferQuantity,
       fromLocation,
       toLocation,
+      locations,
+      locationId,
     } = this.state;
 
     const columns = ['Date', 'Transaction Type', 'Amount', 'Balance', 'LocationName', 'Notes', 'User'];
@@ -327,7 +331,7 @@ export class Product extends React.Component {
       rowsPerPage: 25,
     };
 
-    const locations = getLocations();
+    const transferLocations = locations.filter(l => l.locationId !== 0);
 
     return (
       <div>
@@ -388,7 +392,30 @@ export class Product extends React.Component {
                   </GridItem>
                   <GridItem xs={12}>
                     <GridContainer>
-                      <GridItem xs={12} sm={12} md={3}>
+                      <GridItem xs={12} sm={12} md={4}>
+                        <FormControl className={styles.formControl}>
+                          <InputLabel htmlFor="location">Location</InputLabel>
+                          <Select
+                            value={locationId}
+                            onChange={this.handleLocationChange}
+                            style={{
+                              minWidth: 300,
+                              padding: 5,
+                              margin: 5,
+                            }}
+                            inputProps={{
+                              name: 'location',
+                              id: 'location',
+                              width: '300',
+                            }}
+                          >
+                            {locations && (
+                              locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))
+                            }
+                          </Select>
+                        </FormControl>
+                      </GridItem>
+                      <GridItem xs={12} sm={12} md={2}>
                         <TextField
                           onChange={this.handleChange}
                           name="fromDate"
@@ -401,7 +428,7 @@ export class Product extends React.Component {
                           }}
                         />
                       </GridItem>
-                      <GridItem xs={12} sm={12} md={3}>
+                      <GridItem xs={12} sm={12} md={2}>
                         <TextField
                           onChange={this.handleChange}
                           name="toDaye"
@@ -414,7 +441,7 @@ export class Product extends React.Component {
                           }}
                         />
                       </GridItem>
-                      <GridItem xs={12} sm={12} md={3}>
+                      <GridItem xs={12} sm={12} md={1}>
                         <Button color="info" onClick={this.search}>Search</Button>
                       </GridItem>
                     </GridContainer>
@@ -473,8 +500,8 @@ export class Product extends React.Component {
                           id: 'fromLocation',
                         }}
                       >
-                        {locations && (
-                          locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))
+                        {transferLocations && (
+                          transferLocations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))
                         }
                       </Select>
                     </FormControl>
@@ -490,8 +517,8 @@ export class Product extends React.Component {
                           id: 'toLocation',
                         }}
                       >
-                        {locations && (
-                          locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))
+                        {transferLocations && (
+                          transferLocations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))
                         }
                       </Select>
                     </FormControl>
