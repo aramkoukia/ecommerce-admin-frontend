@@ -135,7 +135,15 @@ export default class Products extends React.Component {
         title: 'Abb Balance', field: 'abbotsfordBalance', type: 'numeric', readonly: true,
       },
       { title: 'Abb OnHold', field: 'abbotsfordOnHold', readonly: true },
-      { title: 'Disabled', field: 'disabled', readonly: true },
+      {
+        title: 'Disabled',
+        field: 'disabled',
+        readonly: true,
+        lookup: {
+          True: 'True',
+          False: 'False',
+        },
+      },
       {
         title: 'Product Id', field: 'productId', hidden: true, readonly: true,
       },
