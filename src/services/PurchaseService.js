@@ -36,10 +36,10 @@ export default class PurchaseService {
     }
   }
 
-  static async getPurchaseDetails() {
+  static async getPurchaseDetails(showPending, showOnDelivery, showCustomClearance, showArrived) {
     try {
       const response = await RestUtilities.get(
-        'purchases/purchasedetail',
+        `purchases/purchasedetail?showPending=${showPending}&showOnDelivery=${showOnDelivery}&showCustomClearance=${showCustomClearance}&showArrived=${showArrived}`,
       );
       return response.content;
     } catch (err) {

@@ -1,6 +1,8 @@
 import React from 'react';
 import MaterialTable from 'material-table';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
@@ -21,19 +23,46 @@ export default class Purchases extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { purchases: [] };
+    this.state = {
+      purchases: [],
+      showPending: true,
+      showOnDelivery: true,
+      showCustomClearance: true,
+      showArrived: true,
+    };
+
     this.rowClicked = this.rowClicked.bind(this);
+    this.handleCheckChange = this.handleCheckChange.bind(this);
   }
 
   componentDidMount() {
+
+    this.setState({
+      showPending: true,
+      showOnDelivery: true,
+      showCustomClearance: true,
+      showArrived: true,
+    });
     this.purchasesList();
   }
 
   purchasesList() {
     this.setState({ loading: true });
 
-    PurchaseService.getPurchaseDetails()
+    const {
+      showPending,
+      showOnDelivery,
+      showCustomClearance,
+      showArrived,
+    } = this.state;
+
+    PurchaseService.getPurchaseDetails(showPending, showOnDelivery, showCustomClearance, showArrived)
       .then(data => this.setState({ purchases: data, loading: false }));
+  }
+
+  handleCheckChange(event) {
+    this.setState({ [event.target.name]: event.target.checked });
+    this.purchasesList();
   }
 
   rowClicked(_event, rowData) {
@@ -163,7 +192,14 @@ export default class Purchases extends React.Component {
       }
     };
 
-    const { purchases, loading } = this.state;
+    const {
+      purchases,
+      loading,
+      showPending,
+      showOnDelivery,
+      showCustomClearance,
+      showArrived,
+    } = this.state;
 
     return (
       <div>
@@ -175,7 +211,60 @@ export default class Purchases extends React.Component {
                 {loading && <CircularProgress />}
               </CardHeader>
               <CardBody>
-
+                <GridContainer alignItems="flex-end">
+                  <GridItem xs={12} sm={12} md={3}>
+                    <FormControlLabel
+                      control={(
+                        <Checkbox
+                          checked={showPending}
+                          onChange={this.handleCheckChange}
+                          value="showPending"
+                          name="showPending"
+                        />
+                      )}
+                      label="Show Not Paid"
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={3}>
+                    <FormControlLabel
+                      control={(
+                        <Checkbox
+                          checked={showOnDelivery}
+                          onChange={this.handleCheckChange}
+                          value="showOnDelivery"
+                          name="showOnDelivery"
+                        />
+                      )}
+                      label="Show On Delivery"
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={3}>
+                    <FormControlLabel
+                      control={(
+                        <Checkbox
+                          checked={showCustomClearance}
+                          onChange={this.handleCheckChange}
+                          value="showCustomClearance"
+                          name="showCustomClearance"
+                        />
+                      )}
+                      label="Show Custom Clearance"
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={3}>
+                    <FormControlLabel
+                      control={(
+                        <Checkbox
+                          checked={showArrived}
+                          onChange={this.handleCheckChange}
+                          value="showArrived"
+                          name="showArrived"
+                        />
+                      )}
+                      label="Show Not Arrived"
+                    />
+                  </GridItem>
+                </GridContainer>
                 <MaterialTable
                   columns={columns}
                   data={purchases}
