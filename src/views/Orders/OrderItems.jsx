@@ -61,9 +61,6 @@ function OrderItems(props) {
               <TableRow key={row.productId}>
                 <TableCell>
                   {row.product.productName}
-                  {row.package && (
-                    ` ( pkg: ${row.package} ) ${row.amountInMainPackage}x`
-                  )}
                 </TableCell>
                 <TableCell numeric align="right">{row.amount}</TableCell>
                 <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>

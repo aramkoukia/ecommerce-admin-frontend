@@ -8,13 +8,22 @@ import Radio from '@material-ui/core/Radio';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Select from '@material-ui/core/Select';
-import Input from '@material-ui/core/Input';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 import Success from '../../components/Typography/Success';
+
+function calculateSalesPrice(orderRow) {
+  orderRow.productPackages
+    .sort(
+      (a, b) => (
+        (a.amountInMainPackage < b.amountInMainPackage) ? 1 : ((b.amountInMainPackage < a.amountInMainPackage) ? -1 : 0)));
+  for (let i = 0; i < orderRow.productPackages.length; i += 1) {
+    if (Number(orderRow.qty) >= Number(orderRow.productPackages[i].amountInMainPackage)) {
+      return orderRow.productPackages[i].packagePrice;
+    }
+  }
+  return orderRow.salesPrice;
+}
 
 export default class OrderTable extends React.Component {
   constructor(props) {
@@ -35,7 +44,6 @@ export default class OrderTable extends React.Component {
     });
 
     this.handleQuantityChanged = this.handleQuantityChanged.bind(this);
-    this.handleProductPackageChanged = this.handleProductPackageChanged.bind(this);
     this.handleSalePriceChanged = this.handleSalePriceChanged.bind(this);
     this.handleDiscountAmountChanged = this.handleDiscountAmountChanged.bind(this);
     this.handleDiscountPercentChanged = this.handleDiscountPercentChanged.bind(this);
@@ -99,35 +107,11 @@ export default class OrderTable extends React.Component {
     for (const i in orderRows) {
       if (orderRows[i].productId == event.target.name) {
         orderRows[i].qty = event.target.value;
+        if (orderRows[i].productPackages !== null && orderRows[i].productPackages.length !== 0) {
+          orderRows[i].salesPrice = calculateSalesPrice(orderRows[i]);
+
+        }
         orderRows[i].total = event.target.value * orderRows[i].salesPrice;
-        this.setState({ orderRows });
-        break;
-      }
-    }
-
-    const totalDiscount = this.discount(orderRows);
-    const subTotal = this.subtotal(orderRows, totalDiscount);
-    const total = this.total(subTotal, taxes);
-    this.setState({
-      subTotal,
-      total,
-      totalDiscount,
-    });
-
-    priceChanged(subTotal, total, totalDiscount);
-  }
-
-  handleProductPackageChanged(event) {
-    const { taxes, priceChanged } = this.props;
-    const { orderRows } = this.state;
-    for (const i in orderRows) {
-      if (orderRows[i].productId == event.target.name) {
-        const rowProductPackage = orderRows[i].productPackages.find(p => p.productPackageId === event.target.value);
-        orderRows[i].salesPrice = rowProductPackage.packagePrice;
-        orderRows[i].productPackageId = event.target.value;
-        orderRows[i].total = orderRows[i].qty * orderRows[i].salesPrice;
-        orderRows[i].package = rowProductPackage.package;
-        orderRows[i].amountInMainPackage = rowProductPackage.amountInMainPackage;
         this.setState({ orderRows });
         break;
       }
@@ -269,7 +253,7 @@ export default class OrderTable extends React.Component {
             <TableRow>
               <TableCell>Product</TableCell>
               <TableCell>Amount</TableCell>
-              <TableCell numeric>Variations/Unit Price ($)</TableCell>
+              <TableCell numeric>Unit Price ($)</TableCell>
               <TableCell>Discount</TableCell>
               <TableCell />
               <TableCell numeric>Total Price ($)</TableCell>
@@ -301,30 +285,15 @@ export default class OrderTable extends React.Component {
                   />
                 </TableCell>
                 {row.productPackages && row.productPackages.length !== 0 && (
-                <TableCell>
-                  <FormControl>
-                    <Select
-                      value={row.productPackageId}
+                  <TableCell numeric>
+                    <TextField
                       name={row.productId}
-                      onChange={this.handleProductPackageChanged}
-                      input={<Input name="variations" id="variations" />}
-                      fullWidth="true"
-                    >
-                      {
-                          row.productPackages.map((l, key) => (
-                            <MenuItem name={key} value={l.productPackageId}>
-                              {l.package}
-                              {' ('}
-                              {l.amountInMainPackage}
-                              {'x): '}
-                              $
-                              {l.packagePrice}
-                            </MenuItem>
-                          ))
-                        }
-                    </Select>
-                  </FormControl>
-                </TableCell>
+                      value={row.salesPrice}
+                      type="number"
+                      disabled
+                      style={{ width: 70 }}
+                    />
+                  </TableCell>
                 )}
                 {(row.productPackages == null || row.productPackages.length === 0) && (
                 <TableCell numeric>
