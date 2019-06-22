@@ -150,9 +150,9 @@ export default class Products extends React.Component {
     ];
 
     const packageColumns = [
-      { title: 'Package Name', field: 'package' },
-      { title: 'Amount in main package', field: 'amountInMainPackage', type: 'numberic' },
-      { title: 'Package Price', field: 'packagePrice', type: 'numberic' },
+      { title: 'Sale Option', field: 'package' },
+      { title: 'Amount', field: 'amountInMainPackage', type: 'numberic' },
+      { title: 'Unit Price', field: 'packagePrice', type: 'numberic' },
       { title: 'Package Id', field: 'productPackageId', hidden: true },
     ];
 
