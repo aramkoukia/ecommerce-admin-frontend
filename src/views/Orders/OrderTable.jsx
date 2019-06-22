@@ -290,7 +290,6 @@ export default class OrderTable extends React.Component {
                       name={row.productId}
                       value={row.salesPrice}
                       type="number"
-                      disabled
                       style={{ width: 70 }}
                     />
                   </TableCell>
