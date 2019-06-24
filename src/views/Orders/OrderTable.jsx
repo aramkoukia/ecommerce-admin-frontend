@@ -81,7 +81,7 @@ export default class OrderTable extends React.Component {
     const orderRows = this.state.orderRows.slice();
     const { taxes, priceChanged } = this.props;
     for (const i in orderRows) {
-      if (orderRows[i].productId == event.target.name) {
+      if (orderRows[i].id == event.target.name) {
         orderRows[i].discountType = event.target.value;
         this.setState({ orderRows });
         break;
@@ -105,11 +105,10 @@ export default class OrderTable extends React.Component {
     const { taxes, priceChanged } = this.props;
     const { orderRows } = this.state;
     for (const i in orderRows) {
-      if (orderRows[i].productId == event.target.name) {
+      if (orderRows[i].id == event.target.name) {
         orderRows[i].qty = event.target.value;
         if (orderRows[i].productPackages !== null && orderRows[i].productPackages.length !== 0) {
           orderRows[i].salesPrice = calculateSalesPrice(orderRows[i]);
-
         }
         orderRows[i].total = event.target.value * orderRows[i].salesPrice;
         this.setState({ orderRows });
@@ -133,7 +132,7 @@ export default class OrderTable extends React.Component {
     const { taxes, priceChanged } = this.props;
     const { orderRows } = this.state;
     for (const i in orderRows) {
-      if (orderRows[i].productId == event.target.name) {
+      if (orderRows[i].id == event.target.name) {
         orderRows[i].salesPrice = event.target.value;
         orderRows[i].total = event.target.value * orderRows[i].qty;
         this.setState({ orderRows });
@@ -157,7 +156,7 @@ export default class OrderTable extends React.Component {
     const { taxes, priceChanged } = this.props;
     const orderRows = this.state.orderRows.slice();
     for (const i in orderRows) {
-      if (orderRows[i].productId == event.target.name) {
+      if (orderRows[i].id == event.target.name) {
         orderRows[i].discountAmount = event.target.value;
         orderRows[i].discountPercent = 0;
         this.setState({ orderRows });
@@ -183,7 +182,7 @@ export default class OrderTable extends React.Component {
     const { taxes, priceChanged } = this.props;
     const orderRows = this.state.orderRows.slice();
     for (const i in orderRows) {
-      if (orderRows[i].productId == event.target.name) {
+      if (orderRows[i].id == event.target.name) {
         orderRows[i].discountAmount = 0;
         orderRows[i].discountPercent = event.target.value;
         this.setState({ orderRows });
@@ -261,15 +260,15 @@ export default class OrderTable extends React.Component {
           </TableHead>
           <TableBody>
             {orderRows.map(row => (
-              <TableRow key={row.productId}>
+              <TableRow key={row.id}>
                 <TableCell>
                   <IconButton
                     aria-label="Delete"
-                    name={row.productId}
+                    name={row.id}
                     onClick={this.handleProductRemoved}
                   >
                     <DeleteIcon
-                      name={row.productId}
+                      name={row.id}
                       fontSize="small"
                     />
                   </IconButton>
@@ -277,7 +276,7 @@ export default class OrderTable extends React.Component {
                 </TableCell>
                 <TableCell>
                   <TextField
-                    name={row.productId}
+                    name={row.id}
                     value={row.qty}
                     onChange={this.handleQuantityChanged}
                     type="number"
@@ -287,10 +286,10 @@ export default class OrderTable extends React.Component {
                 {row.productPackages && row.productPackages.length !== 0 && (
                   <TableCell numeric>
                     <TextField
-                      name={row.productId}
+                      name={row.id}
                       value={row.salesPrice}
                       type="number"
-onChange={this.handleSalePriceChanged}
+                      onChange={this.handleSalePriceChanged}
                       style={{ width: 70 }}
                     />
                   </TableCell>
@@ -298,7 +297,7 @@ onChange={this.handleSalePriceChanged}
                 {(row.productPackages == null || row.productPackages.length === 0) && (
                 <TableCell numeric>
                   <TextField
-                    name={row.productId}
+                    name={row.id}
                     value={row.salesPrice}
                     onChange={this.handleSalePriceChanged}
                     type="number"
@@ -313,7 +312,7 @@ onChange={this.handleSalePriceChanged}
                   && (
                   <div>
                     <TextField
-                      name={row.productId}
+                      name={row.id}
                       value={row.discountAmount}
                       onChange={this.handleDiscountAmountChanged}
                       type="number"
@@ -325,7 +324,7 @@ onChange={this.handleSalePriceChanged}
                   && (
                   <div>
                     <TextField
-                      name={row.productId}
+                      name={row.id}
                       value={row.discountPercent}
                       onChange={this.handleDiscountPercentChanged}
                       type="number"
@@ -342,7 +341,7 @@ onChange={this.handleSalePriceChanged}
                         checked={row.discountType === 'percent'}
                         onChange={this.handleDiscountTypeChanged}
                         value="percent"
-                        name={row.productId}
+                        name={row.id}
                         aria-label="B"
                       />
                     )}
@@ -356,7 +355,7 @@ onChange={this.handleSalePriceChanged}
                         checked={row.discountType === 'amount'}
                         onChange={this.handleDiscountTypeChanged}
                         value="amount"
-                        name={row.productId}
+                        name={row.id}
                         aria-label="B"
                       />
                     )}

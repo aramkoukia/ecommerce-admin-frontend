@@ -56,15 +56,29 @@ const styles = {
   },
 };
 
-function createRow(productId, productName, salesPrice, productPackages) {
+function calculateSalesPrice(productPackages, salesPrice, qty) {
+  if (productPackages && productPackages.length > 0) {
+    productPackages
+      .sort(
+        (a, b) => (
+          (a.amountInMainPackage < b.amountInMainPackage) ? 1 : ((b.amountInMainPackage < a.amountInMainPackage) ? -1 : 0)));
+    for (let i = 0; i < productPackages.length; i += 1) {
+      if (Number(qty) >= Number(productPackages[i].amountInMainPackage)) {
+        return productPackages[i].packagePrice;
+      }
+    }
+    return salesPrice;
+  }
+  return salesPrice;
+}
+
+function createRow(productId, productName, salesPrice, productPackages, id) {
   const qty = 1;
   const discountPercent = 0;
   const discountAmount = 0;
   const discountType = 'percent';
 
-  const price = productPackages && productPackages.length > 0
-    ? productPackages[0].packagePrice
-    : salesPrice;
+  const price = calculateSalesPrice(productPackages, salesPrice, qty);
 
   const total = qty * price;
   const productPackageId = productPackages && productPackages.length > 0
@@ -78,6 +92,7 @@ function createRow(productId, productName, salesPrice, productPackages) {
     : null;
 
   return {
+    id,
     productId,
     productName,
     qty,
@@ -665,27 +680,31 @@ export default class AddOrder extends React.Component {
     });
   }
 
-  productRemoved(productId) {
+  productRemoved(id) {
     const { rows } = this.state;
     this.setState({
-      rows: rows.filter(row => row.productId !== productId),
+      rows: rows.filter(row => row.id != id),
     });
   }
 
   productChanged(product) {
     const { rows } = this.state;
-    const newRows = JSON.parse(JSON.stringify(rows));
-    const foundProduct = newRows.find(row => row.productId === product.productId);
-    if (foundProduct) {
-      foundProduct.qty = Number(foundProduct.qty) + 1;
-      foundProduct.total = foundProduct.qty * foundProduct.price;
-      this.setState({ rows: newRows });
-    } else {
-      const newRow = createRow(product.productId, product.productName, product.salesPrice, product.productPackages);
-      this.setState(prevState => ({
-        rows: [...prevState.rows, newRow],
-      }));
-    }
+    // const newRows = JSON.parse(JSON.stringify(rows));
+    // const foundProduct = newRows.find(row => row.productId === product.productId);
+    // if (foundProduct) {
+    //   foundProduct.qty = Number(foundProduct.qty) + 1;
+    //   foundProduct.total = foundProduct.qty * foundProduct.price;
+    //   this.setState({ rows: newRows });
+    // } else {
+    const id = rows && rows.length > 0
+      ? Math.max.apply(Math, rows.map(function (o) { return o.id; })) + 1
+      : 1;
+
+    const newRow = createRow(product.productId, product.productName, product.salesPrice, product.productPackages, id);
+    this.setState(prevState => ({
+      rows: [...prevState.rows, newRow],
+    }));
+    // }
   }
 
   async customerSaved(customer) {
