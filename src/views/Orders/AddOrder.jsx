@@ -56,21 +56,14 @@ const styles = {
   },
 };
 
-function calculateSalesPrice(productPackages, salesPrice, qty) {
-  if (productPackages && productPackages.length > 0) {
-    productPackages
-      .sort(
-        (a, b) => (
-          (a.amountInMainPackage < b.amountInMainPackage) ? 1 : ((b.amountInMainPackage < a.amountInMainPackage) ? -1 : 0)));
-    for (let i = 0; i < productPackages.length; i += 1) {
-      if (Number(qty) >= Number(productPackages[i].amountInMainPackage)) {
-        return productPackages[i].packagePrice;
-      }
-    }
-    return salesPrice;
-  }
-  return salesPrice;
-}
+// function calculateSalesPrice(productPackages, salesPrice, qty) {
+//   for (let i = 0; i < productPackages.length; i += 1) {
+//     if (Number(qty) >= Number(productPackages[i].amountInMainPackage)) {
+//       return productPackages[i].packagePrice;
+//     }
+//   }
+//   return salesPrice;
+// }
 
 function createRow(productId, productName, salesPrice, productPackages, id) {
   const qty = 1;
@@ -78,9 +71,17 @@ function createRow(productId, productName, salesPrice, productPackages, id) {
   const discountAmount = 0;
   const discountType = 'percent';
 
-  const price = calculateSalesPrice(productPackages, salesPrice, qty);
+  if (productPackages && productPackages.length > 0) {
+    productPackages
+      .sort(
+        (a, b) => (
+          (a.amountInMainPackage > b.amountInMainPackage) ? 1 : ((b.amountInMainPackage > a.amountInMainPackage) ? -1 : 0)));
+  }
 
-  const total = qty * price;
+  const price = productPackages && productPackages.length > 0
+    ? productPackages[0].packagePrice
+    : salesPrice;
+
   const productPackageId = productPackages && productPackages.length > 0
     ? productPackages[0].productPackageId
     : null;
@@ -90,6 +91,8 @@ function createRow(productId, productName, salesPrice, productPackages, id) {
   const amountInMainPackage = productPackages && productPackages.length > 0
     ? productPackages[0].amountInMainPackage
     : null;
+
+  const total = qty * price;
 
   return {
     id,
@@ -540,6 +543,8 @@ export default class AddOrder extends React.Component {
         discountAmount: row.discountAmount,
         discountType: row.discountType,
         subTotal: row.total,
+        package: row.package,
+        amountInMainPackage: row.amountInMainPackage,
         totalDiscount: (row.discountType === 'percent' ? (row.discountPercent / 100) * row.total : row.discountAmount),
         total: row.total - (row.discountType === 'percent' ? (row.discountPercent / 100) * row.total : row.discountAmount),
       }));

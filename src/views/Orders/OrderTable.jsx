@@ -6,24 +6,28 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Radio from '@material-ui/core/Radio';
 import Paper from '@material-ui/core/Paper';
+import Select from '@material-ui/core/Select';
+import Input from '@material-ui/core/Input';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 import Success from '../../components/Typography/Success';
 
-function calculateSalesPrice(orderRow) {
-  orderRow.productPackages
-    .sort(
-      (a, b) => (
-        (a.amountInMainPackage < b.amountInMainPackage) ? 1 : ((b.amountInMainPackage < a.amountInMainPackage) ? -1 : 0)));
-  for (let i = 0; i < orderRow.productPackages.length; i += 1) {
-    if (Number(orderRow.qty) >= Number(orderRow.productPackages[i].amountInMainPackage)) {
-      return orderRow.productPackages[i].packagePrice;
-    }
-  }
-  return orderRow.salesPrice;
-}
+// function calculateSalesPrice(orderRow) {
+//   orderRow.productPackages
+//     .sort(
+//       (a, b) => (
+//         (a.amountInMainPackage < b.amountInMainPackage) ? 1 : ((b.amountInMainPackage < a.amountInMainPackage) ? -1 : 0)));
+//   for (let i = 0; i < orderRow.productPackages.length; i += 1) {
+//     if (Number(orderRow.qty) >= Number(orderRow.productPackages[i].amountInMainPackage)) {
+//       return orderRow.productPackages[i].packagePrice;
+//     }
+//   }
+//   return orderRow.salesPrice;
+// }
 
 export default class OrderTable extends React.Component {
   constructor(props) {
@@ -49,6 +53,7 @@ export default class OrderTable extends React.Component {
     this.handleDiscountPercentChanged = this.handleDiscountPercentChanged.bind(this);
     this.handleDiscountTypeChanged = this.handleDiscountTypeChanged.bind(this);
     this.handleProductRemoved = this.handleProductRemoved.bind(this);
+    this.handleProductPackageChanged = this.handleProductPackageChanged.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -107,10 +112,35 @@ export default class OrderTable extends React.Component {
     for (const i in orderRows) {
       if (orderRows[i].id == event.target.name) {
         orderRows[i].qty = event.target.value;
-        if (orderRows[i].productPackages !== null && orderRows[i].productPackages.length !== 0) {
-          orderRows[i].salesPrice = calculateSalesPrice(orderRows[i]);
-        }
         orderRows[i].total = event.target.value * orderRows[i].salesPrice;
+        this.setState({ orderRows });
+        break;
+      }
+    }
+
+    const totalDiscount = this.discount(orderRows);
+    const subTotal = this.subtotal(orderRows, totalDiscount);
+    const total = this.total(subTotal, taxes);
+    this.setState({
+      subTotal,
+      total,
+      totalDiscount,
+    });
+
+    priceChanged(subTotal, total, totalDiscount);
+  }
+
+  handleProductPackageChanged(event) {
+    const { taxes, priceChanged } = this.props;
+    const { orderRows } = this.state;
+    for (const i in orderRows) {
+      if (orderRows[i].id == event.target.name) {
+        const rowProductPackage = orderRows[i].productPackages.find(p => p.productPackageId === event.target.value);
+        orderRows[i].salesPrice = rowProductPackage.packagePrice;
+        orderRows[i].productPackageId = event.target.value;
+        orderRows[i].total = orderRows[i].qty * orderRows[i].salesPrice;
+        orderRows[i].package = rowProductPackage.package;
+        orderRows[i].amountInMainPackage = rowProductPackage.amountInMainPackage;
         this.setState({ orderRows });
         break;
       }
@@ -251,6 +281,7 @@ export default class OrderTable extends React.Component {
           <TableHead>
             <TableRow>
               <TableCell>Product</TableCell>
+              <TableCell />
               <TableCell>Amount</TableCell>
               <TableCell numeric>Unit Price ($)</TableCell>
               <TableCell>Discount</TableCell>
@@ -261,7 +292,7 @@ export default class OrderTable extends React.Component {
           <TableBody>
             {orderRows.map(row => (
               <TableRow key={row.id}>
-                <TableCell>
+                <TableCell size="small">
                   <IconButton
                     aria-label="Delete"
                     name={row.id}
@@ -274,7 +305,31 @@ export default class OrderTable extends React.Component {
                   </IconButton>
                   {row.productName}
                 </TableCell>
-                <TableCell>
+                <TableCell size="small">
+                {row.productPackages && row.productPackages.length !== 0 && (
+                  <FormControl>
+                    <Select
+                      value={row.productPackageId}
+                      name={row.id}
+                      onChange={this.handleProductPackageChanged}
+                      input={<Input name="variations" id="variations" />}
+                      fullWidth="true"
+                    >
+                      {
+                        row.productPackages.map((l, key) => (
+                          <MenuItem name={key} value={l.productPackageId}>
+                            {l.package}
+                            {' ('}
+                            {l.amountInMainPackage}
+                            {'x)'}
+                          </MenuItem>
+                        ))
+                      }
+                    </Select>
+                  </FormControl>
+                )}
+                </TableCell>
+                <TableCell size="small">
                   <TextField
                     name={row.id}
                     value={row.qty}
@@ -283,19 +338,7 @@ export default class OrderTable extends React.Component {
                     style={{ width: 70 }}
                   />
                 </TableCell>
-                {row.productPackages && row.productPackages.length !== 0 && (
-                  <TableCell numeric>
-                    <TextField
-                      name={row.id}
-                      value={row.salesPrice}
-                      type="number"
-                      onChange={this.handleSalePriceChanged}
-                      style={{ width: 70 }}
-                    />
-                  </TableCell>
-                )}
-                {(row.productPackages == null || row.productPackages.length === 0) && (
-                <TableCell numeric>
+                <TableCell size="small" numeric>
                   <TextField
                     name={row.id}
                     value={row.salesPrice}
@@ -304,9 +347,9 @@ export default class OrderTable extends React.Component {
                     style={{ width: 70 }}
                   />
                 </TableCell>
-                )}
                 <TableCell
                   style={{ width: 50 }}
+                  size="small"
                 >
                   { row.discountType === 'amount'
                   && (
@@ -333,7 +376,7 @@ export default class OrderTable extends React.Component {
                   </div>
                   )}
                 </TableCell>
-                <TableCell>
+                <TableCell size="small">
                   <FormControlLabel
                     value="end"
                     control={(
@@ -363,10 +406,11 @@ export default class OrderTable extends React.Component {
                     labelPlacement="end"
                   />
                 </TableCell>
-                <TableCell numeric>{this.ccyFormat(row.salesPrice * row.qty)}</TableCell>
+                <TableCell size="small" numeric>{this.ccyFormat(row.salesPrice * row.qty)}</TableCell>
               </TableRow>
             ))}
             <TableRow style={{ 'background-color': 'lightgray' }}>
+              <TableCell />
               <TableCell />
               <TableCell />
               <TableCell />
@@ -375,6 +419,7 @@ export default class OrderTable extends React.Component {
               <TableCell numeric>{this.ccyFormat(totalDiscount)}</TableCell>
             </TableRow>
             <TableRow style={{ 'background-color': 'lightgray' }}>
+              <TableCell />
               <TableCell />
               <TableCell />
               <TableCell />
@@ -387,12 +432,14 @@ export default class OrderTable extends React.Component {
                 <TableCell />
                 <TableCell />
                 <TableCell />
+                <TableCell />
                 <TableCell>{tax.taxName}</TableCell>
                 <TableCell numeric>{`${(tax.percentage).toFixed(0)} %`}</TableCell>
                 <TableCell numeric>{this.ccyFormat((tax.percentage / 100) * subTotal)}</TableCell>
               </TableRow>
             ))}
             <TableRow>
+              <TableCell />
               <TableCell />
               <TableCell />
               <TableCell />
