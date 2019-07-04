@@ -197,8 +197,9 @@ export default class AddOrder extends React.Component {
         //   customer, rows, total, subTotal, notes, taxes, poNumber, authCode,
         // } = this.state;
         this.setState({
-          rows: order.orderDetail.map(row => (
+          rows: order.orderDetail.map((row, index) => (
             {
+              id: index + 1,
               productId: row.productId,
               qty: row.amount,
               salesPrice: row.unitPrice,
@@ -210,7 +211,9 @@ export default class AddOrder extends React.Component {
               productPackages: row.product.productPackage,
               package: row.package,
               productPackageId: row.product.productPackage && row.product.productPackage.length > 0
-                ? row.product.productPackage.find(p => p.package === row.package).productPackageId
+                ? row.product.productPackage.find(p => p.package === row.package)
+                  ? row.product.productPackage.find(p => p.package === row.package).productPackageId
+                  : row.product.productPackage[0].productPackageId
                 : null,
               amountInMainPackage: row.amountInMainPackage,
             })),
