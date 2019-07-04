@@ -74,9 +74,16 @@ export default class UpdateProducts extends React.Component {
       { title: 'Product Name', field: 'productName', readonly: true },
       { title: 'Purchase Price ($)', field: 'purchasePrice', type: 'numeric' },
       { title: 'Sales Price ($)', field: 'salesPrice', type: 'numeric', readonly: true },
-      { title: 'Van Balance', field: 'vancouverBalance', type: 'numeric', hidden: true, readonly: true },
-      { title: 'Abb Balance', field: 'abbotsfordBalance', type: 'numeric', hidden: true, readonly: true },
-      { title: 'Disabled', field: 'disabled', readonly: true },
+      { title: 'Van Balance', field: 'vancouverBalance', type: 'numeric', readonly: true },
+      { title: 'Abb Balance', field: 'abbotsfordBalance', type: 'numeric', readonly: true },
+      {
+        title: 'Disabled', field: 'disabled',
+        readonly: true,
+        lookup: {
+          True: 'True',
+          False: 'False',
+        },
+      },
       { title: 'Product Id', field: 'productId', hidden: true, readonly: true },
     ];
 
@@ -95,6 +102,7 @@ export default class UpdateProducts extends React.Component {
       columnsButton: true,
       exportButton: true,
       filtering: true,
+      search: true,
     };
 
     return (

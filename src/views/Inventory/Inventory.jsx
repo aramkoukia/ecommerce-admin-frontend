@@ -414,7 +414,7 @@ export default class Inventory extends React.Component {
                 Inventory Transfer
               </CardHeader>
               <CardBody>
-              <GridContainer>
+                <GridContainer>
                   <GridItem xs={12} sm={12} md={6}>
                     <FormControl>
                       <InputLabel htmlFor="fromLocation">From</InputLabel>
@@ -426,39 +426,39 @@ export default class Inventory extends React.Component {
                           id: 'fromLocation',
                         }}
                       >
-                      { locations && (
-                        locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))
+                        { locations && (
+                          locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))
                       }
                       </Select>
                     </FormControl>
                   </GridItem>
                   <GridItem xs={12} sm={12} md={6}>
-                  <FormControl>
-                    <InputLabel htmlFor="toLocation">To</InputLabel>
-                    <Select
-                      value={toLocation}
-                      onChange={this.handleChange}
-                      inputProps={{
-                        name: 'toLocation',
-                        id: 'toLocation',
-                      }}
-                    >
-                    { locations && (
-                      locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))
+                    <FormControl>
+                      <InputLabel htmlFor="toLocation">To</InputLabel>
+                      <Select
+                        value={toLocation}
+                        onChange={this.handleChange}
+                        inputProps={{
+                          name: 'toLocation',
+                          id: 'toLocation',
+                        }}
+                      >
+                        { locations && (
+                          locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))
                     }
-                    </Select>
+                      </Select>
                     </FormControl>
                   </GridItem>
                   <GridItem xs={12} sm={12} md={6}>
-                  <FormControl>
-                    <TextField
-                      name="transferQuantity"
-                      label="Quantity"
-                      type="number"
-                      onChange={this.handleChange}
-                      value={transferQuantity}
-                    />
-                  </FormControl>
+                    <FormControl>
+                      <TextField
+                        name="transferQuantity"
+                        label="Quantity"
+                        type="number"
+                        onChange={this.handleChange}
+                        value={transferQuantity}
+                      />
+                    </FormControl>
                   </GridItem>
                   <GridItem xs={12} sm={12} md={6}>
                     <TextField
@@ -471,14 +471,13 @@ export default class Inventory extends React.Component {
                       value={transferNotes}
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={12} md={9}>
-                  </GridItem>
+                  <GridItem xs={12} sm={12} md={9} />
                   <GridItem xs={12} sm={12} md={2}>
                     <Button onClick={this.handleTransfer} color="primary">
                       Transfer
                     </Button>
                   </GridItem>
-                  </GridContainer>
+                </GridContainer>
               </CardBody>
             </Card>
 
@@ -552,14 +551,13 @@ export default class Inventory extends React.Component {
                       value={abbotsfordNotes}
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={12} md={9}>
-                  </GridItem>
+                  <GridItem xs={12} sm={12} md={9} />
                   <GridItem xs={12} sm={12} md={2}>
                     <Button onClick={this.handleUpdate} color="primary">
                       Update
                     </Button>
                   </GridItem>
-                  </GridContainer>
+                </GridContainer>
               </CardBody>
             </Card>
             { loading && (<LinearProgress />) }

@@ -194,6 +194,7 @@ export default class Orders extends React.Component {
       columnsButton: true,
       exportButton: true,
       filtering: true,
+      search: true,
       rowStyle: (data) => {
         if (data.overDue === 'Yes') {
           return {

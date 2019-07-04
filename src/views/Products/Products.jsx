@@ -175,6 +175,7 @@ export default class Products extends React.Component {
       columnsButton: true,
       exportButton: true,
       filtering: true,
+      search: true,
     };
 
     const packageOptions = {
