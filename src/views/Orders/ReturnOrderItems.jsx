@@ -44,8 +44,15 @@ export default class ReturnOrderItems extends React.Component {
     const {
       rows, taxes, priceChanged,
     } = this.props;
+
+    const orderRows = rows;
+
+    orderRows.forEach((row, index) => {
+      row.id = index;
+    });
+
     this.setState({
-      orderRows: rows,
+      orderRows,
     });
 
     const { restockingFeePercent } = this.state;
@@ -97,7 +104,7 @@ export default class ReturnOrderItems extends React.Component {
     const orderRows = this.state.orderRows.slice();
     const { restockingFeePercent } = this.state;
     for (const i in orderRows) {
-      if (orderRows[i].productId == event.target.name) {
+      if (orderRows[i].id == event.target.name) {
         if (event.target.value < 0) {
           event.target.value = event.target.value * -1;
         }
@@ -172,7 +179,7 @@ export default class ReturnOrderItems extends React.Component {
             {orderRows && taxes && (
             <TableBody>
               {orderRows.map(row => (
-                <TableRow key={row.productId}>
+                <TableRow key={row.id}>
                   <TableCell>
                     {row.product.productName}
                     {row.package && (
@@ -181,7 +188,7 @@ export default class ReturnOrderItems extends React.Component {
                   </TableCell>
                   <TableCell numeric align="right">
                     <TextField
-                      name={row.productId}
+                      name={row.id}
                       value={row.amount}
                       onChange={this.handleQuantityChanged}
                       type="number"
@@ -197,7 +204,7 @@ export default class ReturnOrderItems extends React.Component {
                       <div>
                         <TextField
                           disabled
-                          name={row.productId}
+                          name={row.id}
                           value={row.discountAmount}
                           onChange={this.handleDiscountAmountChanged}
                           type="number"
@@ -213,7 +220,7 @@ export default class ReturnOrderItems extends React.Component {
                       <div>
                         <TextField
                           disabled
-                          name={row.productId}
+                          name={row.id}
                           value={row.discountPercent}
                           onChange={this.handleDiscountPercentChanged}
                           type="number"
