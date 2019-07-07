@@ -12,10 +12,10 @@ export default class CustomerService {
     }
   }
 
-  static async getCustomersWithBalance() {
+  static async getCustomersWithBalance(showDisabled) {
     try {
       const response = await RestUtilities.get(
-        'customers/withbalance',
+        `customers/withbalance?showDisabled=${showDisabled}`,
       );
       return response.content;
     } catch (err) {

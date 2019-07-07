@@ -25,8 +25,9 @@ export default class Customers extends React.Component {
 
   customersList() {
     this.setState({ loading: true });
-    const columns = ['customerCode', 'companyName', 'firstName', 'lastName', 'email', 'accountBalance', 'creditLimit', 'pstNumber', 'storeCredit', 'phoneNumber', 'pstExempt'];
-    CustomerService.getCustomersWithBalance()
+    const columns = ['customerCode', 'companyName', 'firstName', 'lastName', 'email', 'accountBalance', 'creditLimit', 'pstNumber', 'storeCredit', 'phoneNumber', 'pstExempt', 'isDisabled'];
+    const showDisabled = true;
+    CustomerService.getCustomersWithBalance(showDisabled)
       .then(results => results.map(row => columns.map(column => row[column] || '')))
       .then(data => this.setState({ customers: data, loading: false }));
   }
@@ -131,6 +132,12 @@ export default class Customers extends React.Component {
       },
       {
         name: 'PST Exempt',
+        options: {
+          filter: true,
+        },
+      },
+      {
+        name: 'Disabled',
         options: {
           filter: true,
         },
