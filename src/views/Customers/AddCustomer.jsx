@@ -3,9 +3,11 @@ import Check from '@material-ui/icons/Check';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import Input from '@material-ui/core/Input';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
+import Checkbox from '@material-ui/core/Checkbox';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
 import CardHeader from '../../components/Card/CardHeader';
@@ -20,6 +22,7 @@ class AddCustomer extends React.Component {
     super(props);
 
     this.onSubmit = this.onSubmit.bind(this);
+    this.handleCheckChange = this.handleCheckChange.bind(this);
 
     this.state = {
       openSnackbar: false,
@@ -39,6 +42,7 @@ class AddCustomer extends React.Component {
       pstNumber: '',
       creditLimit: 0,
       email: '',
+      disabled: false,
     };
   }
 
@@ -53,6 +57,10 @@ class AddCustomer extends React.Component {
   handleChange = event => {
     this.setState({ [event.target.name]: event.target.value });
   };
+
+  handleCheckChange(event) {
+    this.setState({ disabled: event.target.checked });
+  }
 
   async onSubmit() {
     const {
@@ -70,6 +78,7 @@ class AddCustomer extends React.Component {
       creditLimit,
       email,
       segment,
+      disabled,
     } = this.state;
 
     const customer = {
@@ -89,6 +98,7 @@ class AddCustomer extends React.Component {
       segment,
       accountBalance: 0,
       storeCredit: 0,
+      disabled,
     };
 
     const result = await CustomerService.addCustomer(customer);
@@ -110,6 +120,7 @@ class AddCustomer extends React.Component {
       creditLimit: 0,
       email: '',
       segment: 'None',
+      disabled: false,
     });
 
     customer.customerId = result.customerId;
@@ -140,6 +151,7 @@ class AddCustomer extends React.Component {
       creditLimit,
       email,
       segment,
+      disabled,
     } = this.state;
 
     return (
@@ -305,6 +317,18 @@ class AddCustomer extends React.Component {
                     />
                   </GridItem>
                   <GridItem md={4}>
+                    <FormControlLabel
+                      control={(
+                        <Checkbox
+                          checked={disabled}
+                          onChange={this.handleCheckChange}
+                          value="disabled"
+                        />
+                      )}
+                      label="Disabled"
+                    />
+                  </GridItem>
+                  {/* <GridItem md={4}>
                     <FormControl>
                       <InputLabel htmlFor="segment">Segment</InputLabel>
                       <Select
@@ -320,8 +344,7 @@ class AddCustomer extends React.Component {
                         <MenuItem value="Segment 4">Segment 4</MenuItem>
                       </Select>
                     </FormControl>
-
-                  </GridItem>
+                  </GridItem> */}
                   <GridItem md={12}>
                     <Button color="primary" onClick={this.onSubmit}>
                       Save

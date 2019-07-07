@@ -1,4 +1,5 @@
 import React from 'react';
+import Chip from '@material-ui/core/Chip';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Table from '../../components/Table/Table';
 import Danger from '../../components/Typography/Danger';
@@ -22,7 +23,15 @@ function CustomerInfo(props) {
   return (
     <Card>
       <CardHeader color="info">
-        <div className={classes.cardTitleWhite}>Customer</div>
+        <div className={classes.cardTitleWhite}>
+          Customer
+          {customer && customer.disabled && (
+            <span>
+              &nbsp;&nbsp;
+              <Chip label="Disabled" color="secondary" />
+            </span>
+          )}
+        </div>
       </CardHeader>
       <CardBody>
         { customer && (
