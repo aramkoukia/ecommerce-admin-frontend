@@ -218,6 +218,7 @@ export default class AddOrder extends React.Component {
               amountInMainPackage: row.amountInMainPackage,
             })),
           notes: order.notes,
+          poNumber: order.poNumber,
           subTotal: order.subTotal,
           total: order.total,
         });
