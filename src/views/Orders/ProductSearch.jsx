@@ -76,6 +76,8 @@ const styles = theme => ({
     margin: 0,
     padding: 0,
     listStyleType: 'none',
+    height: 400,
+    'overflow-y': 'scroll',
   },
   divider: {
     height: theme.spacing.unit * 2,
@@ -145,7 +147,7 @@ class ProductSearch extends React.Component {
     return inputLength === 0
       ? []
       : suggestions.filter((suggestion) => {
-        const keep = count < 10
+        const keep = count < 40
             && (suggestion.productName.toLowerCase().includes(inputValue)
               || suggestion.productCode.toLowerCase().includes(inputValue));
 
