@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import PerfectScrollbar from 'perfect-scrollbar';
-import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Header from 'components/Header/Header';
 import Footer from 'components/Footer/Footer';
@@ -58,9 +56,6 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    if (navigator.platform.indexOf('Win') > -1) {
-      const ps = new PerfectScrollbar(this.refs.mainPanel);
-    }
     window.addEventListener('resize', this.resizeFunction);
   }
 
