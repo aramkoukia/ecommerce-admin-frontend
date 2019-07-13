@@ -366,7 +366,7 @@ export class Return extends React.Component {
     }
   }
 
-  priceChanged(rows, subTotal, total, totalDiscount, restockingFeePercent, restockingFeeAmount) {
+  priceChanged(rows, subTotal, total, totalDiscount, restockingFeeAmount, restockingFeePercent) {
     this.setState({
       subTotal,
       total,

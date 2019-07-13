@@ -85,7 +85,7 @@ export default class ReturnOrderItems extends React.Component {
     const totalDiscount = this.discount(orderRows);
     const subTotal = this.subtotal(orderRows, totalDiscount);
     const restockingFeePercent = Number(event.target.value);
-    const restockingFeeAmount = subTotal * restockingFeePercent / 100 * -1;
+    const restockingFeeAmount = ((subTotal * restockingFeePercent) / 100) * -1;
     const total = this.total(subTotal, taxes, restockingFeeAmount);
 
     this.setState({
