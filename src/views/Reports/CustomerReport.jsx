@@ -51,6 +51,11 @@ export default class CustomerReport extends React.Component {
           fontSize: '15px',
         },
       },
+      MUIDataTable: {
+        responsiveScroll: {
+          maxHeight: 'none',
+        },
+      },
     },
   })
 
@@ -173,6 +178,7 @@ export default class CustomerReport extends React.Component {
       selectableRows: false,
       rowsPerPageOptions: [25, 50, 100],
       rowsPerPage: 25,
+      responsive: 'scroll',
     };
 
     const {

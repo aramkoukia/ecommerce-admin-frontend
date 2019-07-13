@@ -51,6 +51,11 @@ export default class PaymentReport extends React.Component {
           fontSize: '15px',
         },
       },
+      MUIDataTable: {
+        responsiveScroll: {
+          maxHeight: 'none',
+        },
+      },
     },
   })
 
@@ -177,6 +182,7 @@ export default class PaymentReport extends React.Component {
       rowHover: true,
       resizableColumns: false,
       selectableRows: false,
+      responsive: 'scroll',
     };
 
     const paymentsSummaryOptions = {
@@ -184,6 +190,7 @@ export default class PaymentReport extends React.Component {
       rowHover: true,
       resizableColumns: false,
       selectableRows: false,
+      responsive: 'scroll',
     };
 
     const paymentDetailsOptions = {
@@ -191,6 +198,7 @@ export default class PaymentReport extends React.Component {
       rowHover: true,
       resizableColumns: false,
       selectableRows: false,
+      responsive: 'scroll',
     };
 
     const {

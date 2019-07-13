@@ -62,6 +62,11 @@ export default class ProfitReport extends React.Component {
           fontSize: '15px',
         },
       },
+      MUIDataTable: {
+        responsiveScroll: {
+          maxHeight: 'none',
+        },
+      },
     },
   })
 
@@ -143,6 +148,7 @@ export default class ProfitReport extends React.Component {
       rowHover: true,
       resizableColumns: false,
       selectableRows: false,
+      responsive: 'scroll',
     };
 
     const {
