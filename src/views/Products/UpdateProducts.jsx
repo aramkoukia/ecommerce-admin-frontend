@@ -73,6 +73,7 @@ export default class UpdateProducts extends React.Component {
       { title: 'Product Code', field: 'productCode', readonly: true },
       { title: 'Product Name', field: 'productName', readonly: true },
       { title: 'Purchase Price ($)', field: 'purchasePrice', type: 'numeric' },
+      { title: 'Avg Purchase Price ($)', field: 'avgPurchasePrice', type: 'numeric', readonly: true },
       { title: 'Sales Price ($)', field: 'salesPrice', type: 'numeric', readonly: true },
       { title: 'Van Balance', field: 'vancouverBalance', type: 'numeric', readonly: true },
       { title: 'Abb Balance', field: 'abbotsfordBalance', type: 'numeric', readonly: true },
