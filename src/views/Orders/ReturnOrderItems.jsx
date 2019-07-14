@@ -149,7 +149,7 @@ export default class ReturnOrderItems extends React.Component {
   }
 
   total(subTotal, taxes, restockingFeeAmount) {
-    const totalTax = taxes.map(({ tax }) => (tax.percentage / 100) * subTotal).reduce((sum, i) => sum + i, 0);
+    const totalTax = taxes.map(({ tax }) => (tax.percentage / 100) * (subTotal + restockingFeeAmount)).reduce((sum, i) => sum + i, 0);
     return (subTotal + totalTax) + restockingFeeAmount;
   }
 
