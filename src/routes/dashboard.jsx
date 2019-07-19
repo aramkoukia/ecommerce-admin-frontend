@@ -208,7 +208,7 @@ const dashboardRoutes = [
     permission: Permissions.ViewPurchaseReports,
   },
   {
-    path: '/inventoryvaluereport',
+    path: '/valuereport',
     sidebarName: 'Inventory Value Report',
     navbarName: '',
     icon: InsertChart,
