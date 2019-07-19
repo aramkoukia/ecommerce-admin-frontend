@@ -198,4 +198,15 @@ export default class ReportService {
       return false;
     }
   }
+
+  static async getInventoryValue() {
+    try {
+      const response = await RestUtilities.get(
+        'reports/inventoryvalueprofit',
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }
