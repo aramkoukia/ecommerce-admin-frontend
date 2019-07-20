@@ -67,7 +67,9 @@ export default class SalesByPurchasePriceReport extends React.Component {
 
   search() {
     const { fromDate, toDate } = this.state;
-    const columns = ['locationName', 'status', 'totalByPurchasePrice', 'totalBySalePrice', 'transactions', 'gst', 'pst', 'otherTax', 'discount', 'subTotal'];
+    const columns = ['locationName', 'status', 'totalByPurchasePrice',
+      // 'totalBySalePrice', 'transactions', 'gst', 'pst', 'otherTax', 'discount', 'subTotal'
+    ];
     ReportService.getSalesByPurchasePriceReport(fromDate, toDate)
       .then(results => results.map(row => columns.map(column => row[column] || '')))
       .then((data) => {
@@ -125,27 +127,28 @@ export default class SalesByPurchasePriceReport extends React.Component {
       {
         name: 'Total By Purchase Price ($)',
       },
-      {
-        name: 'Total By Sales Price ($)',
-      },
+      // {
+      //   name: 'Total By Sales Price ($)',
+      // },
       {
         name: 'Transactions',
       },
-      {
-        name: 'GST ($)',
-      },
-      {
-        name: 'PST ($)',
-      },
-      {
-        name: 'Other Tax ($)',
-      },
-      {
-        name: 'Discount ($)',
-      },
-      {
-        name: 'Sub Total ($)',
-      }];
+      // {
+      //   name: 'GST ($)',
+      // },
+      // {
+      //   name: 'PST ($)',
+      // },
+      // {
+      //   name: 'Other Tax ($)',
+      // },
+      // {
+      //   name: 'Discount ($)',
+      // },
+      // {
+      //   name: 'Sub Total ($)',
+      // }
+    ];
 
     const totalColumns = [
       {
