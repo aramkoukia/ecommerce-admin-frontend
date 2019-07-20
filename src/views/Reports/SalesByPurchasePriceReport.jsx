@@ -67,8 +67,8 @@ export default class SalesByPurchasePriceReport extends React.Component {
 
   search() {
     const { fromDate, toDate } = this.state;
-    const columns = ['locationName', 'status', 'totalByPurchasePrice',
-      // 'totalBySalePrice', 'transactions', 'gst', 'pst', 'otherTax', 'discount', 'subTotal'
+    const columns = ['locationName', 'status', 'totalByPurchasePrice', 'transactions',
+      // 'totalBySalePrice', , 'gst', 'pst', 'otherTax', 'discount', 'subTotal'
     ];
     ReportService.getSalesByPurchasePriceReport(fromDate, toDate)
       .then(results => results.map(row => columns.map(column => row[column] || '')))
