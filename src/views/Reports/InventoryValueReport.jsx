@@ -1,5 +1,6 @@
 import React from 'react';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import MUIDataTable from 'mui-datatables';
 import CardBody from '../../components/Card/CardBody';
 import CardHeader from '../../components/Card/CardHeader';
@@ -14,12 +15,14 @@ export default class InventoryValueReport extends React.Component {
 
     this.state = {
       products: [],
+      inventoryValueTotal: [],
       loading: false,
     };
   }
 
   componentDidMount() {
     this.productsList();
+    this.inventoryValueTotal();
   }
 
   productsList() {
@@ -29,6 +32,29 @@ export default class InventoryValueReport extends React.Component {
       .then(results => results.map(row => columns.map(column => (row[column] === null ? '' : row[column]))))
       .then(data => this.setState({ products: data, loading: false }));
   }
+
+  inventoryValueTotal() {
+    this.setState({ loading: true });
+    const columns = ['locationName', 'valueBySalePrice', 'valueByPurchasePrice'];
+    ReportService.getInventoryValueTotal()
+      .then(results => results.map(row => columns.map(column => (row[column] === null ? '' : row[column]))))
+      .then(data => this.setState({ inventoryValueTotal: data, loading: false }));
+  }
+
+  getMuiTheme = () => createMuiTheme({
+    overrides: {
+      MUIDataTableBodyCell: {
+        root: {
+          fontSize: '15px',
+        },
+      },
+      MUIDataTable: {
+        responsiveScroll: {
+          maxHeight: 'none',
+        },
+      },
+    },
+  })
 
   render() {
     const styles = {
@@ -60,6 +86,27 @@ export default class InventoryValueReport extends React.Component {
         },
       },
     };
+
+    const totalColumns = [
+      {
+        name: 'Location',
+        options: {
+          filter: false,
+        },
+      },
+      {
+        name: 'Value By Sale Price($)',
+        options: {
+          filter: false,
+        },
+      },
+      {
+        name: 'Value By Purchase Price($)',
+        options: {
+          filter: false,
+        },
+      },
+    ];
 
     const columns = [
       {
@@ -137,6 +184,7 @@ export default class InventoryValueReport extends React.Component {
 
     const {
       products,
+      inventoryValueTotal,
       loading,
     } = this.state;
 
@@ -149,6 +197,14 @@ export default class InventoryValueReport extends React.Component {
                 <div className={styles.cardTitleWhite}>Inventory Value Report</div>
               </CardHeader>
               <CardBody>
+                <MuiThemeProvider theme={this.getMuiTheme()}>
+                  <MUIDataTable
+                    title=""
+                    data={inventoryValueTotal}
+                    columns={totalColumns}
+                    options={options}
+                  />
+                </MuiThemeProvider>
                 <MUIDataTable
                   title=""
                   data={products}

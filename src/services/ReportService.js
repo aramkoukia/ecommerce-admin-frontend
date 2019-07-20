@@ -56,6 +56,17 @@ export default class ReportService {
     }
   }
 
+  static async getSalesByPurchasePriceReport(fromDate, toDate) {
+    try {
+      const response = await RestUtilities.get(
+        `reports/salesbypurchaseprice?fromDate=${fromDate}&toDate=${toDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getSales(fromDate, toDate) {
     try {
       const response = await RestUtilities.get(
@@ -202,7 +213,18 @@ export default class ReportService {
   static async getInventoryValue() {
     try {
       const response = await RestUtilities.get(
-        'reports/inventoryvalueprofit',
+        'reports/inventoryvalue',
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async getInventoryValueTotal() {
+    try {
+      const response = await RestUtilities.get(
+        'reports/Inventoryvaluetotal',
       );
       return response.content;
     } catch (err) {

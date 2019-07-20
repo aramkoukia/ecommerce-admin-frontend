@@ -28,6 +28,7 @@ import PaymentReport from '../views/Reports/PaymentReport';
 import PurchaseReport from '../views/Reports/PurchaseReport';
 import ProfitReport from '../views/Reports/ProfitReport';
 import InventoryValueReport from '../views/Reports/InventoryValueReport';
+import SalesByPurchasePriceReport from '../views/Reports/SalesByPurchasePriceReport';
 import AddOrder from '../views/Orders/AddOrder';
 import Orders from '../views/Orders/Orders';
 import Discounts from '../views/Discounts/Discounts';
@@ -213,6 +214,14 @@ const dashboardRoutes = [
     navbarName: '',
     icon: InsertChart,
     component: InventoryValueReport,
+    permission: Permissions.ViewPurchaseReports,
+  },
+  {
+    path: '/salesbypurchaseprice',
+    sidebarName: 'Sales By Purchase Price Report',
+    navbarName: '',
+    icon: InsertChart,
+    component: SalesByPurchasePriceReport,
     permission: Permissions.ViewPurchaseReports,
   },
   {
