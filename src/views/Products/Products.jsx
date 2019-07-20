@@ -139,6 +139,7 @@ export default class Products extends React.Component {
         title: 'Disabled',
         field: 'disabled',
         readonly: true,
+        defaultFilter: ['False'],
         lookup: {
           True: 'True',
           False: 'False',
