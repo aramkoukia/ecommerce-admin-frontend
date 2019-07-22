@@ -253,10 +253,10 @@ export class Return extends React.Component {
           discountAmount: row.discountAmount,
           discountType: row.discountType,
           total: row.total,
-          totalDiscount: row.totalDiscount,
+          totalDiscount: -1 * Math.abs(row.totalDiscount),
           package: row.package,
           amountInMainPackage: row.amountInMainPackage,
-          subTotal: row.total - row.totalDiscount,
+          subTotal: row.total - Math.abs(row.totalDiscount),
         }));
 
     const orderTaxes = order.orderTax.map(tax => (

@@ -5,8 +5,6 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TextField from '@material-ui/core/TextField';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
@@ -15,7 +13,6 @@ import Success from '../../components/Typography/Success';
 function ccyFormat(num) {
   return `${num.toFixed(2)} $`;
 }
-
 
 function dateFormat(dateString) {
   const date = new Date(dateString);
@@ -112,7 +109,9 @@ export default class ReturnOrderItems extends React.Component {
         orderRows[i].subTotal = event.target.value * orderRows[i].unitPrice * -1;
         const discountAmount = orderRows[i].discountAmount === '' ? 0 : orderRows[i].discountAmount;
         const discountPercent = orderRows[i].discountPercent === '' ? 0 : orderRows[i].discountPercent;
-        orderRows[i].totalDiscount = -1 * ((orderRows[i].discountType === 'percent') ? (discountPercent / 100) * orderRows[i].subTotal : Number(discountAmount));
+        orderRows[i].totalDiscount = -1 * Math.abs((orderRows[i].discountType === 'percent')
+          ? (discountPercent / 100) * orderRows[i].subTotal
+          : Number(discountAmount));
         orderRows[i].total = event.target.value * orderRows[i].unitPrice * -1 + orderRows[i].totalDiscount;
         this.setState({ orderRows });
         break;
