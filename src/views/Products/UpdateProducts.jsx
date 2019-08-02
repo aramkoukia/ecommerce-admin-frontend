@@ -2,11 +2,18 @@ import React from 'react';
 import MaterialTable from 'material-table';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Check from '@material-ui/icons/Check';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import Typography from '@material-ui/core/Typography';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
+import Button from '../../components/CustomButtons/Button';
+import CardBody from '../../components/Card/CardBody';
 import ProductService from '../../services/ProductService';
 
 export default class UpdateProducts extends React.Component {
@@ -19,22 +26,46 @@ export default class UpdateProducts extends React.Component {
       openSnackbar: false,
       snackbarMessage: '',
       snackbarColor: '',
+      openDialog: false,
+      productPackages: [],
     };
     this.handleChange = this.handleChange.bind(this);
+    this.updateVariations = this.updateVariations.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   componentDidMount() {
     this.productsList();
+    this.setState({
+      productPackages: [],
+    });
   }
 
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
   }
 
+  handleClose() {
+    this.setState({
+      openDialog: false,
+      productPackages: [],
+    });
+  }
+
   productsList() {
     this.setState({ loading: true });
     ProductService.getProducts()
       .then(data => this.setState({ products: data, loading: false }));
+  }
+
+  updateVariations(rowData) {
+    ProductService.getProductPackages(rowData.productId)
+      .then(data => this.setState({ productPackages: data }));
+
+    this.setState({
+      openDialog: true,
+      product: rowData,
+    });
   }
 
   render() {
@@ -78,7 +109,8 @@ export default class UpdateProducts extends React.Component {
       { title: 'Van Balance', field: 'vancouverBalance', type: 'numeric', readonly: true },
       { title: 'Abb Balance', field: 'abbotsfordBalance', type: 'numeric', readonly: true },
       {
-        title: 'Disabled', field: 'disabled',
+        title: 'Disabled',
+        field: 'disabled',
         readonly: true,
         lookup: {
           True: 'True',
@@ -94,7 +126,17 @@ export default class UpdateProducts extends React.Component {
       openSnackbar,
       snackbarMessage,
       snackbarColor,
+      productPackages,
+      product,
+      openDialog,
     } = this.state;
+
+    const packageColumns = [
+      { title: 'Sale Option', field: 'package' },
+      { title: 'Amount', field: 'amountInMainPackage', type: 'numberic' },
+      { title: 'Unit Price', field: 'packagePrice', type: 'numberic' },
+      { title: 'Package Id', field: 'productPackageId', hidden: true },
+    ];
 
     const options = {
       paging: true,
@@ -104,6 +146,14 @@ export default class UpdateProducts extends React.Component {
       exportButton: true,
       filtering: true,
       search: true,
+    };
+
+    const packageOptions = {
+      paging: false,
+      columnsButton: false,
+      exportButton: false,
+      filtering: false,
+      search: false,
     };
 
     return (
@@ -122,6 +172,12 @@ export default class UpdateProducts extends React.Component {
               options={options}
               onRowClick={this.rowClicked}
               title=""
+              actions={[
+                {
+                  icon: 'attach_money',
+                  tooltip: 'Variations',
+                  onClick: (event, rowData) => this.updateVariations(rowData),
+                }]}
               editable={{
                 onRowUpdate: (newData, oldData) =>
                   new Promise((resolve, reject) => {
@@ -150,6 +206,88 @@ export default class UpdateProducts extends React.Component {
             close
           />
         </GridContainer>
+        <Dialog
+          open={openDialog}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <DialogContentText>
+              <Card>
+                <CardHeader color="primary">
+                  Product Variations:
+                </CardHeader>
+                <CardBody>
+                  {product && (
+                    <div>
+                      <Typography variant="subheading" gutterBottom>
+                        Code:
+                        {' '}
+                        {product.productCode}
+                      </Typography>
+                      <Typography variant="subheading" gutterBottom>
+                        Name:
+                        {' '}
+                        {product.productName}
+                      </Typography>
+                      <Typography variant="subheading" gutterBottom>
+                        Sales Price ($):
+                        {' '}
+                        {product.salesPrice}
+                      </Typography>
+                    </div>
+                  )}
+                  <MaterialTable
+                    columns={packageColumns}
+                    data={productPackages}
+                    options={packageOptions}
+                    title=""
+                    editable={{
+                      onRowAdd: newData => new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                          productPackages.push(newData);
+                          ProductService.createProductPackage(product.productId, newData);
+                          this.setState({ productPackages }, () => resolve());
+                          resolve();
+                        }, 1000);
+                      }),
+                      onRowUpdate: (newData, oldData) => new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                          {
+                            const index = productPackages.indexOf(oldData);
+                            productPackages[index] = newData;
+                            ProductService.updateProductPackage(product.productId, newData);
+                            this.setState({ productPackages }, () => resolve());
+                          }
+                          resolve();
+                        }, 1000);
+                      }),
+                      onRowDelete: oldData => new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                          {
+                            const index = productPackages.indexOf(oldData);
+                            productPackages.splice(index, 1);
+                            ProductService.deleteProductPackage(oldData.productId, oldData);
+                            this.setState({ productPackages }, () => resolve());
+                          }
+                          resolve();
+                        }, 1000);
+                      }),
+                    }}
+                  />
+                </CardBody>
+              </Card>
+            </DialogContentText>
+            <DialogActions>
+              {/* <Button onClick={this.handlePasswordReset} color="primary">
+                Reset
+            </Button> */}
+              <Button onClick={this.handleClose} color="secondary">
+                Close
+              </Button>
+            </DialogActions>
+          </DialogContent>
+        </Dialog>
       </div>
     );
   }

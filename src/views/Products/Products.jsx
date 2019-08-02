@@ -220,11 +220,11 @@ export default class Products extends React.Component {
                   tooltip: 'Transactions',
                   onClick: (event, rowData) => this.showTransactions(rowData.productId),
                 },
-                {
-                  icon: 'attach_money',
-                  tooltip: 'Variations',
-                  onClick: (event, rowData) => this.updateVariations(rowData),
-                },
+                // {
+                //   icon: 'attach_money',
+                //   tooltip: 'Variations',
+                //   onClick: (event, rowData) => this.updateVariations(rowData),
+                // },
               ]}
               options={options}
               title=""
