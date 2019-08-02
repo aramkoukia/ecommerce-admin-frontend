@@ -60,6 +60,13 @@ export default class PuchaseReport extends React.Component {
           maxHeight: 'none',
         },
       },
+      MUIDataTableToolbar: {
+        titleText: {
+          fontSize: '12px',
+          'margin-top': '45px',
+          position: 'relative',
+        },
+      },
     },
   })
 

@@ -56,6 +56,13 @@ export default class PaymentReport extends React.Component {
           maxHeight: 'none',
         },
       },
+      MUIDataTableToolbar: {
+        titleText: {
+          fontSize: '12px',
+          'margin-top': '45px',
+          position: 'relative',
+        },
+      },
     },
   })
 
