@@ -69,6 +69,7 @@ class Settings extends React.Component {
         'smtpUseSsl',
         'warnInSufficientStockOnOrder',
         'blockInSufficientStockOnOrder',
+        'enablePosIntegration',
         'allowedIPAddresses',
       ],
       properties: {
@@ -107,6 +108,10 @@ class Settings extends React.Component {
         blockInSufficientStockOnOrder: {
           type: 'boolean',
           title: 'Block InSufficient Stock On Order',
+        },
+        enablePosIntegration: {
+          type: 'boolean',
+          title: 'Enable Moneris POS integration',
         },
         allowedIPAddresses: {
           type: 'string',
@@ -156,6 +161,11 @@ class Settings extends React.Component {
         'ui:emptyValue': '',
         'ui:widget': 'checkbox',
       },
+      enablePosIntegration: {
+        'ui:autofocus': true,
+        'ui:emptyValue': '',
+        'ui:widget': 'checkbox',
+      },
       allowedIPAddresses: {
         'ui:autofocus': true,
         'ui:emptyValue': '',
@@ -174,6 +184,7 @@ class Settings extends React.Component {
       warnInSufficientStockOnOrder: settings.warnInSufficientStockOnOrder,
       blockInSufficientStockOnOrder: settings.blockInSufficientStockOnOrder,
       allowedIPAddresses: settings.allowedIPAddresses,
+      enablePosIntegration: settings.enablePosIntegration,
     };
 
     return (
