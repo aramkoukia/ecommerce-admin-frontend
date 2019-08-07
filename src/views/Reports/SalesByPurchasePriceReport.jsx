@@ -74,14 +74,13 @@ export default class SalesByPurchasePriceReport extends React.Component {
 
   search() {
     const { fromDate, toDate } = this.state;
-    const columns = ['locationName', 'status', 'totalByPurchasePrice', 'transactions',
-      // 'totalBySalePrice', , 'gst', 'pst', 'otherTax', 'discount', 'subTotal'
-    ];
+    const columns = ['locationName', 'status', 'totalBySalePrice', 'totalByPurchasePrice', 'transactions'];
     ReportService.getSalesByPurchasePriceReport(fromDate, toDate)
       .then(results => results.map(row => columns.map(column => row[column] || '')))
       .then((data) => {
         this.setState({ reportData: data });
         this.inventoryValueTotal();
+        this.salesByPurchasePriceDetail(fromDate, toDate);
       });
   }
 
@@ -91,6 +90,14 @@ export default class SalesByPurchasePriceReport extends React.Component {
     ReportService.getInventoryValueTotal()
       .then(results => results.map(row => columns.map(column => (row[column] === null ? '' : row[column]))))
       .then(data => this.setState({ inventoryValueTotal: data, loading: false }));
+  }
+
+  salesByPurchasePriceDetail(fromDate, toDate) {
+    this.setState({ loading: true });
+    const columns = ['locationName', 'productCode', 'productName', 'amount', 'salesPrice', 'purchasePrice', 'totalBySalePrice', 'totalByPurchasePrice'];
+    ReportService.getSalesByPurchasePriceDetailReport(fromDate, toDate)
+      .then(results => results.map(row => columns.map(column => (row[column] === null ? '' : row[column]))))
+      .then(data => this.setState({ salesByPurchasePriceDetailData: data, loading: false }));
   }
 
   render() {
@@ -132,29 +139,41 @@ export default class SalesByPurchasePriceReport extends React.Component {
         name: 'Status',
       },
       {
+        name: 'Total By Sales ($)',
+      },
+      {
         name: 'Total By Purchase Price ($)',
       },
-      // {
-      //   name: 'Total By Sales Price ($)',
-      // },
       {
         name: 'Transactions',
       },
-      // {
-      //   name: 'GST ($)',
-      // },
-      // {
-      //   name: 'PST ($)',
-      // },
-      // {
-      //   name: 'Other Tax ($)',
-      // },
-      // {
-      //   name: 'Discount ($)',
-      // },
-      // {
-      //   name: 'Sub Total ($)',
-      // }
+    ];
+
+    const detailColumns = [
+      {
+        name: 'Location',
+      },
+      {
+        name: 'Product Code',
+      },
+      {
+        name: 'Product Name',
+      },
+      {
+        name: 'Product Amount',
+      },
+      {
+        name: 'Avg Sales Price',
+      },
+      {
+        name: 'Purchase Price',
+      },
+      {
+        name: 'Total By Sales Price ($)',
+      },
+      {
+        name: 'Total By Purchase Price ($)',
+      },
     ];
 
     const totalColumns = [
@@ -189,8 +208,9 @@ export default class SalesByPurchasePriceReport extends React.Component {
     };
 
     const {
- reportData, fromDate, toDate, inventoryValueTotal
-} = this.state;
+      reportData, fromDate, toDate, inventoryValueTotal,
+      salesByPurchasePriceDetailData,
+    } = this.state;
     const salesReportTitle = `Sales Report. From: ${fromDate} To: ${toDate}`;
 
     return (
@@ -246,6 +266,15 @@ export default class SalesByPurchasePriceReport extends React.Component {
                     title="Total Inventory Value"
                     data={inventoryValueTotal}
                     columns={totalColumns}
+                    options={options}
+                  />
+                </MuiThemeProvider>
+
+                <MuiThemeProvider theme={this.getMuiTheme()}>
+                  <MUIDataTable
+                    title="Detail Sales By Purchase Price"
+                    data={salesByPurchasePriceDetailData}
+                    columns={detailColumns}
                     options={options}
                   />
                 </MuiThemeProvider>
