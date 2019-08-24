@@ -8,7 +8,7 @@ import CardBody from '../../components/Card/CardBody';
 import Card from '../../components/Card/Card';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import Button from '../../components/CustomButtons/Button';
-// import PosSettingsService from '../../services/PosSettingsService';
+import PosSettingsService from '../../services/PosSettingsService';
 
 class PosSettings extends React.Component {
   constructor(props) {
@@ -34,12 +34,30 @@ class PosSettings extends React.Component {
   }
 
   pairPos() {
+    PosSettingsService.pairPos();
+    this.setState({
+      openSnackbar: true,
+      snackbarMessage: 'POS Paired!',
+      snackbarColor: '',
+    });
   }
 
   unpairPos() {
+    PosSettingsService.unpairPos();
+    this.setState({
+      openSnackbar: true,
+      snackbarMessage: 'POS Unpaired!',
+      snackbarColor: '',
+    });
   }
 
   initializePos() {
+    this.PosSettingsService.initializePos();
+    this.setState({
+      openSnackbar: true,
+      snackbarMessage: 'POS Initialized!',
+      snackbarColor: '',
+    });
   }
 
   render() {
