@@ -31,7 +31,6 @@ import InventoryValueReport from '../views/Reports/InventoryValueReport';
 import SalesByPurchasePriceReport from '../views/Reports/SalesByPurchasePriceReport';
 import AddOrder from '../views/Orders/AddOrder';
 import Orders from '../views/Orders/Orders';
-import Discounts from '../views/Discounts/Discounts';
 import Taxes from '../views/Taxes/Taxes';
 import CustomerStoreCredit from '../views/Customers/CustomerStoreCredit';
 import Users from '../views/Users/Users';
@@ -45,6 +44,7 @@ import { Order } from '../views/Orders/Order';
 import { Return } from '../views/Orders/Return';
 import Roles from '../views/Roles/Roles';
 import Settings from '../views/Settings/Settings';
+import PosSettings from '../views/Settings/PosSettings';
 import UpdateProducts from '../views/Products/UpdateProducts';
 import Permissions from '../stores/Permissions';
 
@@ -278,6 +278,14 @@ const dashboardRoutes = [
     navbarName: '',
     icon: SettingsBrightness,
     component: Settings,
+    permission: Permissions.ViewRoles,
+  },
+  {
+    path: '/possettings',
+    sidebarName: 'POS Settings',
+    navbarName: '',
+    icon: SettingsBrightness,
+    component: PosSettings,
     permission: Permissions.ViewRoles,
   },
   {
