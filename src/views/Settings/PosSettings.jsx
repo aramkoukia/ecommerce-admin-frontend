@@ -7,13 +7,16 @@ import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import Card from '../../components/Card/Card';
 import Snackbar from '../../components/Snackbar/Snackbar';
+import Button from '../../components/CustomButtons/Button';
 // import PosSettingsService from '../../services/PosSettingsService';
 
 class PosSettings extends React.Component {
   constructor(props) {
     super(props);
 
-    this.onSubmit = this.onSubmit.bind(this);
+    this.pairPos = this.pairPos.bind(this);
+    this.unpairPos = this.unpairPos.bind(this);
+    this.initializePos = this.initializePos.bind(this);
 
     this.state = {
       openSnackbar: false,
@@ -28,6 +31,15 @@ class PosSettings extends React.Component {
       snackbarMessage: '',
       snackbarColor: '',
     });
+  }
+
+  pairPos() {
+  }
+
+  unpairPos() {
+  }
+
+  initializePos() {
   }
 
   render() {
@@ -52,6 +64,18 @@ class PosSettings extends React.Component {
                 <div className={styles.cardTitleWhite}>POS Settings</div>
               </CardHeader>
               <CardBody>
+                <Button color="Info" onClick={this.pairPos}>
+                  &nbsp;
+                  Pair POS
+                </Button>
+                <Button color="Info" onClick={this.initializePos}>
+                  &nbsp;
+                  Initialize POS
+                </Button>
+                <Button color="Info" onClick={this.unpairPos}>
+                  &nbsp;
+                  Unpair POS
+                </Button>
               </CardBody>
             </Card>
           </GridItem>
