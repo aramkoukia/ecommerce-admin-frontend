@@ -52,7 +52,7 @@ class PosSettings extends React.Component {
   }
 
   initializePos() {
-    this.PosSettingsService.initializePos();
+    PosSettingsService.initializePos();
     this.setState({
       openSnackbar: true,
       snackbarMessage: 'POS Initialized!',
