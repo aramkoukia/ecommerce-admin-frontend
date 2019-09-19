@@ -48,7 +48,7 @@ If you have questions or need help integrating the product please create an issu
 
 ## Licensing
 
-- Copyright 2019 Aram Koukia (https://www.koukia.ca)
+- Copyright 2019 Aram Koukia (https://koukia.ca)
 - Licensed under MIT
 
 ## Useful Links
