@@ -93,7 +93,7 @@ export default class ReturnOrderItems extends React.Component {
       restockingFeePercent,
     });
 
-    priceChanged(orderRows, subTotal, total, totalDiscount, restockingFeeAmount, restockingFeePercent);
+    priceChanged(orderRows, subTotal, total, totalDiscount, restockingFeePercent, restockingFeeAmount);
   }
 
   handleQuantityChanged(event) {
