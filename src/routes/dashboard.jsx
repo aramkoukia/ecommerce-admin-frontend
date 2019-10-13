@@ -11,7 +11,8 @@ import SettingsBrightness from '@material-ui/icons/SettingsBrightness';
 import LocationOn from '@material-ui/icons/LocationOn';
 import ScreenLockLandscape from '@material-ui/icons/ScreenLockLandscape';
 import Products from '../views/Products/Products';
-import Product from '../views/Products/Product';
+import { Product } from '../views/Products/Product';
+import ProductCategory from '../views/Products/ProductCategory';
 import Locations from '../views/Locations/Locations';
 import AddLocation from '../views/Locations/AddLocation';
 import Customers from '../views/Customers/Customers';
@@ -38,7 +39,7 @@ import AddUser from '../views/Users/AddUser';
 import Inventory from '../views/Inventory/Inventory';
 import Purchases from '../views/Purchases/Purchases';
 import AddPurchase from '../views/Purchases/AddPurchase';
-import Purchase from '../views/Purchases/Purchase';
+import { Purchase } from '../views/Purchases/Purchase';
 import SignIn from '../views/Login/Auth';
 import { Order } from '../views/Orders/Order';
 import { Return } from '../views/Orders/Return';
@@ -162,7 +163,7 @@ const dashboardRoutes = [
   },
   {
     path: '/producttypereport',
-    sidebarName: 'Product Type Report',
+    sidebarName: 'Product Category Report',
     navbarName: '',
     icon: InsertChart,
     component: ProductTypeReport,
@@ -223,6 +224,14 @@ const dashboardRoutes = [
     icon: InsertChart,
     component: SalesByPurchasePriceReport,
     permission: Permissions.ViewPurchaseReports,
+  },
+  {
+    path: '/productcategories',
+    sidebarName: 'Product Categories',
+    navbarName: '',
+    icon: Highlight,
+    component: ProductCategory,
+    permission: Permissions.ViewProducts,
   },
   {
     path: '/locations',
