@@ -5,9 +5,9 @@ import {
   Router, Route, Switch, Redirect,
 } from 'react-router-dom';
 
-import 'assets/css/material-dashboard-react.css?v=1.5.0';
+import './assets/css/material-dashboard-react.css';
 
-import indexRoutes from 'routes/index.jsx';
+import indexRoutes from './routes/index';
 import Auth from './services/Auth';
 // import RoutePaths from "./routes/routes";
 
