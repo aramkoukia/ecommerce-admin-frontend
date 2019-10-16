@@ -22,7 +22,7 @@ function dateFormat(dateString) {
 Date.prototype.addHours = function (h) {
   this.setHours(this.getHours() + h);
   return this;
-}
+};
 
 export default class SalesForecastReport extends React.Component {
   constructor(props) {
@@ -129,7 +129,7 @@ export default class SalesForecastReport extends React.Component {
     };
 
     const {
-      reportData, fromDate, toDate, loading,
+      reportData, loading,
     } = this.state;
 
     return (

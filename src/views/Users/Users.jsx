@@ -302,7 +302,7 @@ export default class Users extends React.Component {
             <Button
               color="primary"
               index={tableMeta.columnIndex}
-              onClick={event => {
+              onClick={(event) => {
                 this.editClicked(tableMeta, tableMeta.columnIndex, value, event);
               }}
             >
@@ -319,8 +319,7 @@ export default class Users extends React.Component {
             <Button
               color="primary"
               index={tableMeta.columnIndex}
-              onClick={event =>
-                this.permissionsClicked(tableMeta, tableMeta.columnIndex, value, event)
+              onClick={event => this.permissionsClicked(tableMeta, tableMeta.columnIndex, value, event)
               }
             >
               Permissions

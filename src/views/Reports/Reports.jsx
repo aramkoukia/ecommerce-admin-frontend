@@ -30,7 +30,6 @@ class Reports extends React.Component {
   }
 
   componentDidMount() {
-
     this.setState({ loading: true });
 
     ReportService.getMonthlySummary()
@@ -84,7 +83,7 @@ class Reports extends React.Component {
                 <h3 className={classes.cardTitle}>
 $
                   {monthlySummary.monthlyPaidOrders}
-                                </h3>
+                </h3>
               </CardHeader>
               <CardFooter stats>
                 <div className={classes.stats}>
@@ -104,7 +103,7 @@ $
                 <h3 className={classes.cardTitle}>
 $
                   {monthlySummary.monthlyPaidAccountOrders}
-                                </h3>
+                </h3>
               </CardHeader>
               <CardFooter stats>
                 <div className={classes.stats}>
@@ -124,7 +123,7 @@ $
                 <h3 className={classes.cardTitle}>
 $
                   {monthlySummary.monthlyPurchases}
-                                </h3>
+                </h3>
               </CardHeader>
               <CardFooter stats>
                 <div className={classes.stats}>
