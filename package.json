@@ -19,6 +19,7 @@
     "casl": "^1.1.0",
     "chartist": "0.10.1",
     "classnames": "^2.2.6",
+    "history": "^4.10.1",
     "jsonschema-form-for-material-ui": "^1.4.0",
     "lodash": "^4.17.11",
     "material-table": "^1.29.1",
@@ -39,7 +40,7 @@
     "react-to-print": "^2.1.2"
   },
   "scripts": {
-    "setpath":"set NODE_PATH=./src",
+    "setpath": "set NODE_PATH=./src",
     "start": "npm run -s setpath & react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
