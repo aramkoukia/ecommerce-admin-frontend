@@ -39,7 +39,8 @@
     "react-to-print": "^2.1.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "setpath":"set NODE_PATH=./src",
+    "start": "npm run -s setpath & react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
