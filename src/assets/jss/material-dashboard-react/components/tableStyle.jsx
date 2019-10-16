@@ -6,8 +6,8 @@ import {
   infoColor,
   roseColor,
   grayColor,
-  defaultFont
-} from "assets/jss/material-dashboard-react.jsx";
+  defaultFont,
+} from '../../material-dashboard-react';
 
 const tableStyle = theme => ({
   warningTableHeader: {

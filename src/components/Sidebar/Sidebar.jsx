@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Drawer from '@material-ui/core/Drawer';
@@ -13,7 +13,7 @@ import Icon from '@material-ui/core/Icon';
 import sidebarStyle from '../../assets/jss/material-dashboard-react/components/sidebarStyle';
 import HeaderLinks from '../Header/HeaderLinks';
 import Auth from '../../services/Auth';
-import LocationService from '../../services/LocationService';
+// import LocationService from '../../services/LocationService';
 
 const Sidebar = ({ ...props }) => {
   // verifies if routeName is the one active (in browser input)
