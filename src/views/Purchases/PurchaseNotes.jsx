@@ -2,10 +2,10 @@ import React from 'react';
 // @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
 // core components
-import Primary from 'components/Typography/Primary.jsx';
-import Card from 'components/Card/Card.jsx';
-import CardHeader from 'components/Card/CardHeader.jsx';
-import CardBody from 'components/Card/CardBody.jsx';
+import Primary from '../../components/Typography/Primary';
+import Card from '../../components/Card/Card';
+import CardHeader from '../../components/Card/CardHeader';
+import CardBody from '../../components/Card/CardBody';
 
 const style = {
   cardTitleWhite: {

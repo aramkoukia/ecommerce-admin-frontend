@@ -11,7 +11,7 @@ import {
   dailySalesChart,
   emailsSubscriptionChart,
   completedTasksChart,
-} from 'variables/charts';
+} from '../../variables/charts';
 import dashboardStyle from '../../assets/jss/material-dashboard-react/views/dashboardStyle';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';

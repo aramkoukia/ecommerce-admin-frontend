@@ -6,7 +6,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
-import Success from 'components/Typography/Success.jsx';
+import Success from '../../components/Typography/Success';
 
 function ccyFormat(num) {
   return num && !isNaN(num) ? `${num} $` : '';

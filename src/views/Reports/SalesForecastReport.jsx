@@ -1,6 +1,5 @@
 import React from 'react';
 import MUIDataTable from 'mui-datatables';
-import TextField from '@material-ui/core/TextField';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '../../components/CustomButtons/Button';
