@@ -15,6 +15,7 @@ import GridItem from '../../components/Grid/GridItem';
 import Button from '../../components/CustomButtons/Button';
 import CardBody from '../../components/Card/CardBody';
 import ProductService from '../../services/ProductService';
+import ProductCategoryService from '../../services/ProductCategoryService';
 
 export default class UpdateProducts extends React.Component {
   constructor(props) {
@@ -28,6 +29,7 @@ export default class UpdateProducts extends React.Component {
       snackbarColor: '',
       openDialog: false,
       productPackages: [],
+      productCategories: [],
     };
     this.handleChange = this.handleChange.bind(this);
     this.updateVariations = this.updateVariations.bind(this);
@@ -36,6 +38,7 @@ export default class UpdateProducts extends React.Component {
 
   componentDidMount() {
     this.productsList();
+    this.loadCategories();
     this.setState({
       productPackages: [],
     });
@@ -56,6 +59,12 @@ export default class UpdateProducts extends React.Component {
     this.setState({ loading: true });
     ProductService.getProducts()
       .then(data => this.setState({ products: data, loading: false }));
+  }
+
+  loadCategories() {
+    this.setState({ loading: true });
+    ProductCategoryService.getProductCategories()
+      .then(data => this.setState({ productCategories: data, loading: false }));
   }
 
   updateVariations(rowData) {
@@ -98,16 +107,32 @@ export default class UpdateProducts extends React.Component {
         },
       },
     };
+    const { productCategories } = this.state;
+    const hash = Object.fromEntries(
+      productCategories.map(e => [e.productTypeId, e.productTypeName]),
+    );
 
     const columns = [
-      { title: 'Product Type', field: 'productTypeName', hidden: true, readonly: true },
+      {
+        title: 'Category',
+        field: 'productTypeId',
+        lookup: hash,
+      },
       { title: 'Product Code', field: 'productCode', readonly: true },
       { title: 'Product Name', field: 'productName', readonly: true },
       { title: 'Purchase Price ($)', field: 'purchasePrice', type: 'numeric' },
-      { title: 'Avg Purchase Price ($)', field: 'avgPurchasePrice', type: 'numeric', readonly: true },
-      { title: 'Sales Price ($)', field: 'salesPrice', type: 'numeric', readonly: true },
-      { title: 'Van Balance', field: 'vancouverBalance', type: 'numeric', readonly: true },
-      { title: 'Abb Balance', field: 'abbotsfordBalance', type: 'numeric', readonly: true },
+      {
+        title: 'Avg Purchase Price ($)', field: 'avgPurchasePrice', type: 'numeric', readonly: true,
+      },
+      {
+        title: 'Sales Price ($)', field: 'salesPrice', type: 'numeric', readonly: true,
+      },
+      {
+        title: 'Van Balance', field: 'vancouverBalance', type: 'numeric', readonly: true,
+      },
+      {
+        title: 'Abb Balance', field: 'abbotsfordBalance', type: 'numeric', readonly: true,
+      },
       {
         title: 'Disabled',
         field: 'disabled',
@@ -117,7 +142,9 @@ export default class UpdateProducts extends React.Component {
           False: 'False',
         },
       },
-      { title: 'Product Id', field: 'productId', hidden: true, readonly: true },
+      {
+        title: 'Product Id', field: 'productId', hidden: true, readonly: true,
+      },
     ];
 
     const {
@@ -179,18 +206,17 @@ export default class UpdateProducts extends React.Component {
                   onClick: (event, rowData) => this.updateVariations(rowData),
                 }]}
               editable={{
-                onRowUpdate: (newData, oldData) =>
-                  new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                      {
-                        const index = products.indexOf(oldData);
-                        products[index] = newData;
-                        ProductService.updateProduct(newData);
-                        this.setState({ products }, () => resolve());
-                      }
-                      resolve()
-                    }, 1000)
-                  }),
+                onRowUpdate: (newData, oldData) => new Promise((resolve) => {
+                  setTimeout(() => {
+                    {
+                      const index = products.indexOf(oldData);
+                      products[index] = newData;
+                      ProductService.updateProduct(newData);
+                      this.setState({ products }, () => resolve());
+                    }
+                    resolve();
+                  }, 1000);
+                }),
               }}
             />
 
@@ -243,7 +269,7 @@ export default class UpdateProducts extends React.Component {
                     options={packageOptions}
                     title=""
                     editable={{
-                      onRowAdd: newData => new Promise((resolve, reject) => {
+                      onRowAdd: newData => new Promise((resolve) => {
                         setTimeout(() => {
                           productPackages.push(newData);
                           ProductService.createProductPackage(product.productId, newData);
@@ -251,7 +277,7 @@ export default class UpdateProducts extends React.Component {
                           resolve();
                         }, 1000);
                       }),
-                      onRowUpdate: (newData, oldData) => new Promise((resolve, reject) => {
+                      onRowUpdate: (newData, oldData) => new Promise((resolve) => {
                         setTimeout(() => {
                           {
                             const index = productPackages.indexOf(oldData);
@@ -262,7 +288,7 @@ export default class UpdateProducts extends React.Component {
                           resolve();
                         }, 1000);
                       }),
-                      onRowDelete: oldData => new Promise((resolve, reject) => {
+                      onRowDelete: oldData => new Promise((resolve) => {
                         setTimeout(() => {
                           {
                             const index = productPackages.indexOf(oldData);
@@ -279,9 +305,6 @@ export default class UpdateProducts extends React.Component {
               </Card>
             </DialogContentText>
             <DialogActions>
-              {/* <Button onClick={this.handlePasswordReset} color="primary">
-                Reset
-            </Button> */}
               <Button onClick={this.handleClose} color="secondary">
                 Close
               </Button>
@@ -292,5 +315,3 @@ export default class UpdateProducts extends React.Component {
     );
   }
 }
-
-// export default withStyles(styles)(Products);
