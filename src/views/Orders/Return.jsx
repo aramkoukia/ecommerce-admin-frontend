@@ -285,8 +285,8 @@ export class Return extends React.Component {
       originalOrderId,
       authCode,
       orderPayment,
-      restockingFeeAmount,
       restockingFeePercent,
+      restockingFeeAmount,
     };
 
     const result = await OrderService.saveOrder(returnOrder);
@@ -366,7 +366,14 @@ export class Return extends React.Component {
     }
   }
 
-  priceChanged(rows, subTotal, total, totalDiscount, restockingFeeAmount, restockingFeePercent) {
+  priceChanged(
+    rows,
+    subTotal,
+    total,
+    totalDiscount,
+    restockingFeePercent,
+    restockingFeeAmount,
+  ) {
     this.setState({
       subTotal,
       total,

@@ -89,11 +89,12 @@ export default class ReturnOrderItems extends React.Component {
       subTotal,
       total,
       totalDiscount,
-      restockingFeeAmount,
       restockingFeePercent,
+      restockingFeeAmount,
     });
 
-    priceChanged(orderRows, subTotal, total, totalDiscount, restockingFeePercent, restockingFeeAmount);
+    priceChanged(orderRows, subTotal, total, totalDiscount,
+      restockingFeePercent, restockingFeeAmount);
   }
 
   handleQuantityChanged(event) {
@@ -129,7 +130,8 @@ export default class ReturnOrderItems extends React.Component {
       restockingFeeAmount,
     });
 
-    priceChanged(orderRows, subTotal, total, totalDiscount, restockingFeePercent, restockingFeeAmount);
+    priceChanged(orderRows, subTotal, total, totalDiscount,
+      restockingFeePercent, restockingFeeAmount);
   }
 
   subtotal(items, totalDiscount) {
@@ -155,8 +157,9 @@ export default class ReturnOrderItems extends React.Component {
   render() {
     const { taxes, order } = this.props;
     const {
-      orderRows, total, subTotal, totalDiscount, restockingFeeAmount,
+      orderRows, total, subTotal, totalDiscount,
       restockingFeePercent,
+      restockingFeeAmount,
     } = this.state;
     return (
       <Card>
