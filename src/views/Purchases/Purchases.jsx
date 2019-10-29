@@ -11,15 +11,6 @@ import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import PurchaseService from '../../services/PurchaseService';
 
-// function dateFormat(dateString) {
-//   const date = new Date(dateString);
-//   const year = date.getFullYear();
-//   const month = `${date.getMonth() + 1}`.padStart(2, 0);
-//   const day = `${date.getDate()}`.padStart(2, 0);
-//   const stringDate = [day, month, year].join('/');
-//   return `${stringDate} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-// }
-
 export default class Purchases extends React.Component {
   constructor(props) {
     super(props);
@@ -38,7 +29,6 @@ export default class Purchases extends React.Component {
   }
 
   componentDidMount() {
-
     this.setState({
       showPending: true,
       showOnDelivery: true,
@@ -58,7 +48,12 @@ export default class Purchases extends React.Component {
       showArrived,
     } = this.state;
 
-    PurchaseService.getPurchaseDetails(showPending, showOnDelivery, showCustomClearance, showArrived)
+    PurchaseService.getPurchaseDetails(
+      showPending,
+      showOnDelivery,
+      showCustomClearance,
+      showArrived,
+    )
       .then(data => this.setState({ purchases: data, loading: false }));
   }
 
@@ -183,18 +178,18 @@ export default class Purchases extends React.Component {
       columnsButton: true,
       exportButton: true,
       filtering: true,
-      rowStyle: data => {
+      rowStyle: (data) => {
         if (data.remainToPay > 0) {
-           return {
-             backgroundColor: '#e5e3ff',
-           }
+          return {
+            backgroundColor: '#e5e3ff',
+          };
         }
         if (data.remainToArrive > 0) {
-           return {
-             backgroundColor: '#fde1e1',
-           }
+          return {
+            backgroundColor: '#fde1e1',
+          };
         }
-      }
+      },
     };
 
     const {
