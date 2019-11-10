@@ -6,16 +6,10 @@ import {
 } from 'react-router-dom';
 
 import './assets/css/material-dashboard-react.css';
-
 import indexRoutes from './routes/index';
 import Auth from './services/Auth';
-// import RoutePaths from "./routes/routes";
 
 const hist = createBrowserHistory();
-
-// const appInsights = require("applicationinsights");
-// appInsights.setup("877ac590-4d9c-4864-a6ac-4c414c501ac0");
-// appInsights.start();
 
 function permissionsChanged() {
   // console.log('permissionsChanged');

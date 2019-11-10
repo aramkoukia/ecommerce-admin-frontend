@@ -84,7 +84,7 @@ export class Product extends React.Component {
     this.handleTransfer = this.handleTransfer.bind(this);
     this.search = this.search.bind(this);
     this.updateTransferClicked = this.updateTransferClicked.bind(this);
-    this.handleLocationChange = this.handleLocationChange.bind(this)
+    this.handleLocationChange = this.handleLocationChange.bind(this);
   }
 
   async componentDidMount() {
@@ -356,24 +356,30 @@ export class Product extends React.Component {
                       </CardHeader>
                       <CardBody>
                         {product && (
-                        <div>
-                          {product.disabled === 'False' && (
-                          <Button color="info" onClick={this.enableDisableProducts}>
-                              Disable Product
-                          </Button>
-                          )}
-                          {product.disabled === 'True' && (
-                          <Button color="info" onClick={this.enableDisableProducts}>
-                                  Enable Product
-                          </Button>
-                          )}
-                          <Button color="info" onClick={this.updateTransferClicked}>
-                            Update / Transfer
-                          </Button>
-                          <Table
-                            tableHeaderColor="primary"
-                            tableHead={['Product Type', 'Code', 'Name', 'Sale Price', 'Van Balance', 'Van OnHold', 'Abb Balance', 'Abb OnHold', 'Disabled']}
-                            tableData={
+                          <div>
+                            <GridContainer>
+                              <GridItem xs="10">
+                                <Button color="info" onClick={this.updateTransferClicked}>
+                                    Update / Transfer
+                                </Button>
+                              </GridItem>
+                                <GridItem xs="2">
+                                {product.disabled === 'False' && (
+                                  <Button color="warning" onClick={this.enableDisableProducts}>
+                                    Disable Product
+                                </Button>
+                                )}
+                                {product.disabled === 'True' && (
+                                  <Button color="warning" onClick={this.enableDisableProducts}>
+                                    Enable Product
+                                </Button>
+                                )}
+                              </GridItem>
+                            </GridContainer>
+                            <Table
+                              tableHeaderColor="primary"
+                              tableHead={['Product Type', 'Code', 'Name', 'Sale Price', 'Van Balance', 'Van OnHold', 'Abb Balance', 'Abb OnHold', 'Disabled']}
+                              tableData={
                               [[product.productTypeName,
                                 product.productCode,
                                 product.productName,
@@ -384,8 +390,8 @@ export class Product extends React.Component {
                                 product.abbotsfordOnHold,
                                 product.disabled]]
                           }
-                          />
-                        </div>
+                            />
+                          </div>
                         ) }
                       </CardBody>
                     </Card>
@@ -545,8 +551,7 @@ export class Product extends React.Component {
                       value={transferNotes}
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={12} md={9}>
-                  </GridItem>
+                  <GridItem xs={12} sm={12} md={9} />
                   <GridItem xs={12} sm={12} md={2}>
                     <Button onClick={this.handleTransfer} color="primary">
                       Transfer
@@ -626,8 +631,7 @@ export class Product extends React.Component {
                       value={abbotsfordNotes}
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={12} md={9}>
-                  </GridItem>
+                  <GridItem xs={12} sm={12} md={9} />
                   <GridItem xs={12} sm={12} md={2}>
                     <Button onClick={this.handleUpdate} color="primary">
                       Update
