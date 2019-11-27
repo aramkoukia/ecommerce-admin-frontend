@@ -242,4 +242,15 @@ export default class ReportService {
       return false;
     }
   }
+
+  static async getInventoryValueTotalByCategory() {
+    try {
+      const response = await RestUtilities.get(
+        'reports/Inventoryvaluetotalbycategory',
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }
