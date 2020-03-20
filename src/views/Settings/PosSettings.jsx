@@ -2,6 +2,7 @@ import React from 'react';
 import Check from '@material-ui/icons/Check';
 import ReactTimeout from 'react-timeout';
 import MaterialTable from 'material-table';
+import TextField from '@material-ui/core/TextField';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
 import CardHeader from '../../components/Card/CardHeader';
@@ -18,11 +19,14 @@ class PosSettings extends React.Component {
     this.pairPos = this.pairPos.bind(this);
     this.unpairPos = this.unpairPos.bind(this);
     this.initializePos = this.initializePos.bind(this);
+    this.batchClose = this.batchClose.bind(this);
 
     this.state = {
       openSnackbar: false,
       snackbarMessage: '',
       snackbarColor: '',
+      storeId: 'monca03695',
+      terminalId: 'P1217267',
     };
   }
 
@@ -35,31 +39,127 @@ class PosSettings extends React.Component {
     this.clientPosSettingsList();
   }
 
-  pairPos() {
-    PosSettingsService.pairPos();
-    this.setState({
-      openSnackbar: true,
-      snackbarMessage: 'POS Paired!',
-      snackbarColor: '',
-    });
+  handleChange = (event) => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
+
+  async pairPos() {
+    const { storeId, terminalId, pairingToken } = this.state;
+
+    if (!pairingToken) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Please enter the Pairing Token!',
+        snackbarColor: 'Red',
+      });
+      return;
+    }
+
+    const request = {
+      storeId,
+      terminalId,
+      pairingToken,
+    };
+
+    const result = await PosSettingsService.pairPos(request);
+    let snackbarColor = 'success';
+    let snackbarMessage = 'Done!';
+    if (result.is_error) {
+      snackbarColor = 'danger';
+      snackbarMessage = result.error_content;
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage,
+        snackbarColor,
+      });
+    } else {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage,
+        snackbarColor,
+      });
+    }
   }
 
-  unpairPos() {
-    PosSettingsService.unpairPos();
-    this.setState({
-      openSnackbar: true,
-      snackbarMessage: 'POS Unpaired!',
-      snackbarColor: '',
-    });
+  async unpairPos() {
+    const { storeId, terminalId } = this.state;
+    const request = {
+      storeId,
+      terminalId,
+    };
+
+    const result = await PosSettingsService.unpairPos(request);
+    let snackbarColor = 'success';
+    let snackbarMessage = 'Done!';
+    if (result.is_error) {
+      snackbarColor = 'danger';
+      snackbarMessage = result.error_content;
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage,
+        snackbarColor,
+      });
+    } else {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage,
+        snackbarColor,
+      });
+    }
   }
 
-  initializePos() {
-    PosSettingsService.initializePos();
-    this.setState({
-      openSnackbar: true,
-      snackbarMessage: 'POS Initialized!',
-      snackbarColor: '',
-    });
+  async batchClose() {
+    const { storeId, terminalId } = this.state;
+    const request = {
+      storeId,
+      terminalId,
+    };
+
+    const result = await PosSettingsService.batchClose(request);
+    let snackbarColor = 'success';
+    let snackbarMessage = 'Done!';
+    if (result.is_error) {
+      snackbarColor = 'danger';
+      snackbarMessage = result.error_content;
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage,
+        snackbarColor,
+      });
+    } else {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage,
+        snackbarColor,
+      });
+    }
+  }
+
+  async initializePos() {
+    const { storeId, terminalId } = this.state;
+    const request = {
+      storeId,
+      terminalId,
+    };
+
+    const result = await PosSettingsService.initializePos(request);
+    let snackbarColor = 'success';
+    let snackbarMessage = 'Done!';
+    if (result.is_error) {
+      snackbarColor = 'danger';
+      snackbarMessage = result.error_content;
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage,
+        snackbarColor,
+      });
+    } else {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage,
+        snackbarColor,
+      });
+    }
   }
 
   clientPosSettingsList() {
@@ -128,6 +228,12 @@ class PosSettings extends React.Component {
       search: true,
     };
 
+    const {
+      storeId,
+      terminalId,
+      pairingToken,
+    } = this.state;
+
     return (
       <div>
         <GridContainer>
@@ -138,22 +244,60 @@ class PosSettings extends React.Component {
               </CardHeader>
               <CardBody>
                 <GridContainer>
-                  <GridItem xs={3}>
+                  <GridItem md={4}>
+                    <TextField
+                      name="storeId"
+                      label="Store ID"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={storeId}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={4}>
+                    <TextField
+                      name="terminalId"
+                      label="Terminal Id"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={terminalId}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={4}>
+                    <TextField
+                      name="pairingToken"
+                      label="Pairing Token (only needed for Pairing)"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={pairingToken}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <br />
+                  <GridItem xs={12} />
+                  <GridItem xs={2}>
                     <Button color="primary" onClick={this.initializePos}>
                       &nbsp;
                       Initialize POS
                     </Button>
                   </GridItem>
-                  <GridItem xs={3}>
+                  <GridItem xs={2}>
                     <Button color="primary" onClick={this.pairPos}>
                       &nbsp;
                         Pair POS
                     </Button>
                   </GridItem>
-                  <GridItem xs={3}>
+                  <GridItem xs={2}>
                     <Button color="warning" onClick={this.unpairPos}>
                       &nbsp;
                       Unpair POS
+                    </Button>
+                  </GridItem>
+                  <GridItem xs={2}>
+                    <Button color="warning" onClick={this.batchClose}>
+                      &nbsp;
+                      Batch Close
                     </Button>
                   </GridItem>
                 </GridContainer>
