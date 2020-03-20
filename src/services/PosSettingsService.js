@@ -2,34 +2,49 @@
 import RestUtilities from './RestUtilities';
 
 export default class PosSettingsService {
-  static async pairPos() {
+  static async pairPos(request) {
     try {
-      const response = await RestUtilities.get(
+      const response = await RestUtilities.post(
         'moneris/pair',
+        request,
       );
-      return response.content;
+      return response;
     } catch (err) {
       return false;
     }
   }
 
-  static async unpairPos() {
+  static async unpairPos(request) {
     try {
-      const response = await RestUtilities.get(
+      const response = await RestUtilities.post(
         'moneris/unpair',
+        request,
       );
-      return response.content;
+      return response;
     } catch (err) {
       return false;
     }
   }
 
-  static async initializePos() {
+  static async initializePos(request) {
     try {
-      const response = await RestUtilities.get(
+      const response = await RestUtilities.post(
         'moneris/initialize',
+        request,
       );
-      return response.content;
+      return response;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async batchClose(request) {
+    try {
+      const response = await RestUtilities.post(
+        'moneris/batchclose',
+        request,
+      );
+      return response;
     } catch (err) {
       return false;
     }
