@@ -62,6 +62,7 @@ class App extends React.Component {
     this.setState({
       portalSettings,
     });
+    document.title = portalSettings.portalTitle;
   }
 
   componentDidUpdate(e) {
