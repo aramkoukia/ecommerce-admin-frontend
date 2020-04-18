@@ -7,11 +7,11 @@ import Footer from '../../components/Footer/Footer';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import dashboardRoutes from '../../routes/dashboard';
 import dashboardStyle from '../../assets/jss/material-dashboard-react/layouts/dashboardStyle';
-import image from '../../assets/img/sidebar-2.jpg';
-import logo from '../../assets/img/logo.png';
 import Auth from '../../services/Auth';
 import AddOrder from '../../views/Orders/AddOrder';
 import { Return } from '../../views/Orders/Return';
+import PortalSettingsService from '../../services/PortalSettingsService';
+import Api from '../../services/ApiConfig';
 
 function requireAuth(nextState, replace) {
   if (!Auth.isSignedIn) {
@@ -28,6 +28,7 @@ class App extends React.Component {
     this.state = {
       mobileOpen: false,
       permissionsChanged: false,
+      portalSettings: {},
     };
     this.resizeFunction = this.resizeFunction.bind(this);
     this.permissionsChanged = this.permissionsChanged.bind(this);
@@ -55,8 +56,12 @@ class App extends React.Component {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     window.addEventListener('resize', this.resizeFunction);
+    const portalSettings = await PortalSettingsService.getPortalSettings();
+    this.setState({
+      portalSettings,
+    });
   }
 
   componentDidUpdate(e) {
@@ -74,7 +79,9 @@ class App extends React.Component {
 
   render() {
     const { classes, ...rest } = this.props;
-    const { permissionsChanged } = this.state;
+    const { permissionsChanged, portalSettings } = this.state;
+    const logoImageUrl = `${Api.apiRoot}/${portalSettings.logoImageUrl}`;
+    const sidebarImageUrl = `${Api.apiRoot}/${portalSettings.sidebarImageUrl}`;
 
     const switchRoutes = (
       <Switch>
@@ -84,18 +91,41 @@ class App extends React.Component {
           }
 
           if (prop.path === '/neworder/:id') {
-            return <Route path={prop.path} key={key} onEnter={requireAuth} render={props => (<AddOrder {...props} permissionsChanged={this.permissionsChanged} />)} />;
+            return (
+              <Route
+                path={prop.path}
+                key={key}
+                onEnter={requireAuth}
+                render={props => (
+                  <AddOrder {...props} permissionsChanged={this.permissionsChanged} />)}
+              />
+            );
           }
 
           if (prop.path === '/return/:id') {
-            return <Route path={prop.path} key={key} onEnter={requireAuth} render={props => (<Return {...props} permissionsChanged={this.permissionsChanged} />)} />;
+            return (
+              <Route
+                path={prop.path}
+                key={key}
+                onEnter={requireAuth}
+                render={props => (
+                  <Return {...props} permissionsChanged={this.permissionsChanged} />)}
+              />
+            );
           }
 
-          return <Route path={prop.path} component={prop.component} key={key} onEnter={requireAuth} />;
+          return (
+            <Route
+              path={prop.path}
+              component={prop.component}
+              key={key}
+              onEnter={requireAuth}
+            />
+          );
         })}
       </Switch>
     );
-
+    
     return (
       <div className={classes.wrapper}>
 
@@ -103,9 +133,9 @@ class App extends React.Component {
           <Sidebar
             routes={dashboardRoutes}
             permissionsChanged={permissionsChanged}
-            logoText="Lights and Parts"
-            logo={logo}
-            image={image}
+            logoText={portalSettings.portalTitle}
+            logo={logoImageUrl}
+            image={sidebarImageUrl}
             handleDrawerToggle={this.handleDrawerToggle}
             open={this.state.mobileOpen}
             color="blue"

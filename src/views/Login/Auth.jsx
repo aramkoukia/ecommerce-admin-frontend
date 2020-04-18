@@ -8,6 +8,7 @@ import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import Auth from '../../services/Auth';
+import PortalSettingsService from '../../services/PortalSettingsService';
 
 export default class SignIn extends React.Component {
   constructor(props) {
@@ -21,6 +22,7 @@ export default class SignIn extends React.Component {
         password: '',
       },
       error: null,
+      portalSettings: {},
     };
 
     this.handleSignIn = this.handleSignIn.bind(this);
@@ -31,6 +33,13 @@ export default class SignIn extends React.Component {
       return this.props.history.push('neworder/:id');
       // return this.props.history.push('reports');
     }
+  }
+
+  async componentDidMount() {
+    const portalSettings = await PortalSettingsService.getPortalSettings();
+    this.setState({
+      portalSettings,
+    });
   }
 
   handleSignIn() {
@@ -49,7 +58,7 @@ export default class SignIn extends React.Component {
   }
 
   handleKeyPress(event) {
-    if (event.key == 'Enter') {
+    if (event.key === 'Enter') {
       this.handleSignIn();
     }
   }
@@ -61,7 +70,6 @@ export default class SignIn extends React.Component {
     const userInfoUpdates = {
       [name]: value,
     };
-    // const { state } = this.state.userInfo;
     this.setState({
       userInfo: Object.assign(this.state.userInfo, userInfoUpdates),
     });
@@ -91,9 +99,13 @@ export default class SignIn extends React.Component {
     };
     const search = this.props.location.search;
     const params = new URLSearchParams(search);
-    const { loading } = this.state;
+    const {
+      loading, portalSettings, error, initialLoad,
+      userInfo,
+    } = this.state;
+
     let initialLoadContent = null;
-    if (this.state.initialLoad) {
+    if (initialLoad) {
       if (params.get('confirmed')) {
         initialLoadContent = (
           <div className="alert alert-success" role="alert">
@@ -129,13 +141,14 @@ export default class SignIn extends React.Component {
             <Card>
               <CardHeader color="primary">
                 <h4 className={styles.cardTitleWhite}>
-                  {/* <img src="../logo.png" alt="Lights and Parts" /> */}
-                  Lights and Parts - Sign In
+                  {portalSettings.portalTitle}
+                  &nbsp;
+                   - Sign In
                 </h4>
                 {initialLoadContent}
-                {this.state.error && (
+                {error && (
                   <div className="alert alert-danger" role="alert">
-                    {this.state.error}
+                    {error}
                   </div>
                 )}
               </CardHeader>
@@ -143,7 +156,7 @@ export default class SignIn extends React.Component {
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={12}>
                     <CustomInput
-                      value={this.state.userInfo.username}
+                      value={userInfo.username}
                       labelText="User Name"
                       id="username"
                       formControlProps={{
@@ -157,7 +170,7 @@ export default class SignIn extends React.Component {
                   </GridItem>
                   <GridItem xs={12} sm={12} md={12}>
                     <CustomInput
-                      value={this.state.userInfo.password}
+                      value={userInfo.password}
                       labelText="Password"
                       id="password"
                       formControlProps={{
