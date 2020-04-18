@@ -1,6 +1,5 @@
 export default class Api {
-  // static baseUrl = 'http://localhost:38812/api';
-  static apiRoot = 'https://lightsandpartsapi.azurewebsites.net';
+  static apiRoot = process.env.REACT_APP_API_ROOT || 'http://localhost:38812/api';
 
-  static baseUrl = 'https://lightsandpartsapi.azurewebsites.net/api';
+  static baseUrl = process.env.REACT_APP_BASE_API_URL || 'http://localhost:38812';
 }
