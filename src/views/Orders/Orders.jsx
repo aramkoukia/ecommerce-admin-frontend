@@ -11,6 +11,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import MaterialTable from 'material-table';
+import { StylesProvider, createGenerateClassName } from '@material-ui/styles';
 import GridItem from '../../components/Grid/GridItem';
 import Button from '../../components/CustomButtons/Button';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -19,6 +20,11 @@ import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import OrderService from '../../services/OrderService';
 import LocationService from '../../services/LocationService';
+
+const generateClassName = createGenerateClassName({
+  productionPrefix: 'mt',
+  seed: 'mt',
+});
 
 function dateFormat(dateString) {
   const date = new Date(dateString);
@@ -315,14 +321,16 @@ export default class Orders extends React.Component {
                     {loading && <CircularProgress />}
                   </GridItem>
                 </GridContainer>
-                <MaterialTable
-                  columns={columns}
-                  data={orders}
-                  detailPanel={detailPanel}
-                  options={options}
-                  onRowClick={this.rowClicked}
-                  title=""
-                />
+                <StylesProvider generateClassName={generateClassName}>
+                  <MaterialTable
+                    columns={columns}
+                    data={orders}
+                    detailPanel={detailPanel}
+                    options={options}
+                    onRowClick={this.rowClicked}
+                    title=""
+                  />
+                </StylesProvider>
               </CardBody>
             </Card>
           </GridItem>
