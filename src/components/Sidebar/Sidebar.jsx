@@ -1,6 +1,5 @@
 import React from 'react';
 import classNames from 'classnames';
-// import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Drawer from '@material-ui/core/Drawer';

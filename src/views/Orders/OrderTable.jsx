@@ -16,18 +16,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 import Success from '../../components/Typography/Success';
 
-// function calculateSalesPrice(orderRow) {
-//   orderRow.productPackages
-//     .sort(
-//       (a, b) => (
-//         (a.amountInMainPackage < b.amountInMainPackage) ? 1 : ((b.amountInMainPackage < a.amountInMainPackage) ? -1 : 0)));
-//   for (let i = 0; i < orderRow.productPackages.length; i += 1) {
-//     if (Number(orderRow.qty) >= Number(orderRow.productPackages[i].amountInMainPackage)) {
-//       return orderRow.productPackages[i].packagePrice;
-//     }
-//   }
-//   return orderRow.salesPrice;
-// }
 
 export default class OrderTable extends React.Component {
   constructor(props) {

@@ -10,10 +10,6 @@ import Auth from './services/Auth';
 
 const hist = createBrowserHistory();
 
-function permissionsChanged() {
-  // console.log('permissionsChanged');
-}
-
 ReactDOM.render(
   <HashRouter history={hist}>
     <Switch>
@@ -24,7 +20,6 @@ ReactDOM.render(
               path={prop.path}
               component={prop.component}
               key={prop.path}
-              permissionsChanged={permissionsChanged}
             />
           );
         }
@@ -33,10 +28,8 @@ ReactDOM.render(
             path={prop.path}
             component={prop.component}
             key={prop.path}
-            permissionsChanged={permissionsChanged}
           />
         );
-        // return <Redirect from={prop.path} to="/login" key={key} />;
       })}
     </Switch>
   </HashRouter>,

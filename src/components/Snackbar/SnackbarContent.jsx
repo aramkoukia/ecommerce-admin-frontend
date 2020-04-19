@@ -1,13 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-// @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
 import Snack from '@material-ui/core/SnackbarContent';
 import IconButton from '@material-ui/core/IconButton';
-// @material-ui/icons
 import Close from '@material-ui/icons/Close';
-// core components
 import snackbarContentStyle from '../../assets/jss/material-dashboard-react';
 
 function SnackbarContent({ ...props }) {
