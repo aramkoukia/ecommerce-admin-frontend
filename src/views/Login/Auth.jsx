@@ -49,7 +49,7 @@ export default class SignIn extends React.Component {
       .then((response) => {
         if (!response.is_error) {
           this.props.history.push('neworder/:id');
-          //this.props.history.push('reports');
+          // this.props.history.push('reports');
         } else {
           this.setState({ error: response.error_content.error_description });
         }
@@ -64,9 +64,9 @@ export default class SignIn extends React.Component {
   }
 
   handleInputChange(event) {
-    const target = event.target;
-    const name = target.name;
-    const value = target.value;
+    const { target } = event;
+    const { name } = target;
+    const { value } = target;
     const userInfoUpdates = {
       [name]: value,
     };
@@ -97,7 +97,7 @@ export default class SignIn extends React.Component {
         backgroundColor: 'red',
       },
     };
-    const search = this.props.location.search;
+    const { search } = this.props.location;
     const params = new URLSearchParams(search);
     const {
       loading, portalSettings, error, initialLoad,
@@ -143,7 +143,7 @@ export default class SignIn extends React.Component {
                 <h4 className={styles.cardTitleWhite}>
                   {portalSettings.portalTitle}
                   &nbsp;
-                   - Sign In
+                  - Sign In
                 </h4>
                 {initialLoadContent}
                 {error && (

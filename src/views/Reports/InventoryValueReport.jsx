@@ -53,24 +53,24 @@ export default class InventoryValueReport extends React.Component {
     this.setState({ loading: true });
     const columns = ['productId', 'productCode', 'productName', 'salesPrice', 'purchasePrice', 'vancouverBalance', 'vancouverValue', 'abbotsfordBalance', 'abbotsfordValue', 'totalValue'];
     ReportService.getInventoryValue()
-      .then(results => results.map(row => columns.map(column => (row[column] === null ? '' : row[column]))))
-      .then(data => this.setState({ products: data, loading: false }));
+      .then((results) => results.map((row) => columns.map((column) => (row[column] === null ? '' : row[column]))))
+      .then((data) => this.setState({ products: data, loading: false }));
   }
 
   inventoryValueTotal() {
     this.setState({ loading: true });
     const columns = ['locationName', 'valueBySalePrice', 'valueByPurchasePrice'];
     ReportService.getInventoryValueTotal()
-      .then(results => results.map(row => columns.map(column => (row[column] === null ? '' : row[column]))))
-      .then(data => this.setState({ inventoryValueTotal: data, loading: false }));
+      .then((results) => results.map((row) => columns.map((column) => (row[column] === null ? '' : row[column]))))
+      .then((data) => this.setState({ inventoryValueTotal: data, loading: false }));
   }
 
   inventoryValueTotalByCategory() {
     this.setState({ loading: true });
     const columns = ['locationName', 'categoryName', 'valueBySalePrice', 'valueByPurchasePrice'];
     ReportService.getInventoryValueTotalByCategory()
-      .then(results => results.map(row => columns.map(column => (row[column] === null ? '' : row[column]))))
-      .then(data => this.setState({ inventoryValueTotalByCategory: data, loading: false }));
+      .then((results) => results.map((row) => columns.map((column) => (row[column] === null ? '' : row[column]))))
+      .then((data) => this.setState({ inventoryValueTotalByCategory: data, loading: false }));
   }
 
   render() {

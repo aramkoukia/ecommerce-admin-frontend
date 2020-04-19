@@ -59,13 +59,13 @@ export default class CustomerStoreCredit extends React.Component {
     const columns = ['amount', 'notes', 'createdDate', 'createdByUserId'];
 
     CustomerStoreCreditService.getCustomerStoreCredits(customerId)
-      .then(results => results.map(row => columns.map((column) => {
+      .then((results) => results.map((row) => columns.map((column) => {
         if (column === 'createdDate') {
           return dateFormat(row[column]);
         }
         return row[column] || '';
       })))
-      .then(data => this.setState({ customerStoreCredits: data, loading: false }));
+      .then((data) => this.setState({ customerStoreCredits: data, loading: false }));
 
     this.setState({
       customer,

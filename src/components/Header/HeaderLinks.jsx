@@ -75,7 +75,7 @@ class HeaderLinks extends React.Component {
   }
 
   handleToggle = () => {
-    this.setState(state => ({ open: !state.open }));
+    this.setState((state) => ({ open: !state.open }));
   }
 
   handleClose = (event) => {
@@ -141,9 +141,7 @@ class HeaderLinks extends React.Component {
         openPasswordDialog: false,
       });
     } else {
-      const message = result.errors.map((error) => {
-        return error.description;
-      }).join('. ');
+      const message = result.errors.map((error) => error.description).join('. ');
 
       this.setState({
         openSnackbar: true,
@@ -191,9 +189,7 @@ class HeaderLinks extends React.Component {
         openPasscodeDialog: false,
       });
     } else {
-      const message = result.errors.map((error) => {
-        return error;
-      }).join('. ');
+      const message = result.errors.map((error) => error).join('. ');
 
       this.setState({
         openSnackbar: true,
@@ -206,7 +202,7 @@ class HeaderLinks extends React.Component {
 
   render() {
     const { classes, locations } = this.props;
-    const { 
+    const {
       locationId, open, openPasscodeDialog, openPasswordDialog, newPassword, newPasswordRepeat, newPasscode, newPasscodeRepeat,
       snackbarColor,
       snackbarMessage,
@@ -236,152 +232,152 @@ class HeaderLinks extends React.Component {
                 )}
               >
                 { locations && (
-                  locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))
-              }
+                  locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))}
               </Select>
             </FormControl>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        Hello&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            Hello&nbsp;
             { Auth.getUser() }
-              !
-        &nbsp;&nbsp;&nbsp;&nbsp;
+            !
+            &nbsp;&nbsp;&nbsp;&nbsp;
             <Button
               buttonRef={(node) => {
-            this.anchorEl = node;
-          }}
+                this.anchorEl = node;
+              }}
               aria-owns={open ? 'menu-list-grow' : undefined}
               aria-haspopup="true"
               onClick={this.handleToggle}
             >
               <Person />
-            Profile
+              Profile
             </Button>
             <Popper open={open} anchorEl={this.anchorEl} transition disablePortal>
               {({ TransitionProps, placement }) => (
-              <Grow
-                {...TransitionProps}
-                id="menu-list-grow"
-                style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-              >
-                <Paper>
-                  <ClickAwayListener onClickAway={this.handleClose}>
-                    <MenuList>
-                      <MenuItem onClick={this.resetPassword}>
-                        <ListItemIcon>
+                <Grow
+                  {...TransitionProps}
+                  id="menu-list-grow"
+                  style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+                >
+                  <Paper>
+                    <ClickAwayListener onClickAway={this.handleClose}>
+                      <MenuList>
+                        <MenuItem onClick={this.resetPassword}>
+                          <ListItemIcon>
                             <Lock />
                           </ListItemIcon>
                           Reset Password
-                      </MenuItem>
-                      <MenuItem onClick={this.resetPasscode}>
-                        <ListItemIcon>
-                        <SettingsBackupRestore />
-                      </ListItemIcon>
-                      Reset Passcode
-                      </MenuItem>
-                      <MenuItem onClick={this.signOut}>
-                        <ListItemIcon>
-                        <PowerSettingsNew />
-                      </ListItemIcon>
-                        Logout
-                      </MenuItem>
-                    </MenuList>
-                  </ClickAwayListener>
-                </Paper>
-              </Grow>
-            )}
+                        </MenuItem>
+                        <MenuItem onClick={this.resetPasscode}>
+                          <ListItemIcon>
+                            <SettingsBackupRestore />
+                          </ListItemIcon>
+                          Reset Passcode
+                        </MenuItem>
+                        <MenuItem onClick={this.signOut}>
+                          <ListItemIcon>
+                            <PowerSettingsNew />
+                          </ListItemIcon>
+                          Logout
+                        </MenuItem>
+                      </MenuList>
+                    </ClickAwayListener>
+                  </Paper>
+                </Grow>
+              )}
             </Popper>
             <Dialog open={openPasswordDialog}>
-            <DialogContent>
-            <Card>
-              <CardHeader color="info">
-                <div>Reset your login Password</div>
-              </CardHeader>
-              <CardBody>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={12}>
-                <TextField
-                  name="newPassword"
-                  label="New Password"
-                  type="password"
-                  onChange={this.handleChange}
-                  value={newPassword}
-                />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={12}>
-                <TextField
-                  name="newPasswordRepeat"
-                  label="Repeat Password"
-                  type="password"
-                  onChange={this.handleChange}
-                  value={newPasswordRepeat}
-                />                                
-                </GridItem>
-              </GridContainer>
-              </CardBody>
-            </Card>
-          </DialogContent>
-            <DialogActions>
-            <Button onClick={this.handlePasswordReset} color="primary">
-              Reset
-            </Button>
-            <Button onClick={this.handleClose} color="secondary">
-              Cancel
-            </Button>            
-          </DialogActions>
-          </Dialog>
+              <DialogContent>
+                <Card>
+                  <CardHeader color="info">
+                    <div>Reset your login Password</div>
+                  </CardHeader>
+                  <CardBody>
+                    <GridContainer>
+                      <GridItem xs={12} sm={12} md={12}>
+                        <TextField
+                          name="newPassword"
+                          label="New Password"
+                          type="password"
+                          onChange={this.handleChange}
+                          value={newPassword}
+                        />
+                      </GridItem>
+                      <GridItem xs={12} sm={12} md={12}>
+                        <TextField
+                          name="newPasswordRepeat"
+                          label="Repeat Password"
+                          type="password"
+                          onChange={this.handleChange}
+                          value={newPasswordRepeat}
+                        />
+                      </GridItem>
+                    </GridContainer>
+                  </CardBody>
+                </Card>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={this.handlePasswordReset} color="primary">
+                  Reset
+                </Button>
+                <Button onClick={this.handleClose} color="secondary">
+                  Cancel
+                </Button>
+              </DialogActions>
+            </Dialog>
 
-          <Dialog open={openPasscodeDialog}>
-            <DialogContent>
-            <Card>
-              <CardHeader color="info">
-                <div>Reset your Passcode</div>
-              </CardHeader>
-              <CardBody>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={12}>
-                <TextField
-                  name="newPasscode"
-                  label="New Passcode"
-                  type="password"
-                  onChange={this.handleChange}
-                  value={newPasscode}
-                />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={12}>
-                <TextField
-                  name="newPasscodeRepeat"
-                  label="Repeat Passcode"
-                  type="password"
-                  onChange={this.handleChange}
-                  value={newPasscodeRepeat}
-                />                                
-                </GridItem>
-              </GridContainer>
-              </CardBody>
-            </Card>
-          </DialogContent>
-            <DialogActions>
-            <Button onClick={this.handlePasscodeReset} color="primary">
-              Reset
-            </Button>
-            <Button onClick={this.handleClose} color="secondary">
-              Cancel
-            </Button>            
-          </DialogActions>
-          </Dialog>          
-          <Portal>
-          <Snackbar
-          place="tl"
-          color={snackbarColor}
-          icon={Check}
-          message={snackbarMessage}
-          open={openSnackbar}
-          closeNotification={() => this.setState({ openSnackbar: false })}
-          close
-        />
-        </Portal>
+            <Dialog open={openPasscodeDialog}>
+              <DialogContent>
+                <Card>
+                  <CardHeader color="info">
+                    <div>Reset your Passcode</div>
+                  </CardHeader>
+                  <CardBody>
+                    <GridContainer>
+                      <GridItem xs={12} sm={12} md={12}>
+                        <TextField
+                          name="newPasscode"
+                          label="New Passcode"
+                          type="password"
+                          onChange={this.handleChange}
+                          value={newPasscode}
+                        />
+                      </GridItem>
+                      <GridItem xs={12} sm={12} md={12}>
+                        <TextField
+                          name="newPasscodeRepeat"
+                          label="Repeat Passcode"
+                          type="password"
+                          onChange={this.handleChange}
+                          value={newPasscodeRepeat}
+                        />
+                      </GridItem>
+                    </GridContainer>
+                  </CardBody>
+                </Card>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={this.handlePasscodeReset} color="primary">
+                  Reset
+                </Button>
+                <Button onClick={this.handleClose} color="secondary">
+                  Cancel
+                </Button>
+              </DialogActions>
+            </Dialog>
+            <Portal>
+              <Snackbar
+                place="tl"
+                color={snackbarColor}
+                icon={Check}
+                message={snackbarMessage}
+                open={openSnackbar}
+                closeNotification={() => this.setState({ openSnackbar: false })}
+                close
+              />
+            </Portal>
           </div>
-        ) : (<div />)}
+        ) : (<div />)
+}
       </div>
     );
   }

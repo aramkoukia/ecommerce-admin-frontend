@@ -60,7 +60,7 @@ export default class Roles extends React.Component {
       });
   }
 
-  handlePermissionToggle = value => () => {
+  handlePermissionToggle = (value) => () => {
     const { permissionsChecked } = this.state;
     const currentIndex = permissionsChecked.indexOf(value);
     const newChecked = [...permissionsChecked];
@@ -92,7 +92,7 @@ export default class Roles extends React.Component {
 
     const roleInfo = {
       roleName: selectedRow[0],
-      claims: permissionsChecked.filter(item => item !== 0),
+      claims: permissionsChecked.filter((item) => item !== 0),
     };
 
     const result = await RoleService.updateRolePermissions(roleInfo);
@@ -125,13 +125,13 @@ export default class Roles extends React.Component {
   rolesList() {
     const columns = ['name'];
     RoleService.getRoles()
-      .then(results => results.map(row => columns.map(column => (row[column] === null ? '' : row[column]))))
-      .then(data => this.setState({ roles: data }));
+      .then((results) => results.map((row) => columns.map((column) => (row[column] === null ? '' : row[column]))))
+      .then((data) => this.setState({ roles: data }));
   }
 
   permissionsList() {
     RoleService.getPermissions()
-      .then(data => this.setState({ permissions: data }));
+      .then((data) => this.setState({ permissions: data }));
   }
 
   render() {
@@ -216,7 +216,7 @@ export default class Roles extends React.Component {
             <DialogTitle id="form-dialog-title">Role Update</DialogTitle>
             <DialogContent>
               <DialogContentText>
-              Role Name:
+                Role Name:
                 {' '}
                 { selectedRow && (selectedRow[0]) }
                 <br />
@@ -230,7 +230,7 @@ export default class Roles extends React.Component {
                     <CardBody>
                       { permissions && (
                       <List>
-                        {permissions.map(permission => (
+                        {permissions.map((permission) => (
                           <ListItem key={permission} permission={undefined} dense button onClick={this.handlePermissionToggle(permission)}>
                             <Checkbox
                               checked={permissionsChecked.includes(permission)}
@@ -249,10 +249,10 @@ export default class Roles extends React.Component {
             </DialogContent>
             <DialogActions>
               <Button onClick={this.handleClose} color="info">
-              Cancel
+                Cancel
               </Button>
               <Button onClick={this.handleUpdate} color="primary">
-              Update
+                Update
               </Button>
             </DialogActions>
           </Dialog>

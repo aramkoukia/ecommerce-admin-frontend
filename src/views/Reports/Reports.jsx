@@ -30,18 +30,17 @@ class Reports extends React.Component {
   }
 
   componentDidMount() {
-
     this.setState({ loading: true });
 
     ReportService.getMonthlySummary()
-      .then(result => this.setState({ monthlySummary: result[0] }));
+      .then((result) => this.setState({ monthlySummary: result[0] }));
 
 
     ReportService.getMonthlySales()
       .then((result) => {
         const monthlySalesData = {
-          labels: result.map(item => item.label),
-          series: [result.map(item => item.value)],
+          labels: result.map((item) => item.label),
+          series: [result.map((item) => item.value)],
         };
         this.setState({ monthlySalesData, loading: false });
       });
@@ -49,8 +48,8 @@ class Reports extends React.Component {
     ReportService.getMonthlyPurchases()
       .then((result) => {
         const monthlyPurchaseData = {
-          labels: result.map(item => item.label),
-          series: [result.map(item => item.value)],
+          labels: result.map((item) => item.label),
+          series: [result.map((item) => item.value)],
         };
         this.setState({ monthlyPurchaseData });
       });
@@ -58,8 +57,8 @@ class Reports extends React.Component {
     ReportService.getDailySales()
       .then((result) => {
         const dailySalesData = {
-          labels: result.map(item => item.label),
-          series: [result.map(item => item.value)],
+          labels: result.map((item) => item.label),
+          series: [result.map((item) => item.value)],
         };
         this.setState({ dailySalesData });
       });
@@ -82,9 +81,9 @@ class Reports extends React.Component {
                 </CardIcon>
                 <p className={classes.cardCategory}>Monthly Orders (Paid only)</p>
                 <h3 className={classes.cardTitle}>
-$
+                  $
                   {monthlySummary.monthlyPaidOrders}
-                                </h3>
+                </h3>
               </CardHeader>
               <CardFooter stats>
                 <div className={classes.stats}>
@@ -102,9 +101,9 @@ $
                 </CardIcon>
                 <p className={classes.cardCategory}>Monthly Orders (Paid/Account)</p>
                 <h3 className={classes.cardTitle}>
-$
+                  $
                   {monthlySummary.monthlyPaidAccountOrders}
-                                </h3>
+                </h3>
               </CardHeader>
               <CardFooter stats>
                 <div className={classes.stats}>
@@ -122,9 +121,9 @@ $
                 </CardIcon>
                 <p className={classes.cardCategory}>Monthly Purchases</p>
                 <h3 className={classes.cardTitle}>
-$
+                  $
                   {monthlySummary.monthlyPurchases}
-                                </h3>
+                </h3>
               </CardHeader>
               <CardFooter stats>
                 <div className={classes.stats}>

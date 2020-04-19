@@ -97,7 +97,7 @@ class App extends React.Component {
                 path={prop.path}
                 key={key}
                 onEnter={requireAuth}
-                render={props => (
+                render={(props) => (
                   <AddOrder {...props} permissionsChanged={this.permissionsChanged} />)}
               />
             );
@@ -109,7 +109,7 @@ class App extends React.Component {
                 path={prop.path}
                 key={key}
                 onEnter={requireAuth}
-                render={props => (
+                render={(props) => (
                   <Return {...props} permissionsChanged={this.permissionsChanged} />)}
               />
             );
@@ -126,7 +126,7 @@ class App extends React.Component {
         })}
       </Switch>
     );
-    
+
     return (
       <div className={classes.wrapper}>
 
@@ -142,8 +142,7 @@ class App extends React.Component {
             color="blue"
             {...rest}
           />
-        ) : <div />
-        }
+        ) : <div />}
 
         <div className={classes.mainPanel} ref="mainPanel">
 

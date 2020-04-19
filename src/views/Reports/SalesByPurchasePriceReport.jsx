@@ -66,7 +66,7 @@ export default class SalesByPurchasePriceReport extends React.Component {
     },
   })
 
-  handleChange = name => (event) => {
+  handleChange = (name) => (event) => {
     this.setState({
       [name]: event.target.value,
     });
@@ -76,7 +76,7 @@ export default class SalesByPurchasePriceReport extends React.Component {
     const { fromDate, toDate } = this.state;
     const columns = ['locationName', 'status', 'totalBySalePrice', 'totalByPurchasePrice', 'transactions'];
     ReportService.getSalesByPurchasePriceReport(fromDate, toDate)
-      .then(results => results.map(row => columns.map(column => row[column] || '')))
+      .then((results) => results.map((row) => columns.map((column) => row[column] || '')))
       .then((data) => {
         this.setState({ reportData: data });
         this.inventoryValueTotal();
@@ -88,16 +88,16 @@ export default class SalesByPurchasePriceReport extends React.Component {
     this.setState({ loading: true });
     const columns = ['locationName', 'valueBySalePrice', 'valueByPurchasePrice'];
     ReportService.getInventoryValueTotal()
-      .then(results => results.map(row => columns.map(column => (row[column] === null ? '' : row[column]))))
-      .then(data => this.setState({ inventoryValueTotal: data, loading: false }));
+      .then((results) => results.map((row) => columns.map((column) => (row[column] === null ? '' : row[column]))))
+      .then((data) => this.setState({ inventoryValueTotal: data, loading: false }));
   }
 
   salesByPurchasePriceDetail(fromDate, toDate) {
     this.setState({ loading: true });
     const columns = ['locationName', 'productCode', 'productName', 'amount', 'salesPrice', 'purchasePrice', 'totalBySalePrice', 'totalByPurchasePrice'];
     ReportService.getSalesByPurchasePriceDetailReport(fromDate, toDate)
-      .then(results => results.map(row => columns.map(column => (row[column] === null ? '' : row[column]))))
-      .then(data => this.setState({ salesByPurchasePriceDetailData: data, loading: false }));
+      .then((results) => results.map((row) => columns.map((column) => (row[column] === null ? '' : row[column]))))
+      .then((data) => this.setState({ salesByPurchasePriceDetailData: data, loading: false }));
   }
 
   render() {

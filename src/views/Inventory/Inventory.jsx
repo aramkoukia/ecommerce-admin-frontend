@@ -235,8 +235,8 @@ export default class Inventory extends React.Component {
     this.setState({ loading: true });
     const columns = ['productId', 'productCode', 'productName', 'salesPrice', 'vancouverBalance', 'abbotsfordBalance', 'vancouverBinCode', 'abbotsfordBinCode'];
     ProductService.getProducts()
-      .then(results => results.map(row => columns.map(column => (row[column] === null ? '' : row[column]))))
-      .then(data => this.setState({ products: data, loading: false }));
+      .then((results) => results.map((row) => columns.map((column) => (row[column] === null ? '' : row[column]))))
+      .then((data) => this.setState({ products: data, loading: false }));
   }
 
   render() {
@@ -427,8 +427,7 @@ export default class Inventory extends React.Component {
                         }}
                       >
                         { locations && (
-                          locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))
-                      }
+                          locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))}
                       </Select>
                     </FormControl>
                   </GridItem>
@@ -444,8 +443,7 @@ export default class Inventory extends React.Component {
                         }}
                       >
                         { locations && (
-                          locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))
-                    }
+                          locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))}
                       </Select>
                     </FormControl>
                   </GridItem>

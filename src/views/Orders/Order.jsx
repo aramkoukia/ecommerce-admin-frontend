@@ -117,7 +117,7 @@ export class Order extends React.Component {
   async getLocations() {
     const { locations } = this.state;
     LocationService.getLocationsForUser()
-      .then(results => this.setState({
+      .then((results) => this.setState({
         locations: [...locations, ...results],
       }));
   }
@@ -583,8 +583,8 @@ export class Order extends React.Component {
               <Card>
                 <CardHeader color="primary">
                   <div>
-                  Order #
-                  &nbsp;
+                    Order #
+                    &nbsp;
                     <b>{order.orderId}</b>
                   &nbsp;&nbsp;
                     {dateFormat(order.orderDate)}
@@ -605,15 +605,15 @@ export class Order extends React.Component {
                         <GridItem>
                           <Button color="warning" disabled={loading} onClick={this.handleEmailOrderDialog}>
                             <Email />
-                          &nbsp;
-                          Email
+                            &nbsp;
+                            Email
                           </Button>
                         </GridItem>
                         <GridItem>
                           <Button color="warning" disabled={loading} onClick={this.printOrder}>
                             <Print />
-                          &nbsp;
-                          Print
+                            &nbsp;
+                            Print
                           </Button>
                         </GridItem>
 
@@ -622,8 +622,8 @@ export class Order extends React.Component {
                         <GridItem>
                           <Button color="warning" disabled={loading} onClick={this.packingOrder}>
                             <Print />
-                              &nbsp;
-                              Packing Slip
+                            &nbsp;
+                            Packing Slip
                           </Button>
                         </GridItem>
                         )}
@@ -882,9 +882,10 @@ export class Order extends React.Component {
                               + Number(creditDebitAmount)
                               + Number(chequeAmount)
                               + Number(storeCreditAmount)
-                              + Number(paypalAmazonUsdAmount)).toFixed(2)}
+                              + Number(paypalAmazonUsdAmount)).toFixed(2)
+}
                           {' '}
-$
+                          $
                         </h5>
                       </GridItem>
                       <GridItem md={6}>
@@ -894,7 +895,7 @@ $
                         <h5>
                           {order.total && order.total.toFixed(2)}
                           {' '}
-$
+                          $
                         </h5>
                       </GridItem>
                     </GridContainer>
@@ -939,10 +940,10 @@ $
             </DialogContent>
             <DialogActions>
               <Button onClick={this.handleEmailDialogClose} color="info">
-              Cancel
+                Cancel
               </Button>
               <Button onClick={this.emailOrder} color="primary">
-              Send
+                Send
               </Button>
             </DialogActions>
           </Dialog>
@@ -974,8 +975,7 @@ $
                       }}
                     >
                       {locations && (
-                        locations.map((l, key) => (l.locationId !== order.locationId && <MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))
-                      }
+                        locations.map((l, key) => (l.locationId !== order.locationId && <MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))}
                     </Select>
                   </FormControl>
                 </CardBody>

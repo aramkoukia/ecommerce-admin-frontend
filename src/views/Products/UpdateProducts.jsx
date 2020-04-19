@@ -58,18 +58,18 @@ export default class UpdateProducts extends React.Component {
   productsList() {
     this.setState({ loading: true });
     ProductService.getProducts()
-      .then(data => this.setState({ products: data, loading: false }));
+      .then((data) => this.setState({ products: data, loading: false }));
   }
 
   loadCategories() {
     this.setState({ loading: true });
     ProductCategoryService.getProductCategories()
-      .then(data => this.setState({ productCategories: data, loading: false }));
+      .then((data) => this.setState({ productCategories: data, loading: false }));
   }
 
   updateVariations(rowData) {
     ProductService.getProductPackages(rowData.productId)
-      .then(data => this.setState({ productPackages: data }));
+      .then((data) => this.setState({ productPackages: data }));
 
     this.setState({
       openDialog: true,
@@ -109,7 +109,7 @@ export default class UpdateProducts extends React.Component {
     };
     const { productCategories } = this.state;
     const hash = Object.fromEntries(
-      productCategories.map(e => [e.productTypeId, e.productTypeName]),
+      productCategories.map((e) => [e.productTypeId, e.productTypeName]),
     );
 
     const columns = [
@@ -269,7 +269,7 @@ export default class UpdateProducts extends React.Component {
                     options={packageOptions}
                     title=""
                     editable={{
-                      onRowAdd: newData => new Promise((resolve) => {
+                      onRowAdd: (newData) => new Promise((resolve) => {
                         setTimeout(() => {
                           productPackages.push(newData);
                           ProductService.createProductPackage(product.productId, newData);
@@ -288,7 +288,7 @@ export default class UpdateProducts extends React.Component {
                           resolve();
                         }, 1000);
                       }),
-                      onRowDelete: oldData => new Promise((resolve) => {
+                      onRowDelete: (oldData) => new Promise((resolve) => {
                         setTimeout(() => {
                           {
                             const index = productPackages.indexOf(oldData);

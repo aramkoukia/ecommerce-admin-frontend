@@ -28,8 +28,8 @@ export default class Customers extends React.Component {
     const columns = ['customerCode', 'companyName', 'firstName', 'lastName', 'email', 'accountBalance', 'creditLimit', 'pstNumber', 'storeCredit', 'phoneNumber', 'pstExempt', 'isDisabled'];
     const showDisabled = true;
     CustomerService.getCustomersWithBalance(showDisabled)
-      .then(results => results.map(row => columns.map(column => row[column] || '')))
-      .then(data => this.setState({ customers: data, loading: false }));
+      .then((results) => results.map((row) => columns.map((column) => row[column] || '')))
+      .then((data) => this.setState({ customers: data, loading: false }));
   }
 
   rowClicked(rowData) {

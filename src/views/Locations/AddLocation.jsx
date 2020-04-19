@@ -39,7 +39,7 @@ class AddLocation extends React.Component {
       snackbarColor: 'success',
     });
 
-    return this.props.setTimeout(this.props.history.push(`/locations`, 2000));
+    return this.props.setTimeout(this.props.history.push('/locations', 2000));
   }
 
   render() {

@@ -27,7 +27,7 @@ export class ErrorPage extends React.Component {
         <p>{this.getErrorMessage()}</p>
         {code && (
         <p>
-Code:
+          Code:
           {' '}
           {code}
         </p>

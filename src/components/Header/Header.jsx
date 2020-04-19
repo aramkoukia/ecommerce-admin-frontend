@@ -47,7 +47,7 @@ class Header extends React.Component {
   async getLocations() {
     if (Auth.isSignedIn()) {
       LocationService.getLocationsForUser()
-        .then(results => this.setState({
+        .then((results) => this.setState({
           locations: results,
           isLoading: false,
         }));

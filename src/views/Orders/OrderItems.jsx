@@ -57,7 +57,7 @@ function OrderItems(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {order.orderDetail.map(row => (
+            {order.orderDetail.map((row) => (
               <TableRow key={row.productId}>
                 <TableCell>
                   {row.product.productName}
@@ -84,7 +84,7 @@ function OrderItems(props) {
                 </TableRow>
                 <TableRow>
                   <TableCell colspan="2">Total Discount</TableCell>
-                  <TableCell numeric>{ccyFormat(order.orderDetail.map(item => item.totalDiscount).reduce((prev, next) => prev + next, 0))}</TableCell>
+                  <TableCell numeric>{ccyFormat(order.orderDetail.map((item) => item.totalDiscount).reduce((prev, next) => prev + next, 0))}</TableCell>
                 </TableRow>
                 {order.status === 'Return' && (
                 <TableRow>
@@ -92,7 +92,7 @@ function OrderItems(props) {
                   <TableCell numeric>
                     <b>
                       {order.restockingFeePercent}
-                        %
+                      %
                     </b>
                   </TableCell>
                   <TableCell numeric>
@@ -102,7 +102,7 @@ function OrderItems(props) {
                   </TableCell>
                 </TableRow>
                 )}
-                {order.orderTax.map(tax => (
+                {order.orderTax.map((tax) => (
                   <TableRow>
                     <TableCell>{tax.tax.taxName}</TableCell>
                     <TableCell numeric>{`${(tax.tax.percentage).toFixed(0)} %`}</TableCell>
@@ -119,7 +119,7 @@ function OrderItems(props) {
         </GridContainer>
         <Table className={classes.table}>
           <TableBody>
-            {order.orderPayment && order.orderPayment.map(orderPayment => (
+            {order.orderPayment && order.orderPayment.map((orderPayment) => (
               <TableRow>
                 <TableCell><h4>Payment</h4></TableCell>
                 <TableCell><h4>{dateFormat(orderPayment.paymentDate)}</h4></TableCell>

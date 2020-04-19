@@ -54,7 +54,7 @@ export default class Purchases extends React.Component {
       showCustomClearance,
       showArrived,
     )
-      .then(data => this.setState({ purchases: data, loading: false }));
+      .then((data) => this.setState({ purchases: data, loading: false }));
   }
 
   handleCheckChange(event) {
@@ -66,7 +66,7 @@ export default class Purchases extends React.Component {
   }
 
   rowClicked(_event, rowData) {
-    window.open(`/purchase/${rowData.purchaseId}`, "_blank")
+    window.open(`/purchase/${rowData.purchaseId}`, '_blank');
   }
 
   render() {

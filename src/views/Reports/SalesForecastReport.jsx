@@ -22,7 +22,7 @@ function dateFormat(dateString) {
 Date.prototype.addHours = function (h) {
   this.setHours(this.getHours() + h);
   return this;
-}
+};
 
 export default class SalesForecastReport extends React.Component {
   constructor(props) {
@@ -67,7 +67,7 @@ export default class SalesForecastReport extends React.Component {
     },
   })
 
-  handleChange = name => (event) => {
+  handleChange = (name) => (event) => {
     this.setState({
       [name]: event.target.value,
     });
@@ -81,8 +81,8 @@ export default class SalesForecastReport extends React.Component {
     const { fromDate, toDate } = this.state;
     const columns = ['productCode', 'productName', 'last1Month', 'last3Month', 'last6Month', 'last12Month', 'last12MonthAverage', 'balance', 'needsPurchase'];
     ReportService.getSalesForecastReport(fromDate, toDate)
-      .then(results => results.map(row => columns.map(column => row[column] || '')))
-      .then(data => this.setState({ reportData: data, loading: false }));
+      .then((results) => results.map((row) => columns.map((column) => row[column] || '')))
+      .then((data) => this.setState({ reportData: data, loading: false }));
   }
 
   render() {

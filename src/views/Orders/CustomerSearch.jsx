@@ -54,7 +54,7 @@ function renderSuggestion(suggestion, { query, isHighlighted }) {
   );
 }
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     height: 80,
     flexGrow: 1,
@@ -148,7 +148,7 @@ class CustomerSearch extends React.Component {
     });
   };
 
-  handleChange = name => (event, { newValue }) => {
+  handleChange = (name) => (event, { newValue }) => {
     // this.props.CustomerChanged(newValue);
     this.setState({
       [name]: newValue,
@@ -189,7 +189,7 @@ class CustomerSearch extends React.Component {
             suggestionsList: classes.suggestionsList,
             suggestion: classes.suggestion,
           }}
-          renderSuggestionsContainer={options => (
+          renderSuggestionsContainer={(options) => (
             <Popper anchorEl={this.popperNode} open={Boolean(options.children)}>
               <Paper
                 square

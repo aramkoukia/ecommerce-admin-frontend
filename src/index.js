@@ -21,7 +21,7 @@ ReactDOM.render(
       {indexRoutes.map((prop, key) => {
         if (Auth.isSignedIn()) {
           return (
-            <Route path={prop.path} component={prop.component} key={key}  permissionsChanged={permissionsChanged} />
+            <Route path={prop.path} component={prop.component} key={key} permissionsChanged={permissionsChanged} />
           );
         }
         return <Route path={prop.path} component={prop.component} key={key} permissionsChanged={permissionsChanged} />;

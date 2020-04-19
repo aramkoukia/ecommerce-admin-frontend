@@ -125,8 +125,7 @@ const Sidebar = ({ ...props }) => {
           {brand}
           <div className={classes.sidebarWrapper}>
             {locations
-            && (<HeaderLinks locations={locations} location={locations[0]} />)
-            }
+            && (<HeaderLinks locations={locations} location={locations[0]} />)}
             {links}
           </div>
           {image !== undefined ? (

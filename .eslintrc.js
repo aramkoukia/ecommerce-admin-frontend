@@ -12,11 +12,25 @@ module.exports = {
       jsx: true,
     },
   },
-  plugins: ['react'],
+  plugins: [
+    'react',
+    'react-hooks',
+  ],
   extends: [
     'airbnb',
   ],
   rules: {
     'linebreak-style': 0,
+    'react/jsx-filename-extension': 'off',
+    'react/forbid-prop-types': 'off',
+    'react/state-in-constructor': [
+      'error',
+      'never',
+    ],
+    'no-bitwise': 'off',
+    'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
+    'react-hooks/exhaustive-deps': 'error', // Checks effect dependencies
+    // 'react/jsx-props-no-spreading': 'off',
+    // 'react/require-default-props': 'off',
   },
 };

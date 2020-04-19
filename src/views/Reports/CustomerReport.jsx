@@ -22,7 +22,7 @@ function dateFormat(dateString) {
 Date.prototype.addHours = function (h) {
   this.setHours(this.getHours() + h);
   return this;
-}
+};
 
 export default class CustomerReport extends React.Component {
   constructor(props) {
@@ -66,7 +66,7 @@ export default class CustomerReport extends React.Component {
     },
   })
 
-  handleChange = name => (event) => {
+  handleChange = (name) => (event) => {
     this.setState({
       [name]: event.target.value,
     });
@@ -76,23 +76,23 @@ export default class CustomerReport extends React.Component {
     const { fromDate, toDate } = this.state;
     const customerPaidColumns = ['orderId', 'poNumber', 'total', 'status', 'orderDate', 'paymentAmount', 'paymentTypeName', 'companyName', 'address', 'city', 'province', 'postalCode'];
     ReportService.getCustomerPaid(fromDate, toDate)
-      .then(results => results.map(row => customerPaidColumns.map((column) => {
+      .then((results) => results.map((row) => customerPaidColumns.map((column) => {
         if (column === 'orderDate') {
           return dateFormat(row[column]);
         }
         return row[column] || '';
       })))
-      .then(data => this.setState({ customerPaidData: data }));
+      .then((data) => this.setState({ customerPaidData: data }));
 
     const customerUnPaidColumns = ['orderId', 'poNumber', 'total', 'status', 'orderDate', 'dueDate', 'companyName', 'address', 'city', 'province', 'postalCode'];
     ReportService.getCustomerUnPaid(fromDate, toDate)
-      .then(results => results.map(row => customerUnPaidColumns.map((column) => {
+      .then((results) => results.map((row) => customerUnPaidColumns.map((column) => {
         if (column === 'orderDate' || column === 'dueDate') {
           return dateFormat(row[column]);
         }
         return row[column] || '';
       })))
-      .then(data => this.setState({ customerUnPaidData: data }));
+      .then((data) => this.setState({ customerUnPaidData: data }));
   }
 
   render() {

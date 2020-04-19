@@ -39,7 +39,7 @@ class AddUser extends React.Component {
       snackbarColor: 'success',
     });
 
-    return this.props.setTimeout(this.props.history.push(`/users`, 2000));
+    return this.props.setTimeout(this.props.history.push('/users', 2000));
   }
 
   render() {

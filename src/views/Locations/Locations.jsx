@@ -21,8 +21,8 @@ export default class Locations extends React.Component {
   LocationsList() {
     const columns = ['locationId', 'locationName', 'locationAddress'];
     LocationService.getLocations()
-      .then(results => results.map(row => columns.map(column => (row[column] === null ? '' : row[column]))))
-      .then(data => this.setState({ locations: data }));
+      .then((results) => results.map((row) => columns.map((column) => (row[column] === null ? '' : row[column]))))
+      .then((data) => this.setState({ locations: data }));
   }
 
   render() {

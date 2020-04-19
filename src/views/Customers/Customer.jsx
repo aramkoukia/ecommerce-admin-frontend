@@ -28,7 +28,7 @@ function dateFormat(dateString) {
 Date.prototype.addHours = function (h) {
   this.setHours(this.getHours() + h);
   return this;
-}
+};
 
 export default class Customer extends React.Component {
   constructor(props) {
@@ -65,7 +65,7 @@ export default class Customer extends React.Component {
     this.ordersList(customerId);
   }
 
-  handleChange = name => (event) => {
+  handleChange = (name) => (event) => {
     this.setState({
       [name]: event.target.value,
     });
@@ -103,10 +103,8 @@ export default class Customer extends React.Component {
     const columns = ['locationName', 'orderId', 'orderDate', 'subTotal', 'total', 'status', 'poNumber', 'paidAmount', 'givenName'];
     this.setState({ loading: true });
     OrderService.getCustomerOrders(customerId)
-      .then(results => results.map(row => columns.map((column) => {
-        return row[column] || '';
-      })))
-      .then(data => this.setState({ orders: data, loading: false }));
+      .then((results) => results.map((row) => columns.map((column) => row[column] || '')))
+      .then((data) => this.setState({ orders: data, loading: false }));
   }
 
   rowClicked(rowData) {
@@ -258,7 +256,7 @@ export default class Customer extends React.Component {
                   <GridItem>
                     <Button color="secondary" onClick={this.emailStatement}>
                       <Email />
-                        Email Statement
+                      Email Statement
                     </Button>
                   </GridItem>
                   <GridItem md={1}>

@@ -75,7 +75,8 @@ function createRow(productId, productName, salesPrice, productPackages, id) {
     productPackages
       .sort(
         (a, b) => (
-          (a.amountInMainPackage > b.amountInMainPackage) ? 1 : ((b.amountInMainPackage > a.amountInMainPackage) ? -1 : 0)));
+          (a.amountInMainPackage > b.amountInMainPackage) ? 1 : ((b.amountInMainPackage > a.amountInMainPackage) ? -1 : 0)),
+      );
   }
 
   const price = productPackages && productPackages.length > 0
@@ -211,8 +212,8 @@ export default class AddOrder extends React.Component {
               productPackages: row.product.productPackage,
               package: row.package,
               productPackageId: row.product.productPackage && row.product.productPackage.length > 0
-                ? row.product.productPackage.find(p => p.package === row.package)
-                  ? row.product.productPackage.find(p => p.package === row.package).productPackageId
+                ? row.product.productPackage.find((p) => p.package === row.package)
+                  ? row.product.productPackage.find((p) => p.package === row.package).productPackageId
                   : row.product.productPackage[0].productPackageId
                 : null,
               amountInMainPackage: row.amountInMainPackage,
@@ -505,7 +506,7 @@ export default class AddOrder extends React.Component {
     });
 
     if (warnInSufficientStockOnOrder || blockInSufficientStockOnOrder) {
-      const orderItems = rows.map(row => (
+      const orderItems = rows.map((row) => (
         {
           locationId,
           productId: row.productId,
@@ -536,7 +537,7 @@ export default class AddOrder extends React.Component {
     } = this.state;
     const locationId = Location.getStoreLocation();
     const status = orderStatus;
-    const orderDetails = rows.map(row => (
+    const orderDetails = rows.map((row) => (
       {
         orderId: 0,
         orderDetailId: 0,
@@ -552,7 +553,7 @@ export default class AddOrder extends React.Component {
         totalDiscount: (row.discountType === 'percent' ? (row.discountPercent / 100) * row.total : row.discountAmount),
         total: row.total - (row.discountType === 'percent' ? (row.discountPercent / 100) * row.total : row.discountAmount),
       }));
-    const orderTaxes = taxes.map(tax => (
+    const orderTaxes = taxes.map((tax) => (
       {
         taxId: tax.taxId,
         taxAmount: (tax.percentage / 100) * subTotal,
@@ -707,7 +708,7 @@ export default class AddOrder extends React.Component {
   productRemoved(id) {
     const { rows } = this.state;
     this.setState({
-      rows: rows.filter(row => row.id != id),
+      rows: rows.filter((row) => row.id != id),
     });
   }
 
@@ -721,11 +722,11 @@ export default class AddOrder extends React.Component {
     //   this.setState({ rows: newRows });
     // } else {
     const id = rows && rows.length > 0
-      ? Math.max.apply(Math, rows.map(function (o) { return o.id; })) + 1
+      ? Math.max.apply(Math, rows.map((o) => o.id)) + 1
       : 1;
 
     const newRow = createRow(product.productId, product.productName, product.salesPrice, product.productPackages, id);
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       rows: [...prevState.rows, newRow],
     }));
     // }
@@ -1009,8 +1010,7 @@ export default class AddOrder extends React.Component {
                       </Card>
                     </GridItem>
                   </GridContainer>
-                ) : (<div />)
-                }
+                ) : (<div />)}
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={12}>
                     <ProductSearch productChanged={this.productChanged} />
@@ -1074,14 +1074,12 @@ export default class AddOrder extends React.Component {
                     <GridItem xs>
                       <Button color="info" disabled={loading} onClick={this.saveAsAccountClicked}>Use Customers Account</Button>
                     </GridItem>
-                  ) : (<div />)
-                  }
+                  ) : (<div />)}
                   { customer ? (
                     <GridItem xs>
                       <Button color="info" disabled={loading} onClick={this.saveAsHoldClicked}>Put On Hold</Button>
                     </GridItem>
-                  ) : (<div />)
-                  }
+                  ) : (<div />)}
                 </GridContainer>
               </CardFooter>
             </Card>
@@ -1352,7 +1350,7 @@ export default class AddOrder extends React.Component {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {validationResult.map(row => (
+                    {validationResult.map((row) => (
                       <TableRow key={row.productId}>
                         <TableCell>{row.productCode}</TableCell>
                         <TableCell>{row.productName}</TableCell>

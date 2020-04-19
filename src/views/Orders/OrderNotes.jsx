@@ -174,8 +174,8 @@ export default class OrderNotes extends React.Component {
             <GridItem md={5}>
               <Button color="primary" onClick={this.updateOrderInfo}>
                 <Save />
-               &nbsp;
-               Save
+                &nbsp;
+                Save
               </Button>
             </GridItem>
           </GridContainer>

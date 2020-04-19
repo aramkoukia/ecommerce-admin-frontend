@@ -52,8 +52,7 @@ function CustomerInfo(props) {
         />
         ) }
         { (customer === undefined) && (
-          <Danger>no customer info available</Danger>)
-        }
+          <Danger>no customer info available</Danger>)}
       </CardBody>
     </Card>
   );

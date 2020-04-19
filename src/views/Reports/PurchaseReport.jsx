@@ -26,7 +26,7 @@ function dateFormat(dateString) {
 Date.prototype.addHours = function (h) {
   this.setHours(this.getHours() + h);
   return this;
-}
+};
 
 export default class PuchaseReport extends React.Component {
   constructor(props) {
@@ -70,7 +70,7 @@ export default class PuchaseReport extends React.Component {
     },
   })
 
-  handleChange = name => (event) => {
+  handleChange = (name) => (event) => {
     this.setState({
       [name]: event.target.value,
     });
@@ -80,18 +80,18 @@ export default class PuchaseReport extends React.Component {
     const { fromDate, toDate } = this.state;
     const purchaseSummaryColumns = ['productCode', 'productName', 'plannedAmount', 'plannedTotalPrice', 'paidAmount', 'paidTotalPrice', 'onDeliveryAmount', 'onDeliveryTotalPrice', 'customClearanceAmount', 'customClearanceTotalPrice', 'arrivedAmount', 'arrivedTotalPrice'];
     ReportService.getPurchaseSummary(fromDate, toDate)
-      .then(results => results.map(row => purchaseSummaryColumns.map(column => row[column] || '')))
-      .then(data => this.setState({ purchaseSummaryData: data }));
+      .then((results) => results.map((row) => purchaseSummaryColumns.map((column) => row[column] || '')))
+      .then((data) => this.setState({ purchaseSummaryData: data }));
 
     const purchaseDetailColumns = ['purchaseId', 'productCode', 'productName', 'supplier', 'status', 'amount', 'unitPrice', 'totalPrice', 'poNumber', 'estimatedDelivery', 'paidDate', 'arrivedDate', 'locationName'];
     ReportService.getPurchaseDetail(fromDate, toDate)
-      .then(results => results.map(row => purchaseDetailColumns.map((column) => {
+      .then((results) => results.map((row) => purchaseDetailColumns.map((column) => {
         if (column === 'estimatedDelivery' || column === 'paidDate' || column === 'arrivedDate') {
           return dateFormat(row[column]);
         }
         return row[column] || '';
       })))
-      .then(data => this.setState({ purchaseDetailData: data }));
+      .then((data) => this.setState({ purchaseDetailData: data }));
   }
 
   render() {

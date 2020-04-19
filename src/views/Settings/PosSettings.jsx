@@ -164,7 +164,7 @@ class PosSettings extends React.Component {
 
   clientPosSettingsList() {
     PosSettingsService.getClientPosSettings()
-      .then(data => this.setState({ clientPosSettings: data }));
+      .then((data) => this.setState({ clientPosSettings: data }));
   }
 
   render() {
@@ -285,7 +285,7 @@ class PosSettings extends React.Component {
                   <GridItem xs={2}>
                     <Button color="primary" onClick={this.pairPos}>
                       &nbsp;
-                        Pair POS
+                      Pair POS
                     </Button>
                   </GridItem>
                   <GridItem xs={2}>
@@ -316,7 +316,7 @@ class PosSettings extends React.Component {
                   options={options}
                   title=""
                   editable={{
-                    onRowAdd: newData => new Promise((resolve) => {
+                    onRowAdd: (newData) => new Promise((resolve) => {
                       setTimeout(() => {
                         clientPosSettings.push(newData);
                         PosSettingsService.createClientPosSetting(newData);
@@ -335,7 +335,7 @@ class PosSettings extends React.Component {
                         resolve();
                       }, 1000);
                     }),
-                    onRowDelete: oldData => new Promise((resolve) => {
+                    onRowDelete: (oldData) => new Promise((resolve) => {
                       setTimeout(() => {
                         {
                           const index = clientPosSettings.indexOf(oldData);

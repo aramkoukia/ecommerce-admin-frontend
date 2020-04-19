@@ -117,7 +117,7 @@ export class Product extends React.Component {
   async getLocations() {
     const { locations } = this.state;
     LocationService.getLocationsForUser()
-      .then(results => this.setState({
+      .then((results) => this.setState({
         locations: [...locations, ...results],
       }));
   }
@@ -280,13 +280,13 @@ export class Product extends React.Component {
     const productId = match.params.id;
     const columns = ['date', 'transactionType', 'amount', 'balance', 'locationName', 'notes', 'userName'];
     ProductService.getProductTransactions(productId, fromDate, toDate, locationId)
-      .then(results => results.map(row => columns.map((column) => {
+      .then((results) => results.map((row) => columns.map((column) => {
         if (column === 'date') {
           return dateFormat(row[column]);
         }
         return row[column] || '';
       })))
-      .then(data => this.setState({ productTransactions: data }));
+      .then((data) => this.setState({ productTransactions: data }));
   }
 
   handleLocationChange = (event) => {
@@ -331,7 +331,7 @@ export class Product extends React.Component {
       rowsPerPage: 25,
     };
 
-    const transferLocations = locations.filter(l => l.locationId !== 0);
+    const transferLocations = locations.filter((l) => l.locationId !== 0);
 
     return (
       <div>
@@ -344,7 +344,9 @@ export class Product extends React.Component {
                   <b>Product Transactions:</b>
                   &nbsp;
                   {product.productCode}
-                  &nbsp;&nbsp; {product.productName}
+                  &nbsp;&nbsp;
+                  {' '}
+                  {product.productName}
                 </div>
               </CardHeader>
               <CardBody>
@@ -360,19 +362,19 @@ export class Product extends React.Component {
                             <GridContainer>
                               <GridItem xs="10">
                                 <Button color="info" onClick={this.updateTransferClicked}>
-                                    Update / Transfer
+                                  Update / Transfer
                                 </Button>
                               </GridItem>
-                                <GridItem xs="2">
+                              <GridItem xs="2">
                                 {product.disabled === 'False' && (
                                   <Button color="warning" onClick={this.enableDisableProducts}>
                                     Disable Product
-                                </Button>
+                                  </Button>
                                 )}
                                 {product.disabled === 'True' && (
                                   <Button color="warning" onClick={this.enableDisableProducts}>
                                     Enable Product
-                                </Button>
+                                  </Button>
                                 )}
                               </GridItem>
                             </GridContainer>
@@ -416,8 +418,7 @@ export class Product extends React.Component {
                             }}
                           >
                             {locations && (
-                              locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))
-                            }
+                              locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))}
                           </Select>
                         </FormControl>
                       </GridItem>
@@ -507,8 +508,7 @@ export class Product extends React.Component {
                         }}
                       >
                         {transferLocations && (
-                          transferLocations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))
-                        }
+                          transferLocations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))}
                       </Select>
                     </FormControl>
                   </GridItem>
@@ -524,8 +524,7 @@ export class Product extends React.Component {
                         }}
                       >
                         {transferLocations && (
-                          transferLocations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))
-                        }
+                          transferLocations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))}
                       </Select>
                     </FormControl>
                   </GridItem>

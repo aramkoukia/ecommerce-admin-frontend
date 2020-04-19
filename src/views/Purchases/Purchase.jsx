@@ -116,7 +116,9 @@ export class Purchase extends React.Component {
                   Purchase #
                   {' '}
                   <b>{purchase.purchaseId}</b>
-                  &nbsp;&nbsp; {dateFormat(purchase.purchaseDate)}
+                  &nbsp;&nbsp;
+                  {' '}
+                  {dateFormat(purchase.purchaseDate)}
                 </div>
               </CardHeader>
               <CardBody>

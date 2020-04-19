@@ -26,7 +26,7 @@ function dateFormat(dateString) {
 Date.prototype.addHours = function (h) {
   this.setHours(this.getHours() + h);
   return this;
-}
+};
 
 export default class ProfitReport extends React.Component {
   constructor(props) {
@@ -77,7 +77,7 @@ export default class ProfitReport extends React.Component {
     },
   })
 
-  handleChange = name => (event) => {
+  handleChange = (name) => (event) => {
     this.setState({
       [name]: event.target.value,
     });
@@ -103,8 +103,8 @@ export default class ProfitReport extends React.Component {
       'totalProfitByPurchasePrice',
       'totalProfitByAvgCost'];
     ReportService.getProductSalesProfit(salesFromDate, salesToDate, purchaseFromDate, purchaseToDate)
-      .then(results => results.map(row => purchaseSummaryColumns.map(column => row[column] || '')))
-      .then(data => this.setState({ purchaseSummaryData: data }));
+      .then((results) => results.map((row) => purchaseSummaryColumns.map((column) => row[column] || '')))
+      .then((data) => this.setState({ purchaseSummaryData: data }));
   }
 
   render() {

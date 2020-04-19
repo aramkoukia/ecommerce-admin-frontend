@@ -9,11 +9,11 @@ const Chartist = require('chartist');
 const delays = 80;
 
 
-let durations = 500;
+const durations = 500;
 const delays2 = 80;
 
 
-let durations2 = 500;
+const durations2 = 500;
 
 // ##############################
 // // // Daily Sales

@@ -120,7 +120,7 @@ export default class PurchaseTable extends React.Component {
     priceChanged(subTotal, total);
   }
 
-  handleChange = name => (event) => {
+  handleChange = (name) => (event) => {
     this.setState({
       [name]: event.target.value,
     });
@@ -154,7 +154,7 @@ export default class PurchaseTable extends React.Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {purchaseRows.map(row => (
+            {purchaseRows.map((row) => (
               <TableRow key={row.productId}>
                 <TableCell>{row.productName}</TableCell>
                 <TableCell numeric align="right">

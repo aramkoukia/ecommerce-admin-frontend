@@ -70,7 +70,7 @@ export default class ReturnOrderItems extends React.Component {
     priceChanged(rows, subTotal, total, totalDiscount, restockingFeePercent, restockingFeeAmount);
   }
 
-  handleChange = name => (event) => {
+  handleChange = (name) => (event) => {
     this.setState({
       [name]: event.target.value,
     });
@@ -180,7 +180,7 @@ export default class ReturnOrderItems extends React.Component {
             </TableHead>
             {orderRows && taxes && (
             <TableBody>
-              {orderRows.map(row => (
+              {orderRows.map((row) => (
                 <TableRow key={row.id}>
                   <TableCell>
                     {row.product.productName}
@@ -213,7 +213,7 @@ export default class ReturnOrderItems extends React.Component {
                           style={{ width: 50 }}
                         />
                         <div>
-                        $
+                          $
                         </div>
                       </div>
                       )}
@@ -229,7 +229,7 @@ export default class ReturnOrderItems extends React.Component {
                           style={{ width: 50 }}
                         />
                         <div>
-                        %
+                          %
                         </div>
                       </div>
                       )}
@@ -265,7 +265,7 @@ export default class ReturnOrderItems extends React.Component {
                   </b>
                 </TableCell>
               </TableRow>
-              {taxes.map(tax => (
+              {taxes.map((tax) => (
                 <TableRow>
                   <TableCell>{tax.tax.taxName}</TableCell>
                   <TableCell numeric>{`${(tax.tax.percentage).toFixed(0)} %`}</TableCell>
@@ -276,7 +276,7 @@ export default class ReturnOrderItems extends React.Component {
                 <TableCell colSpan={3}><h4>Refund Total</h4></TableCell>
                 <TableCell numeric><Success><h4>{ccyFormat(total)}</h4></Success></TableCell>
               </TableRow>
-                {order.orderPayment && order.orderPayment.map(orderPayment => (
+                {order.orderPayment && order.orderPayment.map((orderPayment) => (
                   <TableRow>
                     <TableCell><h4>Payment</h4></TableCell>
                     <TableCell><h4>{dateFormat(orderPayment.paymentDate)}</h4></TableCell>

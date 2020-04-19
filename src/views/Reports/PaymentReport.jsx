@@ -22,7 +22,7 @@ function dateFormat(dateString) {
 Date.prototype.addHours = function (h) {
   this.setHours(this.getHours() + h);
   return this;
-}
+};
 
 export default class PaymentReport extends React.Component {
   constructor(props) {
@@ -66,7 +66,7 @@ export default class PaymentReport extends React.Component {
     },
   })
 
-  handleChange = name => (event) => {
+  handleChange = (name) => (event) => {
     this.setState({
       [name]: event.target.value,
     });
@@ -76,18 +76,18 @@ export default class PaymentReport extends React.Component {
     const { fromDate, toDate } = this.state;
     const paymentDetailsColumns = ['locationName', 'givenName', 'paymentTypeName', 'paymentAmount', 'companyName', 'orderId', 'status'];
     ReportService.getPayments(fromDate, toDate)
-      .then(results => results.map(row => paymentDetailsColumns.map(column => row[column] || '')))
-      .then(data => this.setState({ paymentDetailsData: data }));
+      .then((results) => results.map((row) => paymentDetailsColumns.map((column) => row[column] || '')))
+      .then((data) => this.setState({ paymentDetailsData: data }));
 
     const paymentsSummaryColumns = ['locationName', 'paymentTypeName', 'paymentAmount', 'status'];
     ReportService.getPaymentsByOrderStatus(fromDate, toDate)
-      .then(results => results.map(row => paymentsSummaryColumns.map(column => row[column] || '')))
-      .then(data => this.setState({ paymentsSummaryData: data }));
+      .then((results) => results.map((row) => paymentsSummaryColumns.map((column) => row[column] || '')))
+      .then((data) => this.setState({ paymentsSummaryData: data }));
 
     const paymentsTotalColumns = ['locationName', 'paymentTypeName', 'paymentAmount'];
     ReportService.getPaymentsTotal(fromDate, toDate)
-      .then(results => results.map(row => paymentsTotalColumns.map(column => row[column] || '')))
-      .then(data => this.setState({ paymentsTotalData: data }));
+      .then((results) => results.map((row) => paymentsTotalColumns.map((column) => row[column] || '')))
+      .then((data) => this.setState({ paymentsTotalData: data }));
   }
 
   render() {

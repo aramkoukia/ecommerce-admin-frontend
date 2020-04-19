@@ -54,7 +54,7 @@ function renderSuggestion(suggestion, { query, isHighlighted }) {
   );
 }
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     height: 80,
     flexGrow: 1,
@@ -206,7 +206,7 @@ class ProductSearch extends React.Component {
             suggestionsList: classes.suggestionsList,
             suggestion: classes.suggestion,
           }}
-          renderSuggestionsContainer={options => (
+          renderSuggestionsContainer={(options) => (
             <Popper anchorEl={this.popperNode} open={Boolean(options.children)}>
               <Paper
                 square

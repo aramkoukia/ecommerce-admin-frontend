@@ -104,11 +104,11 @@ export default class Users extends React.Component {
   getUserLocations(email) {
     UserService.getUserLocations(email)
       .then((data) => {
-        this.setState({ locationChecked: data.map(l => l.locationId) });
+        this.setState({ locationChecked: data.map((l) => l.locationId) });
       });
   }
 
-  handleRoleToggle = value => () => {
+  handleRoleToggle = (value) => () => {
     const { roleChecked } = this.state;
     const currentIndex = roleChecked.indexOf(value);
     const newChecked = [...roleChecked];
@@ -124,7 +124,7 @@ export default class Users extends React.Component {
     });
   }
 
-  handleLocationToggle = value => () => {
+  handleLocationToggle = (value) => () => {
     const { locationChecked } = this.state;
     const currentIndex = locationChecked.indexOf(value);
     const newChecked = [...locationChecked];
@@ -188,8 +188,8 @@ export default class Users extends React.Component {
 
     const userInfo = {
       email: selectedRow[1],
-      roleIds: roleChecked.filter(item => item !== 0),
-      locationIds: locationChecked.filter(item => item !== 0),
+      roleIds: roleChecked.filter((item) => item !== 0),
+      locationIds: locationChecked.filter((item) => item !== 0),
     };
 
     const result = await UserService.UpdateUserRolesAndLocations(userInfo);
@@ -236,7 +236,7 @@ export default class Users extends React.Component {
         snackbarColor: 'success',
       });
     } else {
-      const message = result.errors.map(error => error.description).join('. ');
+      const message = result.errors.map((error) => error.description).join('. ');
 
       this.setState({
         openSnackbar: true,
@@ -253,13 +253,13 @@ export default class Users extends React.Component {
   usersList() {
     const columns = ['givenName', 'email', 'userName', 'roles', 'locations', 'authCode'];
     UserService.getUsers()
-      .then(results => results.map(row => columns.map(column => (row[column] === null ? '' : row[column]))))
-      .then(data => this.setState({ users: data }));
+      .then((results) => results.map((row) => columns.map((column) => (row[column] === null ? '' : row[column]))))
+      .then((data) => this.setState({ users: data }));
   }
 
   rolesList() {
     RoleService.getRoles()
-      .then(data => this.setState({ roles: data }));
+      .then((data) => this.setState({ roles: data }));
   }
 
   render() {
@@ -302,7 +302,7 @@ export default class Users extends React.Component {
             <Button
               color="primary"
               index={tableMeta.columnIndex}
-              onClick={event => {
+              onClick={(event) => {
                 this.editClicked(tableMeta, tableMeta.columnIndex, value, event);
               }}
             >
@@ -319,9 +319,7 @@ export default class Users extends React.Component {
             <Button
               color="primary"
               index={tableMeta.columnIndex}
-              onClick={event =>
-                this.permissionsClicked(tableMeta, tableMeta.columnIndex, value, event)
-              }
+              onClick={(event) => this.permissionsClicked(tableMeta, tableMeta.columnIndex, value, event)}
             >
               Permissions
             </Button>
@@ -412,7 +410,7 @@ export default class Users extends React.Component {
                   <CardBody>
                     { roles && (
                     <List>
-                      {roles.map(role => (
+                      {roles.map((role) => (
                         <ListItem
                           key={role.id}
                           role={undefined}
@@ -441,7 +439,7 @@ export default class Users extends React.Component {
                   </CardHeader>
                   <CardBody>
                     <List>
-                      {locations.map(location => (
+                      {locations.map((location) => (
                         <ListItem
                           key={location.locationId}
                           role={undefined}

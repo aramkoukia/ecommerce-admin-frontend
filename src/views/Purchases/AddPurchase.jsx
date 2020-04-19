@@ -71,10 +71,10 @@ export default class AddPurchase extends React.Component {
     const purchaseId = match.params.id;
     if (purchaseId && !isNaN(purchaseId)) {
       const purchase = await PurchaseService.getPurchaseDetail(purchaseId);
-      const details = purchase.purchaseDetail.filter(row => row.status === 'Plan');
+      const details = purchase.purchaseDetail.filter((row) => row.status === 'Plan');
       if (purchase) {
         this.setState({
-          rows: details.map(row => (
+          rows: details.map((row) => (
             {
               productId: row.productId,
               qty: row.amount,
@@ -97,14 +97,14 @@ export default class AddPurchase extends React.Component {
   productChanged(product) {
     const { rows } = this.state;
     const newRows = JSON.parse(JSON.stringify(rows));
-    const foundProduct = newRows.find(row => row.productId === product.productId);
+    const foundProduct = newRows.find((row) => row.productId === product.productId);
     if (foundProduct) {
       foundProduct.qty = Number(foundProduct.qty) + 1;
       foundProduct.total = Number(foundProduct.qty * foundProduct.unitPrice) + Number(foundProduct.overheadCost);
       this.setState({ rows: newRows });
     } else {
       const newRow = createRow(product.productId, product.productName, product.salesPrice);
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         rows: [...prevState.rows, newRow],
       }));
     }
@@ -125,7 +125,7 @@ export default class AddPurchase extends React.Component {
     const {
       supplier, rows, total, subTotal, notes, deliveryDate, poNumber,
     } = this.state;
-    const purchaseDetails = rows.map(row => (
+    const purchaseDetails = rows.map((row) => (
       {
         purchaseId: 0,
         purchaseDetailId: 0,

@@ -135,7 +135,7 @@ export default class OrderTable extends React.Component {
     const { orderRows } = this.state;
     for (const i in orderRows) {
       if (orderRows[i].id == event.target.name) {
-        const rowProductPackage = orderRows[i].productPackages.find(p => p.productPackageId === event.target.value);
+        const rowProductPackage = orderRows[i].productPackages.find((p) => p.productPackageId === event.target.value);
         orderRows[i].salesPrice = rowProductPackage.packagePrice;
         orderRows[i].productPackageId = event.target.value;
         orderRows[i].total = orderRows[i].qty * orderRows[i].salesPrice;
@@ -234,7 +234,7 @@ export default class OrderTable extends React.Component {
     priceChanged(subTotal, total, totalDiscount);
   }
 
-  handleChange = name => (event) => {
+  handleChange = (name) => (event) => {
     this.setState({
       [name]: event.target.value,
     });
@@ -290,7 +290,7 @@ export default class OrderTable extends React.Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {orderRows.map(row => (
+            {orderRows.map((row) => (
               <TableRow key={row.id}>
                 <TableCell size="small">
                   <IconButton
@@ -306,7 +306,7 @@ export default class OrderTable extends React.Component {
                   {row.productName}
                 </TableCell>
                 <TableCell size="small">
-                {row.productPackages && row.productPackages.length !== 0 && (
+                  {row.productPackages && row.productPackages.length !== 0 && (
                   <FormControl>
                     <Select
                       value={row.productPackageId}
@@ -327,7 +327,7 @@ export default class OrderTable extends React.Component {
                       }
                     </Select>
                   </FormControl>
-                )}
+                  )}
                 </TableCell>
                 <TableCell size="small">
                   <TextField
@@ -427,7 +427,7 @@ export default class OrderTable extends React.Component {
               <TableCell />
               <TableCell numeric>{this.ccyFormat(subTotal)}</TableCell>
             </TableRow>
-            {taxes.map(tax => (
+            {taxes.map((tax) => (
               <TableRow>
                 <TableCell />
                 <TableCell />

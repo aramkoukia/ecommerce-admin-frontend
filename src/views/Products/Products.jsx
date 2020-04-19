@@ -68,7 +68,7 @@ export default class Products extends React.Component {
   productsList() {
     this.setState({ loading: true });
     ProductService.getProducts()
-      .then(data => this.setState({ products: data, loading: false }));
+      .then((data) => this.setState({ products: data, loading: false }));
   }
 
   showTransactions(productId) {
@@ -77,7 +77,7 @@ export default class Products extends React.Component {
 
   updateVariations(rowData) {
     ProductService.getProductPackages(rowData.productId)
-      .then(data => this.setState({ productPackages: data }));
+      .then((data) => this.setState({ productPackages: data }));
 
     this.setState({
       openDialog: true,
@@ -250,7 +250,7 @@ export default class Products extends React.Component {
             <DialogContentText>
               <Card>
                 <CardHeader color="primary">
-                    Product Variations:
+                  Product Variations:
                 </CardHeader>
                 <CardBody>
                   {product && (
@@ -278,7 +278,7 @@ export default class Products extends React.Component {
                     options={packageOptions}
                     title=""
                     editable={{
-                      onRowAdd: newData => new Promise((resolve, reject) => {
+                      onRowAdd: (newData) => new Promise((resolve, reject) => {
                         setTimeout(() => {
                           productPackages.push(newData);
                           ProductService.createProductPackage(product.productId, newData);
@@ -297,7 +297,7 @@ export default class Products extends React.Component {
                           resolve();
                         }, 1000);
                       }),
-                      onRowDelete: oldData => new Promise((resolve, reject) => {
+                      onRowDelete: (oldData) => new Promise((resolve, reject) => {
                         setTimeout(() => {
                           {
                             const index = productPackages.indexOf(oldData);

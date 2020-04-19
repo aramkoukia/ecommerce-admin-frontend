@@ -8,40 +8,40 @@ import {
 const customInputStyle = {
   disabled: {
     '&:before': {
-      backgroundColor: 'transparent !important'
-    }
+      backgroundColor: 'transparent !important',
+    },
   },
   underline: {
     '&:hover:not($disabled):before,&:before': {
       borderColor: '#D2D2D2 !important',
-      borderWidth: '1px !important'
+      borderWidth: '1px !important',
     },
     '&:after': {
-      borderColor: primaryColor
-    }
+      borderColor: primaryColor,
+    },
   },
   underlineError: {
     '&:after': {
-      borderColor: dangerColor
-    }
+      borderColor: dangerColor,
+    },
   },
   underlineSuccess: {
     '&:after': {
-      borderColor: successColor
-    }
+      borderColor: successColor,
+    },
   },
   labelRoot: {
     ...defaultFont,
     color: '#AAAAAA !important',
     fontWeight: '400',
     fontSize: '14px',
-    lineHeight: '1.42857'
+    lineHeight: '1.42857',
   },
   labelRootError: {
-    color: dangerColor
+    color: dangerColor,
   },
   labelRootSuccess: {
-    color: successColor
+    color: successColor,
   },
   feedback: {
     position: 'absolute',
@@ -52,16 +52,16 @@ const customInputStyle = {
     width: '24px',
     height: '24px',
     textAlign: 'center',
-    pointerEvents: 'none'
+    pointerEvents: 'none',
   },
   marginTop: {
-    marginTop: '16px'
+    marginTop: '16px',
   },
   formControl: {
     paddingBottom: '10px',
     margin: '27px 0 0 0',
-    position: 'relative'
-  }
+    position: 'relative',
+  },
 };
 
 export default customInputStyle;

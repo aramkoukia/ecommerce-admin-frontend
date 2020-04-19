@@ -241,8 +241,8 @@ export class Return extends React.Component {
     const originalOrderId = this.props.match.params.id;
     const status = orderStatus;
     const orderDetails = rows
-      .filter(row => Number(row.amount) !== 0)
-      .map(row => (
+      .filter((row) => Number(row.amount) !== 0)
+      .map((row) => (
         {
           orderId: 0,
           orderDetailId: 0,
@@ -259,7 +259,7 @@ export class Return extends React.Component {
           subTotal: row.total - Math.abs(row.totalDiscount),
         }));
 
-    const orderTaxes = order.orderTax.map(tax => (
+    const orderTaxes = order.orderTax.map((tax) => (
       {
         taxId: tax.taxId,
         taxAmount: (tax.tax.percentage / 100) * subTotal,
@@ -423,9 +423,13 @@ export class Return extends React.Component {
                   Order #
                   &nbsp;
                   <b>{order.orderId}</b>
-                  &nbsp;&nbsp; {dateFormat(order.orderDate)}
-                  &nbsp;&nbsp; <Chip label={order.status} color="primary" />
-                   - User:
+                  &nbsp;&nbsp;
+                  {' '}
+                  {dateFormat(order.orderDate)}
+                  &nbsp;&nbsp;
+                  {' '}
+                  <Chip label={order.status} color="primary" />
+                  - User:
                   {userGivenName}
                 </div>
               </CardHeader>
@@ -675,10 +679,10 @@ export class Return extends React.Component {
             </DialogContent>
             <DialogActions>
               <Button onClick={this.handleClose} color="info">
-                  Cancel
+                Cancel
               </Button>
               <Button onClick={this.pay} color="primary">
-                  Pay
+                Pay
               </Button>
             </DialogActions>
           </Dialog>
@@ -706,7 +710,7 @@ export class Return extends React.Component {
             </DialogContent>
             <DialogActions>
               <Button onClick={this.handleAuthUpdate} color="primary">
-              Ok
+                Ok
               </Button>
             </DialogActions>
           </Dialog>

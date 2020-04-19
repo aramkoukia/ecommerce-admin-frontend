@@ -22,8 +22,8 @@ export default class Taxes extends React.Component {
   taxesList() {
     const columns = ['taxName', 'country', 'province', 'percentage', 'effectiveDate'];
     TaxService.getAllTaxes()
-      .then(results => results.map(row => columns.map(column => row[column] || '')))
-      .then(data => this.setState({ taxes: data }));
+      .then((results) => results.map((row) => columns.map((column) => row[column] || '')))
+      .then((data) => this.setState({ taxes: data }));
   }
 
   render() {

@@ -54,7 +54,7 @@ class AddCustomer extends React.Component {
     });
   }
 
-  handleChange = event => {
+  handleChange = (event) => {
     this.setState({ [event.target.name]: event.target.value });
   };
 
@@ -294,8 +294,7 @@ class AddCustomer extends React.Component {
                       fullWidth="true"
                     />
                   </GridItem>
-                  <GridItem md={4}>
-                  </GridItem>
+                  <GridItem md={4} />
                   <GridItem md={4}>
                     <TextField
                       name="creditLimit"

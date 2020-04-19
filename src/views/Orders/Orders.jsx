@@ -73,12 +73,12 @@ export default class Orders extends React.Component {
   async getLocations() {
     const { locations } = this.state;
     LocationService.getLocationsForUser()
-      .then(results => this.setState({
+      .then((results) => this.setState({
         locations: [...locations, ...results],
       }));
   }
 
-  handleChange = name => (event) => {
+  handleChange = (name) => (event) => {
     this.setState({
       [name]: event.target.value,
     });
@@ -94,7 +94,7 @@ export default class Orders extends React.Component {
     this.setState({ loading: true });
 
     OrderService.getOrdersByLocation(locationId, fromDate, toDate)
-      .then(data => this.setState({ orders: data, loading: false }));
+      .then((data) => this.setState({ orders: data, loading: false }));
   }
 
   rowClicked(_event, rowData) {
@@ -207,40 +207,40 @@ export default class Orders extends React.Component {
     const detailPanel = [
       {
         tooltip: 'Details',
-        render: rowData => (
+        render: (rowData) => (
           <div
             style={{
               width: '60%',
               backgroundColor: '#ccf9ff',
             }}
           >
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Product</TableCell>
-                <TableCell numeric>Amount</TableCell>
-                <TableCell numeric>Unit Price</TableCell>
-                <TableCell numeric>Discount</TableCell>
-                <TableCell numeric>Total Price (After discount)</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rowData.orderDetail.map(row => (
-                <TableRow key={row.productId}>
-                  <TableCell>
-                    {row.productName}
-                    {row.package && (
-                      ` ( pkg: ${row.package} ) ${row.amountInMainPackage}x`
-                    )}
-                  </TableCell>
-                  <TableCell numeric align="right">{row.amount}</TableCell>
-                  <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
-                  <TableCell numeric>{ccyFormat(row.totalDiscount)}</TableCell>
-                  <TableCell numeric>{ccyFormat(row.total)}</TableCell>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Product</TableCell>
+                  <TableCell numeric>Amount</TableCell>
+                  <TableCell numeric>Unit Price</TableCell>
+                  <TableCell numeric>Discount</TableCell>
+                  <TableCell numeric>Total Price (After discount)</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                {rowData.orderDetail.map((row) => (
+                  <TableRow key={row.productId}>
+                    <TableCell>
+                      {row.productName}
+                      {row.package && (
+                        ` ( pkg: ${row.package} ) ${row.amountInMainPackage}x`
+                      )}
+                    </TableCell>
+                    <TableCell numeric align="right">{row.amount}</TableCell>
+                    <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
+                    <TableCell numeric>{ccyFormat(row.totalDiscount)}</TableCell>
+                    <TableCell numeric>{ccyFormat(row.total)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
         ),
       },
@@ -280,8 +280,7 @@ export default class Orders extends React.Component {
                         }}
                       >
                         {locations && (
-                          locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))
-                        }
+                          locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))}
                       </Select>
                     </FormControl>
                   </GridItem>

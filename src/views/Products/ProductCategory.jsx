@@ -27,7 +27,7 @@ export default class ProductCategory extends React.Component {
 
   productCategoriesList() {
     ProductCategoryService.getProductCategories()
-      .then(data => this.setState({ productCategories: data }));
+      .then((data) => this.setState({ productCategories: data }));
   }
 
   render() {
@@ -98,7 +98,7 @@ export default class ProductCategory extends React.Component {
                   options={options}
                   title=""
                   editable={{
-                    onRowAdd: newData => new Promise((resolve) => {
+                    onRowAdd: (newData) => new Promise((resolve) => {
                       setTimeout(() => {
                         productCategories.push(newData);
                         ProductCategoryService.createProductCategory(newData);
@@ -117,7 +117,7 @@ export default class ProductCategory extends React.Component {
                         resolve();
                       }, 1000);
                     }),
-                    onRowDelete: oldData => new Promise((resolve) => {
+                    onRowDelete: (oldData) => new Promise((resolve) => {
                       setTimeout(() => {
                         {
                           const index = productCategories.indexOf(oldData);

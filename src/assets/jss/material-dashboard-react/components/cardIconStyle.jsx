@@ -6,6 +6,7 @@ import {
   primaryCardHeader,
   roseCardHeader,
 } from '../../material-dashboard-react';
+
 const cardIconStyle = {
   cardIcon: {
     '&$warningCardHeader,&$successCardHeader,&$dangerCardHeader,&$infoCardHeader,&$primaryCardHeader,&$roseCardHeader': {
@@ -14,15 +15,15 @@ const cardIconStyle = {
       padding: '15px',
       marginTop: '-20px',
       marginRight: '15px',
-      float: 'left'
-    }
+      float: 'left',
+    },
   },
   warningCardHeader,
   successCardHeader,
   dangerCardHeader,
   infoCardHeader,
   primaryCardHeader,
-  roseCardHeader
+  roseCardHeader,
 };
 
 export default cardIconStyle;
