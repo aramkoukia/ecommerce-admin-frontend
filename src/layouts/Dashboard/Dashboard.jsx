@@ -12,6 +12,8 @@ import AddOrder from '../../views/Orders/AddOrder';
 import { Return } from '../../views/Orders/Return';
 import PortalSettingsService from '../../services/PortalSettingsService';
 import Api from '../../services/ApiConfig';
+import image from '../../assets/img/sidebar-2.jpg';
+import logo from '../../assets/img/logo.png';
 
 function requireAuth(nextState, replace) {
   if (!Auth.isSignedIn) {
@@ -81,21 +83,21 @@ class App extends React.Component {
   render() {
     const { classes, ...rest } = this.props;
     const { permissionsChanged, portalSettings } = this.state;
-    const logoImageUrl = `${Api.apiRoot}/${portalSettings.logoImageUrl}`;
-    const sidebarImageUrl = `${Api.apiRoot}/${portalSettings.sidebarImageUrl}`;
+    const logoImageUrl = portalSettings ? `${Api.apiRoot}/${portalSettings.logoImageUrl}` : logo;
+    const sidebarImageUrl = portalSettings ? `${Api.apiRoot}/${portalSettings.sidebarImageUrl}` : image;
 
     const switchRoutes = (
       <Switch>
-        {dashboardRoutes.map((prop, key) => {
+        {dashboardRoutes.map((prop) => {
           if (prop.redirect) {
-            return <Redirect from={prop.path} to={prop.to} key={key} />;
+            return <Redirect from={prop.path} to={prop.to} key={prop.path} />;
           }
 
           if (prop.path === '/neworder/:id') {
             return (
               <Route
                 path={prop.path}
-                key={key}
+                key={prop.path}
                 onEnter={requireAuth}
                 render={(props) => (
                   <AddOrder {...props} permissionsChanged={this.permissionsChanged} />)}
@@ -107,7 +109,7 @@ class App extends React.Component {
             return (
               <Route
                 path={prop.path}
-                key={key}
+                key={prop.path}
                 onEnter={requireAuth}
                 render={(props) => (
                   <Return {...props} permissionsChanged={this.permissionsChanged} />)}
@@ -119,7 +121,7 @@ class App extends React.Component {
             <Route
               path={prop.path}
               component={prop.component}
-              key={key}
+              key={prop.path}
               onEnter={requireAuth}
             />
           );
