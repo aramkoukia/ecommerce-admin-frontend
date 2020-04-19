@@ -2,9 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { createBrowserHistory } from 'history';
 import {
-  Router, Route, Switch,
+  HashRouter, Route, Switch,
 } from 'react-router-dom';
-
 import './assets/css/material-dashboard-react.css';
 import indexRoutes from './routes/index';
 import Auth from './services/Auth';
@@ -16,18 +15,30 @@ function permissionsChanged() {
 }
 
 ReactDOM.render(
-  <Router history={hist}>
+  <HashRouter history={hist}>
     <Switch>
-      {indexRoutes.map((prop, key) => {
+      {indexRoutes.map((prop) => {
         if (Auth.isSignedIn()) {
           return (
-            <Route path={prop.path} component={prop.component} key={key} permissionsChanged={permissionsChanged} />
+            <Route
+              path={prop.path}
+              component={prop.component}
+              key={prop.path}
+              permissionsChanged={permissionsChanged}
+            />
           );
         }
-        return <Route path={prop.path} component={prop.component} key={key} permissionsChanged={permissionsChanged} />;
+        return (
+          <Route
+            path={prop.path}
+            component={prop.component}
+            key={prop.path}
+            permissionsChanged={permissionsChanged}
+          />
+        );
         // return <Redirect from={prop.path} to="/login" key={key} />;
       })}
     </Switch>
-  </Router>,
+  </HashRouter>,
   document.getElementById('root'),
 );
