@@ -63,6 +63,7 @@
   },
   "homepage": "https://koukia.ca",
   "devDependencies": {
+    "babel-eslint": "^10.1.0",
     "eslint": "^6.6.0",
     "eslint-config-airbnb": "^18.1.0",
     "eslint-plugin-import": "^2.20.2",

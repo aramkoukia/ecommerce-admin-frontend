@@ -114,38 +114,38 @@ function createRow(productId, productName, salesPrice, productPackages, id) {
 }
 
 export default class AddOrder extends React.Component {
+  state = {
+    customer: null,
+    rows: [],
+    discountPercent: 0.00,
+    discountAmount: 0.00,
+    notes: '',
+    poNumber: '',
+    taxes: [],
+    allTaxes: [],
+    openSnackbar: false,
+    chargePst: true,
+    openDialog: false,
+    openCustomerDialog: false,
+    userGivenName: '',
+    chequeNo: '',
+    payCreditDebit: true,
+    creditDebitAmount: 0,
+    cashAmount: 0,
+    chequeAmount: 0,
+    paypalAmazonUsdAmount: 0,
+    payStoreCredit: false,
+    storeCreditAmount: 0,
+    cashPaid: 0,
+    cashChange: 0,
+    validationResult: [],
+    showValidationDialog: false,
+    orderStatus: '',
+    loading: false,
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      customer: null,
-      rows: [],
-      discountPercent: 0.00,
-      discountAmount: 0.00,
-      notes: '',
-      poNumber: '',
-      taxes: [],
-      allTaxes: [],
-      openSnackbar: false,
-      chargePst: true,
-      openDialog: false,
-      openCustomerDialog: false,
-      userGivenName: '',
-      chequeNo: '',
-      payCreditDebit: true,
-      creditDebitAmount: 0,
-      cashAmount: 0,
-      chequeAmount: 0,
-      paypalAmazonUsdAmount: 0,
-      payStoreCredit: false,
-      storeCreditAmount: 0,
-      cashPaid: 0,
-      cashChange: 0,
-      validationResult: [],
-      showValidationDialog: false,
-      orderStatus: '',
-      loading: false,
-    };
 
     this.productChanged = this.productChanged.bind(this);
     this.priceChanged = this.priceChanged.bind(this);
@@ -708,24 +708,22 @@ export default class AddOrder extends React.Component {
   productRemoved(id) {
     const { rows } = this.state;
     this.setState({
-      rows: rows.filter((row) => row.id != id),
+      rows: rows.filter((row) => row.id !== id),
     });
   }
 
   productChanged(product) {
     const { rows } = this.state;
-    // const newRows = JSON.parse(JSON.stringify(rows));
-    // const foundProduct = newRows.find(row => row.productId === product.productId);
-    // if (foundProduct) {
-    //   foundProduct.qty = Number(foundProduct.qty) + 1;
-    //   foundProduct.total = foundProduct.qty * foundProduct.price;
-    //   this.setState({ rows: newRows });
-    // } else {
     const id = rows && rows.length > 0
       ? Math.max.apply(Math, rows.map((o) => o.id)) + 1
       : 1;
 
-    const newRow = createRow(product.productId, product.productName, product.salesPrice, product.productPackages, id);
+    const newRow = createRow(
+      product.productId,
+      product.productName,
+      product.salesPrice,
+      product.productPackages,
+      id);
     this.setState((prevState) => ({
       rows: [...prevState.rows, newRow],
     }));

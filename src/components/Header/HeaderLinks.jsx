@@ -21,6 +21,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
 import Portal from '@material-ui/core/Portal';
+import PropTypes from 'prop-types';
 import GridItem from '../Grid/GridItem';
 import GridContainer from '../Grid/GridContainer';
 import Card from '../Card/Card';
@@ -33,16 +34,21 @@ import Location from '../../stores/Location';
 import UserService from '../../services/UserService';
 import Snackbar from '../Snackbar/Snackbar';
 
+function signOut() {
+  Location.removeStoreLocation();
+  Auth.signOut();
+}
+
 class HeaderLinks extends React.Component {
+  state = {
+    locationId: 1,
+    locations: Auth.getUserLocations(),
+    openPasscodeDialog: false,
+    openPasswordDialog: false,
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      locationId: 1,
-      openPasscodeDialog: false,
-      openPasswordDialog: false,
-    };
-
     this.resetPasscode = this.resetPasscode.bind(this);
     this.resetPassword = this.resetPassword.bind(this);
     this.handlePasswordReset = this.handlePasswordReset.bind(this);
@@ -51,21 +57,32 @@ class HeaderLinks extends React.Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
+  // eslint-disable-next-line react/no-deprecated
+  componentWillMount() {
+    const locations = Auth.getUserLocations();
+    this.setState({
+      locations,
+    });
+  }
+
   componentDidMount() {
     const currentLocationId = Location.getStoreLocation();
     const { locationId } = this.state;
     if (currentLocationId && locationId && Number(currentLocationId) !== locationId) {
       this.setState({ locationId: Number(currentLocationId) });
     }
-
     this.setState({
       openPasscodeDialog: false,
       openPasswordDialog: false,
     });
   }
 
-  handleChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
+  handleClose = (event) => {
+    if (this.anchorEl.contains(event.target)) {
+      return;
+    }
+
+    this.setState({ open: false });
   }
 
   handleLocationChange = (event) => {
@@ -78,23 +95,14 @@ class HeaderLinks extends React.Component {
     this.setState((state) => ({ open: !state.open }));
   }
 
-  handleClose = (event) => {
-    if (this.anchorEl.contains(event.target)) {
-      return;
-    }
-
-    this.setState({ open: false });
-  }
-
-  signOut() {
-    Location.removeStoreLocation();
-    Auth.signOut();
-  }
-
   resetPassword() {
     this.setState({
       openPasswordDialog: true,
     });
+  }
+
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   resetPasscode() {
@@ -201,9 +209,14 @@ class HeaderLinks extends React.Component {
 
 
   render() {
-    const { classes, locations } = this.props;
+    const { classes } = this.props;
     const {
-      locationId, open, openPasscodeDialog, openPasswordDialog, newPassword, newPasswordRepeat, newPasscode, newPasscodeRepeat,
+      locationId,
+      locations,
+      open,
+      openPasscodeDialog,
+      openPasswordDialog,
+      newPassword, newPasswordRepeat, newPasscode, newPasscodeRepeat,
       snackbarColor,
       snackbarMessage,
       openSnackbar,
@@ -232,7 +245,8 @@ class HeaderLinks extends React.Component {
                 )}
               >
                 { locations && (
-                  locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))}
+                  locations.map((l, key) => (
+                    <MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))}
               </Select>
             </FormControl>
             &nbsp;&nbsp;&nbsp;&nbsp;
@@ -273,7 +287,7 @@ class HeaderLinks extends React.Component {
                           </ListItemIcon>
                           Reset Passcode
                         </MenuItem>
-                        <MenuItem onClick={this.signOut}>
+                        <MenuItem onClick={signOut}>
                           <ListItemIcon>
                             <PowerSettingsNew />
                           </ListItemIcon>
@@ -383,4 +397,7 @@ class HeaderLinks extends React.Component {
   }
 }
 
+HeaderLinks.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
 export default withStyles(headerLinksStyle)(HeaderLinks);

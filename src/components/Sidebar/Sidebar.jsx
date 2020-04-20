@@ -9,10 +9,10 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Icon from '@material-ui/core/Icon';
+import PropTypes from 'prop-types';
 import sidebarStyle from '../../assets/jss/material-dashboard-react/components/sidebarStyle';
 import HeaderLinks from '../Header/HeaderLinks';
 import Auth from '../../services/Auth';
-// import LocationService from '../../services/LocationService';
 
 const Sidebar = ({ ...props }) => {
   // verifies if routeName is the one active (in browser input)
@@ -20,40 +20,19 @@ const Sidebar = ({ ...props }) => {
     return props.location.pathname.indexOf(routeName) > -1;
   }
   const {
-    classes, color, logo, image, logoText, routes, open, handleDrawerToggle,
+    classes,
+    color,
+    logo,
+    image,
+    logoText,
+    routes,
+    open,
+    handleDrawerToggle,
   } = props;
-
-  function getLocations() {
-    return [
-      {
-        locationId: 1,
-        locationName: 'Vancouver',
-      },
-      {
-        locationId: 2,
-        locationName: 'Abbotsford',
-      },
-      {
-        locationId: 3,
-        locationName: 'Victoria',
-      },
-    ];
-    // return LocationService.getLocationsForUser();
-  }
-
-  // async function getLocations() {
-  //   if (Auth.isSignedIn()) {
-  //     LocationService.getLocationsForUser()
-  //       .then(results => this.setState({
-  //         locations: results,
-  //         isLoading: false,
-  //       }));
-  //   }
-  // }
 
   const links = (
     <List className={classes.list}>
-      {routes.map((prop, key) => {
+      {routes.map((prop) => {
         // todo: check permissions here ...
         if (prop.redirect || prop.sidebarName === '') {
           return null;
@@ -73,7 +52,7 @@ const Sidebar = ({ ...props }) => {
             to={prop.path}
             className={activePro + classes.item}
             activeClassName="active"
-            key={key}
+            key={prop.path}
           >
             <ListItem button className={classes.itemLink + listItemClasses}>
               <ListItemIcon className={classes.itemIcon + whiteFontClasses}>
@@ -104,7 +83,7 @@ const Sidebar = ({ ...props }) => {
       </a>
     </div>
   );
-  const locations = getLocations();
+  const locations = Auth.getUserLocations();
 
   return (
     <div>
@@ -158,8 +137,16 @@ const Sidebar = ({ ...props }) => {
   );
 };
 
-// Sidebar.propTypes = {
-//   classes: PropTypes.object.isRequired,
-// };
+Sidebar.propTypes = {
+  classes: PropTypes.object.isRequired,
+  color: PropTypes.object.isRequired,
+  logo: PropTypes.object.isRequired,
+  image: PropTypes.object.isRequired,
+  logoText: PropTypes.object.isRequired,
+  routes: PropTypes.object.isRequired,
+  open: PropTypes.object.isRequired,
+  handleDrawerToggle: PropTypes.func.isRequired,
+  location: PropTypes.object.isRequired,
+};
 
 export default withStyles(sidebarStyle)(Sidebar);

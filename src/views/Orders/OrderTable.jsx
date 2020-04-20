@@ -14,20 +14,17 @@ import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
+import PropTypes from 'prop-types';
 import Success from '../../components/Typography/Success';
 
 
 export default class OrderTable extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      orderRows: [],
-      subTotal: 0,
-      total: 0,
-      taxes: [],
-      totalDiscount: 0,
-    };
-  }
+  state = {
+    orderRows: [],
+    subTotal: 0,
+    total: 0,
+    totalDiscount: 0,
+  };
 
   componentDidMount() {
     const { rows } = this.props;
@@ -74,7 +71,7 @@ export default class OrderTable extends React.Component {
     const orderRows = this.state.orderRows.slice();
     const { taxes, priceChanged } = this.props;
     for (const i in orderRows) {
-      if (orderRows[i].id == event.target.name) {
+      if (orderRows[i].id === event.target.name) {
         orderRows[i].discountType = event.target.value;
         this.setState({ orderRows });
         break;
@@ -98,7 +95,7 @@ export default class OrderTable extends React.Component {
     const { taxes, priceChanged } = this.props;
     const { orderRows } = this.state;
     for (const i in orderRows) {
-      if (orderRows[i].id == event.target.name) {
+      if (orderRows[i].id === event.target.name) {
         orderRows[i].qty = event.target.value;
         orderRows[i].total = event.target.value * orderRows[i].salesPrice;
         this.setState({ orderRows });
@@ -122,7 +119,7 @@ export default class OrderTable extends React.Component {
     const { taxes, priceChanged } = this.props;
     const { orderRows } = this.state;
     for (const i in orderRows) {
-      if (orderRows[i].id == event.target.name) {
+      if (orderRows[i].id === event.target.name) {
         const rowProductPackage = orderRows[i].productPackages.find((p) => p.productPackageId === event.target.value);
         orderRows[i].salesPrice = rowProductPackage.packagePrice;
         orderRows[i].productPackageId = event.target.value;
@@ -150,7 +147,7 @@ export default class OrderTable extends React.Component {
     const { taxes, priceChanged } = this.props;
     const { orderRows } = this.state;
     for (const i in orderRows) {
-      if (orderRows[i].id == event.target.name) {
+      if (orderRows[i].id === event.target.name) {
         orderRows[i].salesPrice = event.target.value;
         orderRows[i].total = event.target.value * orderRows[i].qty;
         this.setState({ orderRows });
@@ -174,7 +171,7 @@ export default class OrderTable extends React.Component {
     const { taxes, priceChanged } = this.props;
     const orderRows = this.state.orderRows.slice();
     for (const i in orderRows) {
-      if (orderRows[i].id == event.target.name) {
+      if (orderRows[i].id === event.target.name) {
         orderRows[i].discountAmount = event.target.value;
         orderRows[i].discountPercent = 0;
         this.setState({ orderRows });
@@ -200,7 +197,7 @@ export default class OrderTable extends React.Component {
     const { taxes, priceChanged } = this.props;
     const orderRows = this.state.orderRows.slice();
     for (const i in orderRows) {
-      if (orderRows[i].id == event.target.name) {
+      if (orderRows[i].id === event.target.name) {
         orderRows[i].discountAmount = 0;
         orderRows[i].discountPercent = event.target.value;
         this.setState({ orderRows });
@@ -253,8 +250,11 @@ export default class OrderTable extends React.Component {
   }
 
   total(subTotal, taxes) {
-    const totalTax = taxes.map(({ percentage }) => (percentage / 100) * subTotal).reduce((sum, i) => sum + i, 0);
-    return subTotal + totalTax;
+    if (taxes) {
+      const totalTax = taxes.map(({ percentage }) => (percentage / 100) * subTotal).reduce((sum, i) => sum + i, 0);
+      return subTotal + totalTax;
+    } 
+    return 0;
   }
 
   render() {
@@ -415,7 +415,7 @@ export default class OrderTable extends React.Component {
               <TableCell />
               <TableCell numeric>{this.ccyFormat(subTotal)}</TableCell>
             </TableRow>
-            {taxes.map((tax) => (
+            {taxes && taxes.map((tax) => (
               <TableRow>
                 <TableCell />
                 <TableCell />
@@ -441,3 +441,9 @@ export default class OrderTable extends React.Component {
     );
   }
 }
+
+OrderTable.propTypes = {
+  taxes: PropTypes.object.isRequired,
+  rows: PropTypes.object.isRequired,
+  priceChanged: PropTypes.func.isRequired,
+};

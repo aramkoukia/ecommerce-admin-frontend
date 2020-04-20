@@ -11,27 +11,25 @@ import Auth from '../../services/Auth';
 import PortalSettingsService from '../../services/PortalSettingsService';
 
 export default class SignIn extends React.Component {
+  state = {
+    loading: false,
+    initialLoad: true,
+    userInfo: {
+      username: '',
+      password: '',
+    },
+    error: null,
+    portalSettings: {},
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      loading: false,
-      initialLoad: true,
-      userInfo: {
-        username: '',
-        password: '',
-      },
-      error: null,
-      portalSettings: {},
-    };
-
     this.handleSignIn = this.handleSignIn.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
-
+    const { history } = this.props;
     if (Auth.isSignedIn()) {
-      return this.props.history.push('neworder/:id');
-      // return this.props.history.push('reports');
+      return history.push('neworder/:id');
     }
   }
 
@@ -43,13 +41,14 @@ export default class SignIn extends React.Component {
   }
 
   handleSignIn() {
-    this.setState({ errors: null, initialLoad: false, loading: true });
+    const { userInfo } = this.state;
+    const { history } = this.props;
+    this.setState({ initialLoad: false, loading: true });
     Auth
-      .signIn(this.state.userInfo.username, this.state.userInfo.password)
+      .signIn(userInfo.username, userInfo.password)
       .then((response) => {
         if (!response.is_error) {
-          this.props.history.push('neworder/:id');
-          // this.props.history.push('reports');
+          history.push('neworder/:id');
         } else {
           this.setState({ error: response.error_content.error_description });
         }
@@ -97,7 +96,8 @@ export default class SignIn extends React.Component {
         backgroundColor: 'red',
       },
     };
-    const { search } = this.props.location;
+    const { location } = this.props;
+    const { search } = location;
     const params = new URLSearchParams(search);
     const {
       loading, portalSettings, error, initialLoad,
@@ -124,8 +124,8 @@ export default class SignIn extends React.Component {
       }
 
       if (
-        this.props.history.location.state
-        && this.props.history.location.state.signedOut
+        location.state
+        && location.state.signedOut
       ) {
         initialLoadContent = (
           <div className="alert alert-info" role="alert">

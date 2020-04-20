@@ -21,29 +21,26 @@ import Snackbar from '../../components/Snackbar/Snackbar';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import UserService from '../../services/UserService';
 import RoleService from '../../services/RoleService';
+import Auth from '../../services/Auth';
 
 export default class Users extends React.Component {
+  state = {
+    users: [],
+    openDialog: false,
+    openUserEditDialog: false,
+    selectedRow: null,
+    openSnackbar: false,
+    snackbarMessage: '',
+    snackbarColor: '',
+    newPassword: '',
+    locations: Auth.getUserLocations(),
+    roles: [],
+    roleChecked: [0],
+    locationChecked: [0],
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      users: [],
-      openDialog: false,
-      openUserEditDialog: false,
-      selectedRow: null,
-      openSnackbar: false,
-      snackbarMessage: '',
-      snackbarColor: '',
-      newPassword: '',
-      locations: [
-        { locationId: 1, locationName: 'Vancouver' },
-        { locationId: 2, locationName: 'Abbotsford' },
-        { locationId: 3, locationName: 'Victoria' },
-      ],
-      roles: [],
-      roleChecked: [0],
-      locationChecked: [0],
-    };
 
     this.handleUpdate = this.handleUpdate.bind(this);
     this.handleUpdateUser = this.handleUpdateUser.bind(this);
@@ -56,33 +53,6 @@ export default class Users extends React.Component {
   componentDidMount() {
     this.usersList();
     this.rolesList();
-  }
-
-  permissionsClicked(tableMeta) {
-    const { users } = this.state;
-    const user = users[tableMeta.rowIndex];
-    this.getUserRoles(user[1]);
-    this.getUserLocations(user[1]);
-    setTimeout(() => {
-      this.setState({
-        openDialog: true,
-        selectedRow: user,
-      });
-    }, 1000);
-  }
-
-  editClicked(tableMeta) {
-    const { users } = this.state;
-    const user = users[tableMeta.rowIndex];
-    setTimeout(() => {
-      this.setState({
-        openUserEditDialog: true,
-        selectedRow: user,
-        givenName: user[0],
-        userName: user[2],
-        email: user[1],
-      });
-    }, 1000);
   }
 
   getUserRoles(email) {
@@ -149,6 +119,33 @@ export default class Users extends React.Component {
       locationChecked: [0],
     });
   };
+
+  editClicked(tableMeta) {
+    const { users } = this.state;
+    const user = users[tableMeta.rowIndex];
+    setTimeout(() => {
+      this.setState({
+        openUserEditDialog: true,
+        selectedRow: user,
+        givenName: user[0],
+        userName: user[2],
+        email: user[1],
+      });
+    }, 1000);
+  }
+
+  permissionsClicked(tableMeta) {
+    const { users } = this.state;
+    const user = users[tableMeta.rowIndex];
+    this.getUserRoles(user[1]);
+    this.getUserLocations(user[1]);
+    setTimeout(() => {
+      this.setState({
+        openDialog: true,
+        selectedRow: user,
+      });
+    }, 1000);
+  }
 
   async handleUpdateUser() {
     const {
@@ -319,7 +316,9 @@ export default class Users extends React.Component {
             <Button
               color="primary"
               index={tableMeta.columnIndex}
-              onClick={(event) => this.permissionsClicked(tableMeta, tableMeta.columnIndex, value, event)}
+              onClick={(event) => this.permissionsClicked(
+                tableMeta, tableMeta.columnIndex, value, event,
+              )}
             >
               Permissions
             </Button>
@@ -353,7 +352,6 @@ export default class Users extends React.Component {
       newPassword,
       givenName,
       email,
-      userName,
     } = this.state;
 
 

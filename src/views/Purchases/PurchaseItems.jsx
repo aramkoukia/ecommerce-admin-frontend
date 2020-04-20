@@ -16,6 +16,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import MaterialTable from 'material-table';
 import ReactToPrint from 'react-to-print';
+import PropTypes from 'prop-types';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -40,28 +41,29 @@ function dateFormat(dateString) {
   return stringDate;
 }
 
+// eslint-disable-next-line no-extend-native
 Date.prototype.addHours = function (h) {
   this.setHours(this.getHours() + h);
   return this;
 };
 
 export default class PurchaseItems extends React.Component {
+  state = {
+    openMarkAsPaidDialog: false,
+    openMarkAsOnDeliveryDialog: false,
+    openMarkAsCustomClearanceDialog: false,
+    openMarkAsArrivedDialog: false,
+    loading: false,
+    locations: [],
+    plannedItems: [],
+    paidItems: [],
+    onDeliveryItems: [],
+    customClearanceItems: [],
+    arrivedItems: [],
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      openMarkAsPaidDialog: false,
-      openMarkAsOnDeliveryDialog: false,
-      openMarkAsCustomClearanceDialog: false,
-      openMarkAsArrivedDialog: false,
-      loading: false,
-      locations: [],
-      plannedItems: [],
-      paidItems: [],
-      onDeliveryItems: [],
-      customClearanceItems: [],
-      arrivedItems: [],
-    };
 
     this.markAsPaidClicked = this.markAsPaidClicked.bind(this);
     this.markAsOnDeliveryClicked = this.markAsOnDeliveryClicked.bind(this);
@@ -90,7 +92,7 @@ export default class PurchaseItems extends React.Component {
 
   handleLocationChange = (event) => {
     const { locations } = this.state;
-    const { locationName } = locations.find((m) => m.locationId == event.target.value);
+    const { locationName } = locations.find((m) => m.locationId === event.target.value);
 
     this.setState({
       locationId: event.target.value,
@@ -130,7 +132,7 @@ export default class PurchaseItems extends React.Component {
       loading: true,
     });
 
-    const result = await PurchaseService.deletePurchaseDetail(purchaseDetailId);
+    await PurchaseService.deletePurchaseDetail(purchaseDetailId);
 
     this.setState({
       loading: false,
@@ -142,7 +144,7 @@ export default class PurchaseItems extends React.Component {
       loading: true,
     });
 
-    const result = await this.updatePurchaseDetailStatus('Paid');
+    await this.updatePurchaseDetailStatus('Paid');
 
     this.setState({
       openMarkAsPaidDialog: false,
@@ -169,7 +171,7 @@ export default class PurchaseItems extends React.Component {
       loading: true,
     });
 
-    const result = await this.updatePurchaseDetailStatus('OnDelivery');
+    await this.updatePurchaseDetailStatus('OnDelivery');
 
     this.setState({
       openMarkAsOnDeliveryDialog: false,
@@ -196,7 +198,7 @@ export default class PurchaseItems extends React.Component {
       loading: true,
     });
 
-    const result = await this.updatePurchaseDetailStatus('CustomClearance');
+    await this.updatePurchaseDetailStatus('CustomClearance');
 
     this.setState({
       openMarkAsCustomClearanceDialog: false,
@@ -206,8 +208,6 @@ export default class PurchaseItems extends React.Component {
 
   markAsArrivedClicked(amount, unitPrice, overheadCost, poNumber, purchaseDetailId) {
     const { purchase } = this.props;
-    const { locations } = this.state;
-
     LocationService.getLocationsForUser()
       .then((results) => this.setState({
         locations: results,
@@ -229,7 +229,7 @@ export default class PurchaseItems extends React.Component {
 
     const { locationId } = this.state;
     if (locationId && locationId > 0) {
-      const result = await this.updatePurchaseDetailStatus('Arrived');
+      await this.updatePurchaseDetailStatus('Arrived');
 
       this.setState({
         openMarkAsArrivedDialog: false,
@@ -260,6 +260,10 @@ export default class PurchaseItems extends React.Component {
       poNumber,
       locationId,
       locationName,
+      paidItems,
+      onDeliveryItems,
+      customClearanceItems,
+      arrivedItems,
     } = this.state;
 
     const purchaseDetailStatusUpdate = {
@@ -301,19 +305,19 @@ export default class PurchaseItems extends React.Component {
 
       if (status === 'Paid') {
         this.setState({
-          paidItems: [...this.state.paidItems, purchaseDetailStatusUpdate],
+          paidItems: [...paidItems, purchaseDetailStatusUpdate],
         });
       } else if (status === 'OnDelivery') {
         this.setState({
-          onDeliveryItems: [...this.state.onDeliveryItems, purchaseDetailStatusUpdate],
+          onDeliveryItems: [...onDeliveryItems, purchaseDetailStatusUpdate],
         });
       } else if (status === 'CustomClearance') {
         this.setState({
-          customClearanceItems: [...this.state.customClearanceItems, purchaseDetailStatusUpdate],
+          customClearanceItems: [...customClearanceItems, purchaseDetailStatusUpdate],
         });
       } else if (status === 'Arrived') {
         this.setState({
-          arrivedItems: [...this.state.arrivedItems, purchaseDetailStatusUpdate],
+          arrivedItems: [...arrivedItems, purchaseDetailStatusUpdate],
         });
       }
     }
@@ -502,17 +506,23 @@ export default class PurchaseItems extends React.Component {
               actions={[{
                 icon: 'arrow_downward',
                 tooltip: 'Mark as Paid',
-                onClick: (event, rowData) => this.markAsPaidClicked(
+                onClick: (rowData) => this.markAsPaidClicked(
                   rowData.amount,
-                  rowData.unitPrice, rowData.overheadCost, purchase.poNumber, rowData.purchaseDetailId,
+                  rowData.unitPrice,
+                  rowData.overheadCost,
+                  purchase.poNumber,
+                  rowData.purchaseDetailId,
                 ),
               }]}
               editable={{
-                onRowUpdate: (newData, oldData) => new Promise((resolve, reject) => {
+                onRowUpdate: (newData, oldData) => new Promise((resolve) => {
                   setTimeout(() => {
                     {
                       const index = plannedItems.indexOf(oldData);
-                      newData.totalPrice = Number(newData.amount) * Number(newData.unitPrice) + Number(newData.overheadCost);
+                      // eslint-disable-next-line no-param-reassign
+                      newData.totalPrice = Number(newData.amount)
+                                           * Number(newData.unitPrice)
+                                           + Number(newData.overheadCost);
                       plannedItems[index] = newData;
                       PurchaseService.updatePurchaseDetail(newData);
                       this.setState({ plannedItems }, () => resolve());
@@ -520,7 +530,7 @@ export default class PurchaseItems extends React.Component {
                     resolve();
                   }, 1000);
                 }),
-                onRowDelete: (oldData) => new Promise((resolve, reject) => {
+                onRowDelete: (oldData) => new Promise((resolve) => {
                   setTimeout(() => {
                     {
                       this.deleteClicked(oldData.purchaseDetailId);
@@ -571,7 +581,7 @@ export default class PurchaseItems extends React.Component {
               actions={[{
                 icon: 'arrow_downward',
                 tooltip: 'Mark as On Delivery',
-                onClick: (event, rowData) => this.markAsOnDeliveryClicked(
+                onClick: (rowData) => this.markAsOnDeliveryClicked(
                   rowData.amount,
                   rowData.unitPrice,
                   rowData.overheadCost,
@@ -581,11 +591,14 @@ export default class PurchaseItems extends React.Component {
                 ),
               }]}
               editable={{
-                onRowUpdate: (newData, oldData) => new Promise((resolve, reject) => {
+                onRowUpdate: (newData, oldData) => new Promise((resolve) => {
                   setTimeout(() => {
                     {
                       const index = paidItems.indexOf(oldData);
-                      newData.totalPrice = Number(newData.amount) * Number(newData.unitPrice) + Number(newData.overheadCost);
+                      // eslint-disable-next-line no-param-reassign
+                      newData.totalPrice = Number(newData.amount)
+                                           * Number(newData.unitPrice)
+                                           + Number(newData.overheadCost);
                       paidItems[index] = newData;
                       PurchaseService.updatePurchaseDetail(newData);
                       this.setState({ paidItems }, () => resolve());
@@ -593,7 +606,7 @@ export default class PurchaseItems extends React.Component {
                     resolve();
                   }, 1000);
                 }),
-                onRowDelete: (oldData) => new Promise((resolve, reject) => {
+                onRowDelete: (oldData) => new Promise((resolve) => {
                   setTimeout(() => {
                     {
                       this.deleteClicked(oldData.purchaseDetailId);
@@ -610,7 +623,17 @@ export default class PurchaseItems extends React.Component {
               <TableBody>
                 <TableRow>
                   <TableCell colSpan={4}><h5>Total</h5></TableCell>
-                  <TableCell numeric><Success><h5>{ccyFormat(paidItems.map((item) => item.totalPrice).reduce((prev, next) => prev + next, 0))}</h5></Success></TableCell>
+                  <TableCell numeric>
+                    <Success>
+                      <h5>
+                        {ccyFormat(
+                          paidItems
+                            .map((item) => item.totalPrice)
+                            .reduce((prev, next) => prev + next, 0),
+                        )}
+                      </h5>
+                    </Success>
+                  </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -644,17 +667,23 @@ export default class PurchaseItems extends React.Component {
               actions={[{
                 icon: 'arrow_downward',
                 tooltip: 'Mark as Custom Clearance',
-                onClick: (event, rowData) => this.markAsCustomClearanceClicked(
+                onClick: (rowData) => this.markAsCustomClearanceClicked(
                   rowData.amount,
-                  rowData.unitPrice, rowData.overheadCost, purchase.poNumber, rowData.purchaseDetailId,
+                  rowData.unitPrice,
+                  rowData.overheadCost,
+                  purchase.poNumber,
+                  rowData.purchaseDetailId,
                 ),
               }]}
               editable={{
-                onRowUpdate: (newData, oldData) => new Promise((resolve, reject) => {
+                onRowUpdate: (newData, oldData) => new Promise((resolve) => {
                   setTimeout(() => {
                     {
                       const index = onDeliveryItems.indexOf(oldData);
-                      newData.totalPrice = Number(newData.amount) * Number(newData.unitPrice) + Number(newData.overheadCost);
+                      // eslint-disable-next-line no-param-reassign
+                      newData.totalPrice = Number(newData.amount)
+                                           * Number(newData.unitPrice)
+                                           + Number(newData.overheadCost);
                       onDeliveryItems[index] = newData;
                       PurchaseService.updatePurchaseDetail(newData);
                       this.setState({ onDeliveryItems }, () => resolve());
@@ -662,7 +691,7 @@ export default class PurchaseItems extends React.Component {
                     resolve();
                   }, 1000);
                 }),
-                onRowDelete: (oldData) => new Promise((resolve, reject) => {
+                onRowDelete: (oldData) => new Promise((resolve) => {
                   setTimeout(() => {
                     {
                       this.deleteClicked(oldData.purchaseDetailId);
@@ -713,7 +742,7 @@ export default class PurchaseItems extends React.Component {
               actions={[{
                 icon: 'arrow_downward',
                 tooltip: 'Mark as Arrived',
-                onClick: (event, rowData) => this.markAsArrivedClicked(
+                onClick: (rowData) => this.markAsArrivedClicked(
                   rowData.amount,
                   rowData.unitPrice,
                   rowData.overheadCost,
@@ -723,11 +752,14 @@ export default class PurchaseItems extends React.Component {
                 ),
               }]}
               editable={{
-                onRowUpdate: (newData, oldData) => new Promise((resolve, reject) => {
+                onRowUpdate: (newData, oldData) => new Promise((resolve) => {
                   setTimeout(() => {
                     {
                       const index = customClearanceItems.indexOf(oldData);
-                      newData.totalPrice = Number(newData.amount) * Number(newData.unitPrice) + Number(newData.overheadCost);
+                      // eslint-disable-next-line no-param-reassign
+                      newData.totalPrice = Number(newData.amount)
+                                         * Number(newData.unitPrice)
+                                         + Number(newData.overheadCost);
                       customClearanceItems[index] = newData;
                       PurchaseService.updatePurchaseDetail(newData);
                       this.setState({ customClearanceItems }, () => resolve());
@@ -735,7 +767,7 @@ export default class PurchaseItems extends React.Component {
                     resolve();
                   }, 1000);
                 }),
-                onRowDelete: (oldData) => new Promise((resolve, reject) => {
+                onRowDelete: (oldData) => new Promise((resolve) => {
                   setTimeout(() => {
                     {
                       this.deleteClicked(oldData.purchaseDetailId);
@@ -784,11 +816,14 @@ export default class PurchaseItems extends React.Component {
               options={options}
               title=""
               editable={{
-                onRowUpdate: (newData, oldData) => new Promise((resolve, reject) => {
+                onRowUpdate: (newData, oldData) => new Promise((resolve) => {
                   setTimeout(() => {
                     {
                       const index = arrivedItems.indexOf(oldData);
-                      newData.totalPrice = Number(newData.amount) * Number(newData.unitPrice) + Number(newData.overheadCost);
+                      // eslint-disable-next-line no-param-reassign
+                      newData.totalPrice = Number(newData.amount)
+                                           * Number(newData.unitPrice)
+                                           + Number(newData.overheadCost);
                       arrivedItems[index] = newData;
                       PurchaseService.updatePurchaseDetail(newData);
                       this.setState({ arrivedItems }, () => resolve());
@@ -796,7 +831,7 @@ export default class PurchaseItems extends React.Component {
                     resolve();
                   }, 1000);
                 }),
-                onRowDelete: (oldData) => new Promise((resolve, reject) => {
+                onRowDelete: (oldData) => new Promise((resolve) => {
                   setTimeout(() => {
                     {
                       this.deleteClicked(oldData.purchaseDetailId);
@@ -813,7 +848,13 @@ export default class PurchaseItems extends React.Component {
               <TableBody>
                 <TableRow>
                   <TableCell colSpan={6}><h5>Total</h5></TableCell>
-                  <TableCell numeric><Success><h5>{ccyFormat(arrivedItems.map((item) => item.totalPrice).reduce((prev, next) => prev + next, 0))}</h5></Success></TableCell>
+                  <TableCell numeric>
+                    <Success>
+                      <h5>
+                        {ccyFormat(arrivedItems.map((item) => item.totalPrice).reduce((prev, next) => prev + next, 0))}
+                      </h5>
+                    </Success>
+                  </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -1287,7 +1328,12 @@ export default class PurchaseItems extends React.Component {
                           }}
                         >
                           {locations && (
-                            locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))}
+                            locations.map((l, key) => (
+                              <MenuItem name={key} value={l.locationId}>
+                                {l.locationName}
+                              </MenuItem>
+                            ))
+                          )}
                         </Select>
                       </FormControl>
                     </GridItem>
@@ -1319,3 +1365,7 @@ export default class PurchaseItems extends React.Component {
     );
   }
 }
+
+PurchaseItems.propTypes = {
+  purchase: PropTypes.object.isRequired,
+};

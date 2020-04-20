@@ -18,50 +18,33 @@ import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import Card from '../../components/Card/Card';
-
+import Auth from '../../services/Auth';
 import ProductService from '../../services/ProductService';
 
-function getLocations() {
-  return [
-    {
-      locationId: 1,
-      locationName: 'Vancouver',
-    },
-    {
-      locationId: 2,
-      locationName: 'Abbotsford',
-    },
-    {
-      locationId: 3,
-      locationName: 'Victoria',
-    },
-  ];
-  // return LocationService.getLocationsForUser();
-}
 
 export default class Inventory extends React.Component {
+  state = {
+    products: [],
+    openDialog: false,
+    selectedRow: null,
+    vancouverQuantity: 0,
+    vancouverStorageCode: '',
+    vancouverNotes: '',
+    abbotsfordQuantity: 0,
+    abbotsfordStorageCode: '',
+    abbotsfordNotes: '',
+    openSnackbar: false,
+    snackbarMessage: '',
+    snackbarColor: '',
+    loading: false,
+    transferNotes: '',
+    transferQuantity: 0,
+    fromLocation: 1,
+    toLocation: 2,
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      products: [],
-      openDialog: false,
-      selectedRow: null,
-      vancouverQuantity: 0,
-      vancouverStorageCode: '',
-      vancouverNotes: '',
-      abbotsfordQuantity: 0,
-      abbotsfordStorageCode: '',
-      abbotsfordNotes: '',
-      openSnackbar: false,
-      snackbarMessage: '',
-      snackbarColor: '',
-      loading: false,
-      transferNotes: '',
-      transferQuantity: 0,
-      fromLocation: 1,
-      toLocation: 2,
-    };
     this.rowClicked = this.rowClicked.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
@@ -321,22 +304,6 @@ export default class Inventory extends React.Component {
           filter: false,
         },
       },
-      // {
-      //   name: 'Location',
-      //   options: {
-      //     filter: true,
-      //     customBodyRender: (value, tableMeta, updateValue) => {
-      //       return (
-      //         <Button color="primary" onClick={this.newCustomer}>New Customer</Button>
-      //         // <Cities
-      //         //   value={value}
-      //         //   index={tableMeta.columnIndex}
-      //         //   change={event => updateValue(event)}
-      //         // />
-      //       );
-      //     },
-      //   },
-      // },
     ];
 
     const options = {
@@ -369,7 +336,7 @@ export default class Inventory extends React.Component {
       toLocation,
     } = this.state;
 
-    const locations = getLocations();
+    const locations = Auth.getUserLocations();
 
     return (
       <div>

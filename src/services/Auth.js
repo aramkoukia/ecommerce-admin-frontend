@@ -21,6 +21,7 @@ export default class Auth {
         AuthStore.setToken(response.content.token);
         AuthStore.setUser(email);
         AuthStore.setUserPermissions(response.content.permissions);
+        AuthStore.setLocations(response.content.locations);
       }
       return response;
     });
@@ -39,6 +40,10 @@ export default class Auth {
     return permissions ? permissions.includes(permission) : false;
   }
 
+  static getUserLocations() {
+    return AuthStore.getUserLocations();
+  }
+
   static confirm(token) {
     return RestUtilities.post('auth/confirm', { token })
       .then(true)
@@ -48,6 +53,8 @@ export default class Auth {
   static signOut() {
     AuthStore.removeToken();
     AuthStore.removeUser();
+    AuthStore.removeUserPermissions();
+    AuthStore.removeLocations();
     window.location.replace('/?expired=1');
   }
 }

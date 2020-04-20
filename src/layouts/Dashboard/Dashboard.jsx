@@ -25,37 +25,16 @@ function requireAuth(nextState, replace) {
 }
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      mobileOpen: false,
-      permissionsChanged: false,
-      portalSettings: {},
-    };
-    this.resizeFunction = this.resizeFunction.bind(this);
-    this.permissionsChanged = this.permissionsChanged.bind(this);
-  }
-
-  permissionsChanged() {
-    this.setState({ permissionsChanged: true });
-  }
-
-  handleDrawerToggle = () => {
-    this.setState({ mobileOpen: !this.state.mobileOpen });
+  state = {
+    mobileOpen: false,
+    permissionsChanged: false,
+    portalSettings: {},
   };
 
-  getRoute() {
-    return this.props.location.pathname !== '/maps';
-  }
-
-  isLogin() {
-    return this.props.location.pathname === '/login';
-  }
-
-  resizeFunction() {
-    if (window.innerWidth >= 960) {
-      this.setState({ mobileOpen: false });
-    }
+  constructor(props) {
+    super(props);
+    this.resizeFunction = this.resizeFunction.bind(this);
+    this.permissionsChanged = this.permissionsChanged.bind(this);
   }
 
   async componentDidMount() {
@@ -80,9 +59,31 @@ class App extends React.Component {
     window.removeEventListener('resize', this.resizeFunction);
   }
 
+  getRoute() {
+    return this.props.location.pathname !== '/maps';
+  }
+
+  handleDrawerToggle = () => {
+    this.setState({ mobileOpen: !this.state.mobileOpen });
+  }
+
+  permissionsChanged() {
+    this.setState({ permissionsChanged: true });
+  }
+
+  isLogin() {
+    return this.props.location.pathname === '/login';
+  }
+
+  resizeFunction() {
+    if (window.innerWidth >= 960) {
+      this.setState({ mobileOpen: false });
+    }
+  }
+
   render() {
     const { classes, ...rest } = this.props;
-    const { permissionsChanged, portalSettings } = this.state;
+    const { permissionsChanged, portalSettings, mobileOpen } = this.state;
     const logoImageUrl = portalSettings ? `${Api.apiRoot}/${portalSettings.logoImageUrl}` : logo;
     const sidebarImageUrl = portalSettings ? `${Api.apiRoot}/${portalSettings.sidebarImageUrl}` : image;
 
@@ -140,20 +141,20 @@ class App extends React.Component {
             logo={logoImageUrl}
             image={sidebarImageUrl}
             handleDrawerToggle={this.handleDrawerToggle}
-            open={this.state.mobileOpen}
+            open={mobileOpen}
             color="blue"
             {...rest}
           />
         ) : <div />}
 
         <div className={classes.mainPanel} ref="mainPanel">
-
-          <Header
-            routes={dashboardRoutes}
-            handleDrawerToggle={this.handleDrawerToggle}
-            {...rest}
-          />
-
+          { !this.isLogin() ? (
+            <Header
+              routes={dashboardRoutes}
+              handleDrawerToggle={this.handleDrawerToggle}
+              {...rest}
+            />
+          ) : <div />}
           {/* On the /maps route we want the map to be on full screen -
           this is not possible if the content and conatiner
           classes are present because they have some

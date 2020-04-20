@@ -9,13 +9,13 @@ import Card from '../../components/Card/Card';
 import CustomerService from '../../services/CustomerService';
 
 export default class Customers extends React.Component {
+  state = {
+    customers: [],
+    loading: false,
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      customers: [],
-      loading: false,
-    };
     this.rowClicked = this.rowClicked.bind(this);
   }
 
@@ -28,7 +28,7 @@ export default class Customers extends React.Component {
     const columns = ['customerCode', 'companyName', 'firstName', 'lastName', 'email', 'accountBalance', 'creditLimit', 'pstNumber', 'storeCredit', 'phoneNumber', 'pstExempt', 'isDisabled'];
     const showDisabled = true;
     CustomerService.getCustomersWithBalance(showDisabled)
-      .then((results) => results.map((row) => columns.map((column) => row[column] || '')))
+      .then((results) => results && results.map((row) => columns.map((column) => row[column] || '')))
       .then((data) => this.setState({ customers: data, loading: false }));
   }
 
@@ -165,12 +165,14 @@ export default class Customers extends React.Component {
                 <div className={styles.cardTitleWhite}>Customers List</div>
               </CardHeader>
               <CardBody>
+                {customers && (
                 <MUIDataTable
                   title="Click on each customer record below to see their previous orders."
                   data={customers}
                   columns={columns}
                   options={options}
                 />
+                )}
               </CardBody>
             </Card>
             { loading && (<LinearProgress />) }
