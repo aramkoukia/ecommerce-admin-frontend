@@ -25,13 +25,13 @@ Date.prototype.addHours = function (h) {
 };
 
 export default class SalesByPurchasePriceReport extends React.Component {
+  state = {
+    fromDate: '',
+    toDate: '',
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      fromDate: '',
-      toDate: '',
-    };
     this.search = this.search.bind(this);
   }
 

@@ -18,19 +18,19 @@ import Button from '../../components/CustomButtons/Button';
 import ProductService from '../../services/ProductService';
 
 export default class Products extends React.Component {
+  state = {
+    products: [],
+    loading: false,
+    openSnackbar: false,
+    snackbarMessage: '',
+    snackbarColor: '',
+    page: 1,
+    openDialog: false,
+    productPackages: [],
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      products: [],
-      loading: false,
-      openSnackbar: false,
-      snackbarMessage: '',
-      snackbarColor: '',
-      page: 1,
-      openDialog: false,
-      productPackages: [],
-    };
     this.showTransactions = this.showTransactions.bind(this);
     this.updateVariations = this.updateVariations.bind(this);
     this.syncProducts = this.syncProducts.bind(this);

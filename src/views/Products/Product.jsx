@@ -46,38 +46,37 @@ Date.prototype.addDays = function (days) {
 };
 
 export class Product extends React.Component {
+  state = {
+    product: null,
+    productTransactions: [],
+    openSnackbar: false,
+    snackbarMessage: '',
+    snackbarColor: '',
+    fromDate: '',
+    toDate: '',
+    openDialog: false,
+    vancouverQuantity: 0,
+    vancouverStorageCode: '',
+    vancouverNotes: '',
+    abbotsfordQuantity: 0,
+    abbotsfordStorageCode: '',
+    abbotsfordNotes: '',
+    loading: false,
+    transferNotes: '',
+    transferQuantity: 0,
+    fromLocation: 1,
+    toLocation: 2,
+    locationId: 0,
+    locations: [
+      {
+        locationId: 0,
+        locationName: 'All',
+      },
+    ],
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      product: null,
-      productTransactions: [],
-      openSnackbar: false,
-      snackbarMessage: '',
-      snackbarColor: '',
-      fromDate: '',
-      toDate: '',
-      openDialog: false,
-      vancouverQuantity: 0,
-      vancouverStorageCode: '',
-      vancouverNotes: '',
-      abbotsfordQuantity: 0,
-      abbotsfordStorageCode: '',
-      abbotsfordNotes: '',
-      loading: false,
-      transferNotes: '',
-      transferQuantity: 0,
-      fromLocation: 1,
-      toLocation: 2,
-      locationId: 0,
-      locations: [
-        {
-          locationId: 0,
-          locationName: 'All',
-        },
-      ],
-    };
-
     this.enableDisableProducts = this.enableDisableProducts.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
     this.handleChange = this.handleChange.bind(this);

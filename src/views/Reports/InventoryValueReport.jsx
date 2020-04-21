@@ -10,16 +10,12 @@ import Card from '../../components/Card/Card';
 import ReportService from '../../services/ReportService';
 
 export default class InventoryValueReport extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      products: [],
-      inventoryValueTotal: [],
-      inventoryValueTotalByCategory: [],
-      loading: false,
-    };
-  }
+  state = {
+    products: [],
+    inventoryValueTotal: [],
+    inventoryValueTotalByCategory: [],
+    loading: false,
+  };
 
   componentDidMount() {
     this.productsList();

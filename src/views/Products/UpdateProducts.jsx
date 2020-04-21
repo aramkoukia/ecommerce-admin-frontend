@@ -18,19 +18,19 @@ import ProductService from '../../services/ProductService';
 import ProductCategoryService from '../../services/ProductCategoryService';
 
 export default class UpdateProducts extends React.Component {
+  state = {
+    products: [],
+    loading: false,
+    openSnackbar: false,
+    snackbarMessage: '',
+    snackbarColor: '',
+    openDialog: false,
+    productPackages: [],
+    productCategories: [],
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      products: [],
-      loading: false,
-      openSnackbar: false,
-      snackbarMessage: '',
-      snackbarColor: '',
-      openDialog: false,
-      productPackages: [],
-      productCategories: [],
-    };
     this.handleChange = this.handleChange.bind(this);
     this.updateVariations = this.updateVariations.bind(this);
     this.handleClose = this.handleClose.bind(this);
