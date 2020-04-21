@@ -394,7 +394,14 @@ export default class Inventory extends React.Component {
                         }}
                       >
                         { locations && (
-                          locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))}
+                          locations.map((l, key) => (
+                            <MenuItem
+                              name={key}
+                              value={l.locationId}
+                            >
+                              {l.locationName}
+                            </MenuItem>
+                          )))}
                       </Select>
                     </FormControl>
                   </GridItem>
@@ -410,7 +417,14 @@ export default class Inventory extends React.Component {
                         }}
                       >
                         { locations && (
-                          locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))}
+                          locations.map((l, key) => (
+                            <MenuItem
+                              name={key}
+                              value={l.locationId}
+                            >
+                              {l.locationName}
+                            </MenuItem>
+                          )))}
                       </Select>
                     </FormControl>
                   </GridItem>

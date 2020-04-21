@@ -40,8 +40,9 @@ function dateFormat(dateString) {
   return stringDate;
 }
 
+// eslint-disable-next-line no-extend-native
 Date.prototype.addDays = function (days) {
-  this.setDate(this.getDate() + parseInt(days));
+  this.setDate(this.getDate() + parseInt(days, 10));
   return this;
 };
 
@@ -101,6 +102,14 @@ export class Product extends React.Component {
     this.search(0);
   }
 
+  async getLocations() {
+    const { locations } = this.state;
+    LocationService.getLocationsForUser()
+      .then((results) => this.setState({
+        locations: [...locations, ...results],
+      }));
+  }
+
   handleClose = () => {
     this.setState({
       openDialog: false,
@@ -113,26 +122,96 @@ export class Product extends React.Component {
     });
   };
 
-  async getLocations() {
-    const { locations } = this.state;
-    LocationService.getLocationsForUser()
-      .then((results) => this.setState({
-        locations: [...locations, ...results],
-      }));
+  handleLocationChange = (event) => {
+    this.setState({ locationId: event.target.value });
+    this.search(event.target.value);
   }
 
-  updateTransferClicked() {
-    const { product } = this.state;
+  search(locationId) {
+    const { fromDate, toDate } = this.state;
+    const { match } = this.props;
+    const productId = match.params.id;
+    const columns = ['date', 'transactionType', 'amount', 'balance', 'locationName', 'notes', 'userName'];
+    ProductService.getProductTransactions(productId, fromDate, toDate, locationId)
+      .then((results) => results.map((row) => columns.map((column) => {
+        if (column === 'date') {
+          return dateFormat(row[column]);
+        }
+        return row[column] || '';
+      })))
+      .then((data) => this.setState({ productTransactions: data }));
+  }
+
+  enableDisableProducts() {
+    const { match } = this.props;
+    const productId = match.params.id;
+    ProductService.disableProduct(productId);
+    window.location.reload();
+  }
+
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
+  }
+
+  async handleUpdate() {
+    const {
+      vancouverQuantity,
+      vancouverStorageCode,
+      vancouverNotes,
+      abbotsfordQuantity,
+      abbotsfordStorageCode,
+      abbotsfordNotes,
+      product,
+    } = this.state;
+
+    if (vancouverQuantity !== product.vancouverBalance
+        || vancouverStorageCode !== product.vancouverStorageCode) {
+      const productInventoryHistory = {
+        locationId: 1, // vancouver
+        productId: product.productId,
+        balance: vancouverQuantity,
+        binCode: vancouverStorageCode,
+        notes: vancouverNotes,
+      };
+      const result = await ProductService.updateInventory(productInventoryHistory);
+      if (result && result.orderId) {
+        this.setState({
+          openSnackbar: true,
+          snackbarMessage: 'Vancouver\'s Inventory and Storage location was successfully updated!',
+          snackbarColor: 'success',
+        });
+      }
+    }
+
+    if (abbotsfordQuantity !== product.abbotsfordBalance
+        || abbotsfordStorageCode !== product.abbotsfordStorageCode) {
+      const productInventoryHistory = {
+        locationId: 2, // abbotsford
+        productId: product.productId,
+        balance: abbotsfordQuantity,
+        binCode: abbotsfordStorageCode,
+        notes: abbotsfordNotes,
+      };
+      const result = await ProductService.updateInventory(productInventoryHistory);
+      if (result && result.orderId) {
+        this.setState({
+          openSnackbar: true,
+          snackbarMessage: 'Abbotsford\'s Inventory and Storage location was successfully updated!',
+          snackbarColor: 'success',
+        });
+      }
+    }
 
     this.setState({
-      openDialog: true,
-      vancouverQuantity: product.vancouverBalance,
-      vancouverStorageCode: product.vancouverBinCode,
+      openDialog: false,
+      vancouverQuantity: 0,
+      vancouverStorageCode: '',
       vancouverNotes: '',
-      abbotsfordQuantity: product.abbotsfordBalance,
-      abbotsfordStorageCode: product.vancouverBinCode,
+      abbotsfordQuantity: 0,
+      abbotsfordStorageCode: '',
       abbotsfordNotes: '',
     });
+    window.location.reload();
   }
 
   async handleTransfer() {
@@ -203,94 +282,18 @@ export class Product extends React.Component {
     window.location.reload();
   }
 
-  async handleUpdate() {
-    const {
-      vancouverQuantity,
-      vancouverStorageCode,
-      vancouverNotes,
-      abbotsfordQuantity,
-      abbotsfordStorageCode,
-      abbotsfordNotes,
-      product,
-    } = this.state;
-
-    if (vancouverQuantity !== product.vancouverBalance || vancouverStorageCode !== product.vancouverStorageCode) {
-      const productInventoryHistory = {
-        locationId: 1, // vancouver
-        productId: product.productId,
-        balance: vancouverQuantity,
-        binCode: vancouverStorageCode,
-        notes: vancouverNotes,
-      };
-      const result = await ProductService.updateInventory(productInventoryHistory);
-      if (result && result.orderId) {
-        this.setState({
-          openSnackbar: true,
-          snackbarMessage: 'Vancouver\'s Inventory and Storage location was successfully updated!',
-          snackbarColor: 'success',
-        });
-      }
-    }
-
-    if (abbotsfordQuantity !== product.abbotsfordBalance || abbotsfordStorageCode !== product.abbotsfordStorageCode) {
-      const productInventoryHistory = {
-        locationId: 2, // abbotsford
-        productId: product.productId,
-        balance: abbotsfordQuantity,
-        binCode: abbotsfordStorageCode,
-        notes: abbotsfordNotes,
-      };
-      const result = await ProductService.updateInventory(productInventoryHistory);
-      if (result && result.orderId) {
-        this.setState({
-          openSnackbar: true,
-          snackbarMessage: 'Abbotsford\'s Inventory and Storage location was successfully updated!',
-          snackbarColor: 'success',
-        });
-      }
-    }
+  updateTransferClicked() {
+    const { product } = this.state;
 
     this.setState({
-      openDialog: false,
-      vancouverQuantity: 0,
-      vancouverStorageCode: '',
+      openDialog: true,
+      vancouverQuantity: product.vancouverBalance,
+      vancouverStorageCode: product.vancouverBinCode,
       vancouverNotes: '',
-      abbotsfordQuantity: 0,
-      abbotsfordStorageCode: '',
+      abbotsfordQuantity: product.abbotsfordBalance,
+      abbotsfordStorageCode: product.vancouverBinCode,
       abbotsfordNotes: '',
     });
-    window.location.reload();
-  }
-
-  handleChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
-  }
-
-  enableDisableProducts() {
-    const { match } = this.props;
-    const productId = match.params.id;
-    ProductService.disableProduct(productId);
-    window.location.reload();
-  }
-
-  search(locationId) {
-    const { fromDate, toDate } = this.state;
-    const { match } = this.props;
-    const productId = match.params.id;
-    const columns = ['date', 'transactionType', 'amount', 'balance', 'locationName', 'notes', 'userName'];
-    ProductService.getProductTransactions(productId, fromDate, toDate, locationId)
-      .then((results) => results.map((row) => columns.map((column) => {
-        if (column === 'date') {
-          return dateFormat(row[column]);
-        }
-        return row[column] || '';
-      })))
-      .then((data) => this.setState({ productTransactions: data }));
-  }
-
-  handleLocationChange = (event) => {
-    this.setState({ locationId: event.target.value });
-    this.search(event.target.value);
   }
 
   render() {
@@ -417,7 +420,14 @@ export class Product extends React.Component {
                             }}
                           >
                             {locations && (
-                              locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))}
+                              locations.map((l, key) => (
+                                <MenuItem
+                                  name={key}
+                                  value={l.locationId}
+                                >
+                                  {l.locationName}
+                                </MenuItem>
+                              )))}
                           </Select>
                         </FormControl>
                       </GridItem>
@@ -507,7 +517,14 @@ export class Product extends React.Component {
                         }}
                       >
                         {transferLocations && (
-                          transferLocations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))}
+                          transferLocations.map((l, key) => (
+                            <MenuItem
+                              name={key}
+                              value={l.locationId}
+                            >
+                              {l.locationName}
+                            </MenuItem>
+                          )))}
                       </Select>
                     </FormControl>
                   </GridItem>
@@ -523,7 +540,14 @@ export class Product extends React.Component {
                         }}
                       >
                         {transferLocations && (
-                          transferLocations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))}
+                          transferLocations.map((l, key) => (
+                            <MenuItem
+                              name={key}
+                              value={l.locationId}
+                            >
+                              {l.locationName}
+                            </MenuItem>
+                          )))}
                       </Select>
                     </FormControl>
                   </GridItem>

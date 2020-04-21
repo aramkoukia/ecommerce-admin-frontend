@@ -85,15 +85,14 @@ const styles = (theme) => ({
 });
 
 class ProductSearch extends React.Component {
+  state = {
+    value: '',
+    suggestions: [],
+    filteredSuggestions: [],
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      value: '',
-      suggestions: [],
-      filteredSuggestions: [],
-    };
-
     this.handleSuggestionsFetchRequested = this.handleSuggestionsFetchRequested.bind(
       this,
     );

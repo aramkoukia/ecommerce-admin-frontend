@@ -17,6 +17,10 @@ import GridItem from '../../components/Grid/GridItem';
 import Button from '../../components/CustomButtons/Button';
 import ProductService from '../../services/ProductService';
 
+function showTransactions(productId) {
+  window.open(`/product/${productId}`, '_blank');
+}
+
 export default class Products extends React.Component {
   state = {
     products: [],
@@ -31,7 +35,6 @@ export default class Products extends React.Component {
 
   constructor(props) {
     super(props);
-    this.showTransactions = this.showTransactions.bind(this);
     this.updateVariations = this.updateVariations.bind(this);
     this.syncProducts = this.syncProducts.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -69,10 +72,6 @@ export default class Products extends React.Component {
     this.setState({ loading: true });
     ProductService.getProducts()
       .then((data) => this.setState({ products: data, loading: false }));
-  }
-
-  showTransactions(productId) {
-    window.open(`/product/${productId}`, '_blank');
   }
 
   updateVariations(rowData) {
@@ -218,7 +217,7 @@ export default class Products extends React.Component {
                 {
                   icon: 'menu',
                   tooltip: 'Transactions',
-                  onClick: (event, rowData) => this.showTransactions(rowData.productId),
+                  onClick: (event, rowData) => showTransactions(rowData.productId),
                 },
                 // {
                 //   icon: 'attach_money',
@@ -278,7 +277,7 @@ export default class Products extends React.Component {
                     options={packageOptions}
                     title=""
                     editable={{
-                      onRowAdd: (newData) => new Promise((resolve, reject) => {
+                      onRowAdd: (newData) => new Promise((resolve) => {
                         setTimeout(() => {
                           productPackages.push(newData);
                           ProductService.createProductPackage(product.productId, newData);
@@ -286,7 +285,7 @@ export default class Products extends React.Component {
                           resolve();
                         }, 1000);
                       }),
-                      onRowUpdate: (newData, oldData) => new Promise((resolve, reject) => {
+                      onRowUpdate: (newData, oldData) => new Promise((resolve) => {
                         setTimeout(() => {
                           {
                             const index = productPackages.indexOf(oldData);
@@ -297,7 +296,7 @@ export default class Products extends React.Component {
                           resolve();
                         }, 1000);
                       }),
-                      onRowDelete: (oldData) => new Promise((resolve, reject) => {
+                      onRowDelete: (oldData) => new Promise((resolve) => {
                         setTimeout(() => {
                           {
                             const index = productPackages.indexOf(oldData);
