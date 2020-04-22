@@ -107,7 +107,7 @@ class ProductSearchV2 extends React.Component {
   }
 
   async componentDidMount() {
-    const suggestions = await ProductService.getProductsForSales();
+    const suggestions = await ProductService.getProductsForSalesV2();
     this.setState({ suggestions });
   }
 
