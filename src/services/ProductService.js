@@ -23,6 +23,17 @@ export default class ProductService {
     }
   }
 
+  static async getProductsForSalesV2() {
+    try {
+      const response = await RestUtilities.get(
+        'v2/products/available',
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getProduct(productId) {
     try {
       const response = await RestUtilities.get(
