@@ -34,8 +34,8 @@ function renderInputComponent(inputProps) {
 }
 
 function renderSuggestion(suggestion, { query, isHighlighted }) {
-  const matches = match(`${suggestion.productCode} - ${suggestion.productName} - (Price: $${suggestion.salesPrice}) - (Van: ${suggestion.vancouverBalance} - Abb: ${suggestion.abbotsfordBalance} - Total: ${suggestion.vancouverBalance + suggestion.abbotsfordBalance} - OnHold: ${suggestion.onHoldAmount})`, query);
-  const parts = parse(`${suggestion.productCode} - ${suggestion.productName} - (Price: $${suggestion.salesPrice}) - (Van: ${suggestion.vancouverBalance} - Abb: ${suggestion.abbotsfordBalance} - Total: ${suggestion.vancouverBalance + suggestion.abbotsfordBalance} - OnHold: ${suggestion.onHoldAmount})`, matches);
+  const matches = match(`${suggestion.productCode} - ${suggestion.productName} - (Price: $${suggestion.salesPrice}) - (Balance: ${suggestion.balance} - OnHold: ${suggestion.onHoldAmount})`, query);
+  const parts = parse(`${suggestion.productCode} - ${suggestion.productName} - (Price: $${suggestion.salesPrice}) - (Balance: ${suggestion.balance} - OnHold: ${suggestion.onHoldAmount})`, matches);
 
   return (
     <MenuItem selected={isHighlighted} component="div">
