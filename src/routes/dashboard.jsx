@@ -36,7 +36,6 @@ import Taxes from '../views/Taxes/Taxes';
 import CustomerStoreCredit from '../views/Customers/CustomerStoreCredit';
 import Users from '../views/Users/Users';
 import AddUser from '../views/Users/AddUser';
-import Inventory from '../views/Inventory/Inventory';
 import Purchases from '../views/Purchases/Purchases';
 import AddPurchase from '../views/Purchases/AddPurchase';
 import { Purchase } from '../views/Purchases/Purchase';
@@ -73,14 +72,6 @@ const dashboardRoutes = [
     icon: Highlight,
     component: Products,
     permission: Permissions.ViewProducts,
-  },
-  {
-    path: '/inventory',
-    sidebarName: 'Inventory',
-    navbarName: '',
-    icon: PlaylistPlay,
-    component: Inventory,
-    permission: Permissions.ViewInventory,
   },
   {
     path: '/newcustomer',
