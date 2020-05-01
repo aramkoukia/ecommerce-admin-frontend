@@ -9,9 +9,10 @@ import CardBody from '../../components/Card/CardBody';
 import CardFooter from '../../components/Card/CardFooter';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import Snackbar from '../../components/Snackbar/Snackbar';
-import ProductSearch from '../Orders/ProductSearch';
+import ProductSearchV2 from '../Orders/ProductSearchV2';
 import PurchaseTable from './PurchaseTable';
 import PurchaseService from '../../services/PurchaseService';
+import Location from '../../stores/Location';
 
 const styles = {
   cardCategoryWhite: {
@@ -199,6 +200,7 @@ export default class AddPurchase extends React.Component {
     } = this.state;
 
     const { match } = this.props;
+    const locationId = Location.getStoreLocation();
 
     const purchaseId = match.params.id;
     let pageTitle = 'New Purchase';
@@ -232,7 +234,7 @@ export default class AddPurchase extends React.Component {
                 </GridContainer>
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={12}>
-                    <ProductSearch productChanged={this.productChanged} />
+                    <ProductSearchV2 productChanged={this.productChanged} locationId={locationId} />
                   </GridItem>
                 </GridContainer>
                 <GridContainer>
