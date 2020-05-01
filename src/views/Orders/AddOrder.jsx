@@ -23,7 +23,7 @@ import CardBody from '../../components/Card/CardBody';
 import CardFooter from '../../components/Card/CardFooter';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import Snackbar from '../../components/Snackbar/Snackbar';
-import ProductSearch from './ProductSearch';
+import ProductSearchV2 from './ProductSearchV2';
 import CustomerSearch from './CustomerSearch';
 import AddCustomer from '../Customers/AddCustomer';
 import OrderTable from './OrderTable';
@@ -56,15 +56,6 @@ const styles = {
   },
 };
 
-// function calculateSalesPrice(productPackages, salesPrice, qty) {
-//   for (let i = 0; i < productPackages.length; i += 1) {
-//     if (Number(qty) >= Number(productPackages[i].amountInMainPackage)) {
-//       return productPackages[i].packagePrice;
-//     }
-//   }
-//   return salesPrice;
-// }
-
 function createRow(productId, productName, salesPrice, productPackages, id) {
   const qty = 1;
   const discountPercent = 0;
@@ -75,7 +66,9 @@ function createRow(productId, productName, salesPrice, productPackages, id) {
     productPackages
       .sort(
         (a, b) => (
-          (a.amountInMainPackage > b.amountInMainPackage) ? 1 : ((b.amountInMainPackage > a.amountInMainPackage) ? -1 : 0)),
+          (a.amountInMainPackage > b.amountInMainPackage)
+            ? 1
+            : ((b.amountInMainPackage > a.amountInMainPackage) ? -1 : 0)),
       );
   }
 
@@ -284,15 +277,15 @@ export default class AddOrder extends React.Component {
     });
   }
 
-  handleCustomerDialogClose() {
-    this.setState({
-      openCustomerDialog: false,
-    });
-  }
-
   handleClose = () => {
     this.setState({
       openDialog: false,
+    });
+  }
+
+  handleCustomerDialogClose() {
+    this.setState({
+      openCustomerDialog: false,
     });
   }
 
@@ -723,7 +716,8 @@ export default class AddOrder extends React.Component {
       product.productName,
       product.salesPrice,
       product.productPackages,
-      id);
+      id,
+    );
     this.setState((prevState) => ({
       rows: [...prevState.rows, newRow],
     }));
@@ -871,6 +865,8 @@ export default class AddOrder extends React.Component {
       loading,
     } = this.state;
 
+    const locationId = Location.getStoreLocation();
+
     return (
       <div>
         <GridContainer>
@@ -1011,11 +1007,9 @@ export default class AddOrder extends React.Component {
                 ) : (<div />)}
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={12}>
-                    <ProductSearch productChanged={this.productChanged} />
+                    <ProductSearchV2 productChanged={this.productChanged} locationId={locationId} />
                   </GridItem>
-                  <GridItem xs={12} sm={12} md={3}>
-                    {/* <Button color="primary" onClick={this.newCustomer}>Product List</Button> */}
-                  </GridItem>
+                  <GridItem xs={12} sm={12} md={3} />
                 </GridContainer>
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={12}>
