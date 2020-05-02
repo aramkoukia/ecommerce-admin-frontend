@@ -120,9 +120,31 @@ export default class Products extends React.Component {
         title: 'Product Type', field: 'productTypeName', hidden: true, readonly: true,
       },
       { title: 'Product Code', field: 'productCode', readonly: true },
-      { title: 'Product Name', field: 'productName', readonly: true },
       {
-        title: 'Sales Price ($)', field: 'salesPrice', type: 'numeric', readonly: true,
+        title: 'Product Name',
+        field: 'productName',
+        readonly: true,
+        width: 350,
+        cellStyle: {
+          width: 20,
+          maxWidth: 20,
+        },
+        headerStyle: {
+          width: 20,
+          maxWidth: 20,
+        },
+      },
+      {
+        title: 'Sales Price ($)',
+        field: 'salesPrice',
+        type: 'numeric',
+        readonly: true,
+        cellStyle: {
+          color: '#0716CB',
+        },
+        headerStyle: {
+          color: '#0716CB',
+        },
       },
       {
         title: 'Van Balance', field: 'vancouverBalance', type: 'numeric', readonly: true,
@@ -218,12 +240,15 @@ export default class Products extends React.Component {
                   icon: 'menu',
                   tooltip: 'Transactions',
                   onClick: (event, rowData) => showTransactions(rowData.productId),
+                  cellStyle: {
+                    width: 10,
+                    maxWidth: 10,
+                  },
+                  headerStyle: {
+                    width: 10,
+                    maxWidth: 10,
+                  },
                 },
-                // {
-                //   icon: 'attach_money',
-                //   tooltip: 'Variations',
-                //   onClick: (event, rowData) => this.updateVariations(rowData),
-                // },
               ]}
               options={options}
               title=""

@@ -39,7 +39,7 @@ import AddUser from '../views/Users/AddUser';
 import Purchases from '../views/Purchases/Purchases';
 import AddPurchase from '../views/Purchases/AddPurchase';
 import { Purchase } from '../views/Purchases/Purchase';
-import SignIn from '../views/Login/Auth';
+import SignIn from '../views/Login/SignIn';
 import { Order } from '../views/Orders/Order';
 import { Return } from '../views/Orders/Return';
 import Roles from '../views/Roles/Roles';
