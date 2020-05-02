@@ -25,14 +25,14 @@ Date.prototype.addHours = function (h) {
 };
 
 export default class SalesForecastReport extends React.Component {
+  state = {
+    fromDate: '',
+    toDate: '',
+    loading: false,
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      fromDate: '',
-      toDate: '',
-      loading: false,
-    };
     this.search = this.search.bind(this);
   }
 
@@ -128,9 +128,7 @@ export default class SalesForecastReport extends React.Component {
       responsive: 'scroll',
     };
 
-    const {
-      reportData, fromDate, toDate, loading,
-    } = this.state;
+    const { reportData, loading } = this.state;
 
     return (
       <div>
@@ -142,30 +140,6 @@ export default class SalesForecastReport extends React.Component {
               </CardHeader>
               <CardBody>
                 <GridContainer>
-                  {/* <GridItem xs={12} sm={12} md={3}>
-                    <TextField
-                      onChange={this.handleChange('fromDate')}
-                      id="date"
-                      label="From Date"
-                      type="date"
-                      value={fromDate}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={3}>
-                    <TextField
-                      onChange={this.handleChange('toDate')}
-                      id="date"
-                      label="To Date"
-                      type="date"
-                      value={toDate}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                    />
-                  </GridItem> */}
                   <GridItem xs={12} sm={12} md={3}>
                     <Button color="info" disbaled={loading} onClick={this.search}>Search</Button>
                   </GridItem>
