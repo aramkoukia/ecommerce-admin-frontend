@@ -77,7 +77,6 @@ export default class Products extends React.Component {
   productsList() {
     const locationId = Location.getStoreLocation();
     this.setState({ loading: true });
-    // ProductService.getProducts()
     ProductService.getProductWithInventory(locationId)
       .then((data) => this.setState({ products: data, loading: false }));
   }

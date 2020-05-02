@@ -7,6 +7,11 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import Typography from '@material-ui/core/Typography';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
@@ -16,6 +21,7 @@ import Button from '../../components/CustomButtons/Button';
 import CardBody from '../../components/Card/CardBody';
 import ProductService from '../../services/ProductService';
 import ProductCategoryService from '../../services/ProductCategoryService';
+import Location from '../../stores/Location';
 
 export default class UpdateProducts extends React.Component {
   state = {
@@ -57,7 +63,8 @@ export default class UpdateProducts extends React.Component {
 
   productsList() {
     this.setState({ loading: true });
-    ProductService.getProducts()
+    const locationId = Location.getStoreLocation();
+    ProductService.getProductWithInventory(locationId)
       .then((data) => this.setState({ products: data, loading: false }));
   }
 
@@ -112,6 +119,41 @@ export default class UpdateProducts extends React.Component {
       productCategories.map((e) => [e.productTypeId, e.productTypeName]),
     );
 
+    const detailPanel = [
+      {
+        tooltip: 'Details',
+        render: (rowData) => (
+          <div
+            style={{
+              width: '60%',
+              backgroundColor: '#ccf9ff',
+            }}
+          >
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Location</TableCell>
+                  <TableCell numeric>Balance</TableCell>
+                  <TableCell numeric>On Hold</TableCell>
+                  <TableCell numeric>Bin Code</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rowData.inventory.map((row) => (
+                  <TableRow key={row.productId}>
+                    <TableCell>{row.locationName}</TableCell>
+                    <TableCell numeric>{row.balance}</TableCell>
+                    <TableCell numeric>{row.onHoldAmount}</TableCell>
+                    <TableCell>{row.binCode}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        ),
+      },
+    ];
+
     const columns = [
       {
         title: 'Category',
@@ -120,18 +162,36 @@ export default class UpdateProducts extends React.Component {
       },
       { title: 'Product Code', field: 'productCode', readonly: true },
       { title: 'Product Name', field: 'productName', readonly: true },
-      { title: 'Purchase Price ($)', field: 'purchasePrice', type: 'numeric' },
       {
-        title: 'Avg Purchase Price ($)', field: 'avgPurchasePrice', type: 'numeric', readonly: true,
+        title: 'Purchase Price ($)',
+        field: 'purchasePrice',
+        type: 'numeric',
+        width: 100,
+      },
+      // {
+      //   title: 'Avg Purchase Price ($)',
+      //   field: 'avgPurchasePrice', type: 'numeric', readonly: true,
+      // },
+      {
+        title: 'Sales Price ($)',
+        field: 'salesPrice',
+        type: 'numeric',
+        readonly: true,
+        width: 100,
       },
       {
-        title: 'Sales Price ($)', field: 'salesPrice', type: 'numeric', readonly: true,
+        title: 'Balance',
+        field: 'balance',
+        type: 'numeric',
+        readonly: true,
+        width: 100,
       },
       {
-        title: 'Van Balance', field: 'vancouverBalance', type: 'numeric', readonly: true,
-      },
-      {
-        title: 'Abb Balance', field: 'abbotsfordBalance', type: 'numeric', readonly: true,
+        title: 'On Hold',
+        field: 'onHoldAmount',
+        type: 'numeric',
+        readonly: true,
+        width: 100,
       },
       {
         title: 'Disabled',
@@ -196,6 +256,7 @@ export default class UpdateProducts extends React.Component {
             <MaterialTable
               columns={columns}
               data={products}
+              detailPanel={detailPanel}
               options={options}
               onRowClick={this.rowClicked}
               title=""
