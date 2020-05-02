@@ -1,15 +1,17 @@
 import React from 'react';
-import MenuItem from '@material-ui/core/MenuItem';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Select from '@material-ui/core/Select';
-import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import {
+  MenuItem,
+  CircularProgress,
+  Select,
+  TextField,
+  FormControl,
+  InputLabel,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from '@material-ui/core';
 import MaterialTable from 'material-table';
 import { StylesProvider, createGenerateClassName } from '@material-ui/styles';
 import GridItem from '../../components/Grid/GridItem';
@@ -45,21 +47,20 @@ Date.prototype.addHours = function (h) {
 };
 
 export default class Orders extends React.Component {
+  state = {
+    orders: [],
+    loading: false,
+    locationId: 0,
+    locations: [
+      {
+        locationId: 0,
+        locationName: 'All',
+      },
+    ],
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      orders: [],
-      loading: false,
-      locationId: 0,
-      locations: [
-        {
-          locationId: 0,
-          locationName: 'All',
-        },
-      ],
-    };
-
     this.rowClicked = this.rowClicked.bind(this);
     this.searchClicked = this.searchClicked.bind(this);
   }
