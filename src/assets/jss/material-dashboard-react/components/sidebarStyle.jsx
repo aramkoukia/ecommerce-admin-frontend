@@ -140,7 +140,8 @@ const sidebarStyle = (theme) => ({
     ...defaultFont,
   },
   itemIcon: {
-    width: '24px',
+    width: '22px',
+    'min-width': '22px',
     height: '30px',
     fontSize: '24px',
     lineHeight: '30px',
