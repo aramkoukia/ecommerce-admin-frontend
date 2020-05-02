@@ -2,11 +2,6 @@ import React from 'react';
 import MaterialTable from 'material-table';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Check from '@material-ui/icons/Check';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import Typography from '@material-ui/core/Typography';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import TextField from '@material-ui/core/TextField';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -35,34 +30,20 @@ export default class Products extends React.Component {
     snackbarMessage: '',
     snackbarColor: '',
     page: 1,
-    openDialog: false,
-    productPackages: [],
   };
 
   constructor(props) {
     super(props);
-    this.updateVariations = this.updateVariations.bind(this);
     this.syncProducts = this.syncProducts.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.handleClose = this.handleClose.bind(this);
   }
 
   componentDidMount() {
     this.productsList();
-    this.setState({
-      productPackages: [],
-    });
   }
 
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
-  }
-
-  handleClose() {
-    this.setState({
-      openDialog: false,
-      productPackages: [],
-    });
   }
 
   syncProducts() {
@@ -79,16 +60,6 @@ export default class Products extends React.Component {
     this.setState({ loading: true });
     ProductService.getProductWithInventory(locationId)
       .then((data) => this.setState({ products: data, loading: false }));
-  }
-
-  updateVariations(rowData) {
-    ProductService.getProductPackages(rowData.productId)
-      .then((data) => this.setState({ productPackages: data }));
-
-    this.setState({
-      openDialog: true,
-      product: rowData,
-    });
   }
 
   render() {
@@ -169,23 +140,13 @@ export default class Products extends React.Component {
       },
     ];
 
-    const packageColumns = [
-      { title: 'Sale Option', field: 'package' },
-      { title: 'Amount', field: 'amountInMainPackage', type: 'numberic' },
-      { title: 'Unit Price', field: 'packagePrice', type: 'numberic' },
-      { title: 'Package Id', field: 'productPackageId', hidden: true },
-    ];
-
     const {
       products,
-      productPackages,
-      product,
       loading,
       openSnackbar,
       snackbarMessage,
       snackbarColor,
       page,
-      openDialog,
     } = this.state;
 
     const options = {
@@ -196,14 +157,6 @@ export default class Products extends React.Component {
       exportButton: true,
       filtering: true,
       search: true,
-    };
-
-    const packageOptions = {
-      paging: false,
-      columnsButton: false,
-      exportButton: false,
-      filtering: false,
-      search: false,
     };
 
     const detailPanel = [
@@ -291,85 +244,6 @@ export default class Products extends React.Component {
             close
           />
         </GridContainer>
-        <Dialog
-          open={openDialog}
-          onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
-        >
-          <DialogContent>
-            <DialogContentText>
-              <Card>
-                <CardHeader color="primary">
-                  Product Variations:
-                </CardHeader>
-                <CardBody>
-                  {product && (
-                    <div>
-                      <Typography variant="subheading" gutterBottom>
-                        Code:
-                        {' '}
-                        {product.productCode}
-                      </Typography>
-                      <Typography variant="subheading" gutterBottom>
-                        Name:
-                        {' '}
-                        {product.productName}
-                      </Typography>
-                      <Typography variant="subheading" gutterBottom>
-                        Sales Price ($):
-                        {' '}
-                        {product.salesPrice}
-                      </Typography>
-                    </div>
-                  )}
-                  <MaterialTable
-                    columns={packageColumns}
-                    data={productPackages}
-                    options={packageOptions}
-                    title=""
-                    editable={{
-                      onRowAdd: (newData) => new Promise((resolve) => {
-                        setTimeout(() => {
-                          productPackages.push(newData);
-                          ProductService.createProductPackage(product.productId, newData);
-                          this.setState({ productPackages }, () => resolve());
-                          resolve();
-                        }, 1000);
-                      }),
-                      onRowUpdate: (newData, oldData) => new Promise((resolve) => {
-                        setTimeout(() => {
-                          {
-                            const index = productPackages.indexOf(oldData);
-                            productPackages[index] = newData;
-                            ProductService.updateProductPackage(product.productId, newData);
-                            this.setState({ productPackages }, () => resolve());
-                          }
-                          resolve();
-                        }, 1000);
-                      }),
-                      onRowDelete: (oldData) => new Promise((resolve) => {
-                        setTimeout(() => {
-                          {
-                            const index = productPackages.indexOf(oldData);
-                            productPackages.splice(index, 1);
-                            ProductService.deleteProductPackage(oldData.productId, oldData);
-                            this.setState({ productPackages }, () => resolve());
-                          }
-                          resolve();
-                        }, 1000);
-                      }),
-                    }}
-                  />
-                </CardBody>
-              </Card>
-            </DialogContentText>
-            <DialogActions>
-              <Button onClick={this.handleClose} color="secondary">
-                Close
-              </Button>
-            </DialogActions>
-          </DialogContent>
-        </Dialog>
       </div>
     );
   }
