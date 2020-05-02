@@ -23,6 +23,17 @@ export default class ProductService {
     }
   }
 
+  static async getProductWithInventory(locationId) {
+    try {
+      const response = await RestUtilities.get(
+        `products/WithInventory?locationId=${locationId}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getProductsForSalesV2() {
     try {
       const response = await RestUtilities.get(

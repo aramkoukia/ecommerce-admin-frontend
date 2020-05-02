@@ -8,6 +8,11 @@ import DialogContent from '@material-ui/core/DialogContent';
 import Typography from '@material-ui/core/Typography';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import TextField from '@material-ui/core/TextField';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
@@ -16,6 +21,7 @@ import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
 import Button from '../../components/CustomButtons/Button';
 import ProductService from '../../services/ProductService';
+import Location from '../../stores/Location';
 
 function showTransactions(productId) {
   window.open(`/product/${productId}`, '_blank');
@@ -69,8 +75,10 @@ export default class Products extends React.Component {
   }
 
   productsList() {
+    const locationId = Location.getStoreLocation();
     this.setState({ loading: true });
-    ProductService.getProducts()
+    // ProductService.getProducts()
+    ProductService.getProductWithInventory(locationId)
       .then((data) => this.setState({ products: data, loading: false }));
   }
 
@@ -125,14 +133,6 @@ export default class Products extends React.Component {
         field: 'productName',
         readonly: true,
         width: 350,
-        cellStyle: {
-          width: 20,
-          maxWidth: 20,
-        },
-        headerStyle: {
-          width: 20,
-          maxWidth: 20,
-        },
       },
       {
         title: 'Sales Price ($)',
@@ -147,15 +147,14 @@ export default class Products extends React.Component {
         },
       },
       {
-        title: 'Van Balance', field: 'vancouverBalance', type: 'numeric', readonly: true,
+        title: 'Balance', field: 'balance', type: 'numeric', readonly: true,
       },
       {
-        title: 'Van OnHold', field: 'vancouverOnHold', type: 'numeric', readonly: true,
+        title: 'On Hold', field: 'onHoldAmount', type: 'numeric', readonly: true,
       },
       {
-        title: 'Abb Balance', field: 'abbotsfordBalance', type: 'numeric', readonly: true,
+        title: 'Bin Code', field: 'binCode', readonly: true,
       },
-      { title: 'Abb OnHold', field: 'abbotsfordOnHold', readonly: true },
       {
         title: 'Disabled',
         field: 'disabled',
@@ -208,6 +207,41 @@ export default class Products extends React.Component {
       search: false,
     };
 
+    const detailPanel = [
+      {
+        tooltip: 'Details',
+        render: (rowData) => (
+          <div
+            style={{
+              width: '60%',
+              backgroundColor: '#ccf9ff',
+            }}
+          >
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Location</TableCell>
+                  <TableCell numeric>Balance</TableCell>
+                  <TableCell numeric>On Hold</TableCell>
+                  <TableCell numeric>Bin Code</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rowData.inventory.map((row) => (
+                  <TableRow key={row.productId}>
+                    <TableCell>{row.locationName}</TableCell>
+                    <TableCell numeric>{row.balance}</TableCell>
+                    <TableCell numeric>{row.onHoldAmount}</TableCell>
+                    <TableCell>{row.binCode}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        ),
+      },
+    ];
+
     return (
       <div>
         <GridContainer>
@@ -235,19 +269,12 @@ export default class Products extends React.Component {
             <MaterialTable
               columns={columns}
               data={products}
+              detailPanel={detailPanel}
               actions={[
                 {
                   icon: 'menu',
                   tooltip: 'Transactions',
                   onClick: (event, rowData) => showTransactions(rowData.productId),
-                  cellStyle: {
-                    width: 10,
-                    maxWidth: 10,
-                  },
-                  headerStyle: {
-                    width: 10,
-                    maxWidth: 10,
-                  },
                 },
               ]}
               options={options}
@@ -338,9 +365,6 @@ export default class Products extends React.Component {
               </Card>
             </DialogContentText>
             <DialogActions>
-              {/* <Button onClick={this.handlePasswordReset} color="primary">
-                Reset
-            </Button> */}
               <Button onClick={this.handleClose} color="secondary">
                 Close
               </Button>
@@ -351,5 +375,3 @@ export default class Products extends React.Component {
     );
   }
 }
-
-// export default withStyles(styles)(Products);
