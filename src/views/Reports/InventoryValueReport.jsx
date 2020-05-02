@@ -47,7 +47,7 @@ export default class InventoryValueReport extends React.Component {
 
   productsList() {
     this.setState({ loading: true });
-    const columns = ['productId', 'productCode', 'productName', 'salesPrice', 'purchasePrice', 'vancouverBalance', 'vancouverValue', 'abbotsfordBalance', 'abbotsfordValue', 'totalValue'];
+    const columns = ['productId', 'productCode', 'productName', 'salesPrice', 'purchasePrice', 'balance', 'totalValue'];
     ReportService.getInventoryValue()
       .then((results) => results.map((row) => columns.map((column) => (row[column] === null ? '' : row[column]))))
       .then((data) => this.setState({ products: data, loading: false }));
@@ -181,25 +181,7 @@ export default class InventoryValueReport extends React.Component {
         },
       },
       {
-        name: 'Van Balance',
-        options: {
-          filter: false,
-        },
-      },
-      {
-        name: 'Van Value($)',
-        options: {
-          filter: false,
-        },
-      },
-      {
-        name: 'Abb Balance',
-        options: {
-          filter: false,
-        },
-      },
-      {
-        name: 'Abb Value($)',
+        name: 'Balance',
         options: {
           filter: false,
         },
