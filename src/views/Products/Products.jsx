@@ -120,18 +120,24 @@ export default class Products extends React.Component {
       {
         title: 'Product Type', field: 'productTypeName', hidden: true, readonly: true,
       },
-      { title: 'Product Code', field: 'productCode', readonly: true },
+      {
+        title: 'Product Code',
+        field: 'productCode',
+        readonly: true,
+        width: 200,
+      },
       {
         title: 'Product Name',
         field: 'productName',
         readonly: true,
-        width: 350,
+        width: 600,
       },
       {
-        title: 'Sales Price ($)',
+        title: 'Sales Price($)',
         field: 'salesPrice',
         type: 'numeric',
         readonly: true,
+        width: 150,
         cellStyle: {
           color: '#0716CB',
         },
@@ -140,10 +146,18 @@ export default class Products extends React.Component {
         },
       },
       {
-        title: 'Balance', field: 'balance', type: 'numeric', readonly: true,
+        title: 'Balance',
+        field: 'balance',
+        type: 'numeric',
+        readonly: true,
+        width: 150,
       },
       {
-        title: 'On Hold', field: 'onHoldAmount', type: 'numeric', readonly: true,
+        title: 'On Hold',
+        field: 'onHoldAmount',
+        type: 'numeric',
+        readonly: true,
+        width: 150,
       },
       {
         title: 'Disabled',
