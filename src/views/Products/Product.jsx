@@ -106,8 +106,20 @@ export class Product extends React.Component {
     });
   };
 
-  handleTransferFinished = () => {
+  handleUpdateClose = async () => {
+    const { productId } = this.props;
+    const product = await ProductService.getProduct(productId);
     this.setState({
+      product,
+      openUpdateDialog: false,
+    });
+  }
+
+  handleTransferFinished = async () => {
+    const { productId } = this.props;
+    const product = await ProductService.getProduct(productId);
+    this.setState({
+      product,
       openTransferDialog: false,
     });
   }
@@ -328,7 +340,7 @@ export class Product extends React.Component {
         )}
         <Dialog
           open={openUpdateDialog}
-          onClose={this.handleClose}
+          onClose={this.handleUpdateClose}
           aria-labelledby="form-dialog-title"
           maxWidth="lg"
         >
@@ -341,10 +353,12 @@ export class Product extends React.Component {
               {product && product.productName}
               <br />
             </DialogContentText>
-            <InventoryUpdate product={product} />
+            <InventoryUpdate
+              product={product}
+            />
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose} color="info">
+            <Button onClick={this.handleUpdateClose} color="info">
               Cancel
             </Button>
           </DialogActions>
@@ -365,7 +379,11 @@ export class Product extends React.Component {
               {product && product.productName}
               <br />
             </DialogContentText>
-            <InventoryTransfer locations={locations} product={product} handleClose={this.handleTransferFinished}/>
+            <InventoryTransfer
+              locations={locations}
+              product={product}
+              handleClose={this.handleTransferFinished}
+            />
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="info">
