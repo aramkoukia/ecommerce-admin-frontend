@@ -106,6 +106,12 @@ export class Product extends React.Component {
     });
   };
 
+  handleTransferFinished = () => {
+    this.setState({
+      openTransferDialog: false,
+    });
+  }
+
   handleCloseProduct = () => {
     this.setState({
       openTransferDialog: false,
@@ -359,7 +365,7 @@ export class Product extends React.Component {
               {product && product.productName}
               <br />
             </DialogContentText>
-            <InventoryTransfer locations={locations} product={product} />
+            <InventoryTransfer locations={locations} product={product} handleClose={this.handleTransferFinished}/>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="info">

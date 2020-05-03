@@ -22,6 +22,7 @@ function InventoryTransfer({ ...props }) {
   const {
     product,
     locations,
+    handleClose,
   } = props;
   const transferLocations = locations.filter((l) => l.locationId !== 0);
   const [fromLocation, setFromLocation] = useState(transferLocations[0].locationId);
@@ -90,6 +91,7 @@ function InventoryTransfer({ ...props }) {
           snackbarMessage: 'Transfer was done successfully!',
           snackbarColor: 'success',
         });
+        handleClose();
       }
       setLoading(false);
     }
@@ -226,6 +228,7 @@ function InventoryTransfer({ ...props }) {
 InventoryTransfer.propTypes = {
   product: PropTypes.object.isRequired,
   locations: PropTypes.object.isRequired,
+  handleClose: PropTypes.func.isRequired,
 };
 
 export default InventoryTransfer;
