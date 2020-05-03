@@ -1,101 +1,93 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import TextField from '@material-ui/core/TextField';
-// import LinearProgress from '@material-ui/core/LinearProgress';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
+import {
+  TextField,
+  FormControl,
+  Select,
+  MenuItem,
+  InputLabel,
+} from '@material-ui/core';
+import Check from '@material-ui/icons/Check';
 import Button from '../../components/CustomButtons/Button';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import GridItem from '../../components/Grid/GridItem';
+import Snackbar from '../../components/Snackbar/Snackbar';
 import GridContainer from '../../components/Grid/GridContainer';
 import ProductService from '../../services/ProductService';
-
-function handleChange() {
-
-}
-
-async function handleTransfer() {
-  const {
-    product,
-    transferQuantity,
-    transferNotes,
-    fromLocation,
-    toLocation,
-    vancouverQuantity,
-    abbotsfordQuantity,
-  } = this.state;
-
-  if (fromLocation === toLocation) {
-    this.setState({
-      openSnackbar: true,
-      snackbarMessage: 'Select different locations to transfer!',
-      snackbarColor: 'danger',
-    });
-    return;
-  }
-
-  if (transferNotes === '') {
-    this.setState({
-      openSnackbar: true,
-      snackbarMessage: 'Please enter some Notes to transfer!',
-      snackbarColor: 'danger',
-    });
-    return;
-  }
-
-  if ((fromLocation === 1 && vancouverQuantity < transferQuantity)
-    || (fromLocation === 2 && abbotsfordQuantity < transferQuantity)) {
-    this.setState({
-      openSnackbar: true,
-      snackbarMessage: 'This location doesn\'t have enough inventory to transfer!',
-      snackbarColor: 'danger',
-    });
-    return;
-  }
-
-  if (transferQuantity > 0) {
-    const inventoryTransfer = {
-      fromLocationId: fromLocation,
-      toLocationId: toLocation,
-      productId: product.productId,
-      notes: transferNotes,
-      transferQuantity,
-      transferNotes,
-    };
-    const result = await ProductService.transferInventory(inventoryTransfer);
-    if (result && result.orderId) {
-      this.setState({
-        openSnackbar: true,
-        snackbarMessage: 'Inventory was successfully transferred!',
-        snackbarColor: 'success',
-      });
-    }
-  }
-
-  this.setState({
-    openDialog: false,
-    transferQuantity: 0,
-    transferNotes: '',
-    fromLocation: 1,
-    toLocation: 2,
-  });
-  window.location.reload();
-}
 
 function InventoryTransfer({ ...props }) {
   const {
     product,
-    fromLocation,
-    toLocation,
-    transferQuantity,
-    transferNotes,
     locations,
   } = props;
   const transferLocations = locations.filter((l) => l.locationId !== 0);
+  const [fromLocation, setFromLocation] = useState(transferLocations[0].locationId);
+  const [toLocation, setToLocation] = useState(transferLocations[1].locationId);
+  const [fromLocationBalance, setFromLocationBalance] = useState(transferLocations[0].balance);
+  const [transferQuantity, setTransferQuantity] = useState(0);
+  const [transferNotes, setTransferNotes] = useState('');
+  const [snackBar, setSnackBar] = useState({
+    openSnackbar: false,
+    snackbarMessage: '',
+    snackbarColor: 'danger',
+  });
+
+  const handleFromLocationChange = (locationId) => {
+    setFromLocation(locationId);
+    const balance = product.inventory.filter((l) => l.locationId === locationId) || 0;
+    setFromLocationBalance(balance);
+  };
+
+  const handleTransfer = async () => {
+    if (fromLocation === toLocation) {
+      setSnackBar({
+        openSnackbar: true,
+        snackbarMessage: 'Select different locations to transfer!',
+        snackbarColor: 'danger',
+      });
+      return;
+    }
+
+    if (transferNotes === '') {
+      setSnackBar({
+        openSnackbar: true,
+        snackbarMessage: 'Please enter some Notes to transfer!',
+        snackbarColor: 'danger',
+      });
+      return;
+    }
+
+    if (fromLocationBalance < transferQuantity) {
+      setSnackBar({
+        openSnackbar: true,
+        snackbarMessage: 'This location doesn\'t have enough inventory to transfer!',
+        snackbarColor: 'danger',
+      });
+      return;
+    }
+
+    if (transferQuantity > 0) {
+      const inventoryTransfer = {
+        fromLocationId: fromLocation,
+        toLocationId: toLocation,
+        productId: product.productId,
+        notes: transferNotes,
+        transferQuantity,
+        transferNotes,
+      };
+      const result = await ProductService.transferInventory(inventoryTransfer);
+      if (result) {
+        setSnackBar({
+          openSnackbar: true,
+          snackbarMessage: 'Transfer was done successfully!',
+          snackbarColor: 'success',
+        });
+      }
+    }
+  };
+
   return (
     <>
       <Card>
@@ -108,8 +100,9 @@ function InventoryTransfer({ ...props }) {
               <FormControl>
                 <InputLabel htmlFor="fromLocation">From</InputLabel>
                 <Select
+                  style={{ width: '200px' }}
                   value={fromLocation}
-                  onChange={handleChange}
+                  onChange={(e) => handleFromLocationChange(e.target.value)}
                   inputProps={{
                     name: 'fromLocation',
                     id: 'fromLocation',
@@ -131,8 +124,9 @@ function InventoryTransfer({ ...props }) {
               <FormControl>
                 <InputLabel htmlFor="toLocation">To</InputLabel>
                 <Select
+                  style={{ width: '200px' }}
                   value={toLocation}
-                  onChange={handleChange}
+                  onChange={(e) => setToLocation(e.target.value)}
                   inputProps={{
                     name: 'toLocation',
                     id: 'toLocation',
@@ -156,7 +150,7 @@ function InventoryTransfer({ ...props }) {
                   name="transferQuantity"
                   label="Quantity"
                   type="number"
-                  onChange={handleChange}
+                  onChange={(e) => setTransferQuantity(e.target.value)}
                   value={transferQuantity}
                 />
               </FormControl>
@@ -167,7 +161,7 @@ function InventoryTransfer({ ...props }) {
                 name="transferNotes"
                 label="Notes"
                 type="text"
-                onChange={handleChange}
+                onChange={(e) => setTransferNotes(e.target.value)}
                 fullWidth
                 value={transferNotes}
               />
@@ -181,12 +175,22 @@ function InventoryTransfer({ ...props }) {
           </GridContainer>
         </CardBody>
       </Card>
+      <Snackbar
+        place="tl"
+        color={snackBar.snackbarColor}
+        icon={Check}
+        message={snackBar.snackbarMessage}
+        open={snackBar.openSnackbar}
+        closeNotification={() => setSnackBar({ openSnackbar: false })}
+        close
+      />
     </>
   );
 }
 
 InventoryTransfer.propTypes = {
   product: PropTypes.object.isRequired,
+  locations: PropTypes.object.isRequired,
 };
 
 export default InventoryTransfer;
