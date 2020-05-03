@@ -1,17 +1,11 @@
 import React from 'react';
-import classNames from 'classnames';
-import { NavLink } from 'react-router-dom';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Icon from '@material-ui/core/Icon';
 import PropTypes from 'prop-types';
 import sidebarStyle from '../../assets/jss/material-dashboard-react/components/sidebarStyle';
 import HeaderLinks from '../Header/HeaderLinks';
+import AppMenu from '../AppMenu/AppMenu';
 import Auth from '../../services/Auth';
 
 const Sidebar = ({ ...props }) => {
@@ -30,49 +24,6 @@ const Sidebar = ({ ...props }) => {
     handleDrawerToggle,
   } = props;
 
-  const links = (
-    <List className={classes.list}>
-      {routes.map((prop) => {
-        // todo: check permissions here ...
-        if (prop.redirect || prop.sidebarName === '') {
-          return null;
-        }
-        if (!Auth.userHasPermission(prop.permission)) {
-          return null;
-        }
-        const activePro = ' ';
-        const listItemClasses = classNames({
-          [` ${classes[color]}`]: activeRoute(prop.path),
-        });
-        const whiteFontClasses = classNames({
-          [` ${classes.whiteFont}`]: activeRoute(prop.path),
-        });
-        return (
-          <NavLink
-            to={prop.path}
-            className={activePro + classes.item}
-            activeClassName="active"
-            key={prop.path}
-          >
-            <ListItem button className={classes.itemLink + listItemClasses}>
-              <ListItemIcon className={classes.itemIcon + whiteFontClasses}>
-                {typeof prop.icon === 'string' ? (
-                  <Icon>{prop.icon}</Icon>
-                ) : (
-                  <prop.icon />
-                )}
-              </ListItemIcon>
-              <ListItemText
-                primary={prop.sidebarName}
-                className={classes.itemText + whiteFontClasses}
-                disableTypography
-              />
-            </ListItem>
-          </NavLink>
-        );
-      })}
-    </List>
-  );
   const brand = (
     <div className={classes.logo}>
       <a href="https://lightsandparts.com/" target="_blank" rel="noopenner noreferrer" className={classes.logoLink}>
@@ -104,7 +55,7 @@ const Sidebar = ({ ...props }) => {
           <div className={classes.sidebarWrapper}>
             {locations
             && (<HeaderLinks locations={locations} location={locations[0]} />)}
-            {links}
+            <AppMenu routes={routes} classes={classes} color={color} activeRoute={activeRoute} />
           </div>
           {image !== undefined ? (
             <div
@@ -124,7 +75,9 @@ const Sidebar = ({ ...props }) => {
           }}
         >
           {brand}
-          <div className={classes.sidebarWrapper}>{links}</div>
+          <div className={classes.sidebarWrapper}>
+            <AppMenu routes={routes} classes={classes} color={color} activeRoute={activeRoute} />
+          </div>
           {image !== undefined ? (
             <div
               className={classes.background}
