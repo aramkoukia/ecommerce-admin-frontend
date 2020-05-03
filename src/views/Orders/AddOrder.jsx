@@ -593,7 +593,10 @@ export default class AddOrder extends React.Component {
     if (orderId && !isNaN(orderId)) {
       result = await OrderService.updateOrder(orderId, order);
       if (result && result.orderId === Number(orderId) && status !== 'Draft') {
-        const resultUpdateStatus = await OrderService.updateOrderStatus(orderId, { orderStatus: status, orderPayment });
+        const resultUpdateStatus = await OrderService.updateOrderStatus(
+          orderId,
+          { orderStatus: status, orderPayment },
+        );
         if (resultUpdateStatus === false
           || resultUpdateStatus === null
           || resultUpdateStatus.StatusCode === 500
@@ -1358,7 +1361,7 @@ export default class AddOrder extends React.Component {
                 <h4>Are you sure you want to continue?</h4>
                 )}
                 {warnInSufficientStockOnOrder && blockInSufficientStockOnOrder && (
-                  <h4>You cannot continue the sales because of insifficient inventory.</h4>
+                  <h4>You cannot continue the sales because of insufficient inventory.</h4>
                 )}
               </CardBody>
             </Card>
@@ -1403,4 +1406,6 @@ export default class AddOrder extends React.Component {
 
 AddOrder.propTypes = {
   history: PropTypes.func.isRequired,
+  match: PropTypes.object.isRequired,
+  permissionsChanged: PropTypes.func.isRequired,
 };

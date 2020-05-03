@@ -47,9 +47,10 @@ class App extends React.Component {
   }
 
   componentDidUpdate(e) {
+    const { mobileOpen } = this.state;
     if (e.history.location.pathname !== e.location.pathname) {
       this.refs.mainPanel.scrollTop = 0;
-      if (this.state.mobileOpen) {
+      if (mobileOpen) {
         this.setState({ mobileOpen: false });
       }
     }
@@ -60,11 +61,13 @@ class App extends React.Component {
   }
 
   getRoute() {
-    return this.props.location.pathname !== '/maps';
+    const { location } = this.props;
+    return location.pathname !== '/maps';
   }
 
   handleDrawerToggle = () => {
-    this.setState({ mobileOpen: !this.state.mobileOpen });
+    const { mobileOpen } = this.state;
+    this.setState({ mobileOpen: !mobileOpen });
   }
 
   permissionsChanged() {
@@ -72,7 +75,8 @@ class App extends React.Component {
   }
 
   isLogin() {
-    return this.props.location.pathname === '/login';
+    const { location } = this.props;
+    return location.pathname === '/login';
   }
 
   resizeFunction() {
@@ -82,7 +86,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { classes, ...rest } = this.props;
+    const { classes, color, ...rest } = this.props;
     const { permissionsChanged, portalSettings, mobileOpen } = this.state;
     const logoImageUrl = portalSettings ? `${Api.apiRoot}/${portalSettings.logoImageUrl}` : logo;
     const sidebarImageUrl = portalSettings ? `${Api.apiRoot}/${portalSettings.sidebarImageUrl}` : image;
@@ -150,9 +154,9 @@ class App extends React.Component {
         <div className={classes.mainPanel} ref="mainPanel">
           { !this.isLogin() ? (
             <Header
-              routes={dashboardRoutes}
               handleDrawerToggle={this.handleDrawerToggle}
-              {...rest}
+              classes={classes}
+              color={color}
             />
           ) : <div />}
           {/* On the /maps route we want the map to be on full screen -
@@ -175,6 +179,8 @@ class App extends React.Component {
 
 App.propTypes = {
   classes: PropTypes.object.isRequired,
+  color: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
 };
 
 export default withStyles(dashboardStyle)(App);
