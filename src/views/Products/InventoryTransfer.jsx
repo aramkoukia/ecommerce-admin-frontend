@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import MaterialTable from 'material-table';
 import PropTypes from 'prop-types';
 import {
   TextField,
@@ -28,6 +29,7 @@ function InventoryTransfer({ ...props }) {
   const [fromLocationBalance, setFromLocationBalance] = useState(transferLocations[0].balance);
   const [transferQuantity, setTransferQuantity] = useState(0);
   const [transferNotes, setTransferNotes] = useState('');
+  const [loading, setLoading] = useState(false);
   const [snackBar, setSnackBar] = useState({
     openSnackbar: false,
     snackbarMessage: '',
@@ -36,17 +38,19 @@ function InventoryTransfer({ ...props }) {
 
   const handleFromLocationChange = (locationId) => {
     setFromLocation(locationId);
-    const balance = product.inventory.filter((l) => l.locationId === locationId) || 0;
+    const { balance } = product.inventory.find((l) => l.locationId === locationId) || 0;
     setFromLocationBalance(balance);
   };
 
   const handleTransfer = async () => {
+    setLoading(true);
     if (fromLocation === toLocation) {
       setSnackBar({
         openSnackbar: true,
         snackbarMessage: 'Select different locations to transfer!',
         snackbarColor: 'danger',
       });
+      setLoading(false);
       return;
     }
 
@@ -56,19 +60,21 @@ function InventoryTransfer({ ...props }) {
         snackbarMessage: 'Please enter some Notes to transfer!',
         snackbarColor: 'danger',
       });
+      setLoading(false);
       return;
     }
 
-    if (fromLocationBalance < transferQuantity) {
+    if (parseInt(fromLocationBalance, 10) < parseInt(transferQuantity, 10)) {
       setSnackBar({
         openSnackbar: true,
         snackbarMessage: 'This location doesn\'t have enough inventory to transfer!',
         snackbarColor: 'danger',
       });
+      setLoading(false);
       return;
     }
 
-    if (transferQuantity > 0) {
+    if (parseInt(transferQuantity, 10) > 0) {
       const inventoryTransfer = {
         fromLocationId: fromLocation,
         toLocationId: toLocation,
@@ -85,11 +91,34 @@ function InventoryTransfer({ ...props }) {
           snackbarColor: 'success',
         });
       }
+      setLoading(false);
     }
   };
 
+  const options = {
+    paging: false,
+    exportButton: false,
+    filtering: false,
+    search: false,
+  };
+
+  const columns = [
+    { title: 'Location Name', field: 'locationName', readonly: true },
+    { title: 'Balance', field: 'balance' },
+  ];
+
   return (
     <>
+      <GridContainer>
+        <GridItem xs={12} sm={12} md={12}>
+          <MaterialTable
+            columns={columns}
+            data={product.inventory}
+            options={options}
+            title="Current Inventory"
+          />
+        </GridItem>
+      </GridContainer>
       <Card>
         <CardHeader color="info">
           Inventory Transfer
@@ -166,9 +195,15 @@ function InventoryTransfer({ ...props }) {
                 value={transferNotes}
               />
             </GridItem>
-            <GridItem xs={12} sm={12} md={9} />
-            <GridItem xs={12} sm={12} md={2}>
-              <Button onClick={handleTransfer} color="primary">
+            <br />
+            <GridItem xs={12} sm={12} md={12} />
+            <GridItem xs={12} sm={12} md={10} />
+            <GridItem xs={12} sm={12} md={2} alignContent="flex-end">
+              <Button
+                onClick={handleTransfer}
+                disabled={loading}
+                color="primary"
+              >
                 Transfer
               </Button>
             </GridItem>
