@@ -9,11 +9,11 @@ import Email from '@material-ui/icons/Email';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '../../components/CustomButtons/Button';
 import Card from '../../components/Card/Card';
@@ -49,30 +49,29 @@ function dateFormat(dateString) {
 }
 
 export class Order extends React.Component {
+  state = {
+    order: null,
+    openSnackbar: false,
+    snackbarMessage: '',
+    snackbarColor: '',
+    loading: false,
+    openDialog: false,
+    openEmailDialog: false,
+    customerEmail: '',
+    chequeNo: '',
+    payCreditDebit: true,
+    creditDebitAmount: 0,
+    cashAmount: 0,
+    chequeAmount: 0,
+    paypalAmazonUsdAmount: 0,
+    storeCreditAmount: 0,
+    cashChange: 0,
+    cashPaid: 0,
+    locations: [],
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      order: null,
-      openSnackbar: false,
-      snackbarMessage: '',
-      snackbarColor: '',
-      loading: false,
-      openDialog: false,
-      openEmailDialog: false,
-      customerEmail: '',
-      chequeNo: '',
-      payCreditDebit: true,
-      creditDebitAmount: 0,
-      cashAmount: 0,
-      chequeAmount: 0,
-      paypalAmazonUsdAmount: 0,
-      storeCreditAmount: 0,
-      cashChange: 0,
-      cashPaid: 0,
-      locations: [],
-    };
-
     this.saveAsPaid = this.saveAsPaid.bind(this);
     this.saveAsHold = this.saveAsHold.bind(this);
     this.refundOrder = this.refundOrder.bind(this);
@@ -98,7 +97,7 @@ export class Order extends React.Component {
   }
 
   async componentDidMount() {
-    const orderId = this.props.match.params.id;
+    const { orderId } = this.props;
     const order = await OrderService.getOrderDetail(orderId);
     await this.getLocations();
 

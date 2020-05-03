@@ -11,7 +11,15 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Slide,
 } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import MaterialTable from 'material-table';
 import { StylesProvider, createGenerateClassName } from '@material-ui/styles';
 import GridItem from '../../components/Grid/GridItem';
@@ -22,6 +30,7 @@ import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import OrderService from '../../services/OrderService';
 import LocationService from '../../services/LocationService';
+import { Order } from './Order';
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'mt',
@@ -46,11 +55,17 @@ Date.prototype.addHours = function (h) {
   return this;
 };
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 export default class Orders extends React.Component {
   state = {
     orders: [],
     loading: false,
     locationId: 0,
+    orderId: 0,
+    showOrder: false,
     locations: [
       {
         locationId: 0,
@@ -85,6 +100,13 @@ export default class Orders extends React.Component {
       }));
   }
 
+  handleClose = () => {
+    this.setState({
+      showOrder: false,
+      orderId: 0,
+    });
+  };
+
   handleChange = (name) => (event) => {
     this.setState({
       [name]: event.target.value,
@@ -105,7 +127,10 @@ export default class Orders extends React.Component {
   }
 
   rowClicked(_event, rowData) {
-    window.open(`/order/${rowData.orderId}`, '_blank');
+    this.setState({
+      showOrder: true,
+      orderId: rowData.orderId,
+    });
   }
 
   searchClicked() {
@@ -257,7 +282,11 @@ export default class Orders extends React.Component {
       orders, loading, locations, locationId,
       fromDate,
       toDate,
+      orderId,
+      showOrder,
     } = this.state;
+
+    // const classes = useStyles();
 
     return (
       <div>
@@ -287,7 +316,14 @@ export default class Orders extends React.Component {
                         }}
                       >
                         {locations && (
-                          locations.map((l, key) => (<MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))}
+                          locations.map((l, key) => (
+                            <MenuItem
+                              name={key}
+                              value={l.locationId}
+                            >
+                              {l.locationName}
+                            </MenuItem>
+                          )))}
                       </Select>
                     </FormControl>
                   </GridItem>
@@ -336,6 +372,31 @@ export default class Orders extends React.Component {
             </Card>
           </GridItem>
         </GridContainer>
+        <Dialog
+          fullScreen
+          open={showOrder}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+          TransitionComponent={Transition}
+        >
+          <AppBar style={{ position: 'relative' }}>
+            <Toolbar>
+              <IconButton edge="start" color="inherit" onClick={this.handleClose} aria-label="close">
+                <CloseIcon />
+                Close
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+          <DialogContent>
+            <Order orderId={orderId} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+
       </div>
     );
   }
