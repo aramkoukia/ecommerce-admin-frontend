@@ -138,7 +138,7 @@ export class Product extends React.Component {
 
   search(locationId) {
     const { fromDate, toDate } = this.state;
-    const productId = this.props;
+    const { productId } = this.props;
     const columns = ['date', 'transactionType', 'amount', 'balance', 'locationName', 'notes', 'userName'];
     ProductService.getProductTransactions(productId, fromDate, toDate, locationId)
       .then((results) => results.map((row) => columns.map((column) => {
