@@ -26,7 +26,6 @@ import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
 import Button from '../../components/CustomButtons/Button';
 import ProductService from '../../services/ProductService';
-import Location from '../../stores/Location';
 import { Product } from './Product';
 
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
@@ -81,9 +80,8 @@ export default class Products extends React.Component {
   }
 
   productsList() {
-    const locationId = Location.getStoreLocation();
     this.setState({ loading: true });
-    ProductService.getProductWithInventory(locationId)
+    ProductService.getProductWithInventory()
       .then((data) => this.setState({ products: data, loading: false }));
   }
 
@@ -146,9 +144,6 @@ export default class Products extends React.Component {
       },
       {
         title: 'On Hold', field: 'onHoldAmount', type: 'numeric', readonly: true,
-      },
-      {
-        title: 'Bin Code', field: 'binCode', readonly: true,
       },
       {
         title: 'Disabled',

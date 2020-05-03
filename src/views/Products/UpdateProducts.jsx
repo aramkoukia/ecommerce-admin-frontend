@@ -21,7 +21,6 @@ import Button from '../../components/CustomButtons/Button';
 import CardBody from '../../components/Card/CardBody';
 import ProductService from '../../services/ProductService';
 import ProductCategoryService from '../../services/ProductCategoryService';
-import Location from '../../stores/Location';
 
 export default class UpdateProducts extends React.Component {
   state = {
@@ -63,8 +62,7 @@ export default class UpdateProducts extends React.Component {
 
   productsList() {
     this.setState({ loading: true });
-    const locationId = Location.getStoreLocation();
-    ProductService.getProductWithInventory(locationId)
+    ProductService.getProductWithInventory()
       .then((data) => this.setState({ products: data, loading: false }));
   }
 
