@@ -1,8 +1,18 @@
 import React from 'react';
 import MaterialTable from 'material-table';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+import {
+  CircularProgress,
+  FormControlLabel,
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Slide,
+} from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import GridItem from '../../components/Grid/GridItem';
 import Button from '../../components/CustomButtons/Button';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -10,19 +20,23 @@ import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import PurchaseService from '../../services/PurchaseService';
+import { Purchase } from './Purchase';
+
+const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
 export default class Purchases extends React.Component {
+  state = {
+    purchases: [],
+    showPending: true,
+    showOnDelivery: true,
+    showCustomClearance: true,
+    showArrived: true,
+    purchaseId: 0,
+    showPurchase: false,
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      purchases: [],
-      showPending: true,
-      showOnDelivery: true,
-      showCustomClearance: true,
-      showArrived: true,
-    };
-
     this.rowClicked = this.rowClicked.bind(this);
     this.handleCheckChange = this.handleCheckChange.bind(this);
     this.searchClicked = this.searchClicked.bind(this);
@@ -38,9 +52,19 @@ export default class Purchases extends React.Component {
     this.purchasesList();
   }
 
+  handleClose = () => {
+    this.setState({
+      showPurchase: false,
+      purchaseId: 0,
+    });
+  };
+
+  handleCheckChange(event) {
+    this.setState({ [event.target.name]: event.target.checked });
+  }
+
   purchasesList() {
     this.setState({ loading: true });
-
     const {
       showPending,
       showOnDelivery,
@@ -57,16 +81,15 @@ export default class Purchases extends React.Component {
       .then((data) => this.setState({ purchases: data, loading: false }));
   }
 
-  handleCheckChange(event) {
-    this.setState({ [event.target.name]: event.target.checked });
-  }
-
   searchClicked() {
     this.purchasesList();
   }
 
   rowClicked(_event, rowData) {
-    window.open(`/purchase/${rowData.purchaseId}`, '_blank');
+    this.setState({
+      showPurchase: true,
+      purchaseId: rowData.purchaseId,
+    });
   }
 
   render() {
@@ -199,6 +222,8 @@ export default class Purchases extends React.Component {
       showOnDelivery,
       showCustomClearance,
       showArrived,
+      purchaseId,
+      showPurchase,
     } = this.state;
 
     return (
@@ -282,6 +307,30 @@ export default class Purchases extends React.Component {
             </Card>
           </GridItem>
         </GridContainer>
+        <Dialog
+          fullScreen
+          open={showPurchase}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+          TransitionComponent={Transition}
+        >
+          <AppBar style={{ position: 'relative' }}>
+            <Toolbar>
+              <IconButton edge="start" color="inherit" onClick={this.handleClose} aria-label="close">
+                <CloseIcon />
+                Close
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+          <DialogContent>
+            <Purchase purchaseId={purchaseId} {...this.props} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }

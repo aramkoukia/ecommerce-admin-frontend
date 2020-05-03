@@ -34,31 +34,26 @@ function dateFormat(dateString) {
 }
 
 export class Purchase extends React.Component {
+  state = {
+    purchase: null,
+    openSnackbar: false,
+    snackbarMessage: '',
+    snackbarColor: '',
+    loading: false,
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      purchase: null,
-      openSnackbar: false,
-      snackbarMessage: '',
-      snackbarColor: '',
-      loading: false,
-    };
-
     this.deletePurchase = this.deletePurchase.bind(this);
     this.editPurchase = this.editPurchase.bind(this);
   }
 
   async componentDidMount() {
-    const purchaseId = this.props.match.params.id;
+    const { purchaseId } = this.props;
     const purchase = await PurchaseService.getPurchaseDetail(purchaseId);
     this.setState({
       purchase,
     });
-  }
-
-  handleChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
   }
 
   handleClickOpen = () => {
@@ -69,17 +64,20 @@ export class Purchase extends React.Component {
     this.setState({ open: false });
   };
 
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
+  }
+
   async editPurchase() {
-    const { match, history } = this.props;
-    return history.push(`/addpurchase/${match.params.id}`);
+    const { purchaseId, history } = this.props;
+    return history.push(`/addpurchase/${purchaseId}`);
   }
 
   async deletePurchase() {
     this.setState({
       loading: true,
     });
-    const { history, match } = this.props;
-    const purchaseId = match.params.id;
+    const { purchaseId, history } = this.props;
     const result = await PurchaseService.deletePurchase(purchaseId);
 
     if (result === '') {
@@ -172,7 +170,7 @@ export class Purchase extends React.Component {
 }
 
 Purchase.propTypes = {
-  classes: PropTypes.object.isRequired,
+  purchaseId: PropTypes.number.isRequired,
 };
 
 export default withStyles(styles)(Purchase);

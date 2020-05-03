@@ -55,9 +55,7 @@ Date.prototype.addHours = function (h) {
   return this;
 };
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
 export default class Orders extends React.Component {
   state = {
@@ -388,7 +386,7 @@ export default class Orders extends React.Component {
             </Toolbar>
           </AppBar>
           <DialogContent>
-            <Order orderId={orderId} />
+            <Order orderId={orderId} {...this.props} />
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="info">
@@ -396,7 +394,6 @@ export default class Orders extends React.Component {
             </Button>
           </DialogActions>
         </Dialog>
-
       </div>
     );
   }

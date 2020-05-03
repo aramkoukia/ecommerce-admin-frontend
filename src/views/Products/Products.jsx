@@ -1,13 +1,23 @@
 import React from 'react';
 import MaterialTable from 'material-table';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import {
+  LinearProgress,
+  TextField,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Slide,
+} from '@material-ui/core';
 import Check from '@material-ui/icons/Check';
-import TextField from '@material-ui/core/TextField';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import CloseIcon from '@material-ui/icons/Close';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
@@ -17,10 +27,9 @@ import GridItem from '../../components/Grid/GridItem';
 import Button from '../../components/CustomButtons/Button';
 import ProductService from '../../services/ProductService';
 import Location from '../../stores/Location';
+import { Product } from './Product';
 
-function showTransactions(productId) {
-  window.open(`/product/${productId}`, '_blank');
-}
+const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
 export default class Products extends React.Component {
   state = {
@@ -30,6 +39,8 @@ export default class Products extends React.Component {
     snackbarMessage: '',
     snackbarColor: '',
     page: 1,
+    showProduct: false,
+    productId: 0,
   };
 
   constructor(props) {
@@ -42,8 +53,22 @@ export default class Products extends React.Component {
     this.productsList();
   }
 
+  handleClose = () => {
+    this.setState({
+      showProduct: false,
+      productId: 0,
+    });
+  };
+
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
+  }
+
+  showTransactions(productId) {
+    this.setState({
+      showProduct: true,
+      productId,
+    });
   }
 
   syncProducts() {
@@ -147,6 +172,8 @@ export default class Products extends React.Component {
       snackbarMessage,
       snackbarColor,
       page,
+      showProduct,
+      productId,
     } = this.state;
 
     const options = {
@@ -226,7 +253,7 @@ export default class Products extends React.Component {
                 {
                   icon: 'menu',
                   tooltip: 'Transactions',
-                  onClick: (event, rowData) => showTransactions(rowData.productId),
+                  onClick: (event, rowData) => this.showTransactions(rowData.productId),
                 },
               ]}
               options={options}
@@ -244,6 +271,30 @@ export default class Products extends React.Component {
             close
           />
         </GridContainer>
+        <Dialog
+          fullScreen
+          open={showProduct}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+          TransitionComponent={Transition}
+        >
+          <AppBar style={{ position: 'relative' }}>
+            <Toolbar>
+              <IconButton edge="start" color="inherit" onClick={this.handleClose} aria-label="close">
+                <CloseIcon />
+                Close
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+          <DialogContent>
+            <Product productId={productId} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }

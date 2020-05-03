@@ -31,15 +31,15 @@ Date.prototype.addHours = function (h) {
 };
 
 export default class Customer extends React.Component {
+  state = {
+    orders: [],
+    customer: {},
+    fromDate: '',
+    toDate: '',
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      orders: [],
-      customer: {},
-      fromDate: '',
-      toDate: '',
-    };
     this.rowClicked = this.rowClicked.bind(this);
     this.editCustomer = this.editCustomer.bind(this);
     this.printStatement = this.printStatement.bind(this);

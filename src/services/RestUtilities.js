@@ -75,7 +75,7 @@ export default class RestUtilities {
       });
   }
 
-  static requestBlob(method, url) {
+  static requestBlob(url) {
     const headers = new Headers();
     headers.set('Authorization', `Bearer ${AuthStore.getToken()}`);
     axios(`${Api.baseUrl}/${url}`, {
@@ -96,31 +96,5 @@ export default class RestUtilities {
       })
       .catch(() => {
       });
-    // let headers = new Headers();
-    // headers.set("Authorization", `Bearer ${AuthStore.getToken()}`);
-    // headers.set("Accept", "application/pdf");
-
-    // return fetch(`${Api.baseUrl}/${url}`, {
-    //   method: method,
-    //   headers: headers,
-    // })
-    //   .then(response => {
-    //     if (response.status === 401) {
-    //       // Unauthorized; redirect to sign-in
-    //       AuthStore.removeToken();
-    //       window.location.replace(`/?expired=1`);
-    //     }
-    //     let responseContentType = response.headers.get("content-type");
-    //     if (responseContentType && responseContentType.indexOf("application/pdf") === 0) {
-    //       return response.text();
-    //     }
-    //   })
-    //   .then(responseContent => {
-    //     const file = new Blob(
-    //       [responseContent],
-    //       {type: 'application/pdf'});
-    //     const fileURL = URL.createObjectURL(file);
-    //     window.open(fileURL);
-    //   });
   }
 }

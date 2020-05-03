@@ -44,30 +44,29 @@ function dateFormat(dateString) {
 }
 
 export class Return extends React.Component {
+  state = {
+    order: null,
+    openSnackbar: false,
+    snackbarMessage: '',
+    snackbarColor: '',
+    loading: false,
+    openAuthDialog: true,
+    openDialog: false,
+    authCode: '',
+    rows: [],
+    payCreditDebit: true,
+    chequeNo: '',
+    creditDebitAmount: 0,
+    cashAmount: 0,
+    chequeAmount: 0,
+    storeCreditAmount: 0,
+    paypalAmazonUsdAmount: 0,
+    restockingFeePercent: 10,
+    restockingFeeAmount: 0,
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      order: null,
-      openSnackbar: false,
-      snackbarMessage: '',
-      snackbarColor: '',
-      loading: false,
-      openAuthDialog: true,
-      openDialog: false,
-      authCode: '',
-      rows: [],
-      payCreditDebit: true,
-      chequeNo: '',
-      creditDebitAmount: 0,
-      cashAmount: 0,
-      chequeAmount: 0,
-      storeCreditAmount: 0,
-      paypalAmazonUsdAmount: 0,
-      restockingFeePercent: 10,
-      restockingFeeAmount: 0,
-    };
-
     this.pay = this.pay.bind(this);
     this.priceChanged = this.priceChanged.bind(this);
     this.handleChange = this.handleChange.bind(this);

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Check from '@material-ui/icons/Check';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
@@ -176,38 +177,21 @@ export class Order extends React.Component {
     });
   }
 
-  async updateCustomer() {
-    const orderId = this.props.match.params.id;
-    const { order } = this.state;
-    const result = await OrderService.updateOrderCustomer(orderId, { customerId: order.customer.customerId });
-    if (result) {
-      this.setState({
-        openSnackbar: true,
-        snackbarMessage: 'Order\'s Customer was updated successfully!',
-        snackbarColor: 'success',
-        openDialog: false,
-      });
-      window.location.reload();
-    }
+  handleLocationChange = (event) => {
+    this.setState({ locationId: event.target.value });
   }
 
-  editDraft() {
-    const { match, history } = this.props;
-    return history.push(`/neworder/${match.params.id}`);
-  }
-
-  updatePayment() {
-    const { order } = this.state;
+  handleUpdateLocationClose() {
     this.setState({
-      openDialog: true,
-      isUpdatePayment: true,
-      creditDebitAmount: order.total.toFixed(2),
+      openUpdateLocationDialog: false,
     });
   }
 
-  updateLocationClicked() {
+  customerChanged(customer) {
+    const { order } = this.state;
+    order.customer = customer;
     this.setState({
-      openUpdateLocationDialog: true,
+      order,
     });
   }
 
@@ -239,7 +223,10 @@ export class Order extends React.Component {
     }
 
     const result = await OrderService.updateOrderLocation(order.orderId, locationId);
-    if (result === false || result === null || result.StatusCode === 500 || result.StatusCode === 400) {
+    if (result === false
+        || result === null
+        || result.StatusCode === 500
+        || result.StatusCode === 400) {
       this.setState({
         openSnackbar: true,
         loading: false,
@@ -254,22 +241,42 @@ export class Order extends React.Component {
     window.location.reload();
   }
 
-  handleUpdateLocationClose() {
+  updateLocationClicked() {
     this.setState({
-      openUpdateLocationDialog: false,
+      openUpdateLocationDialog: true,
     });
   }
 
-  customerChanged(customer) {
+  updatePayment() {
     const { order } = this.state;
-    order.customer = customer;
     this.setState({
-      order,
+      openDialog: true,
+      isUpdatePayment: true,
+      creditDebitAmount: order.total.toFixed(2),
     });
   }
 
-  handleLocationChange = (event) => {
-    this.setState({ locationId: event.target.value });
+  editDraft() {
+    const { orderId, history } = this.props;
+    return history.push(`/neworder/${orderId}`);
+  }
+
+  async updateCustomer() {
+    const { orderId } = this.props;
+    const { order } = this.state;
+    const result = await OrderService.updateOrderCustomer(
+      orderId,
+      { customerId: order.customer.customerId },
+    );
+    if (result) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Order\'s Customer was updated successfully!',
+        snackbarColor: 'success',
+        openDialog: false,
+      });
+      window.location.reload();
+    }
   }
 
   handleEmailOrderDialog() {
@@ -420,8 +427,7 @@ export class Order extends React.Component {
   }
 
   async refundOrder() {
-    const { match, history } = this.props;
-    const orderId = match.params.id;
+    const { orderId, history } = this.props;
     history.push(`/return/${orderId}`);
   }
 
@@ -974,7 +980,15 @@ export class Order extends React.Component {
                       }}
                     >
                       {locations && (
-                        locations.map((l, key) => (l.locationId !== order.locationId && <MenuItem name={key} value={l.locationId}>{l.locationName}</MenuItem>)))}
+                        locations.map((l, key) => (l.locationId !== order.locationId
+                          && (
+                          <MenuItem
+                            name={key}
+                            value={l.locationId}
+                          >
+                            {l.locationName}
+                          </MenuItem>
+                          ))))}
                     </Select>
                   </FormControl>
                 </CardBody>
@@ -998,7 +1012,7 @@ export class Order extends React.Component {
 }
 
 Order.propTypes = {
-  // classes: PropTypes.object.isRequired,
+  orderId: PropTypes.number.isRequired,
 };
 
 export default withStyles(styles)(Order);
