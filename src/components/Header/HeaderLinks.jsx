@@ -67,10 +67,15 @@ class HeaderLinks extends React.Component {
 
   componentDidMount() {
     const currentLocationId = Location.getStoreLocation();
-    const { locationId } = this.state;
+    const { locationId, locations } = this.state;
     if (currentLocationId && locationId && Number(currentLocationId) !== locationId) {
       this.setState({ locationId: Number(currentLocationId) });
+      Location.setStoreLocation(Number(currentLocationId));
+    } else if (currentLocationId === null) {
+      this.setState({ locationId: locations[0].locationId });
+      Location.setStoreLocation(locations[0].locationId);
     }
+
     this.setState({
       openPasscodeDialog: false,
       openPasswordDialog: false,
