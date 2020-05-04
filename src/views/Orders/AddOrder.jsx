@@ -179,8 +179,9 @@ export default class AddOrder extends React.Component {
       userGivenName: '',
       chequeNo: '',
     });
-    const { match } = this.props;
-    const orderId = match.params.id;
+    const { match, location } = this.props;
+    const orderId = match.params.id || location.state.orderId;
+
     if (orderId && !isNaN(orderId)) {
       const order = await OrderService.getOrderDetail(orderId);
       if (order && order.status === 'Draft') {

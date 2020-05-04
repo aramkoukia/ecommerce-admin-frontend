@@ -258,7 +258,10 @@ export class Order extends React.Component {
 
   editDraft() {
     const { orderId, history } = this.props;
-    return history.push(`/neworder/${orderId}`);
+    history.push({
+      pathname: `/neworder/${orderId}`,
+      state: { orderId },
+    });
   }
 
   async updateCustomer() {
