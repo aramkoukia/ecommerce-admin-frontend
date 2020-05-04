@@ -8,7 +8,7 @@ export default class RestUtilities {
   }
 
   static getBlob(url) {
-    return RestUtilities.requestBlob('GET', url);
+    return RestUtilities.requestBlob(url);
   }
 
   static delete(url) {
