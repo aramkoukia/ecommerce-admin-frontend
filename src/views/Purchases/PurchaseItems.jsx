@@ -506,7 +506,7 @@ export default class PurchaseItems extends React.Component {
               actions={[{
                 icon: 'arrow_downward',
                 tooltip: 'Mark as Paid',
-                onClick: (rowData) => this.markAsPaidClicked(
+                onClick: (event, rowData) => this.markAsPaidClicked(
                   rowData.amount,
                   rowData.unitPrice,
                   rowData.overheadCost,
@@ -581,7 +581,7 @@ export default class PurchaseItems extends React.Component {
               actions={[{
                 icon: 'arrow_downward',
                 tooltip: 'Mark as On Delivery',
-                onClick: (rowData) => this.markAsOnDeliveryClicked(
+                onClick: (event, rowData) => this.markAsOnDeliveryClicked(
                   rowData.amount,
                   rowData.unitPrice,
                   rowData.overheadCost,
@@ -667,7 +667,7 @@ export default class PurchaseItems extends React.Component {
               actions={[{
                 icon: 'arrow_downward',
                 tooltip: 'Mark as Custom Clearance',
-                onClick: (rowData) => this.markAsCustomClearanceClicked(
+                onClick: (event, rowData) => this.markAsCustomClearanceClicked(
                   rowData.amount,
                   rowData.unitPrice,
                   rowData.overheadCost,
@@ -742,7 +742,7 @@ export default class PurchaseItems extends React.Component {
               actions={[{
                 icon: 'arrow_downward',
                 tooltip: 'Mark as Arrived',
-                onClick: (rowData) => this.markAsArrivedClicked(
+                onClick: (event, rowData) => this.markAsArrivedClicked(
                   rowData.amount,
                   rowData.unitPrice,
                   rowData.overheadCost,
