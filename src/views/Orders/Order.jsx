@@ -98,7 +98,7 @@ export class Order extends React.Component {
   }
 
   async componentDidMount() {
-    const { orderId } = this.props;
+    const orderId = this.props.orderId || this.props.location.state.orderId;
     const order = await OrderService.getOrderDetail(orderId);
     await this.getLocations();
 

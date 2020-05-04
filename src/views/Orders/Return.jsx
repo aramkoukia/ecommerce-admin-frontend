@@ -348,7 +348,10 @@ export class Return extends React.Component {
         snackbarMessage: 'Order was returned successfully!',
         snackbarColor: 'success',
       });
-      this.props.history.push(`/order/${result.orderId}`);
+      this.props.history.push({
+        pathname: `/order/${result.orderId}`,
+        state: { orderId: result.orderId },
+      });
     }
   }
 
@@ -361,7 +364,10 @@ export class Return extends React.Component {
         snackbarMessage: 'Order was returned successfully!',
         snackbarColor: 'success',
       });
-      this.props.history.push(`/order/${result.orderId}`);
+      this.props.history.push({
+        pathname: `/order/${result.orderId}`,
+        state: { orderId: result.orderId },
+      });
     }
   }
 

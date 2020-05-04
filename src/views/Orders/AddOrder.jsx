@@ -667,7 +667,10 @@ export default class AddOrder extends React.Component {
         snackbarMessage: 'Order was Saved and marked as Paid successfully!',
         snackbarColor: 'success',
       });
-      history.push(`/order/${result.orderId}`);
+      history.push({
+        pathname: `/order/${result.orderId}`,
+        state: { orderId: result.orderId },
+      });
     }
   }
 
@@ -748,7 +751,10 @@ export default class AddOrder extends React.Component {
         snackbarMessage: 'Order was Saved as Draft successfully!',
         snackbarColor: 'warning',
       });
-      history.push(`/order/${result.orderId}`);
+      history.push({
+        pathname: `/order/${result.orderId}`,
+        state: { orderId: result.orderId },
+      });
     }
     this.setState({
       loading: false,
@@ -768,7 +774,10 @@ export default class AddOrder extends React.Component {
         snackbarMessage: 'Order was Saved and marked as On Hold successfully!',
         snackbarColor: 'warning',
       });
-      history.push(`/order/${result.orderId}`);
+      history.push({
+        pathname: `/order/${result.orderId}`,
+        state: { orderId: result.orderId },
+      });
     }
 
     this.setState({
@@ -808,7 +817,10 @@ export default class AddOrder extends React.Component {
         snackbarMessage: "Order was Saved and Added to customer's Credit successfully!",
         snackbarColor: 'info',
       });
-      history.push(`/order/${result.orderId}`);
+      history.push({
+        pathname: `/order/${result.orderId}`,
+        state: { orderId: result.orderId },
+      });
     }
 
     this.setState({
