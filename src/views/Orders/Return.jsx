@@ -79,7 +79,7 @@ export class Return extends React.Component {
   }
 
   async componentDidMount() {
-    const orderId = this.props.match.params.id;
+    const orderId = this.props.match.params.id || this.props.location.state.orderId;
     const order = await OrderService.getOrderDetail(orderId);
     for (const i in order.orderDetail) {
       order.orderDetail[i].total = order.orderDetail[i].total * -1;

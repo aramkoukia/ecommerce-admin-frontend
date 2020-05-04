@@ -431,7 +431,10 @@ export class Order extends React.Component {
 
   async refundOrder() {
     const { orderId, history } = this.props;
-    history.push(`/return/${orderId}`);
+    history.push({
+      pathname: `/return/${orderId}`,
+      state: { orderId },
+    });
   }
 
   async emailOrder() {

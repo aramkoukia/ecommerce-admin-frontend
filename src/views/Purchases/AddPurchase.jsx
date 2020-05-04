@@ -68,8 +68,9 @@ export default class AddPurchase extends React.Component {
   }
 
   async componentDidMount() {
-    const { match } = this.props;
-    const purchaseId = match.params.id;
+    const { match, location } = this.props;
+    const purchaseId = match.params.id || location.state.purchaseId;
+
     if (purchaseId && !isNaN(purchaseId)) {
       const purchase = await PurchaseService.getPurchaseDetail(purchaseId);
       const details = purchase.purchaseDetail.filter((row) => row.status === 'Plan');
@@ -101,7 +102,8 @@ export default class AddPurchase extends React.Component {
     const foundProduct = newRows.find((row) => row.productId === product.productId);
     if (foundProduct) {
       foundProduct.qty = Number(foundProduct.qty) + 1;
-      foundProduct.total = Number(foundProduct.qty * foundProduct.unitPrice) + Number(foundProduct.overheadCost);
+      foundProduct.total = Number(foundProduct.qty * foundProduct.unitPrice)
+        + Number(foundProduct.overheadCost);
       this.setState({ rows: newRows });
     } else {
       const newRow = createRow(product.productId, product.productName, product.salesPrice);
@@ -185,7 +187,11 @@ export default class AddPurchase extends React.Component {
         snackbarMessage: 'Purchase was Saved successfully!',
         snackbarColor: 'success',
       });
-      this.props.history.push(`/purchase/${result.purchaseId}`);
+
+      this.props.history.push({
+        pathname: `/purchase/${result.purchaseId}`,
+        state: { purchaseId: result.purchaseId },
+      });
     }
 
     this.setState({

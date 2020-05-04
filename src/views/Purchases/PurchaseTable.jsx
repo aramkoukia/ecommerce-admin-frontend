@@ -13,14 +13,11 @@ function ccyFormat(num) {
 }
 
 export default class PurchaseTable extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      purchaseRows: [],
-      subTotal: 0,
-      total: 0,
-    };
-  }
+  state = {
+    purchaseRows: [],
+    subTotal: 0,
+    total: 0,
+  };
 
   componentDidMount() {
     const { rows } = this.props;

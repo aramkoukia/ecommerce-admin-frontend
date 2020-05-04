@@ -49,7 +49,7 @@ export class Purchase extends React.Component {
   }
 
   async componentDidMount() {
-    const { purchaseId } = this.props;
+    const purchaseId = this.props.purchaseId || this.props.location.state.purchaseId;
     const purchase = await PurchaseService.getPurchaseDetail(purchaseId);
     this.setState({
       purchase,
@@ -69,8 +69,12 @@ export class Purchase extends React.Component {
   }
 
   async editPurchase() {
-    const { purchaseId, history } = this.props;
-    return history.push(`/addpurchase/${purchaseId}`);
+    const { history } = this.props;
+    const purchaseId = this.props.purchaseId || this.props.location.state.purchaseId;
+    history.push({
+      pathname: `/addpurchase/${purchaseId}`,
+      state: { purchaseId },
+    });
   }
 
   async deletePurchase() {
