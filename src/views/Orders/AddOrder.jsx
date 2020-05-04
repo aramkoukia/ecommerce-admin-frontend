@@ -205,8 +205,8 @@ export default class AddOrder extends React.Component {
               productPackages: row.product.productPackage,
               package: row.package,
               productPackageId: row.product.productPackage && row.product.productPackage.length > 0
-                ? row.product.productPackage.find((p) => p.package === row.package)
-                  ? row.product.productPackage.find((p) => p.package === row.package).productPackageId
+                ? row.product.productPackage.find((p) => p.package == row.package)
+                  ? row.product.productPackage.find((p) => p.package == row.package).productPackageId
                   : row.product.productPackage[0].productPackageId
                 : null,
               amountInMainPackage: row.amountInMainPackage,
@@ -324,12 +324,12 @@ export default class AddOrder extends React.Component {
     const { permissionsChanged } = this.props;
 
     const result = await UserService.getUserByAuthCode(authCode);
-    if (result === false
-        || result === ''
-        || result === null
-        || result.StatusCode === 500
-        || result.StatusCode === 400
-        || result.StatusCode === 404) {
+    if (result == false
+        || result == ''
+        || result == null
+        || result.StatusCode == 500
+        || result.StatusCode == 400
+        || result.StatusCode == 404) {
       this.setState({
         openSnackbar: true,
         snackbarMessage: 'Invalid Auth Code!',

@@ -223,10 +223,10 @@ export class Order extends React.Component {
     }
 
     const result = await OrderService.updateOrderLocation(order.orderId, locationId);
-    if (result === false
-        || result === null
-        || result.StatusCode === 500
-        || result.StatusCode === 400) {
+    if (result == false
+        || result == null
+        || result.StatusCode == 500
+        || result.StatusCode == 400) {
       this.setState({
         openSnackbar: true,
         loading: false,

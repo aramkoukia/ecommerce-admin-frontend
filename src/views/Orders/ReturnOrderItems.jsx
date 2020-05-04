@@ -102,7 +102,7 @@ export default class ReturnOrderItems extends React.Component {
     const orderRows = this.state.orderRows.slice();
     const { restockingFeePercent } = this.state;
     for (const i in orderRows) {
-      if (orderRows[i].id === event.target.name) {
+      if (orderRows[i].id == event.target.name) {
         if (event.target.value < 0) {
           event.target.value = event.target.value * -1;
         }

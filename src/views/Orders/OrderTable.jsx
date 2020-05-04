@@ -71,7 +71,7 @@ export default class OrderTable extends React.Component {
     const orderRows = this.state.orderRows.slice();
     const { taxes, priceChanged } = this.props;
     for (const i in orderRows) {
-      if (orderRows[i].id === event.target.name) {
+      if (orderRows[i].id == event.target.name) {
         orderRows[i].discountType = event.target.value;
         this.setState({ orderRows });
         break;
@@ -95,7 +95,7 @@ export default class OrderTable extends React.Component {
     const { taxes, priceChanged } = this.props;
     const { orderRows } = this.state;
     for (const i in orderRows) {
-      if (orderRows[i].id === event.target.name) {
+      if (orderRows[i].id == event.target.name) {
         orderRows[i].qty = event.target.value;
         orderRows[i].total = event.target.value * orderRows[i].salesPrice;
         this.setState({ orderRows });
@@ -119,7 +119,7 @@ export default class OrderTable extends React.Component {
     const { taxes, priceChanged } = this.props;
     const { orderRows } = this.state;
     for (const i in orderRows) {
-      if (orderRows[i].id === event.target.name) {
+      if (orderRows[i].id == event.target.name) {
         const rowProductPackage = orderRows[i].productPackages.find((p) => p.productPackageId === event.target.value);
         orderRows[i].salesPrice = rowProductPackage.packagePrice;
         orderRows[i].productPackageId = event.target.value;
@@ -147,7 +147,7 @@ export default class OrderTable extends React.Component {
     const { taxes, priceChanged } = this.props;
     const { orderRows } = this.state;
     for (const i in orderRows) {
-      if (orderRows[i].id === event.target.name) {
+      if (orderRows[i].id == event.target.name) {
         orderRows[i].salesPrice = event.target.value;
         orderRows[i].total = event.target.value * orderRows[i].qty;
         this.setState({ orderRows });
@@ -171,7 +171,7 @@ export default class OrderTable extends React.Component {
     const { taxes, priceChanged } = this.props;
     const orderRows = this.state.orderRows.slice();
     for (const i in orderRows) {
-      if (orderRows[i].id === event.target.name) {
+      if (orderRows[i].id == event.target.name) {
         orderRows[i].discountAmount = event.target.value;
         orderRows[i].discountPercent = 0;
         this.setState({ orderRows });
@@ -197,7 +197,7 @@ export default class OrderTable extends React.Component {
     const { taxes, priceChanged } = this.props;
     const orderRows = this.state.orderRows.slice();
     for (const i in orderRows) {
-      if (orderRows[i].id === event.target.name) {
+      if (orderRows[i].id == event.target.name) {
         orderRows[i].discountAmount = 0;
         orderRows[i].discountPercent = event.target.value;
         this.setState({ orderRows });

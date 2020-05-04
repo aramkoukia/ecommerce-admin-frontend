@@ -108,6 +108,7 @@ class ProductSearchV2 extends React.Component {
   }
 
   async componentDidMount() {
+    // const suggestions = await ProductService.getProductsForSales();
     const locationId = Location.getStoreLocation();
     const suggestions = await ProductService.getProductsForSalesV2(locationId);
     this.setState({ suggestions });
