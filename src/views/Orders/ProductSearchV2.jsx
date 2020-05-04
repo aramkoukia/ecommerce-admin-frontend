@@ -10,7 +10,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Popper from '@material-ui/core/Popper';
 import { withStyles } from '@material-ui/core/styles';
 import ProductService from '../../services/ProductService';
-import Location from '../../stores/Location';
 
 function renderInputComponent(inputProps) {
   const {
@@ -34,9 +33,22 @@ function renderInputComponent(inputProps) {
   );
 }
 
+function getLocationBalances(suggestion) {
+  if (!suggestion.inventory || suggestion.inventory.length === 0) {
+    return '';
+  }
+
+  let result = '( ';
+  const locations = suggestion.inventory.map((inventory) => `${inventory.locationName}: ${inventory.balance}`);
+  result += locations.join(', ');
+  result += ' )';
+  return result;
+}
+
 function renderSuggestion(suggestion, { query, isHighlighted }) {
-  const matches = match(`${suggestion.productCode} - ${suggestion.productName} - (Price: $${suggestion.salesPrice}) - (Balance: ${suggestion.balance} - OnHold: ${suggestion.onHoldAmount})`, query);
-  const parts = parse(`${suggestion.productCode} - ${suggestion.productName} - (Price: $${suggestion.salesPrice}) - (Balance: ${suggestion.balance} - OnHold: ${suggestion.onHoldAmount})`, matches);
+  const locationBalances = getLocationBalances(suggestion);
+  const matches = match(`${suggestion.productCode} - ${suggestion.productName} - (Price: $${suggestion.salesPrice}) - ${locationBalances}`, query);
+  const parts = parse(`${suggestion.productCode} - ${suggestion.productName} - (Price: $${suggestion.salesPrice}) - ${locationBalances}`, matches);
 
   return (
     <MenuItem selected={isHighlighted} component="div">
@@ -108,9 +120,7 @@ class ProductSearchV2 extends React.Component {
   }
 
   async componentDidMount() {
-    // const suggestions = await ProductService.getProductsForSales();
-    const locationId = Location.getStoreLocation();
-    const suggestions = await ProductService.getProductsForSalesV2(locationId);
+    const suggestions = await ProductService.getProductsForSales();
     this.setState({ suggestions });
   }
 
