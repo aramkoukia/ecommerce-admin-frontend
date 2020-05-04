@@ -109,7 +109,10 @@ export default class Customer extends React.Component {
 
   rowClicked(rowData) {
     const { history } = this.props;
-    history.push(`/order/${rowData[1]}`);
+    history.push({
+      pathname: `/order/${rowData[1]}`,
+      state: { orderId: rowData[1] },
+    });
   }
 
   render() {
