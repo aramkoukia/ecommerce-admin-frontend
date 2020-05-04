@@ -10,6 +10,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Popper from '@material-ui/core/Popper';
 import { withStyles } from '@material-ui/core/styles';
 import ProductService from '../../services/ProductService';
+import Location from '../../stores/Location';
 
 function renderInputComponent(inputProps) {
   const {
@@ -107,7 +108,8 @@ class ProductSearchV2 extends React.Component {
   }
 
   async componentDidMount() {
-    const suggestions = await ProductService.getProductsForSalesV2();
+    const locationId = Location.getStoreLocation();
+    const suggestions = await ProductService.getProductsForSalesV2(locationId);
     this.setState({ suggestions });
   }
 
@@ -143,7 +145,7 @@ class ProductSearchV2 extends React.Component {
     const inputLength = inputValue.length;
     let count = 0;
 
-    return inputLength === 0
+    return (inputLength === 0)
       ? []
       : suggestions.filter((suggestion) => {
         const keep = count < 40

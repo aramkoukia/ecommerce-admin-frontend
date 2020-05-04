@@ -18,6 +18,7 @@ import Auth from '../../services/Auth';
 const AppMenuItem = (props) => {
   const {
     item,
+    items,
     classes,
     color,
     activeRoute,
@@ -74,27 +75,27 @@ const AppMenuItem = (props) => {
   ) : null;
 
   return (
-    <>
-      {MenuItemRoot}
-      {MenuItemChildren}
-    </>
-    // <NavLink
-    //   to={item.path}
-    //   className={activePro + classes.item}
-    //   activeClassName="active"
-    //   key={item.path}
-    // >
-    //   <ListItem button className={classes.itemLink + listItemClasses}>
-    //     <ListItemIcon className={classes.itemIcon + whiteFontClasses}>
-    //       <item.icon />
-    //     </ListItemIcon>
-    //     <ListItemText
-    //       primary={item.sidebarName}
-    //       className={classes.itemText + whiteFontClasses}
-    //       disableTypography
-    //     />
-    //   </ListItem>
-    // </NavLink>
+    // <>
+    //   {MenuItemRoot}
+    //   {MenuItemChildren}
+    // </>
+    <NavLink
+      to={item.path}
+      className={activePro + classes.item}
+      activeClassName="active"
+      key={item.path}
+    >
+      <ListItem button className={classes.itemLink + listItemClasses}>
+        <ListItemIcon className={classes.itemIcon + whiteFontClasses}>
+          <item.icon />
+        </ListItemIcon>
+        <ListItemText
+          primary={item.sidebarName}
+          className={classes.itemText + whiteFontClasses}
+          disableTypography
+        />
+      </ListItem>
+    </NavLink>
   );
 };
 

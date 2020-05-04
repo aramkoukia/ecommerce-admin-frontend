@@ -34,10 +34,10 @@ export default class ProductService {
     }
   }
 
-  static async getProductsForSalesV2() {
+  static async getProductsForSalesV2(locationId) {
     try {
       const response = await RestUtilities.get(
-        'v2/products/available',
+        `products/locations/${locationId}/available`,
       );
       return response.content;
     } catch (err) {
