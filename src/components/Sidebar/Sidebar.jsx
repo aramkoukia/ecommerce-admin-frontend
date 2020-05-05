@@ -9,10 +9,6 @@ import AppMenu from '../AppMenu/AppMenu';
 import Auth from '../../services/Auth';
 
 const Sidebar = ({ ...props }) => {
-  // verifies if routeName is the one active (in browser input)
-  function activeRoute(routeName) {
-    return props.location.pathname.indexOf(routeName) > -1;
-  }
   const {
     classes,
     color,
@@ -55,7 +51,12 @@ const Sidebar = ({ ...props }) => {
           <div className={classes.sidebarWrapper}>
             {locations
             && (<HeaderLinks locations={locations} location={locations[0]} />)}
-            <AppMenu routes={routes} classes={classes} color={color} activeRoute={activeRoute} />
+            <AppMenu
+              routes={routes}
+              classes={classes}
+              color={color}
+              {...props}
+            />
           </div>
           {image !== undefined ? (
             <div
@@ -76,7 +77,12 @@ const Sidebar = ({ ...props }) => {
         >
           {brand}
           <div className={classes.sidebarWrapper}>
-            <AppMenu routes={routes} classes={classes} color={color} activeRoute={activeRoute} />
+            <AppMenu
+              routes={routes}
+              classes={classes}
+              color={color}
+              {...props}
+            />
           </div>
           {image !== undefined ? (
             <div
@@ -95,11 +101,12 @@ Sidebar.propTypes = {
   color: PropTypes.object.isRequired,
   logo: PropTypes.object.isRequired,
   image: PropTypes.object.isRequired,
-  logoText: PropTypes.object.isRequired,
+  logoText: PropTypes.string.isRequired,
   routes: PropTypes.object.isRequired,
   open: PropTypes.object.isRequired,
   handleDrawerToggle: PropTypes.func.isRequired,
   location: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 export default withStyles(sidebarStyle)(Sidebar);
