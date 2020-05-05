@@ -98,7 +98,10 @@ export class Order extends React.Component {
   }
 
   async componentDidMount() {
-    const orderId = this.props.orderId || this.props.location.state.orderId;
+    const orderId = this.props.orderId
+      || this.props.match.params.id
+      || (this.props.location.state && this.props.location.state.orderId);
+
     const order = await OrderService.getOrderDetail(orderId);
     await this.getLocations();
 
@@ -414,8 +417,14 @@ export class Order extends React.Component {
       orderPayment = this.getOrderPayments();
     }
 
-    const result = await OrderService.updateOrderStatus(order.orderId, { orderStatus, orderPayment });
-    if (result === false || result === null || result.StatusCode === 500 || result.StatusCode === 400) {
+    const result = await OrderService.updateOrderStatus(
+      order.orderId,
+      { orderStatus, orderPayment },
+    );
+    if (result === false
+        || result === null
+        || result.StatusCode === 500
+        || result.StatusCode === 400) {
       this.setState({
         openSnackbar: true,
         loading: false,
