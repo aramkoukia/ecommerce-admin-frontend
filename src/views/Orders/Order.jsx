@@ -257,8 +257,8 @@ export class Order extends React.Component {
   }
 
   editDraft() {
-    const { orderId, history } = this.props;
-    history.push({
+    const orderId = this.props.orderId || this.props.location.state.orderId;
+    this.props.history.push({
       pathname: `/neworder/${orderId}`,
       state: { orderId },
     });
@@ -370,7 +370,10 @@ export class Order extends React.Component {
     orderPayment = this.getOrderPayments();
 
     const result = await OrderService.updateOrderPayment(order.orderId, { orderPayment });
-    if (result === false || result === null || result.StatusCode === 500 || result.StatusCode === 400) {
+    if (result === false
+        || result === null
+        || result.StatusCode === 500
+        || result.StatusCode === 400) {
       this.setState({
         openSnackbar: true,
         loading: false,
@@ -430,8 +433,8 @@ export class Order extends React.Component {
   }
 
   async refundOrder() {
-    const { orderId, history } = this.props;
-    history.push({
+    const orderId = this.props.orderId || this.props.location.state.orderId;
+    this.props.history.push({
       pathname: `/return/${orderId}`,
       state: { orderId },
     });
