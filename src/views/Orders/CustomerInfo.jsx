@@ -47,7 +47,7 @@ function CustomerInfo(props) {
               customer.pstNumber,
               customer.phoneNumber,
               customer.storeCredit,
-              customer.creditCardOnFile],
+              customer.isCreditCardOnFile],
           ]}
         />
         ) }
