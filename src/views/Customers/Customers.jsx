@@ -26,7 +26,7 @@ export default class Customers extends React.Component {
     this.setState({ customers: result, loading: false });
   }
 
-  showTransactions(customerId) {
+  showDetails(customerId) {
     const { history } = this.props;
     history.push(`/customer/${customerId}`);
   }
