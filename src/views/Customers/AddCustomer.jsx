@@ -18,32 +18,33 @@ import Snackbar from '../../components/Snackbar/Snackbar';
 import CustomerService from '../../services/CustomerService';
 
 class AddCustomer extends React.Component {
+  state = {
+    openSnackbar: false,
+    snackbarMessage: '',
+    snackbarColor: '',
+    country: 'Canada',
+    province: 'BC',
+    segment: 'None',
+    firstName: '',
+    lastName: '',
+    companyName: '',
+    phoneNumber: '',
+    mobile: '',
+    address: '',
+    city: '',
+    postalCode: '',
+    pstNumber: '',
+    creditLimit: 0,
+    email: '',
+    creditCardOnFile: false,
+    disabled: false,
+  };
+
   constructor(props) {
     super(props);
-
     this.onSubmit = this.onSubmit.bind(this);
     this.handleCheckChange = this.handleCheckChange.bind(this);
-
-    this.state = {
-      openSnackbar: false,
-      snackbarMessage: '',
-      snackbarColor: '',
-      country: 'Canada',
-      province: 'BC',
-      segment: 'None',
-      firstName: '',
-      lastName: '',
-      companyName: '',
-      phoneNumber: '',
-      mobile: '',
-      address: '',
-      city: '',
-      postalCode: '',
-      pstNumber: '',
-      creditLimit: 0,
-      email: '',
-      disabled: false,
-    };
+    this.handleCreditCardOnFileChange = this.handleCreditCardOnFileChange.bind(this);
   }
 
   async componentDidMount() {
@@ -62,6 +63,10 @@ class AddCustomer extends React.Component {
     this.setState({ disabled: event.target.checked });
   }
 
+  handleCreditCardOnFileChange(event) {
+    this.setState({ creditCardOnFile: event.target.checked });
+  }
+
   async onSubmit() {
     const {
       firstName,
@@ -78,6 +83,7 @@ class AddCustomer extends React.Component {
       creditLimit,
       email,
       segment,
+      creditCardOnFile,
       disabled,
     } = this.state;
 
@@ -98,6 +104,7 @@ class AddCustomer extends React.Component {
       segment,
       accountBalance: 0,
       storeCredit: 0,
+      creditCardOnFile,
       disabled,
     };
 
@@ -120,6 +127,7 @@ class AddCustomer extends React.Component {
       creditLimit: 0,
       email: '',
       segment: 'None',
+      creditCardOnFile: false,
       disabled: false,
     });
 
@@ -151,6 +159,7 @@ class AddCustomer extends React.Component {
       creditLimit,
       email,
       segment,
+      creditCardOnFile,
       disabled,
     } = this.state;
 
@@ -313,6 +322,18 @@ class AddCustomer extends React.Component {
                       onChange={this.handleChange}
                       value={pstNumber}
                       fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={4}>
+                    <FormControlLabel
+                      control={(
+                        <Checkbox
+                          checked={creditCardOnFile}
+                          onChange={this.handleCreditCardOnFileChange}
+                          value="creditCardOnFile"
+                        />
+                      )}
+                      label="Credit Card On File"
                     />
                   </GridItem>
                   <GridItem md={4}>

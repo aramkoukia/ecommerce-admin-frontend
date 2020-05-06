@@ -19,36 +19,37 @@ import CustomerService from '../../services/CustomerService';
 import CustomerSearch from '../Orders/CustomerSearch';
 
 class EditCustomer extends React.Component {
+  state = {
+    openSnackbar: false,
+    snackbarMessage: '',
+    snackbarColor: '',
+    customer: {
+      firstName: '',
+      country: 'Canada',
+      province: 'BC',
+      segment: 'None',
+      lastName: '',
+      companyName: '',
+      phoneNumber: '',
+      mobile: '',
+      address: '',
+      city: '',
+      postalCode: '',
+      pstNumber: '',
+      creditLimit: 0,
+      email: '',
+      creditCardOnFile: false,
+      disabled: false,
+      mergeToCustomerId: 0,
+    },
+  };
+
   constructor(props) {
     super(props);
-
     this.onSubmit = this.onSubmit.bind(this);
     this.handleCheckChange = this.handleCheckChange.bind(this);
+    this.handleCreditCardOnFileChange = this.handleCreditCardOnFileChange.bind(this);
     this.customerChanged = this.customerChanged.bind(this);
-
-    this.state = {
-      openSnackbar: false,
-      snackbarMessage: '',
-      snackbarColor: '',
-      customer: {
-        firstName: '',
-        country: 'Canada',
-        province: 'BC',
-        segment: 'None',
-        lastName: '',
-        companyName: '',
-        phoneNumber: '',
-        mobile: '',
-        address: '',
-        city: '',
-        postalCode: '',
-        pstNumber: '',
-        creditLimit: 0,
-        email: '',
-        disabled: false,
-        mergeToCustomerId: 0,
-      },
-    };
   }
 
   async componentDidMount() {
@@ -88,6 +89,13 @@ class EditCustomer extends React.Component {
     const { customer } = { ...this.state };
     const currentState = customer;
     currentState.disabled = event.target.checked;
+    this.setState({ customer: currentState });
+  }
+
+  handleCreditCardOnFileChange(event) {
+    const { customer } = { ...this.state };
+    const currentState = customer;
+    currentState.creditCardOnFile = event.target.checked;
     this.setState({ customer: currentState });
   }
 
@@ -267,7 +275,18 @@ class EditCustomer extends React.Component {
                       fullWidth="true"
                     />
                   </GridItem>
-                  <GridItem md={4} />
+                  <GridItem md={4}>
+                    <FormControlLabel
+                      control={(
+                        <Checkbox
+                          checked={customer.creditCardOnFile}
+                          onChange={this.handleCreditCardOnFileChange}
+                          value="creditCardOnFile"
+                        />
+                      )}
+                      label="Credit Card On File"
+                    />
+                  </GridItem>
                   <GridItem md={12}>
                     <FormControlLabel
                       control={(
