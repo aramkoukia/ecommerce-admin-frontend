@@ -4,7 +4,6 @@ import Highlight from '@material-ui/icons/Highlight';
 import List from '@material-ui/icons/List';
 import ListAlt from '@material-ui/icons/ListAlt';
 import Money from '@material-ui/icons/Money';
-import PlaylistPlay from '@material-ui/icons/PlaylistPlay';
 import ContactMail from '@material-ui/icons/ContactMail';
 import InsertChart from '@material-ui/icons/InsertChart';
 import SettingsBrightness from '@material-ui/icons/SettingsBrightness';
