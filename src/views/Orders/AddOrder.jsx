@@ -937,7 +937,7 @@ export default class AddOrder extends React.Component {
                                 }}
                               />
                             </GridItem>
-                            <GridItem xs={12} sm={12} md={3}>
+                            <GridItem xs={12} sm={12} md={2}>
                               <CustomInput
                                 labelText="Phone Number"
                                 formControlProps={{
@@ -949,7 +949,7 @@ export default class AddOrder extends React.Component {
                                 }}
                               />
                             </GridItem>
-                            <GridItem xs={12} sm={12} md={3}>
+                            <GridItem xs={12} sm={12} md={2}>
                               <CustomInput
                                 labelText="Store Credit($)"
                                 formControlProps={{
@@ -958,6 +958,18 @@ export default class AddOrder extends React.Component {
                                 inputProps={{
                                   disabled: true,
                                   value: `${customer.storeCredit} `,
+                                }}
+                              />
+                            </GridItem>
+                            <GridItem md={2}>
+                              <CustomInput
+                                labelText="Credit Card On File"
+                                formControlProps={{
+                                  fullWidth: true,
+                                }}
+                                inputProps={{
+                                  disabled: true,
+                                  value: `${customer.isCreditCardOnFile} `,
                                 }}
                               />
                             </GridItem>
