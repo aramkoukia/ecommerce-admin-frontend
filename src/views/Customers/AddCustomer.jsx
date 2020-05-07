@@ -162,7 +162,6 @@ class AddCustomer extends React.Component {
       pstNumber,
       creditLimit,
       email,
-      segment,
       creditCardOnFile,
       disabled,
       chargePreference,

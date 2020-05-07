@@ -233,7 +233,7 @@ export class Return extends React.Component {
   async saveOrder(orderStatus, useCustomerAccount) {
     const {
       rows,
-      total, subTotal, totalDiscount, notes, poNumber, order, authCode,
+      total, subTotal, totalDiscount, notes, order, authCode,
       restockingFeePercent,
       restockingFeeAmount,
     } = this.state;

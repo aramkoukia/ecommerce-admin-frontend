@@ -66,7 +66,7 @@ class EditCustomer extends React.Component {
   }
 
   async onSubmit() {
-    const { match, props } = this.props;
+    const { match, history } = this.props;
     const { customer } = this.state;
     await CustomerService.updateCustomer(customer);
     this.setState({
@@ -74,7 +74,7 @@ class EditCustomer extends React.Component {
       snackbarMessage: 'Customer information is updated!',
       snackbarColor: 'success',
     });
-    return this.props.history.push(`/customer/${match.params.id}`);
+    return history.push(`/customer/${match.params.id}`);
   }
 
   handleChange = (event) => {
