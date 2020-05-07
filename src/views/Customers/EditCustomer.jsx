@@ -41,6 +41,7 @@ class EditCustomer extends React.Component {
       creditCardOnFile: false,
       disabled: false,
       mergeToCustomerId: 0,
+      chargePreference: 'None',
     },
   };
 
@@ -274,6 +275,23 @@ class EditCustomer extends React.Component {
                       value={customer.pstNumber}
                       fullWidth="true"
                     />
+                  </GridItem>
+                  <GridItem md={4}>
+                    <FormControl
+                      fullWidth="true"
+                    >
+                      <InputLabel htmlFor="chargePreference">Charge Preference</InputLabel>
+                      <Select
+                        value={customer.chargePreference}
+                        onChange={this.handleChange}
+                        input={<Input name="chargePreference" id="chargePreference" />}
+                        fullWidth="true"
+                      >
+                        <MenuItem value="None">None</MenuItem>
+                        <MenuItem value="In 40 Days">In 40 Days</MenuItem>
+                        <MenuItem value="Same Day">Same Day</MenuItem>
+                      </Select>
+                    </FormControl>
                   </GridItem>
                   <GridItem md={4}>
                     <FormControlLabel

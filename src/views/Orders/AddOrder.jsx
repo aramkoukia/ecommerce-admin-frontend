@@ -913,7 +913,7 @@ export default class AddOrder extends React.Component {
                       <Card>
                         <CardBody>
                           <GridContainer>
-                            <GridItem xs={12} sm={12} md={3}>
+                            <GridItem xs={12} sm={12} md={2}>
                               <CustomInput
                                 labelText="Full Name"
                                 formControlProps={{
@@ -925,7 +925,7 @@ export default class AddOrder extends React.Component {
                                 }}
                               />
                             </GridItem>
-                            <GridItem xs={12} sm={12} md={3}>
+                            <GridItem xs={12} sm={12} md={2}>
                               <CustomInput
                                 labelText="Email"
                                 formControlProps={{
@@ -958,6 +958,18 @@ export default class AddOrder extends React.Component {
                                 inputProps={{
                                   disabled: true,
                                   value: `${customer.storeCredit} `,
+                                }}
+                              />
+                            </GridItem>
+                            <GridItem md={2}>
+                              <CustomInput
+                                labelText="Charge Preference"
+                                formControlProps={{
+                                  fullWidth: true,
+                                }}
+                                inputProps={{
+                                  disabled: true,
+                                  value: `${customer.chargePreference} `,
                                 }}
                               />
                             </GridItem>

@@ -38,6 +38,7 @@ class AddCustomer extends React.Component {
     email: '',
     creditCardOnFile: false,
     disabled: false,
+    chargePreference: 'None',
   };
 
   constructor(props) {
@@ -53,18 +54,6 @@ class AddCustomer extends React.Component {
       snackbarMessage: '',
       snackbarColor: '',
     });
-  }
-
-  handleChange = (event) => {
-    this.setState({ [event.target.name]: event.target.value });
-  };
-
-  handleCheckChange(event) {
-    this.setState({ disabled: event.target.checked });
-  }
-
-  handleCreditCardOnFileChange(event) {
-    this.setState({ creditCardOnFile: event.target.checked });
   }
 
   async onSubmit() {
@@ -84,6 +73,7 @@ class AddCustomer extends React.Component {
       email,
       segment,
       creditCardOnFile,
+      chargePreference,
       disabled,
     } = this.state;
 
@@ -105,6 +95,7 @@ class AddCustomer extends React.Component {
       accountBalance: 0,
       storeCredit: 0,
       creditCardOnFile,
+      chargePreference,
       disabled,
     };
 
@@ -129,6 +120,7 @@ class AddCustomer extends React.Component {
       segment: 'None',
       creditCardOnFile: false,
       disabled: false,
+      chargePreference: 'None',
     });
 
     customer.customerId = result.customerId;
@@ -138,6 +130,18 @@ class AddCustomer extends React.Component {
     if (customerSaved) {
       customerSaved(customer);
     }
+  }
+
+  handleChange = (event) => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
+
+  handleCheckChange(event) {
+    this.setState({ disabled: event.target.checked });
+  }
+
+  handleCreditCardOnFileChange(event) {
+    this.setState({ creditCardOnFile: event.target.checked });
   }
 
   render() {
@@ -161,6 +165,7 @@ class AddCustomer extends React.Component {
       segment,
       creditCardOnFile,
       disabled,
+      chargePreference,
     } = this.state;
 
     return (
@@ -323,6 +328,23 @@ class AddCustomer extends React.Component {
                       value={pstNumber}
                       fullWidth="true"
                     />
+                  </GridItem>
+                  <GridItem md={4}>
+                    <FormControl
+                      fullWidth="true"
+                    >
+                      <InputLabel htmlFor="chargePreference">Charge Preference</InputLabel>
+                      <Select
+                        value={chargePreference}
+                        onChange={this.handleChange}
+                        input={<Input name="chargePreference" id="chargePreference" />}
+                        fullWidth="true"
+                      >
+                        <MenuItem value="None">None</MenuItem>
+                        <MenuItem value="In 40 Days">In 40 Days</MenuItem>
+                        <MenuItem value="Same Day">Same Day</MenuItem>
+                      </Select>
+                    </FormControl>
                   </GridItem>
                   <GridItem md={4}>
                     <FormControlLabel
