@@ -80,18 +80,20 @@ const styles = (theme) => ({
   divider: {
     height: theme.spacing.unit * 2,
   },
+  zIndex: {
+    zIndex: theme.zIndex.modal + 200,
+  },
 });
 
 class CustomerSearch extends React.Component {
+  state = {
+    popper: '',
+    suggestions: [],
+    filteredSuggestions: [],
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      popper: '',
-      suggestions: [],
-      filteredSuggestions: [],
-    };
-
     this.handleSuggestionsFetchRequested = this.handleSuggestionsFetchRequested.bind(
       this,
     );
@@ -190,7 +192,11 @@ class CustomerSearch extends React.Component {
             suggestion: classes.suggestion,
           }}
           renderSuggestionsContainer={(options) => (
-            <Popper anchorEl={this.popperNode} open={Boolean(options.children)}>
+            <Popper
+              anchorEl={this.popperNode}
+              className={classes.zIndex}
+              open={Boolean(options.children)}
+            >
               <Paper
                 square
                 {...options.containerProps}
