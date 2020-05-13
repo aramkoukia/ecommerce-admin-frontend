@@ -47,4 +47,28 @@ export default class ProductCategoryService {
       return false;
     }
   }
+
+  static async updateProductCategoryDescription(productType) {
+    try {
+      const response = await RestUtilities.put(
+        `producttypes/${productType.productTypeId}/description`,
+        productType,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async updateProductCategoryImage(productType) {
+    try {
+      const response = await RestUtilities.put(
+        `producttypes/${productType.productTypeId}/upload`,
+        productType,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }

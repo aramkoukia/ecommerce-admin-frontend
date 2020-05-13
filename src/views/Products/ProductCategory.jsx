@@ -27,7 +27,17 @@ export default class ProductCategory extends React.Component {
     snackbarColor: '',
     showHtmlEditor: false,
     showUploadImage: false,
+    description: '',
+    productTypeId: null,
   };
+
+  constructor(props) {
+    super(props);
+    this.handleDescriptionBlur = this.handleDescriptionBlur.bind(this);
+    this.handleUpdateDescription = this.handleUpdateDescription.bind(this);
+    this.handleUploadImage = this.handleUploadImage.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+  }
 
   componentDidMount() {
     this.productCategoriesList();
@@ -38,8 +48,47 @@ export default class ProductCategory extends React.Component {
       .then((data) => this.setState({ productCategories: data }));
   }
 
-  showHtmlEditor() {
-    this.setState({ showHtmlEditor: true });
+  showHtmlEditor(productTypeId, description) {
+    this.setState({
+      showHtmlEditor: true,
+      description,
+      productTypeId,
+    });
+  }
+
+  handleDescriptionBlur(description) {
+    this.setState({
+      description,
+    });
+  }
+
+  handleUpdateDescription() {
+    const { productTypeId, description } = this.state;
+    const productType = {
+      productTypeId,
+      description,
+    };
+    ProductCategoryService.updateProductCategoryDescription(productType);
+    this.productCategoriesList();
+    this.setState({
+      showHtmlEditor: false,
+      productTypeId: null,
+      description: '',
+    });
+  }
+
+  handleUploadImage() {
+    const { productTypeId, image } = this.state;
+    const productType = {
+      productTypeId,
+      image,
+    };
+    ProductCategoryService.updateProductCategoryDescription(productType);
+    this.setState({
+      showHtmlEditor: false,
+      productTypeId: null,
+      image: null,
+    });
   }
 
   showUploadImage() {
@@ -50,6 +99,9 @@ export default class ProductCategory extends React.Component {
     this.setState({
       showUploadImage: false,
       showHtmlEditor: false,
+      productTypeId: null,
+      description: '',
+      image: null,
     });
   }
 
@@ -82,6 +134,9 @@ export default class ProductCategory extends React.Component {
           lineHeight: '1',
         },
       },
+      dialogPaper: {
+        minHeight: '900px',
+      },
     };
 
     const {
@@ -91,14 +146,24 @@ export default class ProductCategory extends React.Component {
       snackbarColor,
       showHtmlEditor,
       showUploadImage,
+      description,
     } = this.state;
 
     const columns = [
       { title: 'Category', field: 'productTypeName' },
-      // { title: 'Website Description', field: 'description', editable: 'never' },
+      {
+        title: 'Website Description',
+        field: 'description',
+        editable: 'never',
+        hidden: true,
+      },
       { title: 'Product Count', field: 'productCount', editable: 'never' },
       { title: 'Sales Rank', field: 'rank', editable: 'never' },
-      { title: 'Show On Website', field: 'showOnWebsite' },
+      {
+        title: 'Show On Website',
+        field: 'showOnWebsite',
+        lookup: { true: 'Yes', false: 'No' },
+      },
       {
         field: 'thumbnailImagePath',
         title: 'Website Image',
@@ -142,12 +207,17 @@ export default class ProductCategory extends React.Component {
                     {
                       icon: 'subject',
                       tooltip: 'Update Website Description',
-                      onClick: (event, rowData) => this.showHtmlEditor(rowData.productTypeId),
+                      onClick: (event, rowData) => this.showHtmlEditor(
+                        rowData.productTypeId,
+                        rowData.description,
+                      ),
                     },
                     {
                       icon: 'image',
                       tooltip: 'Upload Website Image',
-                      onClick: (event, rowData) => this.showUploadImage(rowData.productTypeId),
+                      onClick: (event, rowData) => this.showUploadImage(
+                        rowData.productTypeId,
+                      ),
                     },
                   ]}
                   editable={{
@@ -197,20 +267,26 @@ export default class ProductCategory extends React.Component {
           />
         </GridContainer>
         <Dialog
+          maxWidth="xl"
+          classes={{ paper: styles.dialogPaper }}
           open={showHtmlEditor}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
         >
           <DialogContent>
-            <HtmlEditor />
+            <HtmlEditor value={description || ''} onBlur={this.handleDescriptionBlur} />
           </DialogContent>
           <DialogActions>
+            <Button onClick={this.handleUpdateDescription} color="primary">
+              Save
+            </Button>
             <Button onClick={this.handleClose} color="info">
               Cancel
             </Button>
           </DialogActions>
         </Dialog>
         <Dialog
+          maxWidth="xl"
           open={showUploadImage}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
@@ -219,6 +295,9 @@ export default class ProductCategory extends React.Component {
             <ImageUpload />
           </DialogContent>
           <DialogActions>
+            <Button onClick={this.handleUploadImage} color="primary">
+              Save
+            </Button>
             <Button onClick={this.handleClose} color="info">
               Cancel
             </Button>
