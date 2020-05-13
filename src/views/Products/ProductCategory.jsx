@@ -1,5 +1,11 @@
 import React from 'react';
 import MaterialTable from 'material-table';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  Button,
+} from '@material-ui/core';
 import Check from '@material-ui/icons/Check';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import Card from '../../components/Card/Card';
@@ -7,6 +13,8 @@ import CardHeader from '../../components/Card/CardHeader';
 import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
 import CardBody from '../../components/Card/CardBody';
+import ImageUpload from '../../components/ImageUpload/ImageUpload';
+import HtmlEditor from '../../components/HtmlEditor/HtmlEditor';
 import ProductCategoryService from '../../services/ProductCategoryService';
 
 const imagePlaceholder = require('../../assets/img/image-placeholder.jpg');
@@ -17,6 +25,8 @@ export default class ProductCategory extends React.Component {
     openSnackbar: false,
     snackbarMessage: '',
     snackbarColor: '',
+    showHtmlEditor: false,
+    showUploadImage: false,
   };
 
   componentDidMount() {
@@ -26,6 +36,21 @@ export default class ProductCategory extends React.Component {
   productCategoriesList() {
     ProductCategoryService.getProductCategories()
       .then((data) => this.setState({ productCategories: data }));
+  }
+
+  showHtmlEditor() {
+    this.setState({ showHtmlEditor: true });
+  }
+
+  showUploadImage() {
+    this.setState({ showUploadImage: true });
+  }
+
+  handleClose() {
+    this.setState({
+      showUploadImage: false,
+      showHtmlEditor: false,
+    });
   }
 
   render() {
@@ -64,11 +89,16 @@ export default class ProductCategory extends React.Component {
       openSnackbar,
       snackbarMessage,
       snackbarColor,
+      showHtmlEditor,
+      showUploadImage,
     } = this.state;
 
     const columns = [
       { title: 'Category', field: 'productTypeName' },
-      { title: 'Website Description', field: 'description' },
+      // { title: 'Website Description', field: 'description', editable: 'never' },
+      { title: 'Product Count', field: 'productCount', editable: 'never' },
+      { title: 'Sales Rank', field: 'rank', editable: 'never' },
+      { title: 'Show On Website', field: 'showOnWebsite' },
       {
         field: 'thumbnailImagePath',
         title: 'Website Image',
@@ -108,6 +138,18 @@ export default class ProductCategory extends React.Component {
                   data={productCategories}
                   options={options}
                   title=""
+                  actions={[
+                    {
+                      icon: 'subject',
+                      tooltip: 'Update Website Description',
+                      onClick: (event, rowData) => this.showHtmlEditor(rowData.productTypeId),
+                    },
+                    {
+                      icon: 'image',
+                      tooltip: 'Upload Website Image',
+                      onClick: (event, rowData) => this.showUploadImage(rowData.productTypeId),
+                    },
+                  ]}
                   editable={{
                     onRowAdd: (newData) => new Promise((resolve) => {
                       setTimeout(() => {
@@ -154,6 +196,34 @@ export default class ProductCategory extends React.Component {
             close
           />
         </GridContainer>
+        <Dialog
+          open={showHtmlEditor}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <HtmlEditor />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={showUploadImage}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <ImageUpload />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }
