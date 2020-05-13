@@ -9,17 +9,15 @@ import GridItem from '../../components/Grid/GridItem';
 import CardBody from '../../components/Card/CardBody';
 import ProductCategoryService from '../../services/ProductCategoryService';
 
-export default class ProductCategory extends React.Component {
-  constructor(props) {
-    super(props);
+const imagePlaceholder = require('../../assets/img/image-placeholder.jpg');
 
-    this.state = {
-      productCategories: [],
-      openSnackbar: false,
-      snackbarMessage: '',
-      snackbarColor: '',
-    };
-  }
+export default class ProductCategory extends React.Component {
+  state = {
+    productCategories: [],
+    openSnackbar: false,
+    snackbarMessage: '',
+    snackbarColor: '',
+  };
 
   componentDidMount() {
     this.productCategoriesList();
@@ -70,6 +68,19 @@ export default class ProductCategory extends React.Component {
 
     const columns = [
       { title: 'Category', field: 'productTypeName' },
+      { title: 'Website Description', field: 'description' },
+      {
+        field: 'thumbnailImagePath',
+        title: 'Website Image',
+        filtering: false,
+        render: (rowData) => (
+          <img
+            alt={(rowData.thumbnailImagePath && rowData.productTypeName) || 'No Image'}
+            src={rowData.thumbnailImagePath || imagePlaceholder}
+            style={{ width: 70 }}
+          />
+        ),
+      },
       { title: 'Id', field: 'productTypeId', hidden: true },
     ];
 
