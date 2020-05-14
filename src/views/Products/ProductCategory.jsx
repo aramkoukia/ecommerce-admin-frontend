@@ -36,6 +36,7 @@ export default class ProductCategory extends React.Component {
     this.handleDescriptionBlur = this.handleDescriptionBlur.bind(this);
     this.handleUpdateDescription = this.handleUpdateDescription.bind(this);
     this.handleUploadImage = this.handleUploadImage.bind(this);
+    this.handleImageChange = this.handleImageChange.bind(this);
     this.handleClose = this.handleClose.bind(this);
   }
 
@@ -62,6 +63,12 @@ export default class ProductCategory extends React.Component {
     });
   }
 
+  handleImageChange(image) {
+    this.setState({
+      image,
+    });
+  }
+
   handleUpdateDescription() {
     const { productTypeId, description } = this.state;
     const productType = {
@@ -79,20 +86,22 @@ export default class ProductCategory extends React.Component {
 
   handleUploadImage() {
     const { productTypeId, image } = this.state;
-    const productType = {
-      productTypeId,
-      image,
-    };
-    ProductCategoryService.updateProductCategoryDescription(productType);
+    const formData = new FormData();
+    formData.append('file', image);
+    ProductCategoryService.updateProductCategoryImage(productTypeId, formData);
+    this.productCategoriesList();
     this.setState({
-      showHtmlEditor: false,
+      showUploadImage: false,
       productTypeId: null,
       image: null,
     });
   }
 
-  showUploadImage() {
-    this.setState({ showUploadImage: true });
+  showUploadImage(productTypeId) {
+    this.setState({
+      showUploadImage: true,
+      productTypeId,
+    });
   }
 
   handleClose() {
@@ -133,9 +142,6 @@ export default class ProductCategory extends React.Component {
           fontWeight: '400',
           lineHeight: '1',
         },
-      },
-      dialogPaper: {
-        minHeight: '900px',
       },
     };
 
@@ -268,7 +274,6 @@ export default class ProductCategory extends React.Component {
         </GridContainer>
         <Dialog
           maxWidth="xl"
-          classes={{ paper: styles.dialogPaper }}
           open={showHtmlEditor}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
@@ -292,7 +297,7 @@ export default class ProductCategory extends React.Component {
           aria-labelledby="form-dialog-title"
         >
           <DialogContent>
-            <ImageUpload />
+            <ImageUpload singleImage onChange={this.handleImageChange} />
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleUploadImage} color="primary">

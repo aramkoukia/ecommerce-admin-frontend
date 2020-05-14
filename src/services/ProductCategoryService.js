@@ -60,10 +60,10 @@ export default class ProductCategoryService {
     }
   }
 
-  static async updateProductCategoryImage(productType) {
+  static async updateProductCategoryImage(id, productType) {
     try {
-      const response = await RestUtilities.put(
-        `producttypes/${productType.productTypeId}/upload`,
+      const response = await RestUtilities.postForm(
+        `producttypes/${id}/upload`,
         productType,
       );
       return response.content;
