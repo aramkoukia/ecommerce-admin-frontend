@@ -63,19 +63,19 @@ export default class ProductCategory extends React.Component {
     });
   }
 
-  handleImageChange(image) {
+  handleImageChange(images) {
     this.setState({
-      image,
+      image: images && images.length > 0 ? images[0] : null,
     });
   }
 
-  handleUpdateDescription() {
+  async handleUpdateDescription() {
     const { productTypeId, description } = this.state;
     const productType = {
       productTypeId,
       description,
     };
-    ProductCategoryService.updateProductCategoryDescription(productType);
+    await ProductCategoryService.updateProductCategoryDescription(productType);
     this.productCategoriesList();
     this.setState({
       showHtmlEditor: false,
@@ -84,11 +84,11 @@ export default class ProductCategory extends React.Component {
     });
   }
 
-  handleUploadImage() {
+  async handleUploadImage() {
     const { productTypeId, image } = this.state;
     const formData = new FormData();
     formData.append('file', image);
-    ProductCategoryService.updateProductCategoryImage(productTypeId, formData);
+    await ProductCategoryService.updateProductCategoryImage(productTypeId, formData);
     this.productCategoriesList();
     this.setState({
       showUploadImage: false,
