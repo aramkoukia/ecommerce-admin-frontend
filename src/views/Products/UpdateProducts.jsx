@@ -166,10 +166,12 @@ export default class UpdateProducts extends React.Component {
         type: 'numeric',
         width: 100,
       },
-      // {
-      //   title: 'Avg Purchase Price ($)',
-      //   field: 'avgPurchasePrice', type: 'numeric', readonly: true,
-      // },
+      {
+        title: 'Avg Purchase Price ($)',
+        field: 'avgPurchasePrice',
+        type: 'numeric',
+        readonly: true,
+      },
       {
         title: 'Sales Price ($)',
         field: 'salesPrice',
