@@ -237,11 +237,11 @@ export class Order extends React.Component {
         snackbarColor: 'danger',
       });
     }
-
+    const updatedOrder = await OrderService.getOrderDetail(order.orderId);
     this.setState({
       loading: false,
+      order: updatedOrder,
     });
-    window.location.reload();
   }
 
   updateLocationClicked() {
@@ -275,13 +275,14 @@ export class Order extends React.Component {
       { customerId: order.customer.customerId },
     );
     if (result) {
+      const updatedOrder = await OrderService.getOrderDetail(order.orderId);
       this.setState({
         openSnackbar: true,
         snackbarMessage: 'Order\'s Customer was updated successfully!',
         snackbarColor: 'success',
         openDialog: false,
+        order: updatedOrder,
       });
-      window.location.reload();
     }
   }
 
@@ -515,26 +516,27 @@ export class Order extends React.Component {
     if (isUpdatePayment) {
       const orderPaymetResult = await this.updateOrderPayment();
       if (orderPaymetResult && orderPaymetResult.orderId) {
+        const updatedOrder = await OrderService.getOrderDetail(order.orderId);
         this.setState({
           openSnackbar: true,
           snackbarMessage: 'Order Payment was updated successfully!',
           snackbarColor: 'success',
           openDialog: false,
+          order: updatedOrder,
         });
-        window.location.reload();
       }
     } else {
       const status = 'Paid';
       const resultStatusResult = await this.updateOrderStatus(status);
       if (resultStatusResult && resultStatusResult.orderId) {
+        const updatedOrder = await OrderService.getOrderDetail(order.orderId);
         this.setState({
           openSnackbar: true,
           snackbarMessage: 'Order was marked as Paid successfully!',
           snackbarColor: 'success',
           openDialog: false,
+          order: updatedOrder,
         });
-
-        window.location.reload();
       }
     }
   }
