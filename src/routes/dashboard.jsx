@@ -44,6 +44,7 @@ import { Return } from '../views/Orders/Return';
 import Roles from '../views/Roles/Roles';
 import Settings from '../views/Settings/Settings';
 import PosSettings from '../views/Settings/PosSettings';
+import CustomApplications from '../views/CustomApplications/CustomApplications';
 import UpdateProducts from '../views/Products/UpdateProducts';
 import Permissions from '../stores/Permissions';
 
@@ -277,6 +278,14 @@ const dashboardRoutes = [
     navbarName: '',
     icon: SettingsBrightness,
     component: PosSettings,
+    permission: Permissions.ViewRoles,
+  },
+  {
+    path: '/custom-applications',
+    sidebarName: 'Custom Applications',
+    navbarName: '',
+    icon: SettingsBrightness,
+    component: CustomApplications,
     permission: Permissions.ViewRoles,
   },
   {
