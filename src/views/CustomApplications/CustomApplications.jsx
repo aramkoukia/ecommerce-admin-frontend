@@ -141,7 +141,9 @@ export default class CustomApplications extends React.Component {
       { title: 'Max Value', field: 'maxValue' },
       { title: 'Value Unit', field: 'valueUnit' },
       { title: 'Sort Order', field: 'sortOrder' },
-      { title: 'Step Id', field: 'stepId', readonly: true },
+      {
+        title: 'Application Step Id', field: 'applicationStepId', readonly: true, hidden: true,
+      },
     ];
 
     const {
