@@ -111,19 +111,21 @@ export default class CustomApplications extends React.Component {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Location</TableCell>
-                  <TableCell numeric>Balance</TableCell>
-                  <TableCell numeric>On Hold</TableCell>
-                  <TableCell numeric>Bin Code</TableCell>
+                  <TableCell>Title</TableCell>
+                  <TableCell>Description</TableCell>
+                  <TableCell>Sort Order</TableCell>
+                  <TableCell>Image</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rowData.inventory.map((row) => (
-                  <TableRow key={row.productId}>
-                    <TableCell>{row.locationName}</TableCell>
-                    <TableCell numeric>{row.balance}</TableCell>
-                    <TableCell numeric>{row.onHoldAmount}</TableCell>
-                    <TableCell>{row.binCode}</TableCell>
+                {rowData.stepDetails.map((row) => (
+                  <TableRow key={row.applicationStepDetailId}>
+                    <TableCell>{row.stepDetailTitle}</TableCell>
+                    <TableCell numeric>{row.stepDetailDescription}</TableCell>
+                    <TableCell numeric>{row.sortOrder}</TableCell>
+                    <TableCell>
+                      <img src={row.ThumbnailImagePath} alt={row.stepDetailTitle} />
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
