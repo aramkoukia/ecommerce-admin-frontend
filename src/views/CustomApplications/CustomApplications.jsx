@@ -98,43 +98,6 @@ export default class CustomApplications extends React.Component {
         },
       },
     };
-    const detailPanel = [
-      {
-        tooltip: 'Details',
-        render: (rowData) => (
-          <div
-            style={{
-              width: '60%',
-              backgroundColor: '#ccf9ff',
-            }}
-          >
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Title</TableCell>
-                  <TableCell>Description</TableCell>
-                  <TableCell>Sort Order</TableCell>
-                  <TableCell>Image</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rowData.stepDetails.map((row) => (
-                  <TableRow key={row.applicationStepDetailId}>
-                    <TableCell>{row.stepDetailTitle}</TableCell>
-                    <TableCell numeric>{row.stepDetailDescription}</TableCell>
-                    <TableCell numeric>{row.sortOrder}</TableCell>
-                    <TableCell>
-                      <img src={row.ThumbnailImagePath} alt={row.stepDetailTitle} />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        ),
-      },
-    ];
-
     const columns = [
       { title: 'Step Title', field: 'stepTitle' },
       { title: 'Step Description', field: 'stepDescription' },
@@ -159,12 +122,13 @@ export default class CustomApplications extends React.Component {
       openDialog,
     } = this.state;
 
-    const stepsColumns = [
-      { title: 'Sale Option', field: 'stepDetailTitle' },
-      { title: 'Amount', field: 'amountInMainPackage', type: 'numberic' },
-      { title: 'Unit Price', field: 'packagePrice', type: 'numberic' },
+    const detailColumns = [
+      { title: 'Title', field: 'stepDetailTitle' },
+      { title: 'Description', field: 'stepDetailDescription' },
+      { title: 'Sort Order', field: 'sortOrder' },
+      { title: 'Image', field: 'thumbnailImagePath' },
       {
-        title: 'Step Detail Id', field: 'stepDetailId', hidden: true, readonly: true,
+        title: 'applicationStepDetailId', field: 'applicationStepDetailId', hidden: true, readonly: true,
       },
     ];
 
@@ -178,13 +142,48 @@ export default class CustomApplications extends React.Component {
       search: true,
     };
 
-    const stepsOptions = {
+    const detailOptions = {
       paging: false,
       columnsButton: false,
       exportButton: false,
       filtering: false,
       search: false,
     };
+
+    const detailPanel = [
+      {
+        tooltip: 'Details',
+        render: (rowData) => (
+          <div
+            style={{
+              width: '60%',
+              backgroundColor: '#ccf9ff',
+            }}
+          >
+            <MaterialTable
+              columns={detailColumns}
+              data={rowData.stepDetails}
+              options={detailOptions}
+              title=""
+              editable={{
+                onRowUpdate: (newData, oldData) => new Promise((resolve) => {
+                  setTimeout(() => {
+                    {
+                      const index = rowData.stepDetails.indexOf(oldData);
+                      rowData.stepDetails[index] = newData;
+                      ApplicationService.updateApplicationDetails(newData);
+                      // this.setState({ applicationDetails }, () => resolve());
+                    }
+                    resolve();
+                  }, 1000);
+                }),
+              }}
+            />
+          </div>
+        ),
+      },
+    ];
+
 
     return (
       <div>
@@ -202,12 +201,12 @@ export default class CustomApplications extends React.Component {
                   options={options}
                   onRowClick={this.rowClicked}
                   title=""
-                  actions={[
-                    {
-                      icon: 'attach_money',
-                      tooltip: 'Variations',
-                      onClick: (event, rowData) => this.updateVariations(rowData),
-                    }]}
+                  // actions={[
+                  //   {
+                  //     icon: 'attach_money',
+                  //     tooltip: 'Variations',
+                  //     onClick: (event, rowData) => this.updateVariations(rowData),
+                  //   }]}
                   editable={{
                     onRowUpdate: (newData, oldData) => new Promise((resolve) => {
                       setTimeout(() => {
@@ -269,9 +268,9 @@ export default class CustomApplications extends React.Component {
                     </div>
                   )}
                   <MaterialTable
-                    columns={stepsColumns}
+                    columns={columns}
                     data={applicationSteps}
-                    options={stepsOptions}
+                    options={options}
                     title=""
                     editable={{
                       onRowAdd: (newData) => new Promise((resolve) => {
