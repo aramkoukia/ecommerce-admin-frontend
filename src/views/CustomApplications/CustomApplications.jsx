@@ -7,11 +7,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import Typography from '@material-ui/core/Typography';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
@@ -20,6 +15,8 @@ import GridItem from '../../components/Grid/GridItem';
 import Button from '../../components/CustomButtons/Button';
 import CardBody from '../../components/Card/CardBody';
 import ApplicationService from '../../services/ApplicationService';
+
+const imagePlaceholder = require('../../assets/img/image-placeholder.jpg');
 
 export default class CustomApplications extends React.Component {
   state = {
@@ -64,7 +61,7 @@ export default class CustomApplications extends React.Component {
 
     this.setState({
       openDialog: true,
-      application: rowData,
+      // application: rowData,
     });
   }
 
@@ -126,7 +123,19 @@ export default class CustomApplications extends React.Component {
       { title: 'Title', field: 'stepDetailTitle' },
       { title: 'Description', field: 'stepDetailDescription' },
       { title: 'Sort Order', field: 'sortOrder' },
-      { title: 'Image', field: 'thumbnailImagePath' },
+      {
+        title: 'Image',
+        field: 'thumbnailImagePath',
+        filtering: false,
+        render: (rowData) => (
+          <img
+            alt={(rowData.thumbnailImagePath) || 'No Image'}
+            src={rowData.thumbnailImagePath || imagePlaceholder}
+            style={{ width: 100 }}
+          />
+        ),
+
+      },
       {
         title: 'applicationStepDetailId', field: 'applicationStepDetailId', hidden: true, readonly: true,
       },
