@@ -57,4 +57,16 @@ export default class ApplicationService {
       return false;
     }
   }
+
+  static async updateStepDetail(applicationStepDetailId, stepDetail) {
+    try {
+      const response = await RestUtilities.put(
+        `custom-applications/${applicationStepDetailId}/step-detail`,
+        stepDetail,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }

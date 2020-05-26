@@ -31,7 +31,6 @@ export default class CustomApplications extends React.Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
-    this.updateVariations = this.updateVariations.bind(this);
     this.handleClose = this.handleClose.bind(this);
   }
 
@@ -53,16 +52,6 @@ export default class CustomApplications extends React.Component {
     this.setState({ loading: true });
     ApplicationService.getApplications()
       .then((data) => this.setState({ applications: data, loading: false }));
-  }
-
-  updateVariations(rowData) {
-    ApplicationService.getApplicationSteps(rowData.productId)
-      .then((data) => this.setState({ applicationSteps: data }));
-
-    this.setState({
-      openDialog: true,
-      // application: rowData,
-    });
   }
 
   render() {
@@ -122,7 +111,6 @@ export default class CustomApplications extends React.Component {
       snackbarMessage,
       snackbarColor,
       applicationSteps,
-      product,
       openDialog,
     } = this.state;
 
@@ -182,16 +170,12 @@ export default class CustomApplications extends React.Component {
               options={detailOptions}
               title=""
               editable={{
-                onRowUpdate: (newData, oldData) => new Promise((resolve) => {
-                  setTimeout(() => {
-                    {
-                      const index = rowData.stepDetails.indexOf(oldData);
-                      rowData.stepDetails[index] = newData;
-                      ApplicationService.updateApplicationDetails(newData);
-                      // this.setState({ applicationDetails }, () => resolve());
-                    }
-                    resolve();
-                  }, 1000);
+                onRowUpdate: (newData) => new Promise(() => {
+                  // const index = rowData.stepDetails.map((item)
+                  // => item.applicationStepDetailId).indexOf(oldData.applicationStepDetailId);
+                  // rowData.stepDetails[index] = newData;
+                  ApplicationService.updateStepDetail(newData.applicationStepDetailId, newData);
+                  window.location.reload();
                 }),
               }}
             />
@@ -264,25 +248,6 @@ export default class CustomApplications extends React.Component {
                   Custom Application Steps:
                 </CardHeader>
                 <CardBody>
-                  {product && (
-                    <div>
-                      <Typography variant="subheading" gutterBottom>
-                        Code:
-                        {' '}
-                        {product.productCode}
-                      </Typography>
-                      <Typography variant="subheading" gutterBottom>
-                        Name:
-                        {' '}
-                        {product.productName}
-                      </Typography>
-                      <Typography variant="subheading" gutterBottom>
-                        Sales Price ($):
-                        {' '}
-                        {product.salesPrice}
-                      </Typography>
-                    </div>
-                  )}
                   <MaterialTable
                     columns={columns}
                     data={applicationSteps}
@@ -292,7 +257,10 @@ export default class CustomApplications extends React.Component {
                       onRowAdd: (newData) => new Promise((resolve) => {
                         setTimeout(() => {
                           applicationSteps.push(newData);
-                          ApplicationService.createApplicationStep(product.productId, newData);
+                          ApplicationService.createApplicationStep(
+                            newData.applicationStepId,
+                            newData,
+                          );
                           this.setState({ applicationSteps }, () => resolve());
                           resolve();
                         }, 1000);
@@ -302,7 +270,10 @@ export default class CustomApplications extends React.Component {
                           {
                             const index = applicationSteps.indexOf(oldData);
                             applicationSteps[index] = newData;
-                            ApplicationService.updateApplicationStep(product.productId, newData);
+                            ApplicationService.updateApplicationStep(
+                              newData.applicationStepDetailId,
+                              newData,
+                            );
                             this.setState({ applicationSteps }, () => resolve());
                           }
                           resolve();
