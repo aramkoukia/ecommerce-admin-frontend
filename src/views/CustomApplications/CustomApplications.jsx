@@ -98,9 +98,16 @@ export default class CustomApplications extends React.Component {
     const columns = [
       { title: 'Step Title', field: 'stepTitle' },
       { title: 'Step Description', field: 'stepDescription' },
-      { title: 'Is Range?', field: 'isRangeValue' },
-      { title: 'Min Value', field: 'minValue' },
-      { title: 'Max Value', field: 'maxValue' },
+      {
+        title: 'Is Range?',
+        field: 'isRangeValue',
+        lookup: {
+          true: 'Yes',
+          false: 'No',
+        },
+      },
+      { title: 'Min Value', field: 'minValue', type: 'numeric' },
+      { title: 'Max Value', field: 'maxValue', type: 'numeric' },
       { title: 'Value Unit', field: 'valueUnit' },
       { title: 'Sort Order', field: 'sortOrder' },
       {
@@ -127,6 +134,7 @@ export default class CustomApplications extends React.Component {
         title: 'Image',
         field: 'thumbnailImagePath',
         filtering: false,
+        readonly: true,
         render: (rowData) => (
           <img
             alt={(rowData.thumbnailImagePath) || 'No Image'}
@@ -134,7 +142,6 @@ export default class CustomApplications extends React.Component {
             style={{ width: 100 }}
           />
         ),
-
       },
       {
         title: 'applicationStepDetailId', field: 'applicationStepDetailId', hidden: true, readonly: true,
@@ -222,7 +229,7 @@ export default class CustomApplications extends React.Component {
                         {
                           const index = applications.indexOf(oldData);
                           applications[index] = newData;
-                          ApplicationService.updateApplication(newData);
+                          ApplicationService.updateApplication(newData.applicationStepId, newData);
                           this.setState({ applications }, () => resolve());
                         }
                         resolve();

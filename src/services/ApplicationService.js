@@ -35,7 +35,7 @@ export default class ApplicationService {
     }
   }
 
-  static async updateApplicationStep(applicationId, step) {
+  static async updateApplication(applicationId, step) {
     try {
       const response = await RestUtilities.put(
         `custom-applications/${applicationId}/step`,
