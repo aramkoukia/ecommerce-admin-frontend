@@ -856,14 +856,14 @@ export class Order extends React.Component {
                               name="payAmazonUsd"
                             />
                             )}
-                          label="Paypal and Amazon + USD"
+                          label="Online / Direct Diposit"
                         />
                       </GridItem>
                       <GridItem md={6}>
                         <TextField
                           disabled={!payAmazonUsd}
                           name="paypalAmazonUsdAmount"
-                          label="Paypal/Amazon/USD"
+                          label="Online/DirectDeposit"
                           type="text"
                           onChange={this.handleChange}
                           value={paypalAmazonUsdAmount}
