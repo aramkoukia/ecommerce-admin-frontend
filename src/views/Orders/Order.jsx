@@ -251,11 +251,39 @@ export class Order extends React.Component {
   }
 
   updatePayment() {
-    const { order } = this.state;
+    const { order, } = this.state;
+    let isCash = false;
+    let isCheque = false;
+    let isCreditDebit = false;
+    let isAmazonUsd = false;
+    let isStoreCredit = false;
+
+    if (order
+      && order.orderPayment
+      && order.orderPayment.length > 0
+      && order.orderPayment[0]) {
+    if (order.orderPayment[0].paymentTypeId == 22) {
+      isCash = true;
+    } else if (order.orderPayment[0].paymentTypeId == 23) {
+      isCreditDebit = true;
+    } else if(order.orderPayment[0].paymentTypeId == 24) {
+      isCheque = true;
+    } else if(order.orderPayment[0].paymentTypeId == 25) {
+      isAmazonUsd = true;
+    } else if (order.orderPayment[0].paymentTypeId == 26) {
+      isStoreCredit = true;
+    }
+    }
+
     this.setState({
       openDialog: true,
       isUpdatePayment: true,
       creditDebitAmount: order.total.toFixed(2),
+      payCash: isCash,
+      payCreditDebit: isCreditDebit,
+      payAmazonUsd: isAmazonUsd,
+      payCheque: isCheque,
+      payStoreCredit: isStoreCredit,
     });
   }
 
