@@ -153,11 +153,13 @@ export class Product extends React.Component {
       .then((data) => this.setState({ productTransactions: data }));
   }
 
-  enableDisableProducts() {
-    const { match } = this.props;
-    const productId = match.params.id;
-    ProductService.disableProduct(productId);
-    window.location.reload();
+  async enableDisableProducts() {
+    const { productId } = this.props;
+    await ProductService.disableProduct(productId);
+    const product = await ProductService.getProduct(productId);
+    this.setState({
+      product,
+    });
   }
 
   handleChange(event) {
