@@ -257,22 +257,33 @@ export class Order extends React.Component {
     let isCreditDebit = false;
     let isAmazonUsd = false;
     let isStoreCredit = false;
+    let cash = 0;
+    let cheque = 0;
+    let creditDebit = 0;
+    let amazonUsd = 0;
+    let storeCredit = 0;
+    const amount = order.total.toFixed(2);
 
     if (order
       && order.orderPayment
       && order.orderPayment.length > 0
       && order.orderPayment[0]) {
-    if (order.orderPayment[0].paymentTypeId == 22) {
-      isCash = true;
-    } else if (order.orderPayment[0].paymentTypeId == 23) {
-      isCreditDebit = true;
-    } else if(order.orderPayment[0].paymentTypeId == 24) {
-      isCheque = true;
-    } else if(order.orderPayment[0].paymentTypeId == 25) {
-      isAmazonUsd = true;
-    } else if (order.orderPayment[0].paymentTypeId == 26) {
-      isStoreCredit = true;
-    }
+      if (order.orderPayment[0].paymentTypeId == 22) {
+        isCash = true;
+        cash = amount;
+      } else if (order.orderPayment[0].paymentTypeId == 23) {
+        isCreditDebit = true;
+        creditDebit = amount;
+      } else if(order.orderPayment[0].paymentTypeId == 24) {
+        isCheque = true;
+        cheque = amount;
+      } else if(order.orderPayment[0].paymentTypeId == 25) {
+        isAmazonUsd = true;
+        amazonUsd = amount;
+      } else if (order.orderPayment[0].paymentTypeId == 26) {
+        isStoreCredit = true;
+        storeCredit = amount;
+      }
     }
 
     this.setState({
@@ -284,6 +295,11 @@ export class Order extends React.Component {
       payAmazonUsd: isAmazonUsd,
       payCheque: isCheque,
       payStoreCredit: isStoreCredit,
+      cashAmount: cash,
+      chequeAmount: cheque,
+      creditDebitAmount: creditDebit,
+      paypalAmazonUsdAmount: amazonUsd,
+      storeCreditAmount: storeCredit,
     });
   }
 
