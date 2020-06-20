@@ -38,6 +38,7 @@ export default class UpdateProducts extends React.Component {
     super(props);
     this.handleChange = this.handleChange.bind(this);
     this.updateVariations = this.updateVariations.bind(this);
+    this.updateTags = this.updateTags.bind(this);
     this.handleClose = this.handleClose.bind(this);
   }
 
@@ -80,6 +81,16 @@ export default class UpdateProducts extends React.Component {
       openDialog: true,
       product: rowData,
     });
+  }
+
+  updateTags(rowData) {
+    // ProductService.getProductPackages(rowData.productId)
+    //   .then((data) => this.setState({ productPackages: data }));
+    alert('update tag');
+    // this.setState({
+    //   openDialog: true,
+    //   product: rowData,
+    // });
   }
 
   render() {
@@ -262,10 +273,16 @@ export default class UpdateProducts extends React.Component {
               title=""
               actions={[
                 {
+                  icon: 'local_offer',
+                  tooltip: 'Tags',
+                  onClick: (event, rowData) => this.updateTags(rowData),
+                },
+                {
                   icon: 'attach_money',
                   tooltip: 'Variations',
                   onClick: (event, rowData) => this.updateVariations(rowData),
-                }]}
+                },
+              ]}
               editable={{
                 onRowUpdate: (newData, oldData) => new Promise((resolve) => {
                   setTimeout(() => {
