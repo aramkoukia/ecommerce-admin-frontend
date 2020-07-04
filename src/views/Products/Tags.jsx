@@ -15,14 +15,14 @@ export default class Tags extends React.Component {
   }
 
   componentDidMount() {
-    this.TagsList();
+    this.tagsList();
   }
 
   tagsList() {
     const columns = ['tagId', 'tagName'];
-    TagService.getTags()
-      .then((results) => results.map((row) => columns.map((column) => (row[column] === null ? '' : row[column]))))
-      .then((data) => this.setState({ tags: data }));
+    // TagService.getTags()
+    //   .then((results) => results.map((row) => columns.map((column) => (row[column] === null ? '' : row[column]))))
+    //   .then((data) => this.setState({ tags: data }));
   }
 
   render() {
@@ -56,7 +56,7 @@ export default class Tags extends React.Component {
       },
     };
 
-    const columns = ['tag Id', 'tag Name', 'tag Address'];
+    const columns = ['Tag Name'];
     const options = {
       filterType: 'checkbox',
       rowsPerPageOptions: [25, 50, 100],
@@ -71,7 +71,7 @@ export default class Tags extends React.Component {
           <GridItem xs={12} sm={12} md={12}>
             <Card>
               <CardHeader color="primary">
-                <div className={styles.cardTitleWhite}>tags List</div>
+                <div className={styles.cardTitleWhite}>Tags List</div>
               </CardHeader>
               <CardBody>
                 <MUIDataTable

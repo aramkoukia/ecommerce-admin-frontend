@@ -10,6 +10,7 @@ import SettingsBrightness from '@material-ui/icons/SettingsBrightness';
 import LocationOn from '@material-ui/icons/LocationOn';
 import ScreenLockLandscape from '@material-ui/icons/ScreenLockLandscape';
 import Products from '../views/Products/Products';
+import Tags from '../views/Products/Tags';
 import { Product } from '../views/Products/Product';
 import ProductCategory from '../views/Products/ProductCategory';
 import Locations from '../views/Locations/Locations';
@@ -286,6 +287,14 @@ const dashboardRoutes = [
     navbarName: '',
     icon: SettingsBrightness,
     component: CustomApplications,
+    permission: Permissions.ViewRoles,
+  },
+  {
+    path: '/tags',
+    sidebarName: 'Tags',
+    navbarName: '',
+    icon: SettingsBrightness,
+    component: Tags,
     permission: Permissions.ViewRoles,
   },
   {
