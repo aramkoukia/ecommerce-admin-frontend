@@ -37,6 +37,7 @@ export default class UpdateProducts extends React.Component {
     description: '',
     showHtmlEditor: false,
     showUploadImage: false,
+    showTags: false,
   };
 
   constructor(props) {
@@ -66,6 +67,7 @@ export default class UpdateProducts extends React.Component {
       openDialog: false,
       showHtmlEditor: false,
       showUploadImage: false,
+      showTags: false,
       productPackages: [],
     });
   }
@@ -94,7 +96,7 @@ export default class UpdateProducts extends React.Component {
 
   updateTags(rowData) {
     this.setState({
-      showUploadImage: true,
+      showTags: true,
     });
     // ProductService.getProductPackages(rowData.productId)
     //   .then((data) => this.setState({ productPackages: data }));
@@ -253,6 +255,7 @@ export default class UpdateProducts extends React.Component {
       openDialog,
       showHtmlEditor,
       showUploadImage,
+      showTags,
       description,
     } = this.state;
 
@@ -455,6 +458,24 @@ export default class UpdateProducts extends React.Component {
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleUploadImage} color="primary">
+              Save
+            </Button>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          maxWidth="xl"
+          open={showTags}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            Product Tags
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleUpdateTags} color="primary">
               Save
             </Button>
             <Button onClick={this.handleClose} color="info">
