@@ -39,6 +39,8 @@ export default class UpdateProducts extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.updateVariations = this.updateVariations.bind(this);
     this.updateTags = this.updateTags.bind(this);
+    this.updateImages = this.updateImages.bind(this);
+    this.updateWebsiteInfo = this.updateWebsiteInfo.bind(this);
     this.handleClose = this.handleClose.bind(this);
   }
 
@@ -91,6 +93,14 @@ export default class UpdateProducts extends React.Component {
     //   openDialog: true,
     //   product: rowData,
     // });
+  }
+
+  updateImages(rowData) {
+    alert('update images');
+  }
+
+  updateWebsiteInfo(rowData) {
+    alert('update website info');
   }
 
   render() {
@@ -272,6 +282,16 @@ export default class UpdateProducts extends React.Component {
               onRowClick={this.rowClicked}
               title=""
               actions={[
+                {
+                  icon: 'image',
+                  tooltip: 'Update Images',
+                  onClick: (event, rowData) => this.updateImages(rowData),
+                },
+                {
+                  icon: 'description',
+                  tooltip: 'Website Info',
+                  onClick: (event, rowData) => this.updateWebsiteInfo(rowData),
+                },
                 {
                   icon: 'local_offer',
                   tooltip: 'Tags',
