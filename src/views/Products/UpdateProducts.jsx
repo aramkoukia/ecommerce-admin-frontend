@@ -20,6 +20,8 @@ import GridItem from '../../components/Grid/GridItem';
 import Button from '../../components/CustomButtons/Button';
 import CardBody from '../../components/Card/CardBody';
 import ProductService from '../../services/ProductService';
+import ImageUpload from '../../components/ImageUpload/ImageUpload';
+import HtmlEditor from '../../components/HtmlEditor/HtmlEditor';
 import ProductCategoryService from '../../services/ProductCategoryService';
 
 export default class UpdateProducts extends React.Component {
@@ -32,6 +34,9 @@ export default class UpdateProducts extends React.Component {
     openDialog: false,
     productPackages: [],
     productCategories: [],
+    description: '',
+    showHtmlEditor: false,
+    showUploadImage: false,
   };
 
   constructor(props) {
@@ -59,6 +64,8 @@ export default class UpdateProducts extends React.Component {
   handleClose() {
     this.setState({
       openDialog: false,
+      showHtmlEditor: false,
+      showUploadImage: false,
       productPackages: [],
     });
   }
@@ -86,9 +93,12 @@ export default class UpdateProducts extends React.Component {
   }
 
   updateTags(rowData) {
+    this.setState({
+      showUploadImage: true,
+    });
     // ProductService.getProductPackages(rowData.productId)
     //   .then((data) => this.setState({ productPackages: data }));
-    alert('update tag');
+    // alert('update tag');
     // this.setState({
     //   openDialog: true,
     //   product: rowData,
@@ -96,11 +106,15 @@ export default class UpdateProducts extends React.Component {
   }
 
   updateImages(rowData) {
-    alert('update images');
+    this.setState({
+      showUploadImage: true,
+    });
   }
 
   updateWebsiteInfo(rowData) {
-    alert('update website info');
+    this.setState({
+      showHtmlEditor: true,
+    });
   }
 
   render() {
@@ -237,6 +251,9 @@ export default class UpdateProducts extends React.Component {
       productPackages,
       product,
       openDialog,
+      showHtmlEditor,
+      showUploadImage,
+      description,
     } = this.state;
 
     const packageColumns = [
@@ -408,6 +425,42 @@ export default class UpdateProducts extends React.Component {
               </Button>
             </DialogActions>
           </DialogContent>
+        </Dialog>
+        <Dialog
+          maxWidth="xl"
+          open={showHtmlEditor}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <HtmlEditor value={description || ''} onBlur={this.handleDescriptionBlur} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleUpdateDescription} color="primary">
+              Save
+            </Button>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          maxWidth="xl"
+          open={showUploadImage}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <ImageUpload singleImage onChange={this.handleImageChange} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleUploadImage} color="primary">
+              Save
+            </Button>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+          </DialogActions>
         </Dialog>
       </div>
     );
