@@ -195,8 +195,12 @@ export default class UpdateProducts extends React.Component {
         field: 'productTypeId',
         lookup: hash,
       },
-      { title: 'Product Code', field: 'productCode', readonly: true },
-      { title: 'Product Name', field: 'productName', readonly: true },
+      {
+        title: 'Product Code', field: 'productCode', readonly: true, editable: 'never',
+      },
+      {
+        title: 'Product Name', field: 'productName', readonly: true, editable: 'never',
+      },
       {
         title: 'Purchase Price ($)',
         field: 'purchasePrice',
@@ -208,12 +212,12 @@ export default class UpdateProducts extends React.Component {
         field: 'avgPurchasePrice',
         type: 'numeric',
         readonly: true,
+        editable: 'never',
       },
       {
         title: 'Sales Price ($)',
         field: 'salesPrice',
         type: 'numeric',
-        readonly: true,
         width: 100,
       },
       {
@@ -221,6 +225,7 @@ export default class UpdateProducts extends React.Component {
         field: 'balance',
         type: 'numeric',
         readonly: true,
+        editable: 'never',
         width: 100,
       },
       {
@@ -228,19 +233,25 @@ export default class UpdateProducts extends React.Component {
         field: 'onHoldAmount',
         type: 'numeric',
         readonly: true,
+        editable: 'never',
         width: 100,
       },
       {
         title: 'Disabled',
         field: 'disabled',
         readonly: true,
+        editable: 'never',
         lookup: {
           True: 'True',
           False: 'False',
         },
       },
       {
-        title: 'Product Id', field: 'productId', hidden: true, readonly: true,
+        title: 'Product Id',
+        field: 'productId',
+        hidden: true,
+        readonly: true,
+        editable: 'never',
       },
     ];
 
