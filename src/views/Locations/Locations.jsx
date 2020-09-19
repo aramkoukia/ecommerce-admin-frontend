@@ -83,14 +83,14 @@ export default class Locations extends React.Component {
         title: 'Phone Number',
         field: 'phoneNumber',
       },
-      {
-        title: 'Disabled',
-        field: 'disabled',
-        lookup: {
-          True: 'True',
-          False: 'False',
-        },
-      },
+      // {
+      //   title: 'Disabled',
+      //   field: 'disabled',
+      //   lookup: {
+      //     True: 'True',
+      //     False: 'False',
+      //   },
+      // },
       {
         title: 'Location Id',
         field: 'locationId',
@@ -151,7 +151,7 @@ export default class Locations extends React.Component {
                         {
                           const index = locations.indexOf(oldData);
                           locations.splice(index, 1);
-                          LocationService.deleteLocation(oldData);
+                          LocationService.deleteLocation(oldData.locationId);
                           this.setState({ locations }, () => resolve());
                         }
                         resolve();
