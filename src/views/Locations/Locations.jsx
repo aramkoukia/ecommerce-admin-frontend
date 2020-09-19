@@ -1,5 +1,6 @@
 import React from 'react';
-import MUIDataTable from 'mui-datatables';
+import MaterialTable from 'material-table';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
@@ -8,21 +9,19 @@ import CardBody from '../../components/Card/CardBody';
 import LocationService from '../../services/LocationService';
 
 export default class Locations extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { locations: [] };
-  }
+  state = {
+    locations: [],
+    loading: false,
+  };
 
   componentDidMount() {
     this.LocationsList();
   }
 
   LocationsList() {
-    const columns = ['locationId', 'locationName', 'locationAddress'];
+    this.setState({ loading: true });
     LocationService.getLocations()
-      .then((results) => results.map((row) => columns.map((column) => (row[column] === null ? '' : row[column]))))
-      .then((data) => this.setState({ locations: data }));
+      .then((data) => this.setState({ locations: data, loading: false }));
   }
 
   render() {
@@ -56,14 +55,62 @@ export default class Locations extends React.Component {
       },
     };
 
-    const columns = ['Location Id', 'Location Name', 'Location Address'];
+    const columns = [
+      {
+        title: 'Location Name',
+        field: 'locationName',
+      },
+
+      {
+        title: 'Country',
+        field: 'country',
+      },
+
+      {
+        title: 'Province',
+        field: 'province',
+      },
+
+      {
+        title: 'Postal Code',
+        field: 'postalCode',
+      },
+      {
+        title: 'Address',
+        field: 'locationAddress',
+      },
+      {
+        title: 'Phone Number',
+        field: 'phoneNumber',
+      },
+      {
+        title: 'Disabled',
+        field: 'disabled',
+        lookup: {
+          True: 'True',
+          False: 'False',
+        },
+      },
+      {
+        title: 'Location Id',
+        field: 'locationId',
+        hidden: true,
+        readonly: true,
+        editable: 'never',
+      },
+    ];
+
     const options = {
-      filterType: 'checkbox',
-      rowsPerPageOptions: [25, 50, 100],
-      rowsPerPage: 25,
+      paging: true,
+      pageSizeOptions: [25, 50, 100],
+      pageSize: 25,
+      columnsButton: true,
+      exportButton: true,
+      filtering: true,
+      search: true,
     };
 
-    const { locations } = this.state;
+    const { locations, loading } = this.state;
 
     return (
       <div>
@@ -74,11 +121,26 @@ export default class Locations extends React.Component {
                 <div className={styles.cardTitleWhite}>Locations List</div>
               </CardHeader>
               <CardBody>
-                <MUIDataTable
-                  data={locations}
+                <MaterialTable
                   columns={columns}
+                  data={locations}
                   options={options}
+                  title=""
+                  editable={{
+                    onRowUpdate: (newData, oldData) => new Promise((resolve) => {
+                      setTimeout(() => {
+                        {
+                          const index = locations.indexOf(oldData);
+                          locations[index] = newData;
+                          LocationService.updateLocation(newData);
+                          this.setState({ locations }, () => resolve());
+                        }
+                        resolve();
+                      }, 1000);
+                    }),
+                  }}
                 />
+                {loading && (<LinearProgress />)}
               </CardBody>
             </Card>
           </GridItem>
