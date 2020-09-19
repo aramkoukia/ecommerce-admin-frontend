@@ -89,7 +89,7 @@ export class Order extends React.Component {
     this.handleCashChange = this.handleCashChange.bind(this);
     this.customerChanged = this.customerChanged.bind(this);
     this.updateCustomer = this.updateCustomer.bind(this);
-    this.editDraft = this.editDraft.bind(this);
+    this.editQuote = this.editQuote.bind(this);
     this.updatePayment = this.updatePayment.bind(this);
     this.updateLocationClicked = this.updateLocationClicked.bind(this);
     this.updateLocation = this.updateLocation.bind(this);
@@ -303,7 +303,7 @@ export class Order extends React.Component {
     });
   }
 
-  editDraft() {
+  editQuote() {
     const orderId = this.props.orderId || this.props.location.state.orderId;
     this.props.history.push({
       pathname: `/neworder/${orderId}`,
@@ -603,12 +603,12 @@ export class Order extends React.Component {
   }
 
   async cancelHold() {
-    const status = 'Draft';
+    const status = 'Quote';
     const result = await this.updateOrderStatus(status);
     if (result && result.orderId) {
       this.setState({
         openSnackbar: true,
-        snackbarMessage: 'Order was marked as Draft and not On-Hold any more!',
+        snackbarMessage: 'Order was marked as Quote and not On-Hold any more!',
         snackbarColor: 'success',
       });
       const { order } = this.state;
@@ -697,14 +697,14 @@ export class Order extends React.Component {
                         </GridItem>
                         )}
 
-                        { order.status === 'Draft' || order.status === 'OnHold' || order.status === 'Account'
+                        { order.status === 'Quote' || order.status === 'OnHold' || order.status === 'Account'
                           ? (
                             <GridItem xs>
                               <Button color="info" disabled={loading} onClick={this.saveAsPaid}>Mark As Paid</Button>
                             </GridItem>
                           ) : <div />}
 
-                        { order.status === 'Draft' && (
+                        { order.status === 'Quote' && (
                         <GridItem xs>
                           <Button color="info" disabled={loading} onClick={this.saveAsHold}>Put On Hold</Button>
                         </GridItem>
@@ -721,9 +721,9 @@ export class Order extends React.Component {
                           <Button color="info" disabled={loading} onClick={this.cancelHold}>Cancel On Hold</Button>
                         </GridItem>
                         )}
-                        { order.status === 'Draft' && (
+                        { order.status === 'Quote' && (
                         <GridItem xs>
-                          <Button color="info" disabled={loading} onClick={this.editDraft}>Edit</Button>
+                          <Button color="info" disabled={loading} onClick={this.editQuote}>Edit</Button>
                         </GridItem>
                         )}
                         {(order.status === 'Paid' || order.status === 'Return') && (
@@ -748,12 +748,12 @@ export class Order extends React.Component {
                           <CustomerInfo customer={order.customer} />
                         </GridItem>
                         <GridItem xs={9}>
-                          {(order.status === 'Draft' || order.status === 'Paid') && (
+                          {(order.status === 'Quote' || order.status === 'Paid') && (
                           <CustomerSearch customerChanged={this.customerChanged} />
                           )}
                         </GridItem>
                         <GridItem xs={3}>
-                          {(order.status === 'Draft' || order.status === 'Paid') && (
+                          {(order.status === 'Quote' || order.status === 'Paid') && (
                             <Button color="info" onClick={this.updateCustomer}>Update Customer</Button>
                           )}
                         </GridItem>

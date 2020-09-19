@@ -184,7 +184,7 @@ export default class Orders extends React.Component {
         title: 'Status',
         field: 'status',
         lookup: {
-          Paid: 'Paid', Return: 'Return', Account: 'Account', Draft: 'Draft', OnHold: 'OnHold',
+          Paid: 'Paid', Return: 'Return', Account: 'Account', Quote: 'Quote', OnHold: 'OnHold',
         },
       },
       { title: 'PO Number', field: 'poNumber' },
