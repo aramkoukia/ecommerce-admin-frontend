@@ -14,7 +14,6 @@ import Tags from '../views/Products/Tags';
 import { Product } from '../views/Products/Product';
 import ProductCategory from '../views/Products/ProductCategory';
 import Locations from '../views/Locations/Locations';
-import AddLocation from '../views/Locations/AddLocation';
 import Customers from '../views/Customers/Customers';
 import Customer from '../views/Customers/Customer';
 import AddCustomer from '../views/Customers/AddCustomer';
@@ -223,14 +222,6 @@ const dashboardRoutes = [
     navbarName: '',
     icon: LocationOn,
     component: Locations,
-    permission: Permissions.ViewLocations,
-  },
-  {
-    path: '/addlocation',
-    sidebarName: 'New Location',
-    navbarName: '',
-    icon: LocationOn,
-    component: AddLocation,
     permission: Permissions.ViewLocations,
   },
   {

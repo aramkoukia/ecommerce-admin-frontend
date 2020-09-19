@@ -34,4 +34,15 @@ export default class LocationService {
       return false;
     }
   }
+
+  static async deleteLocation(locationId) {
+    try {
+      const response = await RestUtilities.delete(
+        `locations/${locationId}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }
