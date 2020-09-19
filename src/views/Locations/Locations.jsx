@@ -138,6 +138,25 @@ export default class Locations extends React.Component {
                         resolve();
                       }, 1000);
                     }),
+                    onRowAdd: (newData) => new Promise((resolve) => {
+                      setTimeout(() => {
+                        locations.push(newData);
+                        LocationService.addLocation(newData);
+                        this.setState({ locations }, () => resolve());
+                        resolve();
+                      }, 1000);
+                    }),
+                    onRowDelete: (oldData) => new Promise((resolve) => {
+                      setTimeout(() => {
+                        {
+                          const index = locations.indexOf(oldData);
+                          locations.splice(index, 1);
+                          LocationService.deleteLocation(oldData);
+                          this.setState({ locations }, () => resolve());
+                        }
+                        resolve();
+                      }, 1000);
+                    }),
                   }}
                 />
                 {loading && (<LinearProgress />)}
