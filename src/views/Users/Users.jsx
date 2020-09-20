@@ -345,14 +345,14 @@ export default class Users extends React.Component {
                         resolve();
                       }, 1000);
                     }),
-                    onRowAdd: (newData) => new Promise((resolve) => {
-                      setTimeout(() => {
-                        users.push(newData);
-                        UserService.addUser(newData);
-                        this.setState({ users }, () => resolve());
-                        resolve();
-                      }, 1000);
-                    }),
+                    // onRowAdd: (newData) => new Promise((resolve) => {
+                    //   setTimeout(() => {
+                    //     users.push(newData);
+                    //     UserService.addUser(newData);
+                    //     this.setState({ users }, () => resolve());
+                    //     resolve();
+                    //   }, 1000);
+                    // }),
                     onRowDelete: (oldData) => new Promise((resolve) => {
                       setTimeout(() => {
                         {
