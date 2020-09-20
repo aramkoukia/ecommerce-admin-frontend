@@ -242,7 +242,7 @@ const dashboardRoutes = [
   },
   {
     path: '/adduser',
-    sidebarName: 'New User',
+    sidebarName: '',
     navbarName: '',
     icon: Person,
     component: AddUser,

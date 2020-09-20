@@ -10,9 +10,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import Portal from '@material-ui/core/Portal';
+import Button from '../../components/CustomButtons/Button';
 import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
@@ -47,6 +47,7 @@ export default class Users extends React.Component {
     this.handleResetPassword = this.handleResetPassword.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.permissionsClicked = this.permissionsClicked.bind(this);
+    this.onAddNew = this.onAddNew.bind(this);
   }
 
   componentDidMount() {
@@ -68,6 +69,11 @@ export default class Users extends React.Component {
         });
         this.setState({ roleChecked: assignedRoles });
       });
+  }
+
+  onAddNew() {
+    const { history } = this.props;
+    return history.push('/adduser');
   }
 
   getUserLocations(email) {
@@ -321,6 +327,9 @@ export default class Users extends React.Component {
                 <div className={styles.cardTitleWhite}>Users List</div>
               </CardHeader>
               <CardBody>
+                <Button color="info" onClick={this.onAddNew}>
+                  New User
+                </Button>
                 <MaterialTable
                   columns={columns}
                   data={users}
