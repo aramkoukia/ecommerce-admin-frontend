@@ -143,7 +143,7 @@ export default class Users extends React.Component {
       locationIds: locationChecked.filter((item) => item !== 0),
     };
 
-    const result = await UserService.UpdateUserRolesAndLocations(userInfo);
+    const result = await UserService.updateUserRolesAndLocations(userInfo);
     if (result && result.email) {
       this.setState({
         openSnackbar: true,
@@ -179,7 +179,7 @@ export default class Users extends React.Component {
       newPassword,
     };
 
-    const result = await UserService.ResetPassword(passwordResetInfo);
+    const result = await UserService.resetPassword(passwordResetInfo);
     if (result && result.succeeded) {
       this.setState({
         openSnackbar: true,
@@ -254,6 +254,8 @@ export default class Users extends React.Component {
       {
         title: 'Pass Code',
         field: 'authCode',
+        readonly: true,
+        editable: 'never',
       },
       {
         title: 'User Name',
@@ -326,7 +328,7 @@ export default class Users extends React.Component {
                   title=""
                   actions={[
                     {
-                      icon: 'local_offer',
+                      icon: 'group',
                       tooltip: 'Permissions',
                       onClick: (event, rowData) => this.permissionsClicked(rowData),
                     },
@@ -335,10 +337,10 @@ export default class Users extends React.Component {
                     onRowUpdate: (newData, oldData) => new Promise((resolve) => {
                       setTimeout(() => {
                         {
-                          const index = locations.indexOf(oldData);
+                          const index = users.indexOf(oldData);
                           users[index] = newData;
                           UserService.updateUser(newData);
-                          this.setState({ locations }, () => resolve());
+                          this.setState({ users }, () => resolve());
                         }
                         resolve();
                       }, 1000);
@@ -354,9 +356,9 @@ export default class Users extends React.Component {
                     onRowDelete: (oldData) => new Promise((resolve) => {
                       setTimeout(() => {
                         {
-                          const index = locations.indexOf(oldData);
+                          const index = users.indexOf(oldData);
                           users.splice(index, 1);
-                          UserService.deleteUser(oldData.id);
+                          UserService.deleteUser(oldData.userName);
                           this.setState({ users }, () => resolve());
                         }
                         resolve();
