@@ -12,57 +12,7 @@ export default class Customers extends React.Component {
   state = {
     customers: [],
     loading: false,
-  };
-
-
-  async componentDidMount() {
-    await this.customersList();
-  }
-
-  async customersList() {
-    this.setState({ loading: true });
-    const showDisabled = true;
-    const result = await CustomerService.getCustomersWithBalance(showDisabled);
-    this.setState({ customers: result, loading: false });
-  }
-
-  showDetails(customerId) {
-    const { history } = this.props;
-    history.push(`/customer/${customerId}`);
-  }
-
-  render() {
-    const styles = {
-      cardCategoryWhite: {
-        '&,& a,& a:hover,& a:focus': {
-          color: 'rgba(255,255,255,.62)',
-          margin: '0',
-          fontSize: '14px',
-          marginTop: '0',
-          marginBottom: '0',
-        },
-        '& a,& a:hover,& a:focus': {
-          color: '#FFFFFF',
-        },
-      },
-      cardTitleWhite: {
-        color: '#FFFFFF',
-        marginTop: '0px',
-        minHeight: 'auto',
-        fontWeight: '300',
-        fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-        marginBottom: '3px',
-        textDecoration: 'none',
-        '& small': {
-          color: '#777',
-          fontSize: '65%',
-          fontWeight: '400',
-          lineHeight: '1',
-        },
-      },
-    };
-
-    const columns = [
+    columns: [
       {
         title: 'Customer Code',
         field: 'customerCode',
@@ -149,9 +99,8 @@ export default class Customers extends React.Component {
         readonly: true,
         hidden: true,
       },
-    ];
-
-    const options = {
+    ],
+    options: {
       paging: true,
       pageSizeOptions: [25, 50, 100],
       pageSize: 25,
@@ -159,9 +108,60 @@ export default class Customers extends React.Component {
       exportButton: true,
       filtering: true,
       search: true,
+    },
+  };
+
+
+  async componentDidMount() {
+    await this.customersList();
+  }
+
+  async customersList() {
+    this.setState({ loading: true });
+    const showDisabled = true;
+    const result = await CustomerService.getCustomersWithBalance(showDisabled);
+    this.setState({ customers: result, loading: false });
+  }
+
+  showDetails(customerId) {
+    const { history } = this.props;
+    history.push(`/customer/${customerId}`);
+  }
+
+  render() {
+    const styles = {
+      cardCategoryWhite: {
+        '&,& a,& a:hover,& a:focus': {
+          color: 'rgba(255,255,255,.62)',
+          margin: '0',
+          fontSize: '14px',
+          marginTop: '0',
+          marginBottom: '0',
+        },
+        '& a,& a:hover,& a:focus': {
+          color: '#FFFFFF',
+        },
+      },
+      cardTitleWhite: {
+        color: '#FFFFFF',
+        marginTop: '0px',
+        minHeight: 'auto',
+        fontWeight: '300',
+        fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+        marginBottom: '3px',
+        textDecoration: 'none',
+        '& small': {
+          color: '#777',
+          fontSize: '65%',
+          fontWeight: '400',
+          lineHeight: '1',
+        },
+      },
     };
 
-    const { customers, loading } = this.state;
+    const {
+      customers, loading, columns, options,
+    } = this.state;
     return (
       <div>
         <GridContainer>
