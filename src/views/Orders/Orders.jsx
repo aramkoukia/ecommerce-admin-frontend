@@ -70,6 +70,63 @@ export default class Orders extends React.Component {
         locationName: 'All',
       },
     ],
+    columns: [
+      { title: 'Order Id', field: 'orderId' },
+      { title: 'Order Date', field: 'orderDate' },
+      { title: 'Sub Total', field: 'subTotal' },
+      { title: 'Total', field: 'total' },
+      {
+        title: 'Status',
+        field: 'status',
+        lookup: {
+          Paid: 'Paid', Return: 'Return', Account: 'Account', Quote: 'Quote', OnHold: 'OnHold',
+        },
+      },
+      { title: 'PO Number', field: 'poNumber' },
+      { title: 'Paid Amount', field: 'paidAmount' },
+      {
+        title: 'Payment Type',
+        field: 'paymentTypeName',
+      },
+      { title: 'Due Date', field: 'dueDate' },
+      { title: 'Company Name', field: 'companyName' },
+      {
+        title: 'PST Charged',
+        field: 'pstCharged',
+        lookup: {
+          Yes: 'Yes',
+          No: 'No',
+        },
+      },
+      {
+        title: 'PST Amount',
+        field: 'pstAmount',
+        hidden: true,
+      },
+      {
+        title: 'Over Due',
+        field: 'overDue',
+        hidden: true,
+      },
+      { title: 'Location', field: 'locationName' },
+      { title: 'User', field: 'givenName' },
+    ],
+    options: {
+      paging: true,
+      pageSizeOptions: [25, 50, 100],
+      pageSize: 25,
+      columnsButton: true,
+      exportButton: true,
+      filtering: true,
+      search: true,
+      rowStyle: (data) => {
+        if (data.overDue === 'Yes') {
+          return {
+            backgroundColor: '#ffcccc',
+          };
+        }
+      },
+    },
   };
 
   constructor(props) {
@@ -175,65 +232,6 @@ export default class Orders extends React.Component {
       },
     };
 
-    const columns = [
-      { title: 'Order Id', field: 'orderId' },
-      { title: 'Order Date', field: 'orderDate' },
-      { title: 'Sub Total', field: 'subTotal' },
-      { title: 'Total', field: 'total' },
-      {
-        title: 'Status',
-        field: 'status',
-        lookup: {
-          Paid: 'Paid', Return: 'Return', Account: 'Account', Quote: 'Quote', OnHold: 'OnHold',
-        },
-      },
-      { title: 'PO Number', field: 'poNumber' },
-      { title: 'Paid Amount', field: 'paidAmount' },
-      {
-        title: 'Payment Type',
-        field: 'paymentTypeName',
-      },
-      { title: 'Due Date', field: 'dueDate' },
-      { title: 'Company Name', field: 'companyName' },
-      {
-        title: 'PST Charged',
-        field: 'pstCharged',
-        lookup: {
-          Yes: 'Yes',
-          No: 'No',
-        },
-      },
-      {
-        title: 'PST Amount',
-        field: 'pstAmount',
-        hidden: true,
-      },
-      {
-        title: 'Over Due',
-        field: 'overDue',
-        hidden: true,
-      },
-      { title: 'Location', field: 'locationName' },
-      { title: 'User', field: 'givenName' },
-    ];
-
-    const options = {
-      paging: true,
-      pageSizeOptions: [25, 50, 100],
-      pageSize: 25,
-      columnsButton: true,
-      exportButton: true,
-      filtering: true,
-      search: true,
-      rowStyle: (data) => {
-        if (data.overDue === 'Yes') {
-          return {
-            backgroundColor: '#ffcccc',
-          };
-        }
-      },
-    };
-
     const detailPanel = [
       {
         tooltip: 'Details',
@@ -282,6 +280,8 @@ export default class Orders extends React.Component {
       toDate,
       orderId,
       showOrder,
+      columns,
+      options,
     } = this.state;
 
     // const classes = useStyles();
