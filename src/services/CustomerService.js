@@ -34,6 +34,17 @@ export default class CustomerService {
     }
   }
 
+  static async getCustomerOrderSummary(customerId) {
+    try {
+      const response = await RestUtilities.get(
+        `customers/${customerId}/ordersummary`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async addCustomer(customer) {
     try {
       const response = await RestUtilities.post(

@@ -14,6 +14,7 @@ import CardBody from '../../components/Card/CardBody';
 import Button from '../../components/CustomButtons/Button';
 import OrderService from '../../services/OrderService';
 import CustomerInfo from '../Orders/CustomerInfo';
+import CustomerOrderSummary from './CustomerOrderSummary';
 import CustomerService from '../../services/CustomerService';
 
 function dateFormat(dateString) {
@@ -51,12 +52,14 @@ export default class Customer extends React.Component {
     const { match } = this.props;
     const customerId = match.params.id;
     const customer = await CustomerService.getCustomer(customerId);
+    const customerOrderSummary = await CustomerService.getCustomerOrderSummary(customerId);
     const lastMonthDate = new Date().addHours(-8);
     const fromDate = dateFormat(new Date(lastMonthDate.setMonth(lastMonthDate.getMonth() - 1)));
     const toDate = dateFormat((new Date()).addHours(-8));
 
     this.setState({
       customer,
+      customerOrderSummary,
       loading: false,
       fromDate,
       toDate,
@@ -200,6 +203,7 @@ export default class Customer extends React.Component {
     const {
       orders,
       customer,
+      customerOrderSummary,
       loading,
       fromDate,
       toDate,
@@ -208,8 +212,11 @@ export default class Customer extends React.Component {
     return (
       <div>
         <GridContainer>
-          <GridItem xs={10}>
+          <GridItem xs={12}>
             <CustomerInfo customer={customer} />
+          </GridItem>
+          <GridItem xs={10}>
+            <CustomerOrderSummary customerOrderSummary={customerOrderSummary} />
           </GridItem>
           <GridItem xs={2}>
             <Button color="primary" onClick={this.editCustomer}>
