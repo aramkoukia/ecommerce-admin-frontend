@@ -45,6 +45,7 @@ import Roles from '../views/Roles/Roles';
 import Settings from '../views/Settings/Settings';
 import PosSettings from '../views/Settings/PosSettings';
 import CustomApplications from '../views/CustomApplications/CustomApplications';
+import CustomerStatementSettings from '../views/Settings/CustomerStatementSettings';
 import UpdateProducts from '../views/Products/UpdateProducts';
 import Permissions from '../stores/Permissions';
 
@@ -262,6 +263,14 @@ const dashboardRoutes = [
     navbarName: '',
     icon: SettingsBrightness,
     component: Settings,
+    permission: Permissions.ViewRoles,
+  },
+  {
+    path: '/customerstatementsettings',
+    sidebarName: 'Statement Settings',
+    navbarName: '',
+    icon: SettingsBrightness,
+    component: CustomerStatementSettings,
     permission: Permissions.ViewRoles,
   },
   {
