@@ -118,6 +118,17 @@ export default class OrderService {
     }
   }
 
+  static async getCustomerOrdersByDate(customerId, fromDate, toDate) {
+    try {
+      const response = await RestUtilities.get(
+        `orders/customer/${customerId}/bydate?fromDate=${fromDate}&toDate=${toDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getOrderDetail(orderId) {
     try {
       const response = await RestUtilities.get(
