@@ -265,6 +265,22 @@ export default class ReportService {
     }
   }
 
+  static async getProductSalesProfitPdf(
+    fromSalesDate,
+    toSalesDate,
+    fromPurchaseDate,
+    toPurchaseDate,
+  ) {
+    try {
+      const response = await RestUtilities.getBlob(
+        `reports/purchaseprofitpdf?fromSalesDate=${fromSalesDate}&toSalesDate=${toSalesDate}&fromPurchaseDate=${fromPurchaseDate}&toPurchaseDate=${toPurchaseDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getProductSalesProfit(fromSalesDate, toSalesDate, fromPurchaseDate, toPurchaseDate) {
     try {
       const response = await RestUtilities.get(
