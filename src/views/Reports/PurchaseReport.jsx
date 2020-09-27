@@ -2,6 +2,9 @@ import React from 'react';
 import MUIDataTable from 'mui-datatables';
 import TextField from '@material-ui/core/TextField';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import Print from '@material-ui/icons/Print';
+import Search from '@material-ui/icons/Search';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '../../components/CustomButtons/Button';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -29,14 +32,16 @@ Date.prototype.addHours = function (h) {
 };
 
 export default class PuchaseReport extends React.Component {
+  state = {
+    fromDate: '',
+    toDate: '',
+    loading: false,
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      fromDate: '',
-      toDate: '',
-    };
     this.search = this.search.bind(this);
+    this.print = this.print.bind(this);
   }
 
   componentDidMount() {
@@ -77,11 +82,12 @@ export default class PuchaseReport extends React.Component {
   }
 
   search() {
+    this.setState({ loading: true });
     const { fromDate, toDate } = this.state;
     const purchaseSummaryColumns = ['productCode', 'productName', 'plannedAmount', 'plannedTotalPrice', 'paidAmount', 'paidTotalPrice', 'onDeliveryAmount', 'onDeliveryTotalPrice', 'customClearanceAmount', 'customClearanceTotalPrice', 'arrivedAmount', 'arrivedTotalPrice'];
     ReportService.getPurchaseSummary(fromDate, toDate)
       .then((results) => results.map((row) => purchaseSummaryColumns.map((column) => row[column] || '')))
-      .then((data) => this.setState({ purchaseSummaryData: data }));
+      .then((data) => this.setState({ purchaseSummaryData: data, loading: false }));
 
     const purchaseDetailColumns = ['purchaseId', 'productCode', 'productName', 'supplier', 'status', 'amount', 'unitPrice', 'totalPrice', 'poNumber', 'estimatedDelivery', 'paidDate', 'arrivedDate', 'locationName'];
     ReportService.getPurchaseDetail(fromDate, toDate)
@@ -91,7 +97,15 @@ export default class PuchaseReport extends React.Component {
         }
         return row[column] || '';
       })))
-      .then((data) => this.setState({ purchaseDetailData: data }));
+      .then((data) => this.setState({ purchaseDetailData: data, loading: true }));
+  }
+
+
+  print() {
+    const { fromDate, toDate } = this.state;
+    this.setState({ loading: true });
+    ReportService.getPurchaseReportPdf(fromDate, toDate)
+      .then(() => this.setState({ loading: false }));
   }
 
   render() {
@@ -147,6 +161,7 @@ export default class PuchaseReport extends React.Component {
 
     const {
       purchaseSummaryData, purchaseDetailData, fromDate, toDate,
+      loading,
     } = this.state;
     const purchaseSummaryTitle = `Purchases Summary. From: ${fromDate} To: ${toDate}`;
     const purchaseDetailTitle = `Purchases Details. From: ${fromDate} To: ${toDate}`;
@@ -184,8 +199,20 @@ export default class PuchaseReport extends React.Component {
                       }}
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={12} md={3}>
-                    <Button color="info" onClick={this.search}>Search</Button>
+                  <GridItem xs={12} sm={12} md={2}>
+                    <Button color="info" onClick={this.search}>
+                      <Search />
+                      Search
+                    </Button>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={2}>
+                    <Button color="secondary" onClick={this.print}>
+                      <Print />
+                      Print PDF
+                    </Button>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={2}>
+                    {loading && <CircularProgress />}
                   </GridItem>
                 </GridContainer>
                 <MuiThemeProvider theme={this.getMuiTheme()}>
