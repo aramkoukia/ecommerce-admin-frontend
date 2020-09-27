@@ -1,6 +1,9 @@
 import React from 'react';
 import MUIDataTable from 'mui-datatables';
 import TextField from '@material-ui/core/TextField';
+import Print from '@material-ui/icons/Print';
+import Search from '@material-ui/icons/Search';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import Button from '../../components/CustomButtons/Button';
 import GridItem from '../../components/Grid/GridItem';
@@ -25,14 +28,17 @@ Date.prototype.addHours = function (h) {
 };
 
 export default class ProductSalesReport extends React.Component {
+  state = {
+    fromDate: '',
+    toDate: '',
+    loading: false,
+  };
+
   constructor(props) {
     super(props);
 
-    this.state = {
-      fromDate: '',
-      toDate: '',
-    };
     this.search = this.search.bind(this);
+    this.print = this.print.bind(this);
   }
 
   componentDidMount() {
@@ -73,16 +79,24 @@ export default class ProductSalesReport extends React.Component {
   };
 
   search() {
+    this.setState({ loading: true });
     const { fromDate, toDate } = this.state;
     const columns = ['locationName', 'productTypeName', 'productCode', 'productName', 'totalSales', 'amount', 'balance', 'onHold'];
     ReportService.getProductSales(fromDate, toDate)
       .then((results) => results.map((row) => columns.map((column) => row[column] || '')))
-      .then((data) => this.setState({ reportData: data }));
+      .then((data) => this.setState({ reportData: data, loading: false }));
 
     const productSalesDetailColumns = ['locationName', 'productTypeName', 'productCode', 'productName', 'orderId', 'customerCode', 'companyName', 'totalSales', 'amount', 'status'];
     ReportService.getProductSalesDetail(fromDate, toDate)
       .then((results) => results.map((row) => productSalesDetailColumns.map((column) => row[column] || '')))
-      .then((data) => this.setState({ productSalesDetailData: data }));
+      .then((data) => this.setState({ productSalesDetailData: data, loading: false }));
+  }
+
+  print() {
+    const { fromDate, toDate } = this.state;
+    this.setState({ loading: true });
+    ReportService.getProductSalesPdf(fromDate, toDate)
+      .then(() => this.setState({ loading: false }));
   }
 
   render() {
@@ -233,6 +247,7 @@ export default class ProductSalesReport extends React.Component {
 
     const {
       reportData, productSalesDetailData, fromDate, toDate,
+      loading,
     } = this.state;
 
     return (
@@ -269,8 +284,20 @@ export default class ProductSalesReport extends React.Component {
                       }}
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={12} md={3}>
-                    <Button color="info" onClick={this.search}>Search</Button>
+                  <GridItem xs={12} sm={12} md={2}>
+                    <Button color="info" onClick={this.search}>
+                      <Search />
+                      Search
+                    </Button>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={2}>
+                    <Button color="secondary" onClick={this.print}>
+                      <Print />
+                      Print PDF
+                    </Button>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={2}>
+                    {loading && <CircularProgress />}
                   </GridItem>
                 </GridContainer>
                 <MuiThemeProvider theme={this.getMuiTheme()}>

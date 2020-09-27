@@ -111,6 +111,17 @@ export default class ReportService {
     }
   }
 
+  static async getProductSalesPdf(fromDate, toDate) {
+    try {
+      const response = await RestUtilities.getBlob(
+        `reports/productsalespdf?fromDate=${fromDate}&toDate=${toDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getProductSalesDetail(fromDate, toDate) {
     try {
       const response = await RestUtilities.get(
@@ -203,6 +214,17 @@ export default class ReportService {
     try {
       const response = await RestUtilities.get(
         `reports/SalesForcast?fromDate=${fromDate}&toDate=${toDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async getCustomerReportPdf(fromDate, toDate) {
+    try {
+      const response = await RestUtilities.getBlob(
+        `reports/customerorderspdf?fromDate=${fromDate}&toDate=${toDate}`,
       );
       return response.content;
     } catch (err) {
