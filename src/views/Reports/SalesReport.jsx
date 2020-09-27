@@ -86,7 +86,7 @@ export default class SalesReport extends React.Component {
       .then((data) => this.setState({ reportData: data, loading: false }));
   }
 
-  async print() {
+  print() {
     const { fromDate, toDate } = this.state;
     this.setState({ loading: true });
     ReportService.getSalesPdf(fromDate, toDate)
@@ -211,7 +211,7 @@ export default class SalesReport extends React.Component {
                   <GridItem xs={12} sm={12} md={2}>
                     <Button color="secondary" onClick={this.print}>
                       <Print />
-                      Print
+                      Print PDF
                     </Button>
                   </GridItem>
                   <GridItem xs={12} sm={12} md={2}>

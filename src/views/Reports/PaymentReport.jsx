@@ -2,6 +2,9 @@ import React from 'react';
 import MUIDataTable from 'mui-datatables';
 import TextField from '@material-ui/core/TextField';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Print from '@material-ui/icons/Print';
+import Search from '@material-ui/icons/Search';
 import Button from '../../components/CustomButtons/Button';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -25,14 +28,16 @@ Date.prototype.addHours = function (h) {
 };
 
 export default class PaymentReport extends React.Component {
+  state = {
+    fromDate: '',
+    toDate: '',
+    loading: false,
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      fromDate: '',
-      toDate: '',
-    };
     this.search = this.search.bind(this);
+    this.print = this.print.bind(this);
   }
 
   componentDidMount() {
@@ -74,20 +79,28 @@ export default class PaymentReport extends React.Component {
 
   search() {
     const { fromDate, toDate } = this.state;
+    this.setState({ loading: true });
     const paymentDetailsColumns = ['locationName', 'givenName', 'paymentTypeName', 'paymentAmount', 'companyName', 'orderId', 'status'];
     ReportService.getPayments(fromDate, toDate)
       .then((results) => results.map((row) => paymentDetailsColumns.map((column) => row[column] || '')))
-      .then((data) => this.setState({ paymentDetailsData: data }));
+      .then((data) => this.setState({ paymentDetailsData: data, loading: false }));
 
     const paymentsSummaryColumns = ['locationName', 'paymentTypeName', 'paymentAmount', 'status'];
     ReportService.getPaymentsByOrderStatus(fromDate, toDate)
       .then((results) => results.map((row) => paymentsSummaryColumns.map((column) => row[column] || '')))
-      .then((data) => this.setState({ paymentsSummaryData: data }));
+      .then((data) => this.setState({ paymentsSummaryData: data, loading: false }));
 
     const paymentsTotalColumns = ['locationName', 'paymentTypeName', 'paymentAmount'];
     ReportService.getPaymentsTotal(fromDate, toDate)
       .then((results) => results.map((row) => paymentsTotalColumns.map((column) => row[column] || '')))
-      .then((data) => this.setState({ paymentsTotalData: data }));
+      .then((data) => this.setState({ paymentsTotalData: data, loading: false }));
+  }
+
+  print() {
+    const { fromDate, toDate } = this.state;
+    this.setState({ loading: true });
+    ReportService.getPaymentsPdf(fromDate, toDate)
+      .then(() => this.setState({ loading: false }));
   }
 
   render() {
@@ -209,7 +222,10 @@ export default class PaymentReport extends React.Component {
     };
 
     const {
-      paymentsSummaryData, paymentDetailsData, paymentsTotalData, fromDate, toDate,
+      paymentsSummaryData, paymentDetailsData, paymentsTotalData,
+      fromDate,
+      toDate,
+      loading,
     } = this.state;
     const paymentSummaryTitle = `Payment Summary. From: ${fromDate} To: ${toDate}`;
     const paymentsByOrderStatusTitle = `Payments By Order Status. From: ${fromDate} To: ${toDate}`;
@@ -248,8 +264,20 @@ export default class PaymentReport extends React.Component {
                       }}
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={12} md={3}>
-                    <Button color="info" onClick={this.search}>Search</Button>
+                  <GridItem xs={12} sm={12} md={2}>
+                    <Button color="info" onClick={this.search}>
+                      <Search />
+                      Search
+                    </Button>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={2}>
+                    <Button color="secondary" onClick={this.print}>
+                      <Print />
+                      Print PDF
+                    </Button>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={2}>
+                    {loading && <CircularProgress />}
                   </GridItem>
                 </GridContainer>
                 <MuiThemeProvider theme={this.getMuiTheme()}>
