@@ -82,12 +82,12 @@ export default class RestUtilities {
   }
 
   static requestBlob(url) {
-    const headers = new Headers();
-    headers.set('Authorization', `Bearer ${AuthStore.getToken()}`);
     axios(`${Api.baseUrl}/${url}`, {
       method: 'GET',
       responseType: 'blob', // Force to receive data in a Blob Format
-      headers,
+      headers: {
+        Authorization: `Bearer ${AuthStore.getToken()}`,
+      },
     })
       .then((response) => {
         // Create a Blob from the PDF Stream

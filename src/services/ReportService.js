@@ -89,6 +89,17 @@ export default class ReportService {
     }
   }
 
+  static async getSalesPdf(fromDate, toDate) {
+    try {
+      const response = await RestUtilities.getBlob(
+        `reports/salespdf?fromDate=${fromDate}&toDate=${toDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getProductSales(fromDate, toDate) {
     try {
       const response = await RestUtilities.get(
