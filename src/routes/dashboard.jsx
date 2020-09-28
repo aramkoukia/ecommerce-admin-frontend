@@ -6,6 +6,12 @@ import ListAlt from '@material-ui/icons/ListAlt';
 import Money from '@material-ui/icons/Money';
 import ContactMail from '@material-ui/icons/ContactMail';
 import InsertChart from '@material-ui/icons/InsertChart';
+import Assessment from '@material-ui/icons/Assessment';
+import Equalizer from '@material-ui/icons/Equalizer';
+import TrendingUp from '@material-ui/icons/TrendingUp';
+import TableChart from '@material-ui/icons/TableChart';
+import PieChart from '@material-ui/icons/PieChart';
+import Tune from '@material-ui/icons/Tune';
 import SettingsBrightness from '@material-ui/icons/SettingsBrightness';
 import LocationOn from '@material-ui/icons/LocationOn';
 import ScreenLockLandscape from '@material-ui/icons/ScreenLockLandscape';
@@ -126,42 +132,42 @@ const dashboardRoutes = [
       {
         path: '/salesreport',
         sidebarName: 'Sales Report',
-        Icon: InsertChart,
+        Icon: Tune,
         component: SalesReport,
         permission: Permissions.ViewReports,
       },
       {
         path: '/productreport',
         sidebarName: 'Product Report',
-        Icon: InsertChart,
+        Icon: PieChart,
         component: ProductReport,
         permission: Permissions.ViewProductReports,
       },
       {
         path: '/producttypereport',
         sidebarName: 'Product Category Report',
-        Icon: InsertChart,
+        Icon: TableChart,
         component: ProductTypeReport,
         permission: Permissions.ViewReports,
       },
       {
         path: '/customerreport',
         sidebarName: 'Customer Report',
-        Icon: InsertChart,
+        Icon: TrendingUp,
         component: CustomerReport,
         permission: Permissions.ViewReports,
       },
       {
         path: '/paymentreport',
         sidebarName: 'Payment Report',
-        Icon: InsertChart,
+        Icon: Equalizer,
         component: PaymentReport,
         permission: Permissions.ViewReports,
       },
       {
         path: '/salesforecastreport',
         sidebarName: 'Sales Forecast',
-        Icon: InsertChart,
+        Icon: Assessment,
         component: SalesForecastReport,
         permission: Permissions.ViewReports,
       },
