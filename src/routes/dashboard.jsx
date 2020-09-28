@@ -6,12 +6,28 @@ import ListAlt from '@material-ui/icons/ListAlt';
 import Money from '@material-ui/icons/Money';
 import ContactMail from '@material-ui/icons/ContactMail';
 import InsertChart from '@material-ui/icons/InsertChart';
+import BubbleChart from '@material-ui/icons/BubbleChart';
+import MultilineChart from '@material-ui/icons/MultilineChart';
 import Assessment from '@material-ui/icons/Assessment';
+import PersonAdd from '@material-ui/icons/PersonAdd';
+import PeopleAlt from '@material-ui/icons/PeopleAlt';
+import SupervisedUserCircle from '@material-ui/icons/SupervisedUserCircle';
+import GroupAdd from '@material-ui/icons/GroupAdd';
+import PictureAsPdf from '@material-ui/icons/PictureAsPdf';
+import SettingsCell from '@material-ui/icons/SettingsCell';
+import LocalOffer from '@material-ui/icons/LocalOffer';
+import CenterFocusWeak from '@material-ui/icons/CenterFocusWeak';
+import CreateNewFolder from '@material-ui/icons/CreateNewFolder';
+import SettingsApplications from '@material-ui/icons/SettingsApplications';
+import DynamicFeed from '@material-ui/icons/DynamicFeed';
+import SpeakerNotes from '@material-ui/icons/SpeakerNotes';
+import Language from '@material-ui/icons/Language';
 import Equalizer from '@material-ui/icons/Equalizer';
 import TrendingUp from '@material-ui/icons/TrendingUp';
 import TableChart from '@material-ui/icons/TableChart';
 import PieChart from '@material-ui/icons/PieChart';
 import Tune from '@material-ui/icons/Tune';
+import SupervisorAccount from '@material-ui/icons/SupervisorAccount';
 import SettingsBrightness from '@material-ui/icons/SettingsBrightness';
 import LocationOn from '@material-ui/icons/LocationOn';
 import ScreenLockLandscape from '@material-ui/icons/ScreenLockLandscape';
@@ -73,21 +89,21 @@ const dashboardRoutes = [
   {
     path: '/products',
     sidebarName: 'Products',
-    Icon: Highlight,
+    Icon: SpeakerNotes,
     component: Products,
     permission: Permissions.ViewProducts,
   },
   {
     path: '/updateproducts',
     sidebarName: 'Update Products',
-    Icon: ListAlt,
+    Icon: DynamicFeed,
     component: UpdateProducts,
     permission: Permissions.ViewPurchases,
   },
   {
     path: '/newcustomer',
     sidebarName: 'New Customer',
-    Icon: ContactMail,
+    Icon: PersonAdd,
     component: AddCustomer,
     permission: Permissions.ViewCustomers,
   },
@@ -107,7 +123,7 @@ const dashboardRoutes = [
   {
     path: '/addpurchase/:id',
     sidebarName: 'New Purchase',
-    Icon: Highlight,
+    Icon: CreateNewFolder,
     component: AddPurchase,
     permission: Permissions.ViewNewPurchase,
   },
@@ -120,7 +136,7 @@ const dashboardRoutes = [
   },
   {
     sidebarName: 'Reports',
-    Icon: Highlight,
+    Icon: PieChart,
     items: [
       {
         path: '/reports',
@@ -174,21 +190,21 @@ const dashboardRoutes = [
       {
         path: '/purchasereport',
         sidebarName: 'Purchase Report',
-        Icon: InsertChart,
+        Icon: ScreenLockLandscape,
         component: PurchaseReport,
         permission: Permissions.ViewPurchaseReports,
       },
       {
         path: '/profitreport',
         sidebarName: 'Profit Report',
-        Icon: InsertChart,
+        Icon: MultilineChart,
         component: ProfitReport,
         permission: Permissions.ViewPurchaseReports,
       },
       {
         path: '/valuereport',
         sidebarName: 'Inventory Value Report',
-        Icon: InsertChart,
+        Icon: BubbleChart,
         component: InventoryValueReport,
         permission: Permissions.ViewPurchaseReports,
       },
@@ -199,19 +215,33 @@ const dashboardRoutes = [
         component: SalesByPurchasePriceReport,
         permission: Permissions.ViewPurchaseReports,
       },
-      {
-        path: '/productcategories',
-        sidebarName: 'Product Categories',
-        Icon: Highlight,
-        component: ProductCategory,
-        permission: Permissions.ViewProducts,
-      },
     ],
   },
   {
-    sidebarName: 'Settings',
-    Icon: Highlight,
+    sidebarName: 'Administration',
+    Icon: SupervisorAccount,
     items: [
+      {
+        path: '/users',
+        sidebarName: 'Users',
+        Icon: PeopleAlt,
+        component: Users,
+        permission: Permissions.ViewUsers,
+      },
+      {
+        path: '/adduser',
+        sidebarName: 'New User',
+        Icon: GroupAdd,
+        component: AddUser,
+        permission: Permissions.ViewUsers,
+      },
+      {
+        path: '/roles',
+        sidebarName: 'Roles',
+        Icon: SupervisedUserCircle,
+        component: Roles,
+        permission: Permissions.ViewRoles,
+      },
       {
         path: '/locations',
         sidebarName: 'Locations',
@@ -219,33 +249,18 @@ const dashboardRoutes = [
         component: Locations,
         permission: Permissions.ViewLocations,
       },
+    ],
+  },
+  {
+    sidebarName: 'Settings',
+    Icon: SettingsApplications,
+    items: [
       {
         path: '/taxes',
         sidebarName: 'Taxes',
         Icon: Money,
         component: Taxes,
         permission: Permissions.ViewTaxes,
-      },
-      {
-        path: '/users',
-        sidebarName: 'Users',
-        Icon: Person,
-        component: Users,
-        permission: Permissions.ViewUsers,
-      },
-      {
-        path: '/adduser',
-        sidebarName: 'New User',
-        Icon: Person,
-        component: AddUser,
-        permission: Permissions.ViewUsers,
-      },
-      {
-        path: '/roles',
-        sidebarName: 'Roles',
-        Icon: ScreenLockLandscape,
-        component: Roles,
-        permission: Permissions.ViewRoles,
       },
       {
         path: '/settings',
@@ -257,28 +272,41 @@ const dashboardRoutes = [
       {
         path: '/possettings',
         sidebarName: 'POS Settings',
-        Icon: SettingsBrightness,
+        Icon: SettingsCell,
         component: PosSettings,
         permission: Permissions.ViewRoles,
       },
       {
         path: '/customerstatementsettings',
         sidebarName: 'Statement Settings',
-        Icon: SettingsBrightness,
+        Icon: PictureAsPdf,
         component: CustomerStatementSettings,
         permission: Permissions.ViewRoles,
+      },
+    ],
+  },
+  {
+    sidebarName: 'Website Settings',
+    Icon: Language,
+    items: [
+      {
+        path: '/productcategories',
+        sidebarName: 'Product Categories',
+        Icon: Highlight,
+        component: ProductCategory,
+        permission: Permissions.ViewProducts,
       },
       {
         path: '/custom-applications',
         sidebarName: 'Custom Applications',
-        Icon: SettingsBrightness,
+        Icon: CenterFocusWeak,
         component: CustomApplications,
         permission: Permissions.ViewRoles,
       },
       {
         path: '/tags',
         sidebarName: 'Tags',
-        Icon: SettingsBrightness,
+        Icon: LocalOffer,
         component: Tags,
         permission: Permissions.ViewRoles,
       },
