@@ -2,6 +2,9 @@ import React from 'react';
 import MUIDataTable from 'mui-datatables';
 import TextField from '@material-ui/core/TextField';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import Search from '@material-ui/icons/Search';
+import Print from '@material-ui/icons/Print';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '../../components/CustomButtons/Button';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -28,11 +31,13 @@ export default class SalesByPurchasePriceReport extends React.Component {
   state = {
     fromDate: '',
     toDate: '',
+    loading: false,
   };
 
   constructor(props) {
     super(props);
     this.search = this.search.bind(this);
+    this.print = this.print.bind(this);
   }
 
   componentDidMount() {
@@ -98,6 +103,13 @@ export default class SalesByPurchasePriceReport extends React.Component {
     ReportService.getSalesByPurchasePriceDetailReport(fromDate, toDate)
       .then((results) => results.map((row) => columns.map((column) => (row[column] === null ? '' : row[column]))))
       .then((data) => this.setState({ salesByPurchasePriceDetailData: data, loading: false }));
+  }
+
+  print() {
+    const { fromDate, toDate } = this.state;
+    this.setState({ loading: true });
+    ReportService.getSalesByPurchasePricePdf(fromDate, toDate)
+      .then(() => this.setState({ loading: false }));
   }
 
   render() {
@@ -210,6 +222,7 @@ export default class SalesByPurchasePriceReport extends React.Component {
     const {
       reportData, fromDate, toDate, inventoryValueTotal,
       salesByPurchasePriceDetailData,
+      loading,
     } = this.state;
     const salesReportTitle = `Sales Report. From: ${fromDate} To: ${toDate}`;
 
@@ -247,11 +260,22 @@ export default class SalesByPurchasePriceReport extends React.Component {
                       }}
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={12} md={3}>
-                    <Button color="info" onClick={this.search}>Search</Button>
+                  <GridItem xs={12} sm={12} md={2}>
+                    <Button color="info" onClick={this.search}>
+                      <Search />
+                      Search
+                    </Button>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={2}>
+                    <Button color="secondary" onClick={this.print}>
+                      <Print />
+                      Print PDF
+                    </Button>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={2}>
+                    {loading && <CircularProgress />}
                   </GridItem>
                 </GridContainer>
-
                 <MuiThemeProvider theme={this.getMuiTheme()}>
                   <MUIDataTable
                     title={salesReportTitle}
