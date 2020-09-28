@@ -19,6 +19,13 @@ import AppMenuItemComponent from './AppMenuItemComponent';
 const useStyles = makeStyles((theme) => createStyles({
   menuItem: {
     color: 'white',
+    '& .MuiListItem-root': {
+      'padding-bottom': '0',
+      'padding-top': '0',
+    },
+    '& .MuiListItemIcon-root': {
+      'min-width': '40px',
+    },
     '&.active': {
       background: 'rgba(0,172,193, 0.20)',
       '& .MuiListItemIcon-root': {

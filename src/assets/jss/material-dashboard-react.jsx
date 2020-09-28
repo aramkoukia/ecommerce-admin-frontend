@@ -10,7 +10,8 @@
 
  =========================================================
 
- // * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ // * The above copyright notice and this
+ // permission notice shall be included in all copies or substantial portions of the Software.
 
  */
 
@@ -18,7 +19,7 @@
 // // // Variables - Styles that are used on more than one component
 // #############################
 
-const drawerWidth = 280;
+const drawerWidth = 260;
 
 const transition = {
   transition: 'all 0.33s cubic-bezier(0.685, 0.0473, 0.346, 1)',
