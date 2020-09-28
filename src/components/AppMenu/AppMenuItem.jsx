@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => createStyles({
     '& .MuiListItem-root': {
       'padding-bottom': '0',
       'padding-top': '0',
+      'padding-left': '5px',
     },
     '& .MuiListItemIcon-root': {
       'min-width': '40px',
@@ -42,7 +43,6 @@ const AppMenuItem = (props) => {
   const classes = useStyles();
   const {
     sidebarName,
-    navbarName,
     permission,
     path,
     Icon,
@@ -76,10 +76,10 @@ const AppMenuItem = (props) => {
         {/* Display the expand menu if the item has children */}
         {isExpandable
           && !open
-          && <IconExpandMore className={classes.itemIcon} />}
+          && <IconExpandMore color="secondary" className={classes.itemIcon} />}
         {isExpandable
           && open
-          && <IconExpandLess className={classes.itemIcon} />}
+          && <IconExpandLess color="secondary" className={classes.itemIcon} />}
       </ListItem>
     </AppMenuItemComponent>
   );
