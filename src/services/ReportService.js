@@ -292,6 +292,17 @@ export default class ReportService {
     }
   }
 
+  static async getInventoryValuePdf() {
+    try {
+      const response = await RestUtilities.getBlob(
+        'reports/inventoryvaluepdf',
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getInventoryValue() {
     try {
       const response = await RestUtilities.get(

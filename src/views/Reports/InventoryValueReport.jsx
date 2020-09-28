@@ -2,7 +2,10 @@ import React from 'react';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import MUIDataTable from 'mui-datatables';
+import Print from '@material-ui/icons/Print';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import CardBody from '../../components/Card/CardBody';
+import Button from '../../components/CustomButtons/Button';
 import CardHeader from '../../components/Card/CardHeader';
 import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
@@ -16,6 +19,11 @@ export default class InventoryValueReport extends React.Component {
     inventoryValueTotalByCategory: [],
     loading: false,
   };
+
+  constructor(props) {
+    super(props);
+    this.print = this.print.bind(this);
+  }
 
   componentDidMount() {
     this.productsList();
@@ -67,6 +75,13 @@ export default class InventoryValueReport extends React.Component {
     ReportService.getInventoryValueTotalByCategory()
       .then((results) => results.map((row) => columns.map((column) => (row[column] === null ? '' : row[column]))))
       .then((data) => this.setState({ inventoryValueTotalByCategory: data, loading: false }));
+  }
+
+
+  print() {
+    this.setState({ loading: true });
+    ReportService.getInventoryValuePdf()
+      .then(() => this.setState({ loading: false }));
   }
 
   render() {
@@ -220,6 +235,17 @@ export default class InventoryValueReport extends React.Component {
                 <div className={styles.cardTitleWhite}>Inventory Value Report</div>
               </CardHeader>
               <CardBody>
+                <GridContainer>
+                  <GridItem xs={12} sm={12} md={2}>
+                    <Button color="secondary" onClick={this.print}>
+                      <Print />
+                      Print PDF
+                    </Button>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={2}>
+                    {loading && <CircularProgress />}
+                  </GridItem>
+                </GridContainer>
                 <MuiThemeProvider theme={this.getMuiTheme()}>
                   <MUIDataTable
                     title=""

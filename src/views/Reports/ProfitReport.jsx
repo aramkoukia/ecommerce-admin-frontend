@@ -2,8 +2,8 @@ import React from 'react';
 import MUIDataTable from 'mui-datatables';
 import TextField from '@material-ui/core/TextField';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
-import Print from '@material-ui/icons/Print';
 import Search from '@material-ui/icons/Search';
+import Print from '@material-ui/icons/Print';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '../../components/CustomButtons/Button';
 import GridItem from '../../components/Grid/GridItem';
@@ -107,7 +107,12 @@ export default class ProfitReport extends React.Component {
       'avgProfitPerItem',
       'totalProfitByPurchasePrice',
       'totalProfitByAvgCost'];
-    ReportService.getProductSalesProfit(salesFromDate, salesToDate, purchaseFromDate, purchaseToDate)
+    ReportService.getProductSalesProfit(
+      salesFromDate,
+      salesToDate,
+      purchaseFromDate,
+      purchaseToDate,
+    )
       .then((results) => results.map((row) => purchaseSummaryColumns.map((column) => row[column] || '')))
       .then((data) => this.setState({ purchaseSummaryData: data, loading: false }));
   }
