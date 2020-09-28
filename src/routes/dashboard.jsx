@@ -4,17 +4,16 @@ import Highlight from '@material-ui/icons/Highlight';
 import List from '@material-ui/icons/List';
 import ListAlt from '@material-ui/icons/ListAlt';
 import Money from '@material-ui/icons/Money';
-import PlaylistPlay from '@material-ui/icons/PlaylistPlay';
 import ContactMail from '@material-ui/icons/ContactMail';
 import InsertChart from '@material-ui/icons/InsertChart';
 import SettingsBrightness from '@material-ui/icons/SettingsBrightness';
 import LocationOn from '@material-ui/icons/LocationOn';
 import ScreenLockLandscape from '@material-ui/icons/ScreenLockLandscape';
 import Products from '../views/Products/Products';
+import Tags from '../views/Products/Tags';
 import { Product } from '../views/Products/Product';
 import ProductCategory from '../views/Products/ProductCategory';
 import Locations from '../views/Locations/Locations';
-import AddLocation from '../views/Locations/AddLocation';
 import Customers from '../views/Customers/Customers';
 import Customer from '../views/Customers/Customer';
 import AddCustomer from '../views/Customers/AddCustomer';
@@ -45,6 +44,8 @@ import { Return } from '../views/Orders/Return';
 import Roles from '../views/Roles/Roles';
 import Settings from '../views/Settings/Settings';
 import PosSettings from '../views/Settings/PosSettings';
+import CustomApplications from '../views/CustomApplications/CustomApplications';
+import CustomerStatementSettings from '../views/Settings/CustomerStatementSettings';
 import UpdateProducts from '../views/Products/UpdateProducts';
 import Permissions from '../stores/Permissions';
 
@@ -213,13 +214,6 @@ const dashboardRoutes = [
         permission: Permissions.ViewLocations,
       },
       {
-        path: '/addlocation',
-        sidebarName: 'New Location',
-        Icon: LocationOn,
-        component: AddLocation,
-        permission: Permissions.ViewLocations,
-      },
-      {
         path: '/taxes',
         sidebarName: 'Taxes',
         Icon: Money,
@@ -259,6 +253,30 @@ const dashboardRoutes = [
         sidebarName: 'POS Settings',
         Icon: SettingsBrightness,
         component: PosSettings,
+        permission: Permissions.ViewRoles,
+      },
+      {
+        path: '/customerstatementsettings',
+        sidebarName: 'Statement Settings',
+        navbarName: '',
+        icon: SettingsBrightness,
+        component: CustomerStatementSettings,
+        permission: Permissions.ViewRoles,
+      },
+      {
+        path: '/custom-applications',
+        sidebarName: 'Custom Applications',
+        navbarName: '',
+        icon: SettingsBrightness,
+        component: CustomApplications,
+        permission: Permissions.ViewRoles,
+      },
+      {
+        path: '/tags',
+        sidebarName: 'Tags',
+        navbarName: '',
+        icon: SettingsBrightness,
+        component: Tags,
         permission: Permissions.ViewRoles,
       },
     ],

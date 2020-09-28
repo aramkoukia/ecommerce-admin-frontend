@@ -1,5 +1,11 @@
 import React from 'react';
 import MaterialTable from 'material-table';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  Button,
+} from '@material-ui/core';
 import Check from '@material-ui/icons/Check';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import Card from '../../components/Card/Card';
@@ -7,18 +13,31 @@ import CardHeader from '../../components/Card/CardHeader';
 import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
 import CardBody from '../../components/Card/CardBody';
+import ImageUpload from '../../components/ImageUpload/ImageUpload';
+import HtmlEditor from '../../components/HtmlEditor/HtmlEditor';
 import ProductCategoryService from '../../services/ProductCategoryService';
 
+const imagePlaceholder = require('../../assets/img/image-placeholder.jpg');
+
 export default class ProductCategory extends React.Component {
+  state = {
+    productCategories: [],
+    openSnackbar: false,
+    snackbarMessage: '',
+    snackbarColor: '',
+    showHtmlEditor: false,
+    showUploadImage: false,
+    description: '',
+    productTypeId: null,
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      productCategories: [],
-      openSnackbar: false,
-      snackbarMessage: '',
-      snackbarColor: '',
-    };
+    this.handleDescriptionBlur = this.handleDescriptionBlur.bind(this);
+    this.handleUpdateDescription = this.handleUpdateDescription.bind(this);
+    this.handleUploadImage = this.handleUploadImage.bind(this);
+    this.handleImageChange = this.handleImageChange.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   componentDidMount() {
@@ -28,6 +47,71 @@ export default class ProductCategory extends React.Component {
   productCategoriesList() {
     ProductCategoryService.getProductCategories()
       .then((data) => this.setState({ productCategories: data }));
+  }
+
+  showHtmlEditor(productTypeId, description) {
+    this.setState({
+      showHtmlEditor: true,
+      description,
+      productTypeId,
+    });
+  }
+
+  handleDescriptionBlur(description) {
+    this.setState({
+      description,
+    });
+  }
+
+  handleImageChange(images) {
+    this.setState({
+      image: images && images.length > 0 ? images[0] : null,
+    });
+  }
+
+  async handleUpdateDescription() {
+    const { productTypeId, description } = this.state;
+    const productType = {
+      productTypeId,
+      description,
+    };
+    await ProductCategoryService.updateProductCategoryDescription(productType);
+    this.productCategoriesList();
+    this.setState({
+      showHtmlEditor: false,
+      productTypeId: null,
+      description: '',
+    });
+  }
+
+  async handleUploadImage() {
+    const { productTypeId, image } = this.state;
+    const formData = new FormData();
+    formData.append('file', image);
+    await ProductCategoryService.updateProductCategoryImage(productTypeId, formData);
+    this.productCategoriesList();
+    this.setState({
+      showUploadImage: false,
+      productTypeId: null,
+      image: null,
+    });
+  }
+
+  showUploadImage(productTypeId) {
+    this.setState({
+      showUploadImage: true,
+      productTypeId,
+    });
+  }
+
+  handleClose() {
+    this.setState({
+      showUploadImage: false,
+      showHtmlEditor: false,
+      productTypeId: null,
+      description: '',
+      image: null,
+    });
   }
 
   render() {
@@ -66,10 +150,38 @@ export default class ProductCategory extends React.Component {
       openSnackbar,
       snackbarMessage,
       snackbarColor,
+      showHtmlEditor,
+      showUploadImage,
+      description,
     } = this.state;
 
     const columns = [
       { title: 'Category', field: 'productTypeName' },
+      {
+        title: 'Website Description',
+        field: 'description',
+        editable: 'never',
+        hidden: true,
+      },
+      { title: 'Product Count', field: 'productCount', editable: 'never' },
+      { title: 'Sales Rank', field: 'rank', editable: 'never' },
+      {
+        title: 'Show On Website',
+        field: 'showOnWebsite',
+        lookup: { true: 'Yes', false: 'No' },
+      },
+      {
+        field: 'thumbnailImagePath',
+        title: 'Website Image',
+        filtering: false,
+        render: (rowData) => (
+          <img
+            alt={(rowData.thumbnailImagePath && rowData.productTypeName) || 'No Image'}
+            src={rowData.thumbnailImagePath || imagePlaceholder}
+            style={{ width: 70 }}
+          />
+        ),
+      },
       { title: 'Id', field: 'productTypeId', hidden: true },
     ];
 
@@ -97,6 +209,23 @@ export default class ProductCategory extends React.Component {
                   data={productCategories}
                   options={options}
                   title=""
+                  actions={[
+                    {
+                      icon: 'subject',
+                      tooltip: 'Update Website Description',
+                      onClick: (event, rowData) => this.showHtmlEditor(
+                        rowData.productTypeId,
+                        rowData.description,
+                      ),
+                    },
+                    {
+                      icon: 'image',
+                      tooltip: 'Upload Website Image',
+                      onClick: (event, rowData) => this.showUploadImage(
+                        rowData.productTypeId,
+                      ),
+                    },
+                  ]}
                   editable={{
                     onRowAdd: (newData) => new Promise((resolve) => {
                       setTimeout(() => {
@@ -143,6 +272,42 @@ export default class ProductCategory extends React.Component {
             close
           />
         </GridContainer>
+        <Dialog
+          maxWidth="xl"
+          open={showHtmlEditor}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <HtmlEditor value={description || ''} onBlur={this.handleDescriptionBlur} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleUpdateDescription} color="primary">
+              Save
+            </Button>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          maxWidth="xl"
+          open={showUploadImage}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <ImageUpload singleImage onChange={this.handleImageChange} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleUploadImage} color="primary">
+              Save
+            </Button>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }

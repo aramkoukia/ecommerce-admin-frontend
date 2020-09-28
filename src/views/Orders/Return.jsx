@@ -233,7 +233,7 @@ export class Return extends React.Component {
   async saveOrder(orderStatus, useCustomerAccount) {
     const {
       rows,
-      total, subTotal, totalDiscount, notes, poNumber, order, authCode,
+      total, subTotal, totalDiscount, notes, order, authCode,
       restockingFeePercent,
       restockingFeeAmount,
     } = this.state;
@@ -611,14 +611,14 @@ export class Return extends React.Component {
                               name="payAmazonUsd"
                             />
                             )}
-                          label="Paypal and Amazon + USD"
+                          label="Online / Direct Deposit"
                         />
                       </GridItem>
                       <GridItem xs={12} sm={12} md={6}>
                         <TextField
                           disabled={!payAmazonUsd}
                           name="paypalAmazonUsdAmount"
-                          label="Paypal/Amazon/USD"
+                          label="Online/DirectDeposit"
                           type="text"
                           onChange={this.handleChange}
                           value={paypalAmazonUsdAmount}

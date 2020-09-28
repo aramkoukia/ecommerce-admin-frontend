@@ -90,6 +90,7 @@ class App extends React.Component {
     const { permissionsChanged, portalSettings, mobileOpen } = this.state;
     const logoImageUrl = portalSettings ? `${Api.apiRoot}/${portalSettings.logoImageUrl}` : logo;
     const sidebarImageUrl = portalSettings ? `${Api.apiRoot}/${portalSettings.sidebarImageUrl}` : image;
+    const sideBarTitle = portalSettings.ShowTitleOnSideBar ? portalSettings.portalTitle : '';
 
     const switchRoutes = (
       <Switch>
@@ -141,7 +142,7 @@ class App extends React.Component {
           <Sidebar
             routes={dashboardRoutes}
             permissionsChanged={permissionsChanged}
-            logoText={portalSettings.portalTitle}
+            logoText={sideBarTitle}
             logo={logoImageUrl}
             image={sidebarImageUrl}
             handleDrawerToggle={this.handleDrawerToggle}

@@ -1,6 +1,7 @@
 import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Print from '@material-ui/icons/Print';
+import Search from '@material-ui/icons/Search';
 import Email from '@material-ui/icons/Email';
 import Money from '@material-ui/icons/Money';
 import Edit from '@material-ui/icons/Edit';
@@ -14,6 +15,7 @@ import CardBody from '../../components/Card/CardBody';
 import Button from '../../components/CustomButtons/Button';
 import OrderService from '../../services/OrderService';
 import CustomerInfo from '../Orders/CustomerInfo';
+import CustomerOrderSummary from './CustomerOrderSummary';
 import CustomerService from '../../services/CustomerService';
 
 function dateFormat(dateString) {
@@ -43,6 +45,7 @@ export default class Customer extends React.Component {
     this.rowClicked = this.rowClicked.bind(this);
     this.editCustomer = this.editCustomer.bind(this);
     this.printStatement = this.printStatement.bind(this);
+    this.searchOrders = this.searchOrders.bind(this);
     this.emailStatement = this.emailStatement.bind(this);
     this.storeCredit = this.storeCredit.bind(this);
   }
@@ -51,18 +54,20 @@ export default class Customer extends React.Component {
     const { match } = this.props;
     const customerId = match.params.id;
     const customer = await CustomerService.getCustomer(customerId);
+    const customerOrderSummary = await CustomerService.getCustomerOrderSummary(customerId);
     const lastMonthDate = new Date().addHours(-8);
     const fromDate = dateFormat(new Date(lastMonthDate.setMonth(lastMonthDate.getMonth() - 1)));
     const toDate = dateFormat((new Date()).addHours(-8));
 
     this.setState({
       customer,
+      customerOrderSummary,
       loading: false,
       fromDate,
       toDate,
     });
 
-    this.ordersList(customerId);
+    this.ordersList(customerId, fromDate, toDate);
   }
 
   handleChange = (name) => (event) => {
@@ -90,6 +95,13 @@ export default class Customer extends React.Component {
     this.setState({ loading: false });
   }
 
+  searchOrders() {
+    const { match } = this.props;
+    const customerId = match.params.id;
+    const { fromDate, toDate } = this.state;
+    this.ordersList(customerId, fromDate, toDate);
+  }
+
   async emailStatement() {
     const { match } = this.props;
     const customerId = match.params.id;
@@ -99,10 +111,10 @@ export default class Customer extends React.Component {
     this.setState({ loading: false });
   }
 
-  ordersList(customerId) {
+  ordersList(customerId, fromDate, toDate) {
     const columns = ['locationName', 'orderId', 'orderDate', 'subTotal', 'total', 'status', 'poNumber', 'paidAmount', 'givenName'];
     this.setState({ loading: true });
-    OrderService.getCustomerOrders(customerId)
+    OrderService.getCustomerOrdersByDate(customerId, fromDate, toDate)
       .then((results) => results.map((row) => columns.map((column) => row[column] || '')))
       .then((data) => this.setState({ orders: data, loading: false }));
   }
@@ -200,6 +212,7 @@ export default class Customer extends React.Component {
     const {
       orders,
       customer,
+      customerOrderSummary,
       loading,
       fromDate,
       toDate,
@@ -208,8 +221,11 @@ export default class Customer extends React.Component {
     return (
       <div>
         <GridContainer>
-          <GridItem xs={10}>
+          <GridItem xs={12}>
             <CustomerInfo customer={customer} />
+          </GridItem>
+          <GridItem xs={10}>
+            <CustomerOrderSummary customerOrderSummary={customerOrderSummary} />
           </GridItem>
           <GridItem xs={2}>
             <Button color="primary" onClick={this.editCustomer}>
@@ -224,6 +240,9 @@ export default class Customer extends React.Component {
           </GridItem>
           <GridItem xs={12} sm={12} md={12}>
             <Card>
+              <CardHeader color="primary">
+                <div className={styles.cardTitleWhite}>Customer Orders</div>
+              </CardHeader>
               <CardBody>
                 <GridContainer>
                   <GridItem md={2}>
@@ -251,6 +270,12 @@ export default class Customer extends React.Component {
                     />
                   </GridItem>
                   <GridItem>
+                    <Button color="primary" onClick={this.searchOrders}>
+                      <Search />
+                      Search
+                    </Button>
+                  </GridItem>
+                  <GridItem>
                     <Button color="secondary" onClick={this.printStatement}>
                       <Print />
                       Print Statement
@@ -266,16 +291,6 @@ export default class Customer extends React.Component {
                     {loading && <CircularProgress />}
                   </GridItem>
                 </GridContainer>
-              </CardBody>
-            </Card>
-          </GridItem>
-
-          <GridItem xs={12} sm={12} md={12}>
-            <Card>
-              <CardHeader color="primary">
-                <div className={styles.cardTitleWhite}>Customer Orders</div>
-              </CardHeader>
-              <CardBody>
                 <MUIDataTable
                   title="Click on each order to navigate to the order details"
                   data={orders}

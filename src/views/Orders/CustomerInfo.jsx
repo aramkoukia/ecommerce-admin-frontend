@@ -35,21 +35,31 @@ function CustomerInfo(props) {
       </CardHeader>
       <CardBody>
         { customer && (
-        <Table
-          tableHeaderColor="primary"
-          tableHead={['Email', 'Name', 'Company Name', 'Awaiting Payment', 'Credit Limit', 'PST Number', 'Phone Number', 'Store Credit', 'Segment']}
-          tableData={[
-            [customer.email,
-              `${customer.firstName} ${customer.lastName}`,
-              customer.companyName,
-              customer.accountBalance,
-              customer.creditLimit,
-              customer.pstNumber,
-              customer.phoneNumber,
-              customer.storeCredit,
-              customer.segment],
-          ]}
-        />
+        <>
+          <Table
+            tableHeaderColor="primary"
+            tableHead={['Email', 'Name', 'Company Name', 'Phone Number', 'PST Number']}
+            tableData={[
+              [customer.email,
+                `${customer.firstName} ${customer.lastName}`,
+                customer.companyName,
+                customer.phoneNumber,
+                customer.pstNumber,
+              ],
+            ]}
+          />
+          <Table
+            tableHeaderColor="primary"
+            tableHead={['Awaiting Payment', 'Credit Limit', 'Store Credit', 'Credit Card On File', 'Charge Preference']}
+            tableData={[
+              [customer.accountBalance,
+                customer.creditLimit,
+                customer.storeCredit,
+                customer.isCreditCardOnFile,
+                customer.chargePreference],
+            ]}
+          />
+        </>
         ) }
         { (customer === undefined) && (
           <Danger>no customer info available</Danger>)}

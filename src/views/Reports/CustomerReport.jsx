@@ -2,6 +2,9 @@ import React from 'react';
 import MUIDataTable from 'mui-datatables';
 import TextField from '@material-ui/core/TextField';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import Print from '@material-ui/icons/Print';
+import Search from '@material-ui/icons/Search';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '../../components/CustomButtons/Button';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -25,14 +28,16 @@ Date.prototype.addHours = function (h) {
 };
 
 export default class CustomerReport extends React.Component {
+  state = {
+    fromDate: '',
+    toDate: '',
+  };
+
   constructor(props) {
     super(props);
 
-    this.state = {
-      fromDate: '',
-      toDate: '',
-    };
     this.search = this.search.bind(this);
+    this.print = this.print.bind(this);
   }
 
   componentDidMount() {
@@ -73,6 +78,7 @@ export default class CustomerReport extends React.Component {
   };
 
   search() {
+    this.setState({ loading: true });
     const { fromDate, toDate } = this.state;
     const customerPaidColumns = ['orderId', 'poNumber', 'total', 'status', 'orderDate', 'paymentAmount', 'paymentTypeName', 'companyName', 'address', 'city', 'province', 'postalCode'];
     ReportService.getCustomerPaid(fromDate, toDate)
@@ -82,7 +88,7 @@ export default class CustomerReport extends React.Component {
         }
         return row[column] || '';
       })))
-      .then((data) => this.setState({ customerPaidData: data }));
+      .then((data) => this.setState({ customerPaidData: data, loading: false, }));
 
     const customerUnPaidColumns = ['orderId', 'poNumber', 'total', 'status', 'orderDate', 'dueDate', 'companyName', 'address', 'city', 'province', 'postalCode'];
     ReportService.getCustomerUnPaid(fromDate, toDate)
@@ -92,7 +98,14 @@ export default class CustomerReport extends React.Component {
         }
         return row[column] || '';
       })))
-      .then((data) => this.setState({ customerUnPaidData: data }));
+      .then((data) => this.setState({ customerUnPaidData: data, loading: false }));
+  }
+
+  print() {
+    const { fromDate, toDate } = this.state;
+    this.setState({ loading: true });
+    ReportService.getCustomerReportPdf(fromDate, toDate)
+      .then(() => this.setState({ loading: false }));
   }
 
   render() {
@@ -190,6 +203,7 @@ export default class CustomerReport extends React.Component {
 
     const {
       customerPaidData, customerUnPaidData, fromDate, toDate,
+      loading,
     } = this.state;
     // const paidTitle = `Paid Orders - From Date: ${dateFormat(fromDate)} To Date: ${dateFormat(toDate)}`;
     // const unpaidTitle = `Awaiting Patment - Until Date: ${dateFormat(toDate)}`;
@@ -230,8 +244,20 @@ export default class CustomerReport extends React.Component {
                       }}
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={12} md={3}>
-                    <Button color="info" onClick={this.search}>Search</Button>
+                  <GridItem xs={12} sm={12} md={2}>
+                    <Button color="info" onClick={this.search}>
+                      <Search />
+                      Search
+                    </Button>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={2}>
+                    <Button color="secondary" onClick={this.print}>
+                      <Print />
+                      Print PDF
+                    </Button>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={2}>
+                    {loading && <CircularProgress />}
                   </GridItem>
                 </GridContainer>
                 <MuiThemeProvider theme={this.getMuiTheme()}>

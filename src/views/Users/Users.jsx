@@ -1,5 +1,6 @@
 import React from 'react';
-import MUIDataTable from 'mui-datatables';
+import MaterialTable from 'material-table';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import Check from '@material-ui/icons/Check';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -9,9 +10,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import Portal from '@material-ui/core/Portal';
+import Button from '../../components/CustomButtons/Button';
 import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
@@ -43,11 +44,10 @@ export default class Users extends React.Component {
     super(props);
 
     this.handleUpdate = this.handleUpdate.bind(this);
-    this.handleUpdateUser = this.handleUpdateUser.bind(this);
     this.handleResetPassword = this.handleResetPassword.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.editClicked = this.editClicked.bind(this);
     this.permissionsClicked = this.permissionsClicked.bind(this);
+    this.onAddNew = this.onAddNew.bind(this);
   }
 
   componentDidMount() {
@@ -69,6 +69,11 @@ export default class Users extends React.Component {
         });
         this.setState({ roleChecked: assignedRoles });
       });
+  }
+
+  onAddNew() {
+    const { history } = this.props;
+    return history.push('/adduser');
   }
 
   getUserLocations(email) {
@@ -120,60 +125,15 @@ export default class Users extends React.Component {
     });
   };
 
-  editClicked(tableMeta) {
-    const { users } = this.state;
-    const user = users[tableMeta.rowIndex];
-    setTimeout(() => {
-      this.setState({
-        openUserEditDialog: true,
-        selectedRow: user,
-        givenName: user[0],
-        userName: user[2],
-        email: user[1],
-      });
-    }, 1000);
-  }
-
-  permissionsClicked(tableMeta) {
-    const { users } = this.state;
-    const user = users[tableMeta.rowIndex];
-    this.getUserRoles(user[1]);
-    this.getUserLocations(user[1]);
+  permissionsClicked(user) {
+    this.getUserRoles(user.email);
+    this.getUserLocations(user.email);
     setTimeout(() => {
       this.setState({
         openDialog: true,
         selectedRow: user,
       });
     }, 1000);
-  }
-
-  async handleUpdateUser() {
-    const {
-      email,
-      userName,
-      givenName,
-    } = this.state;
-
-    const userInfo = {
-      email,
-      userName,
-      givenName,
-    };
-
-    const result = await UserService.UpdateUser(userInfo);
-    if (result && result.email) {
-      this.setState({
-        openSnackbar: true,
-        snackbarMessage: 'Users\'s Information was successfully updated!',
-        snackbarColor: 'success',
-      });
-    }
-
-    this.setState({
-      openUserEditDialog: false,
-      selectedRow: null,
-    });
-    window.location.reload();
   }
 
   async handleUpdate() {
@@ -184,12 +144,12 @@ export default class Users extends React.Component {
     } = this.state;
 
     const userInfo = {
-      email: selectedRow[1],
+      email: selectedRow.email,
       roleIds: roleChecked.filter((item) => item !== 0),
       locationIds: locationChecked.filter((item) => item !== 0),
     };
 
-    const result = await UserService.UpdateUserRolesAndLocations(userInfo);
+    const result = await UserService.updateUserRolesAndLocations(userInfo);
     if (result && result.email) {
       this.setState({
         openSnackbar: true,
@@ -221,11 +181,11 @@ export default class Users extends React.Component {
     }
 
     const passwordResetInfo = {
-      email: selectedRow[1],
+      email: selectedRow.mail,
       newPassword,
     };
 
-    const result = await UserService.ResetPassword(passwordResetInfo);
+    const result = await UserService.resetPassword(passwordResetInfo);
     if (result && result.succeeded) {
       this.setState({
         openSnackbar: true,
@@ -248,9 +208,7 @@ export default class Users extends React.Component {
   }
 
   usersList() {
-    const columns = ['givenName', 'email', 'userName', 'roles', 'locations', 'authCode'];
     UserService.getUsers()
-      .then((results) => results.map((row) => columns.map((column) => (row[column] === null ? '' : row[column]))))
       .then((data) => this.setState({ users: data }));
   }
 
@@ -290,51 +248,56 @@ export default class Users extends React.Component {
       },
     };
 
-    const columns = ['Given Name', 'Email', 'User Name', 'Roles', 'Locations', 'Pass Code',
+    const columns = [
       {
-        name: 'edit',
-        options: {
-          filter: true,
-          customBodyRender: (value, tableMeta) => (
-            <Button
-              color="primary"
-              index={tableMeta.columnIndex}
-              onClick={(event) => {
-                this.editClicked(tableMeta, tableMeta.columnIndex, value, event);
-              }}
-            >
-              Edit
-            </Button>
-          ),
-        },
+        title: 'Given Name',
+        field: 'givenName',
       },
       {
-        name: 'permission',
-        options: {
-          filter: true,
-          customBodyRender: (value, tableMeta) => (
-            <Button
-              color="primary"
-              index={tableMeta.columnIndex}
-              onClick={(event) => this.permissionsClicked(
-                tableMeta, tableMeta.columnIndex, value, event,
-              )}
-            >
-              Permissions
-            </Button>
-          ),
-        },
+        title: 'Email',
+        field: 'email',
+      },
+      {
+        title: 'Pass Code',
+        field: 'authCode',
+        readonly: true,
+        editable: 'never',
+      },
+      {
+        title: 'User Name',
+        field: 'userName',
+        readonly: true,
+        editable: 'never',
+      },
+      {
+        title: 'Roles',
+        field: 'roles',
+        readonly: true,
+        editable: 'never',
+      },
+      {
+        title: 'Locations',
+        field: 'locations',
+        readonly: true,
+        editable: 'never',
+      },
+      {
+        title: 'User Id',
+        field: 'id',
+        hidden: true,
+        readonly: true,
+        editable: 'never',
       },
     ];
 
     const options = {
-      filterType: 'checkbox',
-      // onRowClick: this.rowClicked,
-      rowHover: true,
-      resizableColumns: false,
-      selectableRows: false,
-      rowsPerPageOptions: [25, 50, 100],
-      rowsPerPage: 25,
+      paging: true,
+      pageSizeOptions: [25, 50, 100],
+      pageSize: 25,
+      columnsButton: true,
+      exportButton: true,
+      filtering: true,
+      search: true,
     };
 
     const {
@@ -352,13 +315,8 @@ export default class Users extends React.Component {
       newPassword,
       givenName,
       email,
+      loading,
     } = this.state;
-
-
-    users.forEach((u) => {
-      u.push('edit');
-      u.push('permissions');
-    });
 
     return (
       <div>
@@ -369,12 +327,55 @@ export default class Users extends React.Component {
                 <div className={styles.cardTitleWhite}>Users List</div>
               </CardHeader>
               <CardBody>
-                <MUIDataTable
-                  title=""
-                  data={users}
+                <Button color="info" onClick={this.onAddNew}>
+                  New User
+                </Button>
+                <MaterialTable
                   columns={columns}
+                  data={users}
                   options={options}
+                  title=""
+                  actions={[
+                    {
+                      icon: 'group',
+                      tooltip: 'Permissions',
+                      onClick: (event, rowData) => this.permissionsClicked(rowData),
+                    },
+                  ]}
+                  editable={{
+                    onRowUpdate: (newData, oldData) => new Promise((resolve) => {
+                      setTimeout(() => {
+                        {
+                          const index = users.indexOf(oldData);
+                          users[index] = newData;
+                          UserService.updateUser(newData);
+                          this.setState({ users }, () => resolve());
+                        }
+                        resolve();
+                      }, 1000);
+                    }),
+                    // onRowAdd: (newData) => new Promise((resolve) => {
+                    //   setTimeout(() => {
+                    //     users.push(newData);
+                    //     UserService.addUser(newData);
+                    //     this.setState({ users }, () => resolve());
+                    //     resolve();
+                    //   }, 1000);
+                    // }),
+                    onRowDelete: (oldData) => new Promise((resolve) => {
+                      setTimeout(() => {
+                        {
+                          const index = users.indexOf(oldData);
+                          users.splice(index, 1);
+                          UserService.deleteUser(oldData.userName);
+                          this.setState({ users }, () => resolve());
+                        }
+                        resolve();
+                      }, 1000);
+                    }),
+                  }}
                 />
+                {loading && (<LinearProgress />)}
               </CardBody>
             </Card>
           </GridItem>
@@ -390,12 +391,12 @@ export default class Users extends React.Component {
             <DialogContentText>
               Given Name:
               {' '}
-              { selectedRow && (selectedRow[0]) }
+              { selectedRow && (selectedRow.givenName) }
               {' '}
               <br />
               Email:
               {' '}
-              { selectedRow && (selectedRow[1]) }
+              { selectedRow && (selectedRow.email) }
               {' '}
               <br />
             </DialogContentText>
@@ -501,12 +502,12 @@ export default class Users extends React.Component {
             <DialogContentText>
               Given Name:
               {' '}
-              {selectedRow && (selectedRow[0])}
+              {selectedRow && (selectedRow.givenName)}
               {' '}
               <br />
               Email:
               {' '}
-              {selectedRow && (selectedRow[1])}
+              {selectedRow && (selectedRow.email)}
               {' '}
               <br />
             </DialogContentText>

@@ -12,6 +12,17 @@ export default class UserService {
     }
   }
 
+  static async deleteUser(userName) {
+    try {
+      const response = await RestUtilities.delete(
+        `users/${userName}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getUserRoles(email) {
     try {
       const response = await RestUtilities.get(
@@ -45,7 +56,7 @@ export default class UserService {
     }
   }
 
-  static async UpdateUser(userInfo) {
+  static async updateUser(userInfo) {
     try {
       const response = await RestUtilities.put(
         'users/info',
@@ -57,7 +68,7 @@ export default class UserService {
     }
   }
 
-  static async UpdateUserRolesAndLocations(userInfo) {
+  static async updateUserRolesAndLocations(userInfo) {
     try {
       const response = await RestUtilities.put(
         'users/permissions',
@@ -69,7 +80,7 @@ export default class UserService {
     }
   }
 
-  static async ResetPassword(passwordResetInfo) {
+  static async resetPassword(passwordResetInfo) {
     try {
       const response = await RestUtilities.put(
         'users/resetpassword',
@@ -81,7 +92,7 @@ export default class UserService {
     }
   }
 
-  static async ResetPasscode(passcodeResetInfo) {
+  static async resetPasscode(passcodeResetInfo) {
     try {
       const response = await RestUtilities.put(
         'users/resetpasscode',

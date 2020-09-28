@@ -89,7 +89,7 @@ export class Order extends React.Component {
     this.handleCashChange = this.handleCashChange.bind(this);
     this.customerChanged = this.customerChanged.bind(this);
     this.updateCustomer = this.updateCustomer.bind(this);
-    this.editDraft = this.editDraft.bind(this);
+    this.editQuote = this.editQuote.bind(this);
     this.updatePayment = this.updatePayment.bind(this);
     this.updateLocationClicked = this.updateLocationClicked.bind(this);
     this.updateLocation = this.updateLocation.bind(this);
@@ -98,7 +98,10 @@ export class Order extends React.Component {
   }
 
   async componentDidMount() {
-    const orderId = this.props.orderId || this.props.location.state.orderId;
+    const orderId = this.props.orderId
+      || this.props.match.params.id
+      || (this.props.location.state && this.props.location.state.orderId);
+
     const order = await OrderService.getOrderDetail(orderId);
     await this.getLocations();
 
@@ -234,11 +237,11 @@ export class Order extends React.Component {
         snackbarColor: 'danger',
       });
     }
-
+    const updatedOrder = await OrderService.getOrderDetail(order.orderId);
     this.setState({
       loading: false,
+      order: updatedOrder,
     });
-    window.location.reload();
   }
 
   updateLocationClicked() {
@@ -248,17 +251,61 @@ export class Order extends React.Component {
   }
 
   updatePayment() {
-    const { order } = this.state;
+    const { order, } = this.state;
+    let isCash = false;
+    let isCheque = false;
+    let isCreditDebit = false;
+    let isAmazonUsd = false;
+    let isStoreCredit = false;
+    let cash = 0;
+    let cheque = 0;
+    let creditDebit = 0;
+    let amazonUsd = 0;
+    let storeCredit = 0;
+    const amount = order.total.toFixed(2);
+
+    if (order
+      && order.orderPayment
+      && order.orderPayment.length > 0
+      && order.orderPayment[0]) {
+      if (order.orderPayment[0].paymentTypeId == 22) {
+        isCash = true;
+        cash = amount;
+      } else if (order.orderPayment[0].paymentTypeId == 23) {
+        isCreditDebit = true;
+        creditDebit = amount;
+      } else if(order.orderPayment[0].paymentTypeId == 24) {
+        isCheque = true;
+        cheque = amount;
+      } else if(order.orderPayment[0].paymentTypeId == 25) {
+        isAmazonUsd = true;
+        amazonUsd = amount;
+      } else if (order.orderPayment[0].paymentTypeId == 26) {
+        isStoreCredit = true;
+        storeCredit = amount;
+      }
+    }
+
     this.setState({
       openDialog: true,
       isUpdatePayment: true,
       creditDebitAmount: order.total.toFixed(2),
+      payCash: isCash,
+      payCreditDebit: isCreditDebit,
+      payAmazonUsd: isAmazonUsd,
+      payCheque: isCheque,
+      payStoreCredit: isStoreCredit,
+      cashAmount: cash,
+      chequeAmount: cheque,
+      creditDebitAmount: creditDebit,
+      paypalAmazonUsdAmount: amazonUsd,
+      storeCreditAmount: storeCredit,
     });
   }
 
-  editDraft() {
-    const { orderId, history } = this.props;
-    history.push({
+  editQuote() {
+    const orderId = this.props.orderId || this.props.location.state.orderId;
+    this.props.history.push({
       pathname: `/neworder/${orderId}`,
       state: { orderId },
     });
@@ -272,13 +319,14 @@ export class Order extends React.Component {
       { customerId: order.customer.customerId },
     );
     if (result) {
+      const updatedOrder = await OrderService.getOrderDetail(order.orderId);
       this.setState({
         openSnackbar: true,
         snackbarMessage: 'Order\'s Customer was updated successfully!',
         snackbarColor: 'success',
         openDialog: false,
+        order: updatedOrder,
       });
-      window.location.reload();
     }
   }
 
@@ -370,7 +418,10 @@ export class Order extends React.Component {
     orderPayment = this.getOrderPayments();
 
     const result = await OrderService.updateOrderPayment(order.orderId, { orderPayment });
-    if (result === false || result === null || result.StatusCode === 500 || result.StatusCode === 400) {
+    if (result === false
+        || result === null
+        || result.StatusCode === 500
+        || result.StatusCode === 400) {
       this.setState({
         openSnackbar: true,
         loading: false,
@@ -411,8 +462,14 @@ export class Order extends React.Component {
       orderPayment = this.getOrderPayments();
     }
 
-    const result = await OrderService.updateOrderStatus(order.orderId, { orderStatus, orderPayment });
-    if (result === false || result === null || result.StatusCode === 500 || result.StatusCode === 400) {
+    const result = await OrderService.updateOrderStatus(
+      order.orderId,
+      { orderStatus, orderPayment },
+    );
+    if (result === false
+        || result === null
+        || result.StatusCode === 500
+        || result.StatusCode === 400) {
       this.setState({
         openSnackbar: true,
         loading: false,
@@ -430,8 +487,8 @@ export class Order extends React.Component {
   }
 
   async refundOrder() {
-    const { orderId, history } = this.props;
-    history.push({
+    const orderId = this.props.orderId || this.props.location.state.orderId;
+    this.props.history.push({
       pathname: `/return/${orderId}`,
       state: { orderId },
     });
@@ -503,26 +560,27 @@ export class Order extends React.Component {
     if (isUpdatePayment) {
       const orderPaymetResult = await this.updateOrderPayment();
       if (orderPaymetResult && orderPaymetResult.orderId) {
+        const updatedOrder = await OrderService.getOrderDetail(order.orderId);
         this.setState({
           openSnackbar: true,
           snackbarMessage: 'Order Payment was updated successfully!',
           snackbarColor: 'success',
           openDialog: false,
+          order: updatedOrder,
         });
-        window.location.reload();
       }
     } else {
       const status = 'Paid';
       const resultStatusResult = await this.updateOrderStatus(status);
       if (resultStatusResult && resultStatusResult.orderId) {
+        const updatedOrder = await OrderService.getOrderDetail(order.orderId);
         this.setState({
           openSnackbar: true,
           snackbarMessage: 'Order was marked as Paid successfully!',
           snackbarColor: 'success',
           openDialog: false,
+          order: updatedOrder,
         });
-
-        window.location.reload();
       }
     }
   }
@@ -545,12 +603,12 @@ export class Order extends React.Component {
   }
 
   async cancelHold() {
-    const status = 'Draft';
+    const status = 'Quote';
     const result = await this.updateOrderStatus(status);
     if (result && result.orderId) {
       this.setState({
         openSnackbar: true,
-        snackbarMessage: 'Order was marked as Draft and not On-Hold any more!',
+        snackbarMessage: 'Order was marked as Quote and not On-Hold any more!',
         snackbarColor: 'success',
       });
       const { order } = this.state;
@@ -639,14 +697,14 @@ export class Order extends React.Component {
                         </GridItem>
                         )}
 
-                        { order.status === 'Draft' || order.status === 'OnHold' || order.status === 'Account'
+                        { order.status === 'Quote' || order.status === 'OnHold' || order.status === 'Account'
                           ? (
                             <GridItem xs>
                               <Button color="info" disabled={loading} onClick={this.saveAsPaid}>Mark As Paid</Button>
                             </GridItem>
                           ) : <div />}
 
-                        { order.status === 'Draft' && (
+                        { order.status === 'Quote' && (
                         <GridItem xs>
                           <Button color="info" disabled={loading} onClick={this.saveAsHold}>Put On Hold</Button>
                         </GridItem>
@@ -663,9 +721,9 @@ export class Order extends React.Component {
                           <Button color="info" disabled={loading} onClick={this.cancelHold}>Cancel On Hold</Button>
                         </GridItem>
                         )}
-                        { order.status === 'Draft' && (
+                        { order.status === 'Quote' && (
                         <GridItem xs>
-                          <Button color="info" disabled={loading} onClick={this.editDraft}>Edit</Button>
+                          <Button color="info" disabled={loading} onClick={this.editQuote}>Edit</Button>
                         </GridItem>
                         )}
                         {(order.status === 'Paid' || order.status === 'Return') && (
@@ -690,12 +748,12 @@ export class Order extends React.Component {
                           <CustomerInfo customer={order.customer} />
                         </GridItem>
                         <GridItem xs={9}>
-                          {(order.status === 'Draft' || order.status === 'Paid') && (
+                          {(order.status === 'Quote' || order.status === 'Paid') && (
                           <CustomerSearch customerChanged={this.customerChanged} />
                           )}
                         </GridItem>
                         <GridItem xs={3}>
-                          {(order.status === 'Draft' || order.status === 'Paid') && (
+                          {(order.status === 'Quote' || order.status === 'Paid') && (
                             <Button color="info" onClick={this.updateCustomer}>Update Customer</Button>
                           )}
                         </GridItem>
@@ -842,14 +900,14 @@ export class Order extends React.Component {
                               name="payAmazonUsd"
                             />
                             )}
-                          label="Paypal and Amazon + USD"
+                          label="Online / Direct Diposit"
                         />
                       </GridItem>
                       <GridItem md={6}>
                         <TextField
                           disabled={!payAmazonUsd}
                           name="paypalAmazonUsdAmount"
-                          label="Paypal/Amazon/USD"
+                          label="Online/DirectDeposit"
                           type="text"
                           onChange={this.handleChange}
                           value={paypalAmazonUsdAmount}

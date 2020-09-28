@@ -2,6 +2,9 @@ import React from 'react';
 import MUIDataTable from 'mui-datatables';
 import TextField from '@material-ui/core/TextField';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import Search from '@material-ui/icons/Search';
+import Print from '@material-ui/icons/Print';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '../../components/CustomButtons/Button';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -29,16 +32,17 @@ Date.prototype.addHours = function (h) {
 };
 
 export default class ProfitReport extends React.Component {
+  state = {
+    salesFromDate: '',
+    salesToDate: '',
+    purchaseFromDate: '',
+    purchaseToDate: '',
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      salesFromDate: '',
-      salesToDate: '',
-      purchaseFromDate: '',
-      purchaseToDate: '',
-    };
     this.search = this.search.bind(this);
+    this.print = this.print.bind(this);
   }
 
   componentDidMount() {
@@ -84,6 +88,7 @@ export default class ProfitReport extends React.Component {
   }
 
   search() {
+    this.setState({ loading: true });
     const {
       salesFromDate, salesToDate, purchaseFromDate, purchaseToDate,
     } = this.state;
@@ -102,9 +107,27 @@ export default class ProfitReport extends React.Component {
       'avgProfitPerItem',
       'totalProfitByPurchasePrice',
       'totalProfitByAvgCost'];
-    ReportService.getProductSalesProfit(salesFromDate, salesToDate, purchaseFromDate, purchaseToDate)
+    ReportService.getProductSalesProfit(
+      salesFromDate,
+      salesToDate,
+      purchaseFromDate,
+      purchaseToDate,
+    )
       .then((results) => results.map((row) => purchaseSummaryColumns.map((column) => row[column] || '')))
-      .then((data) => this.setState({ purchaseSummaryData: data }));
+      .then((data) => this.setState({ purchaseSummaryData: data, loading: false }));
+  }
+
+  print() {
+    const {
+      salesFromDate, salesToDate, purchaseFromDate, purchaseToDate,
+    } = this.state;
+    this.setState({ loading: true });
+    ReportService.getProductSalesProfitPdf(
+      salesFromDate,
+      salesToDate,
+      purchaseFromDate,
+      purchaseToDate,
+    ).then(() => this.setState({ loading: false }));
   }
 
   render() {
@@ -168,6 +191,7 @@ export default class ProfitReport extends React.Component {
       salesToDate,
       purchaseFromDate,
       purchaseToDate,
+      loading,
     } = this.state;
     const purchaseSummaryTitle = `Sales From: ${salesFromDate} To: ${salesToDate}. Purchase From: ${purchaseFromDate} To: ${purchaseToDate}`;
     return (
@@ -229,7 +253,19 @@ export default class ProfitReport extends React.Component {
                     />
                   </GridItem>
                   <GridItem xs={12} sm={12} md={2}>
-                    <Button color="info" onClick={this.search}>Search</Button>
+                    <Button color="info" onClick={this.search}>
+                      <Search />
+                      Search
+                    </Button>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={2}>
+                    <Button color="secondary" onClick={this.print}>
+                      <Print />
+                      Print PDF
+                    </Button>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={2}>
+                    {loading && <CircularProgress />}
                   </GridItem>
                 </GridContainer>
                 <MuiThemeProvider theme={this.getMuiTheme()}>

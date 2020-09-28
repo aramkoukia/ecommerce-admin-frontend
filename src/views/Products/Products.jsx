@@ -40,6 +40,72 @@ export default class Products extends React.Component {
     page: 1,
     showProduct: false,
     productId: 0,
+    columns: [
+      {
+        title: 'Product Type', field: 'productTypeName', hidden: true, readonly: true,
+      },
+      {
+        title: 'Product Code',
+        field: 'productCode',
+        readonly: true,
+        width: 200,
+      },
+      {
+        title: 'Product Name',
+        field: 'productName',
+        readonly: true,
+        width: 600,
+      },
+      {
+        title: 'Sales Price($)',
+        field: 'salesPrice',
+        type: 'numeric',
+        readonly: true,
+        width: 150,
+        cellStyle: {
+          color: '#0716CB',
+        },
+        headerStyle: {
+          color: '#0716CB',
+        },
+      },
+      {
+        title: 'Balance',
+        field: 'balance',
+        type: 'numeric',
+        readonly: true,
+        width: 150,
+      },
+      {
+        title: 'On Hold',
+        field: 'onHoldAmount',
+        type: 'numeric',
+        readonly: true,
+        width: 150,
+      },
+      {
+        title: 'Disabled',
+        field: 'disabled',
+        readonly: true,
+        defaultFilter: ['False'],
+        lookup: {
+          True: 'True',
+          False: 'False',
+        },
+      },
+      {
+        title: 'Product Id', field: 'productId', hidden: true, readonly: true,
+      },
+    ],
+    options: {
+      paging: true,
+      pageSizeOptions: [25, 50, 100],
+      pageSize: 25,
+      columnsButton: true,
+      exportButton: true,
+      filtering: true,
+      search: true,
+    },
   };
 
   constructor(props) {
@@ -116,63 +182,6 @@ export default class Products extends React.Component {
       },
     };
 
-    const columns = [
-      {
-        title: 'Product Type', field: 'productTypeName', hidden: true, readonly: true,
-      },
-      {
-        title: 'Product Code',
-        field: 'productCode',
-        readonly: true,
-        width: 200,
-      },
-      {
-        title: 'Product Name',
-        field: 'productName',
-        readonly: true,
-        width: 600,
-      },
-      {
-        title: 'Sales Price($)',
-        field: 'salesPrice',
-        type: 'numeric',
-        readonly: true,
-        width: 150,
-        cellStyle: {
-          color: '#0716CB',
-        },
-        headerStyle: {
-          color: '#0716CB',
-        },
-      },
-      {
-        title: 'Balance',
-        field: 'balance',
-        type: 'numeric',
-        readonly: true,
-        width: 150,
-      },
-      {
-        title: 'On Hold',
-        field: 'onHoldAmount',
-        type: 'numeric',
-        readonly: true,
-        width: 150,
-      },
-      {
-        title: 'Disabled',
-        field: 'disabled',
-        readonly: true,
-        defaultFilter: ['False'],
-        lookup: {
-          True: 'True',
-          False: 'False',
-        },
-      },
-      {
-        title: 'Product Id', field: 'productId', hidden: true, readonly: true,
-      },
-    ];
 
     const {
       products,
@@ -183,17 +192,9 @@ export default class Products extends React.Component {
       page,
       showProduct,
       productId,
+      columns,
+      options,
     } = this.state;
-
-    const options = {
-      paging: true,
-      pageSizeOptions: [25, 50, 100],
-      pageSize: 25,
-      columnsButton: true,
-      exportButton: true,
-      filtering: true,
-      search: true,
-    };
 
     const detailPanel = [
       {

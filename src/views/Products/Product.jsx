@@ -65,6 +65,7 @@ export class Product extends React.Component {
         locationName: 'All',
       },
     ],
+    allLocations: [],
   };
 
   constructor(props) {
@@ -97,6 +98,8 @@ export class Product extends React.Component {
       .then((results) => this.setState({
         locations: [...locations, ...results],
       }));
+    LocationService.getLocations()
+      .then((data) => this.setState({ allLocations: data }));
   }
 
   handleClose = () => {
@@ -150,11 +153,13 @@ export class Product extends React.Component {
       .then((data) => this.setState({ productTransactions: data }));
   }
 
-  enableDisableProducts() {
-    const { match } = this.props;
-    const productId = match.params.id;
-    ProductService.disableProduct(productId);
-    window.location.reload();
+  async enableDisableProducts() {
+    const { productId } = this.props;
+    await ProductService.disableProduct(productId);
+    const product = await ProductService.getProduct(productId);
+    this.setState({
+      product,
+    });
   }
 
   handleChange(event) {
@@ -186,6 +191,7 @@ export class Product extends React.Component {
       toDate,
       locations,
       locationId,
+      allLocations,
     } = this.state;
 
     const columns = ['Date', 'Transaction Type', 'Amount', 'Balance', 'LocationName', 'Notes', 'User'];
@@ -199,6 +205,8 @@ export class Product extends React.Component {
       rowsPerPageOptions: [25, 50, 100],
       rowsPerPage: 25,
     };
+
+    const fromLocations = locations.filter((l) => l.locationId !== 0);
 
     return (
       <div>
@@ -380,7 +388,8 @@ export class Product extends React.Component {
               <br />
             </DialogContentText>
             <InventoryTransfer
-              locations={locations}
+              fromLocations={fromLocations}
+              toLocations={allLocations}
               product={product}
               handleClose={this.handleTransferFinished}
             />

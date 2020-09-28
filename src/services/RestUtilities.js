@@ -23,6 +23,10 @@ export default class RestUtilities {
     return RestUtilities.request('POST', url, data);
   }
 
+  static postForm(url, data) {
+    return RestUtilities.requestFormData('POST', url, data);
+  }
+
   static request(method, url, data) {
     // let isJsonResponse = false;
     let isBadRequest = false;
@@ -31,6 +35,7 @@ export default class RestUtilities {
 
     headers.set('Authorization', `Bearer ${AuthStore.getToken()}`);
     headers.set('Accept', 'application/json');
+    headers.set('Access-Control-Allow-Origin', '*');
 
     if (data) {
       if (typeof data === 'object') {
@@ -42,6 +47,7 @@ export default class RestUtilities {
     }
 
     return fetch(`${Api.baseUrl}/${url}`, {
+      mode: 'cors',
       method,
       headers,
       body,
@@ -76,12 +82,12 @@ export default class RestUtilities {
   }
 
   static requestBlob(url) {
-    const headers = new Headers();
-    headers.set('Authorization', `Bearer ${AuthStore.getToken()}`);
     axios(`${Api.baseUrl}/${url}`, {
       method: 'GET',
       responseType: 'blob', // Force to receive data in a Blob Format
-      headers,
+      headers: {
+        Authorization: `Bearer ${AuthStore.getToken()}`,
+      },
     })
       .then((response) => {
         // Create a Blob from the PDF Stream
@@ -95,6 +101,48 @@ export default class RestUtilities {
         window.open(fileURL);
       })
       .catch(() => {
+      });
+  }
+
+  static requestFormData(method, url, data) {
+    // let isJsonResponse = false;
+    let isBadRequest = false;
+    const headers = new Headers();
+    headers.set('Authorization', `Bearer ${AuthStore.getToken()}`);
+    headers.set('Content-Type', 'multipart/form-data');
+
+    return axios(`${Api.baseUrl}/${url}`,
+      {
+        method: 'post',
+        data,
+        headers,
+      })
+      .then((response) => {
+        if (response.status === 401) {
+          // Unauthorized; redirect to sign-in
+          AuthStore.removeToken();
+          window.location.replace('/?expired=1');
+        }
+
+        isBadRequest = response.status === 400;
+
+        const responseContentType = response.headers.get('content-type');
+        if (
+          responseContentType
+          && responseContentType.indexOf('application/json') !== -1
+        ) {
+          // isJsonResponse = true;
+          return response.json();
+        }
+        return response.text();
+      })
+      .then((responseContent) => {
+        const response = {
+          is_error: isBadRequest,
+          error_content: isBadRequest ? responseContent : null,
+          content: isBadRequest ? null : responseContent,
+        };
+        return response;
       });
   }
 }

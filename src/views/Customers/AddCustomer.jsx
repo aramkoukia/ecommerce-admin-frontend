@@ -18,32 +18,34 @@ import Snackbar from '../../components/Snackbar/Snackbar';
 import CustomerService from '../../services/CustomerService';
 
 class AddCustomer extends React.Component {
+  state = {
+    openSnackbar: false,
+    snackbarMessage: '',
+    snackbarColor: '',
+    country: 'Canada',
+    province: 'BC',
+    segment: 'None',
+    firstName: '',
+    lastName: '',
+    companyName: '',
+    phoneNumber: '',
+    mobile: '',
+    address: '',
+    city: '',
+    postalCode: '',
+    pstNumber: '',
+    creditLimit: 0,
+    email: '',
+    creditCardOnFile: false,
+    disabled: false,
+    chargePreference: 'None',
+  };
+
   constructor(props) {
     super(props);
-
     this.onSubmit = this.onSubmit.bind(this);
     this.handleCheckChange = this.handleCheckChange.bind(this);
-
-    this.state = {
-      openSnackbar: false,
-      snackbarMessage: '',
-      snackbarColor: '',
-      country: 'Canada',
-      province: 'BC',
-      segment: 'None',
-      firstName: '',
-      lastName: '',
-      companyName: '',
-      phoneNumber: '',
-      mobile: '',
-      address: '',
-      city: '',
-      postalCode: '',
-      pstNumber: '',
-      creditLimit: 0,
-      email: '',
-      disabled: false,
-    };
+    this.handleCreditCardOnFileChange = this.handleCreditCardOnFileChange.bind(this);
   }
 
   async componentDidMount() {
@@ -52,14 +54,6 @@ class AddCustomer extends React.Component {
       snackbarMessage: '',
       snackbarColor: '',
     });
-  }
-
-  handleChange = (event) => {
-    this.setState({ [event.target.name]: event.target.value });
-  };
-
-  handleCheckChange(event) {
-    this.setState({ disabled: event.target.checked });
   }
 
   async onSubmit() {
@@ -78,6 +72,8 @@ class AddCustomer extends React.Component {
       creditLimit,
       email,
       segment,
+      creditCardOnFile,
+      chargePreference,
       disabled,
     } = this.state;
 
@@ -98,6 +94,8 @@ class AddCustomer extends React.Component {
       segment,
       accountBalance: 0,
       storeCredit: 0,
+      creditCardOnFile,
+      chargePreference,
       disabled,
     };
 
@@ -120,7 +118,9 @@ class AddCustomer extends React.Component {
       creditLimit: 0,
       email: '',
       segment: 'None',
+      creditCardOnFile: false,
       disabled: false,
+      chargePreference: 'None',
     });
 
     customer.customerId = result.customerId;
@@ -130,6 +130,18 @@ class AddCustomer extends React.Component {
     if (customerSaved) {
       customerSaved(customer);
     }
+  }
+
+  handleChange = (event) => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
+
+  handleCheckChange(event) {
+    this.setState({ disabled: event.target.checked });
+  }
+
+  handleCreditCardOnFileChange(event) {
+    this.setState({ creditCardOnFile: event.target.checked });
   }
 
   render() {
@@ -150,8 +162,9 @@ class AddCustomer extends React.Component {
       pstNumber,
       creditLimit,
       email,
-      segment,
+      creditCardOnFile,
       disabled,
+      chargePreference,
     } = this.state;
 
     return (
@@ -313,6 +326,35 @@ class AddCustomer extends React.Component {
                       onChange={this.handleChange}
                       value={pstNumber}
                       fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={4}>
+                    <FormControl
+                      fullWidth="true"
+                    >
+                      <InputLabel htmlFor="chargePreference">Charge Preference</InputLabel>
+                      <Select
+                        value={chargePreference}
+                        onChange={this.handleChange}
+                        input={<Input name="chargePreference" id="chargePreference" />}
+                        fullWidth="true"
+                      >
+                        <MenuItem value="None">None</MenuItem>
+                        <MenuItem value="In 40 Days">In 40 Days</MenuItem>
+                        <MenuItem value="Same Day">Same Day</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </GridItem>
+                  <GridItem md={4}>
+                    <FormControlLabel
+                      control={(
+                        <Checkbox
+                          checked={creditCardOnFile}
+                          onChange={this.handleCreditCardOnFileChange}
+                          value="creditCardOnFile"
+                        />
+                      )}
+                      label="Credit Card On File"
                     />
                   </GridItem>
                   <GridItem md={4}>

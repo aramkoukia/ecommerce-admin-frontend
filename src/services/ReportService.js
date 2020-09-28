@@ -56,6 +56,18 @@ export default class ReportService {
     }
   }
 
+
+  static async getSalesByPurchasePricePdf(fromDate, toDate) {
+    try {
+      const response = await RestUtilities.getBlob(
+        `reports/salesbypurchasepricepdf?fromDate=${fromDate}&toDate=${toDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getSalesByPurchasePriceReport(fromDate, toDate) {
     try {
       const response = await RestUtilities.get(
@@ -89,10 +101,32 @@ export default class ReportService {
     }
   }
 
+  static async getSalesPdf(fromDate, toDate) {
+    try {
+      const response = await RestUtilities.getBlob(
+        `reports/salespdf?fromDate=${fromDate}&toDate=${toDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getProductSales(fromDate, toDate) {
     try {
       const response = await RestUtilities.get(
         `reports/productsales?fromDate=${fromDate}&toDate=${toDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async getProductSalesPdf(fromDate, toDate) {
+    try {
+      const response = await RestUtilities.getBlob(
+        `reports/productsalespdf?fromDate=${fromDate}&toDate=${toDate}`,
       );
       return response.content;
     } catch (err) {
@@ -133,6 +167,17 @@ export default class ReportService {
     }
   }
 
+  static async getPaymentsPdf(fromDate, toDate) {
+    try {
+      const response = await RestUtilities.getBlob(
+        `reports/paymentspdf?fromDate=${fromDate}&toDate=${toDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getPaymentsByOrderStatus(fromDate, toDate) {
     try {
       const response = await RestUtilities.get(
@@ -148,6 +193,17 @@ export default class ReportService {
     try {
       const response = await RestUtilities.get(
         `reports/paymentstotal?fromDate=${fromDate}&toDate=${toDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async getPurchaseReportPdf(fromDate, toDate) {
+    try {
+      const response = await RestUtilities.getBlob(
+        `reports/purchasereportpdf?fromDate=${fromDate}&toDate=${toDate}`,
       );
       return response.content;
     } catch (err) {
@@ -188,6 +244,17 @@ export default class ReportService {
     }
   }
 
+  static async getCustomerReportPdf(fromDate, toDate) {
+    try {
+      const response = await RestUtilities.getBlob(
+        `reports/customerorderspdf?fromDate=${fromDate}&toDate=${toDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getCustomerPaid(fromDate, toDate) {
     try {
       const response = await RestUtilities.get(
@@ -210,10 +277,37 @@ export default class ReportService {
     }
   }
 
+  static async getProductSalesProfitPdf(
+    fromSalesDate,
+    toSalesDate,
+    fromPurchaseDate,
+    toPurchaseDate,
+  ) {
+    try {
+      const response = await RestUtilities.getBlob(
+        `reports/purchaseprofitpdf?fromSalesDate=${fromSalesDate}&toSalesDate=${toSalesDate}&fromPurchaseDate=${fromPurchaseDate}&toPurchaseDate=${toPurchaseDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getProductSalesProfit(fromSalesDate, toSalesDate, fromPurchaseDate, toPurchaseDate) {
     try {
       const response = await RestUtilities.get(
         `reports/purchaseprofit?fromSalesDate=${fromSalesDate}&toSalesDate=${toSalesDate}&fromPurchaseDate=${fromPurchaseDate}&toPurchaseDate=${toPurchaseDate}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async getInventoryValuePdf() {
+    try {
+      const response = await RestUtilities.getBlob(
+        'reports/inventoryvaluepdf',
       );
       return response.content;
     } catch (err) {

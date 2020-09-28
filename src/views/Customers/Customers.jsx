@@ -1,5 +1,5 @@
 import React from 'react';
-import MUIDataTable from 'mui-datatables';
+import MaterialTable from 'material-table';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -12,29 +12,120 @@ export default class Customers extends React.Component {
   state = {
     customers: [],
     loading: false,
+    columns: [
+      {
+        title: 'Customer Code',
+        field: 'customerCode',
+        readonly: true,
+      },
+      {
+        title: 'Company Name',
+        field: 'companyName',
+        readonly: true,
+      },
+      {
+        title: 'First Name',
+        field: 'firstName',
+        readonly: true,
+      },
+      {
+        title: 'Last Name',
+        field: 'lastName',
+        readonly: true,
+      },
+      {
+        title: 'Email',
+        field: 'email',
+        readonly: true,
+      },
+      {
+        title: 'Awaiting Payment ($)',
+        field: 'accountBalance',
+        cellStyle: {
+          color: '#0716CB',
+        },
+        headerStyle: {
+          color: '#0716CB',
+        },
+        readonly: true,
+      },
+      {
+        title: 'Credit Limit ($)',
+        field: 'creditLimit',
+        readonly: true,
+      },
+      {
+        title: 'PST Number',
+        field: 'pstNumber',
+        readonly: true,
+      },
+      {
+        title: 'Store Credit',
+        field: 'storeCredit',
+        readonly: true,
+      },
+      {
+        title: 'Phone Number',
+        field: 'phoneNumber',
+        readonly: true,
+      },
+      {
+        title: 'PST Exempt',
+        field: 'pstExempt',
+        readonly: true,
+      },
+      {
+        title: 'Credit Card On File',
+        field: 'isCreditCardOnFile',
+        readonly: true,
+        lookup: {
+          Yes: 'Yes',
+          No: 'No',
+        },
+      },
+      {
+        title: 'Disabled',
+        field: 'isDisabled',
+        readonly: true,
+        defaultFilter: ['No'],
+        lookup: {
+          Yes: 'Yes',
+          No: 'No',
+        },
+      },
+      {
+        title: 'Customer Id',
+        field: 'customerId',
+        readonly: true,
+        hidden: true,
+      },
+    ],
+    options: {
+      paging: true,
+      pageSizeOptions: [25, 50, 100],
+      pageSize: 25,
+      columnsButton: true,
+      exportButton: true,
+      filtering: true,
+      search: true,
+    },
   };
 
-  constructor(props) {
-    super(props);
-    this.rowClicked = this.rowClicked.bind(this);
+
+  async componentDidMount() {
+    await this.customersList();
   }
 
-  componentDidMount() {
-    this.customersList();
-  }
-
-  customersList() {
+  async customersList() {
     this.setState({ loading: true });
-    const columns = ['customerCode', 'companyName', 'firstName', 'lastName', 'email', 'accountBalance', 'creditLimit', 'pstNumber', 'storeCredit', 'phoneNumber', 'pstExempt', 'isDisabled'];
     const showDisabled = true;
-    CustomerService.getCustomersWithBalance(showDisabled)
-      .then((results) => results && results.map((row) => columns.map((column) => row[column] || '')))
-      .then((data) => this.setState({ customers: data, loading: false }));
+    const result = await CustomerService.getCustomersWithBalance(showDisabled);
+    this.setState({ customers: result, loading: false });
   }
 
-  rowClicked(rowData) {
+  showDetails(customerId) {
     const { history } = this.props;
-    history.push(`/customer/${rowData[0]}`);
+    history.push(`/customer/${customerId}`);
   }
 
   render() {
@@ -68,94 +159,9 @@ export default class Customers extends React.Component {
       },
     };
 
-    const columns = [
-      {
-        name: 'Customer Code',
-        options: {
-          filter: false,
-        },
-      },
-      {
-        name: 'Company Name',
-        options: {
-          filter: false,
-        },
-      },
-      {
-        name: 'First Name',
-        options: {
-          filter: false,
-        },
-      },
-      {
-        name: 'Last Name',
-        options: {
-          filter: false,
-        },
-      },
-      {
-        name: 'Email',
-        options: {
-          filter: false,
-        },
-      },
-      {
-        name: 'Awaiting Payment ($)',
-        options: {
-          filter: false,
-        },
-      },
-
-      {
-        name: 'Credit Limit ($)',
-        options: {
-          filter: false,
-        },
-      },
-      {
-        name: 'PST Number',
-        options: {
-          filter: false,
-        },
-      },
-      {
-        name: 'Store Credit ($)',
-        options: {
-          filter: false,
-        },
-      },
-      {
-        name: 'Phone Number',
-        options: {
-          filter: false,
-        },
-      },
-      {
-        name: 'PST Exempt',
-        options: {
-          filter: true,
-        },
-      },
-      {
-        name: 'Disabled',
-        options: {
-          filter: true,
-        },
-      },
-    ];
-
-    const options = {
-      filterType: 'checkbox',
-      onRowClick: this.rowClicked,
-      rowHover: true,
-      resizableColumns: false,
-      selectableRows: false,
-      rowsPerPageOptions: [25, 50, 100],
-      rowsPerPage: 25,
-    };
-
-    const { customers, loading } = this.state;
-
+    const {
+      customers, loading, columns, options,
+    } = this.state;
     return (
       <div>
         <GridContainer>
@@ -166,11 +172,18 @@ export default class Customers extends React.Component {
               </CardHeader>
               <CardBody>
                 {customers && (
-                <MUIDataTable
-                  title="Click on each customer record below to see their previous orders."
-                  data={customers}
+                <MaterialTable
                   columns={columns}
+                  data={customers}
+                  actions={[
+                    {
+                      icon: 'menu',
+                      tooltip: 'See Details',
+                      onClick: (event, rowData) => this.showDetails(rowData.customerId),
+                    },
+                  ]}
                   options={options}
+                  title=""
                 />
                 )}
               </CardBody>

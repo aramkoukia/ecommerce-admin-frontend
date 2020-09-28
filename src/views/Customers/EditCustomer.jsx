@@ -19,36 +19,38 @@ import CustomerService from '../../services/CustomerService';
 import CustomerSearch from '../Orders/CustomerSearch';
 
 class EditCustomer extends React.Component {
+  state = {
+    openSnackbar: false,
+    snackbarMessage: '',
+    snackbarColor: '',
+    customer: {
+      firstName: '',
+      country: 'Canada',
+      province: 'BC',
+      segment: 'None',
+      lastName: '',
+      companyName: '',
+      phoneNumber: '',
+      mobile: '',
+      address: '',
+      city: '',
+      postalCode: '',
+      pstNumber: '',
+      creditLimit: 0,
+      email: '',
+      creditCardOnFile: false,
+      disabled: false,
+      mergeToCustomerId: 0,
+      chargePreference: 'None',
+    },
+  };
+
   constructor(props) {
     super(props);
-
     this.onSubmit = this.onSubmit.bind(this);
     this.handleCheckChange = this.handleCheckChange.bind(this);
+    this.handleCreditCardOnFileChange = this.handleCreditCardOnFileChange.bind(this);
     this.customerChanged = this.customerChanged.bind(this);
-
-    this.state = {
-      openSnackbar: false,
-      snackbarMessage: '',
-      snackbarColor: '',
-      customer: {
-        firstName: '',
-        country: 'Canada',
-        province: 'BC',
-        segment: 'None',
-        lastName: '',
-        companyName: '',
-        phoneNumber: '',
-        mobile: '',
-        address: '',
-        city: '',
-        postalCode: '',
-        pstNumber: '',
-        creditLimit: 0,
-        email: '',
-        disabled: false,
-        mergeToCustomerId: 0,
-      },
-    };
   }
 
   async componentDidMount() {
@@ -64,7 +66,7 @@ class EditCustomer extends React.Component {
   }
 
   async onSubmit() {
-    const { match, props } = this.props;
+    const { match, history } = this.props;
     const { customer } = this.state;
     await CustomerService.updateCustomer(customer);
     this.setState({
@@ -72,7 +74,7 @@ class EditCustomer extends React.Component {
       snackbarMessage: 'Customer information is updated!',
       snackbarColor: 'success',
     });
-    return this.props.history.push(`/customer/${match.params.id}`);
+    return history.push(`/customer/${match.params.id}`);
   }
 
   handleChange = (event) => {
@@ -88,6 +90,13 @@ class EditCustomer extends React.Component {
     const { customer } = { ...this.state };
     const currentState = customer;
     currentState.disabled = event.target.checked;
+    this.setState({ customer: currentState });
+  }
+
+  handleCreditCardOnFileChange(event) {
+    const { customer } = { ...this.state };
+    const currentState = customer;
+    currentState.creditCardOnFile = event.target.checked;
     this.setState({ customer: currentState });
   }
 
@@ -267,7 +276,35 @@ class EditCustomer extends React.Component {
                       fullWidth="true"
                     />
                   </GridItem>
-                  <GridItem md={4} />
+                  <GridItem md={4}>
+                    <FormControl
+                      fullWidth="true"
+                    >
+                      <InputLabel htmlFor="chargePreference">Charge Preference</InputLabel>
+                      <Select
+                        value={customer.chargePreference}
+                        onChange={this.handleChange}
+                        input={<Input name="chargePreference" id="chargePreference" />}
+                        fullWidth="true"
+                      >
+                        <MenuItem value="None">None</MenuItem>
+                        <MenuItem value="In 40 Days">In 40 Days</MenuItem>
+                        <MenuItem value="Same Day">Same Day</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </GridItem>
+                  <GridItem md={4}>
+                    <FormControlLabel
+                      control={(
+                        <Checkbox
+                          checked={customer.creditCardOnFile}
+                          onChange={this.handleCreditCardOnFileChange}
+                          value="creditCardOnFile"
+                        />
+                      )}
+                      label="Credit Card On File"
+                    />
+                  </GridItem>
                   <GridItem md={12}>
                     <FormControlLabel
                       control={(

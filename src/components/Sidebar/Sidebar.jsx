@@ -21,13 +21,22 @@ const Sidebar = ({ ...props }) => {
   } = props;
 
   const brand = (
-    <div className={classes.logo}>
-      <a href="https://lightsandparts.com/" target="_blank" rel="noopenner noreferrer" className={classes.logoLink}>
-        <div className={classes.logoImage}>
-          <img src={logo} alt="logo" className={classes.img} />
-        </div>
-        {logoText}
-      </a>
+    <div>
+      { logoText && (
+      <div className={classes.logo}>
+        <a href="https://lightsandparts.com/" target="_blank" rel="noopenner noreferrer" className={classes.logoLink}>
+          <div className={classes.logoImage}>
+            <img src={logo} alt="logo" className={classes.img} />
+          </div>
+          {logoText}
+        </a>
+      </div>
+      )}
+      {!logoText && (
+      <div className={classes.logoWithoutTitle}>
+          <img src={logo} alt="logo" className={classes.imgWithoutTitle} />
+      </div>
+      )}
     </div>
   );
   const locations = Auth.getUserLocations();

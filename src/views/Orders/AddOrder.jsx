@@ -150,7 +150,7 @@ export default class AddOrder extends React.Component {
     this.handleCashChange = this.handleCashChange.bind(this);
     this.saveAsPaid = this.saveAsPaid.bind(this);
     this.saveAsPaidClicked = this.saveAsPaidClicked.bind(this);
-    this.saveAsDraft = this.saveAsDraft.bind(this);
+    this.saveAsQuote = this.saveAsQuote.bind(this);
     this.saveAsHold = this.saveAsHold.bind(this);
     this.saveAsHoldClicked = this.saveAsHoldClicked.bind(this);
     this.saveAsAccount = this.saveAsAccount.bind(this);
@@ -184,7 +184,7 @@ export default class AddOrder extends React.Component {
 
     if (orderId && !isNaN(orderId)) {
       const order = await OrderService.getOrderDetail(orderId);
-      if (order && order.status === 'Draft') {
+      if (order && order.status === 'Quote') {
         if (order.customer.customerId) {
           this.customerChanged(order.customer);
         }
@@ -345,7 +345,7 @@ export default class AddOrder extends React.Component {
       userGivenName: result.user.givenName,
     });
 
-    // TODO: this is temp, and is null for the scenario that user edits a Draft order
+    // TODO: this is temp, and is null for the scenario that user edits a Quote order
     if (permissionsChanged) {
       permissionsChanged();
     }
@@ -488,7 +488,7 @@ export default class AddOrder extends React.Component {
 
   async validateInventory(rows, orderStatus, locationId) {
     this.setState({ orderStatus });
-    if (orderStatus === 'Draft') {
+    if (orderStatus === 'Quote') {
       return false;
     }
 
@@ -593,7 +593,7 @@ export default class AddOrder extends React.Component {
     let result;
     if (orderId && !isNaN(orderId)) {
       result = await OrderService.updateOrder(orderId, order);
-      if (result && result.orderId === Number(orderId) && status !== 'Draft') {
+      if (result && result.orderId === Number(orderId) && status !== 'Quote') {
         const resultUpdateStatus = await OrderService.updateOrderStatus(
           orderId,
           { orderStatus: status, orderPayment },
@@ -739,17 +739,17 @@ export default class AddOrder extends React.Component {
     await this.customerChanged(customer);
   }
 
-  async saveAsDraft() {
+  async saveAsQuote() {
     this.setState({
       loading: true,
     });
 
-    const result = await this.saveOrder('Draft');
+    const result = await this.saveOrder('Quote');
     const { history } = this.props;
     if (result && result.orderId) {
       this.setState({
         openSnackbar: true,
-        snackbarMessage: 'Order was Saved as Draft successfully!',
+        snackbarMessage: 'Order was Saved as Quote successfully!',
         snackbarColor: 'warning',
       });
       history.push({
@@ -913,7 +913,7 @@ export default class AddOrder extends React.Component {
                       <Card>
                         <CardBody>
                           <GridContainer>
-                            <GridItem xs={12} sm={12} md={3}>
+                            <GridItem xs={12} sm={12} md={2}>
                               <CustomInput
                                 labelText="Full Name"
                                 formControlProps={{
@@ -925,7 +925,7 @@ export default class AddOrder extends React.Component {
                                 }}
                               />
                             </GridItem>
-                            <GridItem xs={12} sm={12} md={3}>
+                            <GridItem xs={12} sm={12} md={2}>
                               <CustomInput
                                 labelText="Email"
                                 formControlProps={{
@@ -937,7 +937,7 @@ export default class AddOrder extends React.Component {
                                 }}
                               />
                             </GridItem>
-                            <GridItem xs={12} sm={12} md={3}>
+                            <GridItem xs={12} sm={12} md={2}>
                               <CustomInput
                                 labelText="Phone Number"
                                 formControlProps={{
@@ -949,7 +949,7 @@ export default class AddOrder extends React.Component {
                                 }}
                               />
                             </GridItem>
-                            <GridItem xs={12} sm={12} md={3}>
+                            <GridItem xs={12} sm={12} md={2}>
                               <CustomInput
                                 labelText="Store Credit($)"
                                 formControlProps={{
@@ -958,6 +958,30 @@ export default class AddOrder extends React.Component {
                                 inputProps={{
                                   disabled: true,
                                   value: `${customer.storeCredit} `,
+                                }}
+                              />
+                            </GridItem>
+                            <GridItem md={2}>
+                              <CustomInput
+                                labelText="Charge Preference"
+                                formControlProps={{
+                                  fullWidth: true,
+                                }}
+                                inputProps={{
+                                  disabled: true,
+                                  value: `${customer.chargePreference} `,
+                                }}
+                              />
+                            </GridItem>
+                            <GridItem md={2}>
+                              <CustomInput
+                                labelText="Credit Card On File"
+                                formControlProps={{
+                                  fullWidth: true,
+                                }}
+                                inputProps={{
+                                  disabled: true,
+                                  value: `${customer.isCreditCardOnFile} `,
                                 }}
                               />
                             </GridItem>
@@ -1076,7 +1100,7 @@ export default class AddOrder extends React.Component {
                     <Button color="primary" disabled={loading} onClick={this.saveAsPaidClicked}>Mark As Paid</Button>
                   </GridItem>
                   <GridItem xs>
-                    <Button color="info" disabled={loading} onClick={this.saveAsDraft}>Save As Draft</Button>
+                    <Button color="info" disabled={loading} onClick={this.saveAsQuote}>Save As Quote</Button>
                   </GridItem>
                   { customer && customer.creditLimit > 0 ? (
                     <GridItem xs>
@@ -1225,14 +1249,14 @@ export default class AddOrder extends React.Component {
                             name="payAmazonUsd"
                           />
                         )}
-                        label="Paypal and Amazon + USD"
+                        label="Online / Direct Deposit"
                       />
                     </GridItem>
                     <GridItem md={6}>
                       <TextField
                         disabled={!payAmazonUsd}
                         name="paypalAmazonUsdAmount"
-                        label="Paypal/Amazon/USD"
+                        label="Online/DirectDeposit"
                         type="text"
                         onChange={this.handleChange}
                         value={paypalAmazonUsdAmount}

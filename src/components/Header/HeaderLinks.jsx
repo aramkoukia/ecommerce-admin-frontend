@@ -193,7 +193,7 @@ class HeaderLinks extends React.Component {
       newPasscode,
     };
 
-    const result = await UserService.ResetPasscode(passcodeResetInfo);
+    const result = await UserService.resetPasscode(passcodeResetInfo);
     if (result && result.succeeded) {
       this.setState({
         openSnackbar: true,

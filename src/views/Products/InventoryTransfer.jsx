@@ -21,13 +21,13 @@ import ProductService from '../../services/ProductService';
 function InventoryTransfer({ ...props }) {
   const {
     product,
-    locations,
+    fromLocations,
+    toLocations,
     handleClose,
   } = props;
-  const transferLocations = locations.filter((l) => l.locationId !== 0);
-  const [fromLocation, setFromLocation] = useState(transferLocations[0].locationId);
-  const [toLocation, setToLocation] = useState(transferLocations[1].locationId);
-  const [fromLocationBalance, setFromLocationBalance] = useState(transferLocations[0].balance);
+  const [fromLocation, setFromLocation] = useState(fromLocations[0].locationId);
+  const [toLocation, setToLocation] = useState(toLocations[1].locationId);
+  const [fromLocationBalance, setFromLocationBalance] = useState(fromLocations[0].balance);
   const [transferQuantity, setTransferQuantity] = useState(0);
   const [transferNotes, setTransferNotes] = useState('');
   const [loading, setLoading] = useState(false);
@@ -139,8 +139,8 @@ function InventoryTransfer({ ...props }) {
                     id: 'fromLocation',
                   }}
                 >
-                  {transferLocations && (
-                    transferLocations.map((l, key) => (
+                  {fromLocations && (
+                    fromLocations.map((l, key) => (
                       <MenuItem
                         name={key}
                         value={l.locationId}
@@ -163,8 +163,8 @@ function InventoryTransfer({ ...props }) {
                     id: 'toLocation',
                   }}
                 >
-                  {transferLocations && (
-                    transferLocations.map((l, key) => (
+                  {toLocations && (
+                    toLocations.map((l, key) => (
                       <MenuItem
                         name={key}
                         value={l.locationId}
