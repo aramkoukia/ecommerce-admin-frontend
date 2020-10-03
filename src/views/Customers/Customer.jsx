@@ -56,7 +56,7 @@ export default class Customer extends React.Component {
     const customer = await CustomerService.getCustomer(customerId);
     const customerOrderSummary = await CustomerService.getCustomerOrderSummary(customerId);
     const lastMonthDate = new Date().addHours(-8);
-    const fromDate = dateFormat(new Date(lastMonthDate.setMonth(lastMonthDate.getMonth() - 1)));
+    const fromDate = dateFormat(new Date(lastMonthDate.setMonth(lastMonthDate.getMonth() - 12)));
     const toDate = dateFormat((new Date()).addHours(-8));
 
     this.setState({
