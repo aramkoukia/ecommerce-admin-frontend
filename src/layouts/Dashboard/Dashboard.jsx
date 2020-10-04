@@ -15,6 +15,16 @@ import Api from '../../services/ApiConfig';
 import image from '../../assets/img/sidebar-2.jpg';
 import logo from '../../assets/img/logo.png';
 
+function flattenRoutes() {
+  const result = dashboardRoutes.map((prop, index) => {
+    if (prop.items && prop.items.length > 0) {
+      return prop.items;
+    }
+    return prop;
+  });
+  return result.flat();
+}
+
 function requireAuth(nextState, replace) {
   if (!Auth.isSignedIn) {
     replace({
@@ -92,18 +102,19 @@ class App extends React.Component {
     const sidebarImageUrl = portalSettings ? `${Api.apiRoot}/${portalSettings.sidebarImageUrl}` : image;
     const sideBarTitle = portalSettings.ShowTitleOnSideBar ? portalSettings.portalTitle : '';
 
+    const routes = flattenRoutes();
     const switchRoutes = (
       <Switch>
-        {dashboardRoutes.map((prop) => {
+        {routes.map((prop, index) => {
           if (prop.redirect) {
-            return <Redirect from={prop.path} to={prop.to} key={prop.path} />;
+            return <Redirect from={prop.path} to={prop.to} key={index} />;
           }
 
           if (prop.path === '/neworder/:id') {
             return (
               <Route
                 path={prop.path}
-                key={prop.path}
+                key={index}
                 onEnter={requireAuth}
                 render={(props) => (
                   <AddOrder {...props} permissionsChanged={this.permissionsChanged} />)}
@@ -115,7 +126,7 @@ class App extends React.Component {
             return (
               <Route
                 path={prop.path}
-                key={prop.path}
+                key={index}
                 onEnter={requireAuth}
                 render={(props) => (
                   <Return {...props} permissionsChanged={this.permissionsChanged} />)}
@@ -127,7 +138,7 @@ class App extends React.Component {
             <Route
               path={prop.path}
               component={prop.component}
-              key={prop.path}
+              key={index}
               onEnter={requireAuth}
             />
           );
@@ -161,7 +172,7 @@ class App extends React.Component {
             />
           ) : <div />}
           {/* On the /maps route we want the map to be on full screen -
-          this is not possible if the content and conatiner
+          this is not possible if the content and container
           classes are present because they have some
           paddings which would make the map smaller */}
           {this.getRoute() ? (

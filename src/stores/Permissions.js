@@ -28,4 +28,46 @@ export default class Permissions {
   static ViewNewPurchase = 'View New Purchase';
 
   static ViewPurchases = 'View Purchases';
+
+  static UpdateProducts = 'Update Products';
+
+  static ViewReportsMenu = 'View Reports Menu';
+
+  static ViewDashboardReport = 'View Dashboard Report';
+
+  static ViewSalesReport = 'View Sales Report';
+
+  static ViewProductCategoryReport = 'View Product Category Report';
+
+  static ViewCustomerReport = 'View Customer Report';
+
+  static ViewPaymentReport = 'View Payment Report';
+
+  static ViewSalesForecast = 'View Sales Forecast';
+
+  static ViewProfitReport = 'View Profit Report';
+
+  static ViewValueReport = 'View Value Report';
+
+  static ViewSalesByPurchasePriceReport = 'View Sales By Purchase Price Report';
+
+  static ViewAdministration = 'View Administration';
+
+  static AddUsers = 'Add Users';
+
+  static ViewSettingsMenu = 'View Settings Menu';
+
+  static ViewSettings = 'View Settings';
+
+  static ViewPosSettings = 'View Pos Settings';
+
+  static ViewCustomerStatementSettings = 'View Customer Statement Settings';
+
+  static ViewWebsiteSettings = 'View Website Settings';
+
+  static ViewProductCategories = 'View Product Categories';
+
+  static ViewCustomApplications = 'View Custom Applications';
+
+  static ViewTags = 'View Tags';
 }

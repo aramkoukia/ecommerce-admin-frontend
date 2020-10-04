@@ -1,6 +1,4 @@
 import React from 'react';
-import classNames from 'classnames';
-import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
   List,
@@ -14,96 +12,117 @@ import { makeStyles, createStyles } from '@material-ui/core/styles';
 import IconExpandLess from '@material-ui/icons/ExpandLess';
 import IconExpandMore from '@material-ui/icons/ExpandMore';
 import Auth from '../../services/Auth';
+import AppMenuItemComponent from './AppMenuItemComponent';
+
+const useStyles = makeStyles(() => createStyles({
+  menuItem: {
+    color: 'white',
+    '& .MuiListItem-root': {
+      'padding-bottom': '0',
+      'padding-top': '0',
+      'padding-left': '5px',
+    },
+    '& .MuiListItemIcon-root': {
+      'min-width': '40px',
+    },
+    '&.active': {
+      background: 'rgba(0,172,193, 0.20)',
+      '& .MuiListItemIcon-root': {
+        color: '#00acc1',
+      },
+    },
+  },
+  menuItemIcon: {
+    color: '#fff',
+  },
+}));
 
 const AppMenuItem = (props) => {
+  const classes = useStyles();
   const {
-    item,
-    items,
-    classes,
-    color,
-    activeRoute,
+    sidebarName,
+    permission,
+    path,
+    Icon,
+    needsPermission,
+    items = [],
   } = props;
 
   const isExpandable = items && items.length > 0;
+  const userHasPermission = needsPermission && Auth.userHasPermission(permission);
+  const isNavigation = sidebarName !== '';
   const [open, setOpen] = React.useState(false);
 
   function handleClick() {
     setOpen(!open);
   }
 
-  if (item.redirect || item.sidebarName === '') {
-    return null;
-  }
-  if (!Auth.userHasPermission(item.permission)) {
-    return null;
-  }
-  const activePro = ' ';
-  const listItemClasses = classNames({
-    [` ${classes[color]}`]: activeRoute(item.path),
-  });
-  const whiteFontClasses = classNames({
-    [` ${classes.whiteFont}`]: activeRoute(item.path),
-  });
-
-  const MenuItemRoot = (
-    <ListItem button className={classes.menuItem} onClick={handleClick}>
-      {/* Display an icon if any */}
-      <ListItemIcon className={classes.itemIcon + whiteFontClasses}>
-        <item.icon />
-      </ListItemIcon>
-      <ListItemText
-        primary={item.sidebarName}
-        className={classes.itemText + whiteFontClasses}
-        disableTypography
-        // inset={!Icon}
-      />
-      {/* Display the expand menu if the item has children */}
-      {isExpandable && !open && <IconExpandMore />}
-      {isExpandable && open && <IconExpandLess />}
-    </ListItem>
-  );
-
-  const MenuItemChildren = isExpandable ? (
-    <Collapse in={open} timeout="auto" unmountOnExit>
-      <Divider />
-      <List component="div" disablePadding>
-        {item.items.map((item, index) => (
-          <AppMenuItem {...item} key={index} />
-        ))}
-      </List>
-    </Collapse>
-  ) : null;
-
-  return (
-    // <>
-    //   {MenuItemRoot}
-    //   {MenuItemChildren}
-    // </>
-    <NavLink
-      to={item.path}
-      className={activePro + classes.item}
-      activeClassName="active"
-      key={item.path}
-    >
-      <ListItem button className={classes.itemLink + listItemClasses}>
-        <ListItemIcon className={classes.itemIcon + whiteFontClasses}>
-          <item.icon />
-        </ListItemIcon>
+  const MenuItemRoot = isNavigation && userHasPermission && (
+    <AppMenuItemComponent className={classes.menuItem} link={path} onClick={handleClick}>
+      <ListItem button className={classes.menuItem} onClick={handleClick}>
+        {/* Display an icon if any */}
+        {!!Icon && (
+          <ListItemIcon className={classes.menuItemIcon}>
+            <Icon />
+          </ListItemIcon>
+        )}
         <ListItemText
-          primary={item.sidebarName}
-          className={classes.itemText + whiteFontClasses}
+          primary={sidebarName}
+          className={classes.menuItem}
           disableTypography
         />
+        {/* Display the expand menu if the item has children */}
+        {isExpandable
+          && !open
+          && <IconExpandMore color="secondary" className={classes.itemIcon} />}
+        {isExpandable
+          && open
+          && <IconExpandLess color="secondary" className={classes.itemIcon} />}
       </ListItem>
-    </NavLink>
+    </AppMenuItemComponent>
+  );
+
+  const MenuItemChildren = userHasPermission
+    && isExpandable
+    ? (
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        <Divider />
+        <List component="div" style={{ padding: 0, margin: 0 }}>
+          {items
+            .filter((item) => item.needsPermission && Auth.userHasPermission(item.permission))
+            .map((menu, index) => (
+              <AppMenuItem
+                sidebarName={menu.sidebarName}
+                permission={menu.permission}
+                path={menu.path}
+                Icon={menu.Icon}
+                items={menu.items}
+                needsPermission={menu.needsPermission}
+                key={menu.sidebarName + index}
+              />
+            ))}
+        </List>
+      </Collapse>
+    ) : null;
+
+  return (
+    <>
+      {MenuItemRoot}
+      {MenuItemChildren}
+    </>
   );
 };
 
 AppMenuItem.propTypes = {
   classes: PropTypes.object.isRequired,
-  color: PropTypes.oneOf(['primary', 'info', 'success', 'warning', 'danger']).isRequired,
-  item: PropTypes.object.isRequired,
-  activeRoute: PropTypes.object.isRequired,
+  color: PropTypes.oneOf(['primary', 'info', 'success', 'warning', 'danger']),
+  history: PropTypes.object.isRequired,
+  items: PropTypes.object,
+  sidebarName: PropTypes.object,
+  needsPermission: PropTypes.bool,
+  permission: PropTypes.object,
+  path: PropTypes.object,
+  Icon: PropTypes.object,
 };
 
 export default AppMenuItem;

@@ -72,8 +72,10 @@ class HeaderLinks extends React.Component {
       this.setState({ locationId: Number(currentLocationId) });
       Location.setStoreLocation(Number(currentLocationId));
     } else if (currentLocationId === null) {
-      this.setState({ locationId: locations[0].locationId });
-      Location.setStoreLocation(locations[0].locationId);
+      if (locations && locations.length > 0) {
+        this.setState({ locationId: locations[0].locationId });
+        Location.setStoreLocation(locations[0].locationId);
+      }
     }
 
     this.setState({
