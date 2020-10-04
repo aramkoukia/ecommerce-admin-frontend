@@ -15,6 +15,16 @@ import Api from '../../services/ApiConfig';
 import image from '../../assets/img/sidebar-2.jpg';
 import logo from '../../assets/img/logo.png';
 
+function flattenRoutes() {
+  const result = dashboardRoutes.map((prop, index) => {
+    if (prop.items && prop.items.length > 0) {
+      return prop.items;
+    }
+    return prop;
+  });
+  return result.flat();
+}
+
 function requireAuth(nextState, replace) {
   if (!Auth.isSignedIn) {
     replace({
@@ -92,9 +102,10 @@ class App extends React.Component {
     const sidebarImageUrl = portalSettings ? `${Api.apiRoot}/${portalSettings.sidebarImageUrl}` : image;
     const sideBarTitle = portalSettings.ShowTitleOnSideBar ? portalSettings.portalTitle : '';
 
+    const routes = flattenRoutes();
     const switchRoutes = (
       <Switch>
-        {dashboardRoutes.map((prop, index) => {
+        {routes.map((prop, index) => {
           if (prop.redirect) {
             return <Redirect from={prop.path} to={prop.to} key={index} />;
           }
