@@ -8,9 +8,9 @@ import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import Card from '../../components/Card/Card';
 import Snackbar from '../../components/Snackbar/Snackbar';
-import CustomerStatementSettingsService from '../../services/CustomerStatementSettingsService';
+import InvoiceEmailPrintSettingsService from '../../services/InvoiceEmailPrintSettingsService';
 
-class CustomerStatementSettings extends React.Component {
+class InvoiceEmailPrintSettings extends React.Component {
   state = {
     openSnackbar: false,
     snackbarMessage: '',
@@ -34,7 +34,7 @@ class CustomerStatementSettings extends React.Component {
       emailAttachmentFileName,
       ccEmailAddress,
       emailBody,
-    } = await CustomerStatementSettingsService.getSettings();
+    } = await InvoiceEmailPrintSettingsService.getSettings();
     this.setState({
       emailSubject,
       emailAttachmentFileName,
@@ -71,7 +71,7 @@ class CustomerStatementSettings extends React.Component {
       emailBody,
     };
 
-    const result = await CustomerStatementSettingsService.updateSettings(settings);
+    const result = await InvoiceEmailPrintSettingsService.updateSettings(settings);
     this.setState({
       openSnackbar: true,
       snackbarMessage: 'Settings is updated!',
@@ -94,7 +94,7 @@ class CustomerStatementSettings extends React.Component {
           <GridItem xs={12} sm={12} md={9}>
             <Card>
               <CardHeader color="primary">
-                <div>Update Customer Statement Email Settings</div>
+                <div>Update Invoice Email and PDF Print Settings</div>
               </CardHeader>
               <CardBody>
                 <GridContainer md={12}>
@@ -102,7 +102,7 @@ class CustomerStatementSettings extends React.Component {
                     <br />
                     <TextField
                       name="emailSubject"
-                      label="Monthly Customer Statement Email Subject"
+                      label="Invoice Email Subject"
                       type="text"
                       onChange={this.handleChange}
                       value={emailSubject}
@@ -113,7 +113,7 @@ class CustomerStatementSettings extends React.Component {
                     <br />
                     <TextField
                       name="emailAttachmentFileName"
-                      label="Monthly Customer Statement Email Attachment File Name"
+                      label="Invoice Email Attachment File Name"
                       type="text"
                       onChange={this.handleChange}
                       value={emailAttachmentFileName}
@@ -124,7 +124,7 @@ class CustomerStatementSettings extends React.Component {
                     <br />
                     <TextField
                       name="ccEmailAddress"
-                      label="Monthly Customer Statement CC Email Address"
+                      label="Invoice CC Email Address"
                       type="text"
                       onChange={this.handleChange}
                       value={ccEmailAddress}
@@ -137,7 +137,7 @@ class CustomerStatementSettings extends React.Component {
                       multiline
                       rowsMax={50}
                       name="emailBody"
-                      label="Monthly Customer Statement Email Body"
+                      label="Invoice Email Body"
                       type="text"
                       onChange={this.handleChange}
                       value={emailBody}
@@ -168,4 +168,4 @@ class CustomerStatementSettings extends React.Component {
   }
 }
 
-export default ReactTimeout(CustomerStatementSettings);
+export default ReactTimeout(InvoiceEmailPrintSettings);

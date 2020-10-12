@@ -13,6 +13,7 @@ import PersonAdd from '@material-ui/icons/PersonAdd';
 import PeopleAlt from '@material-ui/icons/PeopleAlt';
 import SupervisedUserCircle from '@material-ui/icons/SupervisedUserCircle';
 import PictureAsPdf from '@material-ui/icons/PictureAsPdf';
+import Drafts from '@material-ui/icons/Drafts';
 import SettingsCell from '@material-ui/icons/SettingsCell';
 import LocalOffer from '@material-ui/icons/LocalOffer';
 import CenterFocusWeak from '@material-ui/icons/CenterFocusWeak';
@@ -55,7 +56,6 @@ import Orders from '../views/Orders/Orders';
 import Taxes from '../views/Taxes/Taxes';
 import CustomerStoreCredit from '../views/Customers/CustomerStoreCredit';
 import Users from '../views/Users/Users';
-import AddUser from '../views/Users/AddUser';
 import Purchases from '../views/Purchases/Purchases';
 import AddPurchase from '../views/Purchases/AddPurchase';
 import { Purchase } from '../views/Purchases/Purchase';
@@ -67,6 +67,7 @@ import Settings from '../views/Settings/Settings';
 import PosSettings from '../views/Settings/PosSettings';
 import CustomApplications from '../views/CustomApplications/CustomApplications';
 import CustomerStatementSettings from '../views/Settings/CustomerStatementSettings';
+import InvoiceEmailPrintSettings from '../views/Settings/InvoiceEmailPrintSettings';
 import UpdateProducts from '../views/Products/UpdateProducts';
 import Permissions from '../stores/Permissions';
 
@@ -299,6 +300,14 @@ const dashboardRoutes = [
         component: PosSettings,
         needsPermission: true,
         permission: Permissions.ViewPosSettings,
+      },
+      {
+        path: '/invoiceemailprintsettings',
+        sidebarName: 'Invoice Email/Print Settings',
+        Icon: Drafts,
+        component: InvoiceEmailPrintSettings,
+        needsPermission: true,
+        permission: Permissions.ViewCustomerStatementSettings,
       },
       {
         path: '/customerstatementsettings',
