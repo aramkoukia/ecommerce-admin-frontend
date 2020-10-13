@@ -56,6 +56,7 @@ import Orders from '../views/Orders/Orders';
 import Taxes from '../views/Taxes/Taxes';
 import CustomerStoreCredit from '../views/Customers/CustomerStoreCredit';
 import Users from '../views/Users/Users';
+import AddUser from '../views/Users/AddUser';
 import Purchases from '../views/Purchases/Purchases';
 import AddPurchase from '../views/Purchases/AddPurchase';
 import { Purchase } from '../views/Purchases/Purchase';
@@ -250,6 +251,14 @@ const dashboardRoutes = [
         sidebarName: 'Users',
         Icon: PeopleAlt,
         component: Users,
+        needsPermission: true,
+        permission: Permissions.ViewUsers,
+      },
+      {
+        path: '/adduser',
+        sidebarName: '',
+        Icon: PeopleAlt,
+        component: AddUser,
         needsPermission: true,
         permission: Permissions.ViewUsers,
       },
