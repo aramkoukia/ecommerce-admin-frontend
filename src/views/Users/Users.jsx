@@ -28,12 +28,14 @@ export default class Users extends React.Component {
   state = {
     users: [],
     openDialog: false,
-    openUserEditDialog: false,
+    openPasswordDialog: false,
     selectedRow: null,
     openSnackbar: false,
     snackbarMessage: '',
     snackbarColor: '',
     newPassword: '',
+    newPasscodeRepeat: '',
+    newPasscode: '',
     locations: Auth.getUserLocations(),
     roles: [],
     roleChecked: [0],
@@ -45,14 +47,21 @@ export default class Users extends React.Component {
 
     this.handleUpdate = this.handleUpdate.bind(this);
     this.handleResetPassword = this.handleResetPassword.bind(this);
+    this.handleResetPasscode = this.handleResetPasscode.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.permissionsClicked = this.permissionsClicked.bind(this);
+    this.passwordClicked = this.passwordClicked.bind(this);
     this.onAddNew = this.onAddNew.bind(this);
   }
 
   componentDidMount() {
     this.usersList();
     this.rolesList();
+  }
+
+  onAddNew() {
+    const { history } = this.props;
+    return history.push('/adduser');
   }
 
   getUserRoles(email) {
@@ -69,11 +78,6 @@ export default class Users extends React.Component {
         });
         this.setState({ roleChecked: assignedRoles });
       });
-  }
-
-  onAddNew() {
-    const { history } = this.props;
-    return history.push('/adduser');
   }
 
   getUserLocations(email) {
@@ -118,7 +122,7 @@ export default class Users extends React.Component {
   handleClose = () => {
     this.setState({
       openDialog: false,
-      openUserEditDialog: false,
+      openPasswordDialog: false,
       selectedRow: null,
       roleChecked: [0],
       locationChecked: [0],
@@ -131,6 +135,15 @@ export default class Users extends React.Component {
     setTimeout(() => {
       this.setState({
         openDialog: true,
+        selectedRow: user,
+      });
+    }, 1000);
+  }
+
+  passwordClicked(user) {
+    setTimeout(() => {
+      this.setState({
+        openPasswordDialog: true,
         selectedRow: user,
       });
     }, 1000);
@@ -194,6 +207,55 @@ export default class Users extends React.Component {
       });
     } else {
       const message = result.errors.map((error) => error.description).join('. ');
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: message,
+        snackbarColor: 'danger',
+      });
+    }
+  }
+
+  async handleResetPasscode() {
+    const {
+      selectedRow,
+      newPasscode,
+      newPasscodeRepeat,
+    } = this.state;
+
+    if (newPasscode === '') {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Passcode cannot be empty!',
+        snackbarColor: 'danger',
+      });
+      return;
+    }
+
+    if (newPasscode !== newPasscodeRepeat) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Passcodes don\'t match!',
+        snackbarColor: 'danger',
+      });
+      return;
+    }
+
+    const passcodeResetInfo = {
+      userName: selectedRow.userName,
+      newPasscode,
+    };
+
+    const result = await UserService.resetPasscode(passcodeResetInfo);
+    if (result && result.succeeded) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Your passcode was successfully updated!',
+        snackbarColor: 'success',
+        openPasswordDialog: false,
+      });
+    } else {
+      const message = result.errors.map((error) => error).join('. ');
+
       this.setState({
         openSnackbar: true,
         snackbarMessage: message,
@@ -308,12 +370,12 @@ export default class Users extends React.Component {
       snackbarMessage,
       snackbarColor,
       openDialog,
-      openUserEditDialog,
+      openPasswordDialog,
       locationChecked,
       roleChecked,
       newPassword,
-      givenName,
-      email,
+      newPasscode,
+      newPasscodeRepeat,
       loading,
     } = this.state;
 
@@ -340,6 +402,11 @@ export default class Users extends React.Component {
                       tooltip: 'Permissions',
                       onClick: (event, rowData) => this.permissionsClicked(rowData),
                     },
+                    {
+                      icon: 'lock',
+                      tooltip: 'Password / Passcode',
+                      onClick: (event, rowData) => this.passwordClicked(rowData),
+                    },
                   ]}
                   editable={{
                     onRowUpdate: (newData, oldData) => new Promise((resolve) => {
@@ -353,14 +420,6 @@ export default class Users extends React.Component {
                         resolve();
                       }, 1000);
                     }),
-                    // onRowAdd: (newData) => new Promise((resolve) => {
-                    //   setTimeout(() => {
-                    //     users.push(newData);
-                    //     UserService.addUser(newData);
-                    //     this.setState({ users }, () => resolve());
-                    //     resolve();
-                    //   }, 1000);
-                    // }),
                     onRowDelete: (oldData) => new Promise((resolve) => {
                       setTimeout(() => {
                         {
@@ -456,6 +515,40 @@ export default class Users extends React.Component {
                     </List>
                   </CardBody>
                 </Card>
+              </GridItem>
+            </GridContainer>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+            <Button onClick={this.handleUpdate} color="primary">
+              Update
+            </Button>
+          </DialogActions>
+        </Dialog>
+        )}
+        <Dialog
+          open={openPasswordDialog}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">User Passcode and Password Reset</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Given Name:
+              {' '}
+              { selectedRow && (selectedRow.givenName) }
+              {' '}
+              <br />
+              Email:
+              {' '}
+              { selectedRow && (selectedRow.email) }
+              {' '}
+              <br />
+            </DialogContentText>
+            <GridContainer>
+              <GridItem xs={6}>
                 <Card>
                   <CardHeader color="info">
                     <div>Reset Password</div>
@@ -478,67 +571,37 @@ export default class Users extends React.Component {
                   </CardBody>
                 </Card>
               </GridItem>
-            </GridContainer>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleClose} color="info">
-              Cancel
-            </Button>
-            <Button onClick={this.handleUpdate} color="primary">
-              Update
-            </Button>
-          </DialogActions>
-        </Dialog>
-        )}
-
-        <Dialog
-          open={openUserEditDialog}
-          onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
-        >
-          <DialogTitle id="form-dialog-title">User Update</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Given Name:
-              {' '}
-              {selectedRow && (selectedRow.givenName)}
-              {' '}
-              <br />
-              Email:
-              {' '}
-              {selectedRow && (selectedRow.email)}
-              {' '}
-              <br />
-            </DialogContentText>
-            <GridContainer>
-              <GridItem xs={12}>
+              <GridItem xs={6}>
                 <Card>
                   <CardHeader color="info">
-                    <div>User Info</div>
+                    <div>Reset Passcode</div>
                   </CardHeader>
                   <CardBody>
                     <CustomInput
-                      labelText="Given Name"
+                      labelText="New Passcode"
                       formControlProps={{
                         fullWidth: true,
                       }}
                       inputProps={{
                         onChange: this.handleChange,
-                        name: 'givenName',
-                        value: givenName,
+                        name: 'newPasscode',
+                        value: newPasscode,
                       }}
                     />
                     <CustomInput
-                      labelText="Email"
+                      labelText="New Passcode Repeat"
                       formControlProps={{
                         fullWidth: true,
                       }}
                       inputProps={{
                         onChange: this.handleChange,
-                        name: 'email',
-                        value: email,
+                        name: 'newPasscodeRepeat',
+                        value: newPasscodeRepeat,
                       }}
                     />
+                    <Button onClick={this.handleResetPasscode} color="primary">
+                      Reset
+                    </Button>
                   </CardBody>
                 </Card>
               </GridItem>
@@ -546,14 +609,10 @@ export default class Users extends React.Component {
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="info">
-              Cancel
-            </Button>
-            <Button onClick={this.handleUpdateUser} color="primary">
-              Update
+              Close
             </Button>
           </DialogActions>
         </Dialog>
-
         <Portal>
           <Snackbar
             place="tl"
