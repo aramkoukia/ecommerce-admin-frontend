@@ -181,7 +181,7 @@ export default class Users extends React.Component {
     }
 
     const passwordResetInfo = {
-      email: selectedRow.mail,
+      email: selectedRow.email,
       newPassword,
     };
 
@@ -194,7 +194,6 @@ export default class Users extends React.Component {
       });
     } else {
       const message = result.errors.map((error) => error.description).join('. ');
-
       this.setState({
         openSnackbar: true,
         snackbarMessage: message,
