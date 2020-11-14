@@ -19,6 +19,14 @@ class InvoiceEmailPrintSettings extends React.Component {
     emailAttachmentFileName: '',
     ccEmailAddress: '',
     emailBody: '',
+    attention: '',
+    storePolicy: '',
+    footer1: '',
+    signature: '',
+    payNote1: '',
+    payNote2: '',
+    payNote3: '',
+    additionalChargesNote: '',
   };
 
   constructor(props) {
@@ -34,12 +42,28 @@ class InvoiceEmailPrintSettings extends React.Component {
       emailAttachmentFileName,
       ccEmailAddress,
       emailBody,
+      attention,
+      storePolicy,
+      footer1,
+      signature,
+      payNote1,
+      payNote2,
+      payNote3,
+      additionalChargesNote,
     } = await InvoiceEmailPrintSettingsService.getSettings();
     this.setState({
       emailSubject,
       emailAttachmentFileName,
       ccEmailAddress,
       emailBody,
+      attention,
+      storePolicy,
+      footer1,
+      signature,
+      payNote1,
+      payNote2,
+      payNote3,
+      additionalChargesNote,
       openSnackbar: false,
       snackbarMessage: '',
       snackbarColor: '',
@@ -62,6 +86,14 @@ class InvoiceEmailPrintSettings extends React.Component {
       emailAttachmentFileName,
       ccEmailAddress,
       emailBody,
+      attention,
+      storePolicy,
+      footer1,
+      signature,
+      payNote1,
+      payNote2,
+      payNote3,
+      additionalChargesNote,
     } = this.state;
 
     const settings = {
@@ -69,6 +101,14 @@ class InvoiceEmailPrintSettings extends React.Component {
       emailAttachmentFileName,
       ccEmailAddress,
       emailBody,
+      attention,
+      storePolicy,
+      footer1,
+      signature,
+      payNote1,
+      payNote2,
+      payNote3,
+      additionalChargesNote,
     };
 
     const result = await InvoiceEmailPrintSettingsService.updateSettings(settings);
@@ -86,6 +126,14 @@ class InvoiceEmailPrintSettings extends React.Component {
       emailAttachmentFileName,
       ccEmailAddress,
       emailBody,
+      attention,
+      storePolicy,
+      footer1,
+      signature,
+      payNote1,
+      payNote2,
+      payNote3,
+      additionalChargesNote,
     } = this.state;
 
     return (
@@ -141,6 +189,100 @@ class InvoiceEmailPrintSettings extends React.Component {
                       type="text"
                       onChange={this.handleChange}
                       value={emailBody}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={12} m={20}>
+                    <br />
+                    <TextField
+                      multiline
+                      rowsMax={5}
+                      name="attention"
+                      label="Attention Section"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={attention}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={12} m={20}>
+                    <br />
+                    <TextField
+                      multiline
+                      rowsMax={6}
+                      name="storePolicy"
+                      label="Store Policy"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={storePolicy}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={12} m={20}>
+                    <br />
+                    <TextField
+                      name="footer1"
+                      label="Footer"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={footer1}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={12} m={20}>
+                    <br />
+                    <TextField
+                      multiline
+                      rowsMax={3}
+                      name="signature"
+                      label="Signature"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={signature}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={12} m={20}>
+                    <br />
+                    <TextField
+                      name="payNote1"
+                      label="Pay Note 1"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={payNote1}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={12} m={20}>
+                    <br />
+                    <TextField
+                      name="payNote2"
+                      label="Pay Note 2"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={payNote2}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={12} m={20}>
+                    <br />
+                    <TextField
+                      name="payNote3"
+                      label="Pay Note 4"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={payNote3}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={12} m={20}>
+                    <br />
+                    <TextField
+                      name="additionalChargesNote"
+                      label="Additional Charges Note"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={additionalChargesNote}
                       fullWidth="true"
                     />
                   </GridItem>
