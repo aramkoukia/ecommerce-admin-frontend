@@ -70,6 +70,7 @@ import CustomApplications from '../views/CustomApplications/CustomApplications';
 import CustomerStatementSettings from '../views/Settings/CustomerStatementSettings';
 import InvoiceEmailPrintSettings from '../views/Settings/InvoiceEmailPrintSettings';
 import UpdateProducts from '../views/Products/UpdateProducts';
+import WebsiteSlider from '../views/WebsiteSliders/WebsiteSlider';
 import Permissions from '../stores/Permissions';
 
 const dashboardRoutes = [
@@ -339,6 +340,14 @@ const dashboardRoutes = [
         sidebarName: 'Product Categories',
         Icon: Highlight,
         component: ProductCategory,
+        needsPermission: true,
+        permission: Permissions.ViewProductCategories,
+      },
+      {
+        path: '/websitesliders',
+        sidebarName: 'Website Sliders',
+        Icon: Highlight,
+        component: WebsiteSlider,
         needsPermission: true,
         permission: Permissions.ViewProductCategories,
       },
