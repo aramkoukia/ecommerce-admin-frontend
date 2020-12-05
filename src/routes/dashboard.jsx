@@ -6,6 +6,7 @@ import ListAlt from '@material-ui/icons/ListAlt';
 import Money from '@material-ui/icons/Money';
 import ContactMail from '@material-ui/icons/ContactMail';
 import InsertChart from '@material-ui/icons/InsertChart';
+import VpnKey from '@material-ui/icons/VpnKey';
 import BubbleChart from '@material-ui/icons/BubbleChart';
 import MultilineChart from '@material-ui/icons/MultilineChart';
 import Assessment from '@material-ui/icons/Assessment';
@@ -71,6 +72,7 @@ import CustomerStatementSettings from '../views/Settings/CustomerStatementSettin
 import InvoiceEmailPrintSettings from '../views/Settings/InvoiceEmailPrintSettings';
 import UpdateProducts from '../views/Products/UpdateProducts';
 import WebsiteSlider from '../views/WebsiteSliders/WebsiteSlider';
+import LoginHistory from '../views/LoginHistory/LoginHistory';
 import Permissions from '../stores/Permissions';
 
 const dashboardRoutes = [
@@ -278,6 +280,14 @@ const dashboardRoutes = [
         component: Locations,
         needsPermission: true,
         permission: Permissions.ViewLocations,
+      },
+      {
+        path: '/loginhistory',
+        sidebarName: 'Login History',
+        Icon: VpnKey,
+        component: LoginHistory,
+        needsPermission: true,
+        permission: Permissions.ViewUsers,
       },
     ],
   },

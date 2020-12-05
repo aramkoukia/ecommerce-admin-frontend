@@ -167,7 +167,7 @@ export default class WebsiteSlider extends React.Component {
                       icon: 'image',
                       tooltip: 'Upload Website Image',
                       onClick: (event, rowData) => this.showUploadImage(
-                        rowData.productTypeId,
+                        rowData.id,
                       ),
                     },
                   ]}
@@ -224,6 +224,14 @@ export default class WebsiteSlider extends React.Component {
           aria-labelledby="form-dialog-title"
         >
           <DialogContent>
+            <p>
+              Use one of the following sizes:
+              <ul>
+                <li>469 * 708</li>
+                <li>935 * 621</li>
+                <li>341 * 651</li>
+              </ul>
+            </p>
             <ImageUpload singleImage onChange={this.handleImageChange} />
           </DialogContent>
           <DialogActions>
