@@ -118,23 +118,10 @@ export default class BlogPosts extends React.Component {
     } = this.state;
 
     const columns = [
-      { title: 'Id', field: 'id', editable: 'never' },
       { title: 'Title', field: 'title' },
-      { title: 'Url', field: 'url' },
-      { title: 'Created Date', field: 'createdDate' },
-      {
-        field: 'image',
-        title: 'Image',
-        editable: 'never',
-        filtering: false,
-        render: (rowData) => (
-          <img
-            alt={(rowData && rowData.image && rowData.title) || 'No Image'}
-            src={((rowData && rowData.image) || imagePlaceholder)}
-            style={{ width: 70 }}
-          />
-        ),
-      },
+      { title: 'Modified Date', field: 'modifiedDate', editable: 'never' },
+      { title: 'Published Date', field: 'publishedDate', editable: 'never' },
+      { title: 'Published', field: 'published', editable: 'never' },
     ];
 
     const options = {
@@ -164,32 +151,13 @@ export default class BlogPosts extends React.Component {
                   actions={[
                     {
                       icon: 'image',
-                      tooltip: 'Upload Website Image',
+                      tooltip: 'Publish',
                       onClick: (event, rowData) => this.showUploadImage(
                         rowData.id,
                       ),
                     },
                   ]}
                   editable={{
-                    onRowAdd: (newData) => new Promise((resolve) => {
-                      setTimeout(() => {
-                        blogPosts.push(newData);
-                        BlogPostService.createBlogPost(newData);
-                        this.setState({ blogPosts }, () => resolve());
-                        resolve();
-                      }, 1000);
-                    }),
-                    onRowUpdate: (newData, oldData) => new Promise((resolve) => {
-                      setTimeout(() => {
-                        {
-                          const index = blogPosts.indexOf(oldData);
-                          blogPosts[index] = newData;
-                          BlogPostService.updateBlogPost(newData);
-                          this.setState({ blogPosts }, () => resolve());
-                        }
-                        resolve();
-                      }, 1000);
-                    }),
                     onRowDelete: (oldData) => new Promise((resolve) => {
                       setTimeout(() => {
                         {
