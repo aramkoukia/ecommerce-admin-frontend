@@ -297,6 +297,12 @@ export default class ProductCategory extends React.Component {
           aria-labelledby="form-dialog-title"
         >
           <DialogContent>
+            <p>
+              Use one of the following sizes:
+              <ul>
+                <li>438 * 438</li>
+              </ul>
+            </p>
             <ImageUpload singleImage onChange={this.handleImageChange} />
           </DialogContent>
           <DialogActions>
