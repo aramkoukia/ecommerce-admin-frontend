@@ -22,6 +22,7 @@ import CreateNewFolder from '@material-ui/icons/CreateNewFolder';
 import SettingsApplications from '@material-ui/icons/SettingsApplications';
 import DynamicFeed from '@material-ui/icons/DynamicFeed';
 import SpeakerNotes from '@material-ui/icons/SpeakerNotes';
+import Book from '@material-ui/icons/Book';
 import Language from '@material-ui/icons/Language';
 import Equalizer from '@material-ui/icons/Equalizer';
 import TrendingUp from '@material-ui/icons/TrendingUp';
@@ -72,6 +73,7 @@ import CustomerStatementSettings from '../views/Settings/CustomerStatementSettin
 import InvoiceEmailPrintSettings from '../views/Settings/InvoiceEmailPrintSettings';
 import UpdateProducts from '../views/Products/UpdateProducts';
 import WebsiteSlider from '../views/WebsiteSliders/WebsiteSlider';
+import BlogPosts from '../views/BlogPosts/BlogPosts';
 import LoginHistory from '../views/LoginHistory/LoginHistory';
 import Permissions from '../stores/Permissions';
 
@@ -340,7 +342,7 @@ const dashboardRoutes = [
     ],
   },
   {
-    sidebarName: 'Website Settings',
+    sidebarName: 'Website Admin',
     Icon: Language,
     needsPermission: true,
     permission: Permissions.ViewWebsiteSettings,
@@ -358,6 +360,14 @@ const dashboardRoutes = [
         sidebarName: 'Website Sliders',
         Icon: Highlight,
         component: WebsiteSlider,
+        needsPermission: true,
+        permission: Permissions.ViewProductCategories,
+      },
+      {
+        path: '/blogposts',
+        sidebarName: 'Blog Posts',
+        Icon: Book,
+        component: BlogPosts,
         needsPermission: true,
         permission: Permissions.ViewProductCategories,
       },
