@@ -5,8 +5,21 @@ import {
   DialogActions,
   DialogContent,
   Button,
+  AppBar,
+  Toolbar,
+  IconButton,
+  MenuItem,
+  CircularProgress,
+  Select,
+  TextField,
+  FormControl,
+  InputLabel,
+  Slide,
 } from '@material-ui/core';
+import Add from '@material-ui/icons/Add';
+import CloseIcon from '@material-ui/icons/Close';
 import Check from '@material-ui/icons/Check';
+import HtmlEditor from '../../components/HtmlEditor/HtmlEditor';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
@@ -16,8 +29,6 @@ import CardBody from '../../components/Card/CardBody';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
 import BlogPostService from '../../services/BlogPostService';
 
-const imagePlaceholder = require('../../assets/img/image-placeholder.jpg');
-
 export default class BlogPosts extends React.Component {
   state = {
     blogPosts: [],
@@ -25,6 +36,11 @@ export default class BlogPosts extends React.Component {
     snackbarMessage: '',
     snackbarColor: '',
     showUploadImage: false,
+    showPostDialog: false,
+    title: '',
+    shortDescription: '',
+    longDescription: '',
+    tags: '',
     id: null,
   };
 
@@ -32,16 +48,40 @@ export default class BlogPosts extends React.Component {
     super(props);
     this.handleUploadImage = this.handleUploadImage.bind(this);
     this.handleImageChange = this.handleImageChange.bind(this);
+    this.newPost = this.newPost.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.handleDescriptionBlur = this.handleDescriptionBlur.bind(this);
   }
 
   componentDidMount() {
     this.blogPostsList();
   }
 
+  handleClose = () => {
+    this.setState({
+      showPostDialog: false,
+    });
+  }
+
+  handleChange = (event) => {
+    this.setState({ [event.target.name]: event.target.value });
+  }
+
+  handleDescriptionBlur(longDescription) {
+    this.setState({
+      longDescription,
+    });
+  }
+
   blogPostsList() {
     BlogPostService.getBlogPosts()
       .then((data) => this.setState({ blogPosts: data }));
+  }
+
+  newPost() {
+    this.setState({
+      showPostDialog: true,
+    });
   }
 
   handleImageChange(images) {
@@ -115,6 +155,11 @@ export default class BlogPosts extends React.Component {
       snackbarMessage,
       snackbarColor,
       showUploadImage,
+      showPostDialog,
+      title,
+      shortDescription,
+      longDescription,
+      tags,
     } = this.state;
 
     const columns = [
@@ -143,6 +188,10 @@ export default class BlogPosts extends React.Component {
                 <div className={styles.cardTitleWhite}>Blog Posts</div>
               </CardHeader>
               <CardBody>
+                <Button color="primary" onClick={this.newPost}>
+                  <Add />
+                  New Post
+                </Button>
                 <MaterialTable
                   columns={columns}
                   data={blogPosts}
@@ -184,6 +233,60 @@ export default class BlogPosts extends React.Component {
             close
           />
         </GridContainer>
+        <Dialog
+          fullScreen
+          open={showPostDialog}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <AppBar style={{ position: 'relative' }}>
+            <Toolbar>
+              <IconButton edge="start" color="inherit" onClick={this.handleClose} aria-label="close">
+                <CloseIcon />
+                Close
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+          <DialogContent>
+            <GridContainer md={12}>
+              <GridItem md={12}>
+                <TextField
+                  name="title"
+                  label="Title"
+                  type="text"
+                  onChange={this.handleChange}
+                  value={title}
+                  fullWidth="true"
+                />
+              </GridItem>
+              <GridItem md={12} m={20}>
+                <TextField
+                  name="shortDescription"
+                  label="Short Description"
+                  type="text"
+                  onChange={this.handleChange}
+                  value={shortDescription}
+                  fullWidth="true"
+                  multiline
+                  rowsMax={5}
+                />
+              </GridItem>
+              <GridItem md={12}>
+                <HtmlEditor value={longDescription || ''} onBlur={this.handleDescriptionBlur} />
+              </GridItem>
+              <GridItem md={12}>
+                <Button color="primary" onClick={this.onSubmit}>
+                  Save
+                </Button>
+              </GridItem>
+            </GridContainer>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
         <Dialog
           maxWidth="xl"
           open={showUploadImage}
