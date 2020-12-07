@@ -275,6 +275,15 @@ export default class BlogPosts extends React.Component {
                 <HtmlEditor value={longDescription || ''} onBlur={this.handleDescriptionBlur} />
               </GridItem>
               <GridItem md={12}>
+                <TextField
+                  name="tags"
+                  label="Tags"
+                  type="text"
+                  onChange={this.handleChange}
+                  value={tags}
+                  fullWidth="true"
+                />
+              <GridItem md={12}>
                 <Button color="primary" onClick={this.onSubmit}>
                   Save
                 </Button>
