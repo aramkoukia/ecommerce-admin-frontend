@@ -63,6 +63,24 @@ export default class BlogPosts extends React.Component {
     });
   }
 
+  handleImageChange(images) {
+    this.setState({
+      image: images && images.length > 0 ? images[0] : null,
+    });
+  }
+
+  async handleUploadImage() {
+    const { image } = this.state;
+    const formData = new FormData();
+    formData.append('file', image);
+    // await ProductCategoryService.updateProductCategoryImage(productTypeId, formData);
+    // this.productCategoriesList();
+    this.setState({
+      showUploadImage: false,
+      image: null,
+    });
+  }
+
   handleChange = (event) => {
     this.setState({ [event.target.name]: event.target.value });
   }
@@ -260,6 +278,26 @@ export default class BlogPosts extends React.Component {
                 />
               </GridItem>
               <GridItem md={12} m={20}>
+                Small Post Image
+                <p>
+                  Use one of the following sizes:
+                  <ul>
+                    <li>370 * 200</li>
+                  </ul>
+                </p>
+                <ImageUpload singleImage onChange={this.handleImageChange} />
+              </GridItem>
+              <GridItem md={12} m={20}>
+                Large Heading Image
+                <p>
+                  Use one of the following sizes:
+                  <ul>
+                    <li>X * X</li>
+                  </ul>
+                </p>
+                <ImageUpload singleImage onChange={this.handleImageChange} />
+              </GridItem>
+              <GridItem md={12} m={20}>
                 <TextField
                   name="shortDescription"
                   label="Short Description"
@@ -283,6 +321,7 @@ export default class BlogPosts extends React.Component {
                   value={tags}
                   fullWidth="true"
                 />
+              </GridItem>
               <GridItem md={12}>
                 <Button color="primary" onClick={this.onSubmit}>
                   Save
