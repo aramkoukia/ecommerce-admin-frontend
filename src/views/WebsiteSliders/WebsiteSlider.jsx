@@ -161,7 +161,7 @@ export default class WebsiteSlider extends React.Component {
                   columns={columns}
                   data={websiteSliders}
                   options={options}
-                  title=""
+                  title="Check out the product here: https://ecommerce-frontend-v2.vercel.app/"
                   actions={[
                     {
                       icon: 'image',

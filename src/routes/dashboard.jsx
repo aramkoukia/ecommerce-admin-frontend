@@ -37,6 +37,7 @@ import Products from '../views/Products/Products';
 import Tags from '../views/Products/Tags';
 import { Product } from '../views/Products/Product';
 import ProductCategory from '../views/Products/ProductCategory';
+import UpdateWebsiteProducts from '../views/Products/UpdateWebsiteProducts';
 import Locations from '../views/Locations/Locations';
 import Customers from '../views/Customers/Customers';
 import Customer from '../views/Customers/Customer';
@@ -347,6 +348,14 @@ const dashboardRoutes = [
     needsPermission: true,
     permission: Permissions.ViewWebsiteSettings,
     items: [
+      {
+        path: '/updatewebsiteproducts',
+        sidebarName: 'Website Products',
+        Icon: Highlight,
+        component: UpdateWebsiteProducts,
+        needsPermission: true,
+        permission: Permissions.ViewProductCategories,
+      },
       {
         path: '/productcategories',
         sidebarName: 'Product Categories',

@@ -71,4 +71,16 @@ export default class ProductCategoryService {
       return false;
     }
   }
+
+  static async updateProductCategoryHeaderImage(id, productType) {
+    try {
+      const response = await RestUtilities.postForm(
+        `producttypes/${id}/uploadheaderimage`,
+        productType,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }

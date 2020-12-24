@@ -1,146 +1,103 @@
 import React from 'react';
 import MaterialTable from 'material-table';
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  Button,
-} from '@material-ui/core';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import Check from '@material-ui/icons/Check';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
+import CardBody from '../../components/Card/CardBody';
 import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
-import CardBody from '../../components/Card/CardBody';
+import Button from '../../components/CustomButtons/Button';
+import ProductService from '../../services/ProductService';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
 import HtmlEditor from '../../components/HtmlEditor/HtmlEditor';
-import ProductCategoryService from '../../services/ProductCategoryService';
 
 const imagePlaceholder = require('../../assets/img/image-placeholder.jpg');
 
-export default class ProductCategory extends React.Component {
+export default class UpdateWebsiteProducts extends React.Component {
   state = {
-    productCategories: [],
+    products: [],
+    loading: false,
     openSnackbar: false,
     snackbarMessage: '',
     snackbarColor: '',
     showHtmlEditor: false,
     showUploadImage: false,
+    showTags: false,
     showUploadHeaderImageModal: false,
-    description: '',
-    productTypeId: null,
   };
 
   constructor(props) {
     super(props);
-    this.handleDescriptionBlur = this.handleDescriptionBlur.bind(this);
-    this.handleUpdateDescription = this.handleUpdateDescription.bind(this);
-    this.handleUploadImage = this.handleUploadImage.bind(this);
-    this.handleUploadHeaderImage = this.handleUploadHeaderImage.bind(this);
-    this.handleImageChange = this.handleImageChange.bind(this);
-    this.handleImageHeaderChange = this.handleImageHeaderChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.updateTags = this.updateTags.bind(this);
+    this.updateImages = this.updateImages.bind(this);
+    this.updateHeaderImages = this.updateHeaderImages.bind(this);
+    this.updateDescription = this.updateDescription.bind(this);
+    this.updateWarranty = this.updateWarranty.bind(this);
+    this.updateCatalog = this.updateCatalog.bind(this);
     this.handleClose = this.handleClose.bind(this);
   }
 
   componentDidMount() {
-    this.productCategoriesList();
+    this.productsList();
   }
 
-  productCategoriesList() {
-    ProductCategoryService.getProductCategories()
-      .then((data) => this.setState({ productCategories: data }));
-  }
-
-  showHtmlEditor(productTypeId, description) {
-    this.setState({
-      showHtmlEditor: true,
-      description,
-      productTypeId,
-    });
-  }
-
-  handleDescriptionBlur(description) {
-    this.setState({
-      description,
-    });
-  }
-
-  handleImageChange(images) {
-    this.setState({
-      image: images && images.length > 0 ? images[0] : null,
-    });
-  }
-
-  handleImageHeaderChange(images) {
-    this.setState({
-      headerImage: images && images.length > 0 ? images[0] : null,
-    });
-  }
-
-  async handleUpdateDescription() {
-    const { productTypeId, description } = this.state;
-    const productType = {
-      productTypeId,
-      description,
-    };
-    await ProductCategoryService.updateProductCategoryDescription(productType);
-    this.productCategoriesList();
-    this.setState({
-      showHtmlEditor: false,
-      productTypeId: null,
-      description: '',
-    });
-  }
-
-  async handleUploadImage() {
-    const { productTypeId, image } = this.state;
-    const formData = new FormData();
-    formData.append('file', image);
-    await ProductCategoryService.updateProductCategoryImage(productTypeId, formData);
-    this.productCategoriesList();
-    this.setState({
-      showUploadImage: false,
-      productTypeId: null,
-      image: null,
-    });
-  }
-
-  async handleUploadHeaderImage() {
-    const { productTypeId, headerImage } = this.state;
-    const formData = new FormData();
-    formData.append('file', headerImage);
-    await ProductCategoryService.updateProductCategoryHeaderImage(productTypeId, formData);
-    this.productCategoriesList();
-    this.setState({
-      showUploadHeaderImageModal: false,
-      productTypeId: null,
-      headerImage: null,
-    });
-  }
-
-  showUploadImage(productTypeId) {
-    this.setState({
-      showUploadImage: true,
-      productTypeId,
-    });
-  }
-
-  showUploadHeaderImage(productTypeId) {
-    this.setState({
-      showUploadHeaderImageModal: true,
-      productTypeId,
-    });
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   handleClose() {
     this.setState({
-      showUploadImage: false,
       showHtmlEditor: false,
-      showUploadHeaderImageModal: false,
-      productTypeId: null,
-      description: '',
-      image: null,
+      showUploadImage: false,
+      showTags: false,
+    });
+  }
+
+  productsList() {
+    this.setState({ loading: true });
+    ProductService.getWebsiteProducts()
+      .then((data) => this.setState({ products: data, loading: false }));
+  }
+
+  updateTags(rowData) {
+    this.setState({
+      showTags: true,
+    });
+  }
+
+  updateImages(rowData) {
+    this.setState({
+      showUploadImage: true,
+    });
+  }
+
+  updateHeaderImages(rowData) {
+    this.setState({
+      showUploadHeaderImageModal: true,
+    });
+  }
+
+  updateDescription(rowData) {
+    this.setState({
+      showHtmlEditor: true,
+    });
+  }
+
+  updateCatalog(rowData) {
+    this.setState({
+      showHtmlEditor: true,
+    });
+  }
+
+  updateWarranty(rowData) {
+    this.setState({
+      showHtmlEditor: true,
     });
   }
 
@@ -174,32 +131,21 @@ export default class ProductCategory extends React.Component {
         },
       },
     };
-
-    const {
-      productCategories,
-      openSnackbar,
-      snackbarMessage,
-      snackbarColor,
-      showHtmlEditor,
-      showUploadImage,
-      showUploadHeaderImageModal,
-      description,
-    } = this.state;
-
     const columns = [
-      { title: 'Category', field: 'productTypeName' },
       {
-        title: 'Website Description',
-        field: 'description',
-        editable: 'never',
-        hidden: true,
+        title: 'Product Code', field: 'productCode', readonly: true, editable: 'never',
       },
-      { title: 'Product Count', field: 'productCount', editable: 'never' },
-      { title: 'Sales Rank', field: 'rank', editable: 'never' },
       {
-        title: 'Show On Website',
-        field: 'showOnWebsite',
-        lookup: { true: 'Yes', false: 'No' },
+        title: 'Product Name', field: 'productName', readonly: true, editable: 'never',
+      },
+      {
+        title: 'URL', field: 'slugsUrl', readonly: true, editable: 'never',
+      },
+      {
+        title: 'Tags', field: 'tags', readonly: true, editable: 'never',
+      },
+      {
+        title: 'Category', field: 'productTypeName', readonly: true, editable: 'never',
       },
       {
         field: 'thumbnailImagePath',
@@ -207,8 +153,9 @@ export default class ProductCategory extends React.Component {
         filtering: false,
         render: (rowData) => (
           <img
-            alt={(rowData.thumbnailImagePath && rowData.productTypeName) || 'No Image'}
-            src={rowData.thumbnailImagePath || imagePlaceholder}
+            alt={(rowData.images && rowData.images[0] && rowData.productTypeName) || 'No Image'}
+            src={(rowData.images && rowData.images[0] && rowData.images[0].imagePath)
+              || imagePlaceholder}
             style={{ width: 70 }}
           />
         ),
@@ -225,8 +172,27 @@ export default class ProductCategory extends React.Component {
           />
         ),
       },
-      { title: 'Id', field: 'productTypeId', hidden: true },
+      {
+        title: 'Product Id',
+        field: 'productId',
+        hidden: true,
+        readonly: true,
+        editable: 'never',
+      },
     ];
+
+    const {
+      products,
+      loading,
+      openSnackbar,
+      snackbarMessage,
+      snackbarColor,
+      showHtmlEditor,
+      showUploadImage,
+      showTags,
+      description,
+      showUploadHeaderImageModal,
+    } = this.state;
 
     const options = {
       paging: true,
@@ -244,26 +210,20 @@ export default class ProductCategory extends React.Component {
           <GridItem xs={12} sm={12} md={12}>
             <Card>
               <CardHeader color="primary">
-                <div className={styles.cardTitleWhite}>Product Categories</div>
+                <div className={styles.cardTitleWhite}>
+                  Update Product Content for the Public Website
+                </div>
               </CardHeader>
               <CardBody>
                 <MaterialTable
                   columns={columns}
-                  data={productCategories}
+                  data={products}
                   options={options}
                   title="Check out the product here: https://ecommerce-frontend-v2.vercel.app/"
                   actions={[
                     {
-                      icon: 'subject',
-                      tooltip: 'Update Website Description',
-                      onClick: (event, rowData) => this.showHtmlEditor(
-                        rowData.productTypeId,
-                        rowData.description,
-                      ),
-                    },
-                    {
                       icon: 'wallpaper',
-                      tooltip: 'Upload Website Image',
+                      tooltip: 'Upload Website Images',
                       onClick: (event, rowData) => this.showUploadImage(
                         rowData.productTypeId,
                       ),
@@ -275,40 +235,30 @@ export default class ProductCategory extends React.Component {
                         rowData.productTypeId,
                       ),
                     },
+                    {
+                      icon: 'description',
+                      tooltip: 'Website Description',
+                      onClick: (event, rowData) => this.updateDescription(rowData),
+                    },
+                    {
+                      icon: 'book',
+                      tooltip: 'Product Catalog',
+                      onClick: (event, rowData) => this.updateCatalog(rowData),
+                    },
+                    {
+                      icon: 'layers',
+                      tooltip: 'Product Warranty',
+                      onClick: (event, rowData) => this.updateWarranty(rowData),
+                    },
+                    {
+                      icon: 'local_offer',
+                      tooltip: 'Tags',
+                      onClick: (event, rowData) => this.updateTags(rowData),
+                    },
                   ]}
-                  editable={{
-                    onRowAdd: (newData) => new Promise((resolve) => {
-                      setTimeout(() => {
-                        productCategories.push(newData);
-                        ProductCategoryService.createProductCategory(newData);
-                        this.setState({ productCategories }, () => resolve());
-                        resolve();
-                      }, 1000);
-                    }),
-                    onRowUpdate: (newData, oldData) => new Promise((resolve) => {
-                      setTimeout(() => {
-                        {
-                          const index = productCategories.indexOf(oldData);
-                          productCategories[index] = newData;
-                          ProductCategoryService.updateProductCategory(newData);
-                          this.setState({ productCategories }, () => resolve());
-                        }
-                        resolve();
-                      }, 1000);
-                    }),
-                    onRowDelete: (oldData) => new Promise((resolve) => {
-                      setTimeout(() => {
-                        {
-                          const index = productCategories.indexOf(oldData);
-                          productCategories.splice(index, 1);
-                          ProductCategoryService.deleteProductCategory(oldData);
-                          this.setState({ productCategories }, () => resolve());
-                        }
-                        resolve();
-                      }, 1000);
-                    }),
-                  }}
                 />
+
+                {loading && (<LinearProgress />)}
               </CardBody>
             </Card>
           </GridItem>
@@ -350,13 +300,31 @@ export default class ProductCategory extends React.Component {
             <p>
               Use one of the following sizes:
               <ul>
-                <li><h3>438 * 438</h3></li>
+                <li><h3>600 * 800</h3></li>
               </ul>
             </p>
-            <ImageUpload singleImage onChange={this.handleImageChange} />
+            <ImageUpload onChange={this.handleImageChange} />
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleUploadImage} color="primary">
+              Save
+            </Button>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          maxWidth="xl"
+          open={showTags}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            Product Tags
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleUpdateTags} color="primary">
               Save
             </Button>
             <Button onClick={this.handleClose} color="info">

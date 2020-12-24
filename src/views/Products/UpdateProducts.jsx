@@ -20,8 +20,6 @@ import GridItem from '../../components/Grid/GridItem';
 import Button from '../../components/CustomButtons/Button';
 import CardBody from '../../components/Card/CardBody';
 import ProductService from '../../services/ProductService';
-import ImageUpload from '../../components/ImageUpload/ImageUpload';
-import HtmlEditor from '../../components/HtmlEditor/HtmlEditor';
 import ProductCategoryService from '../../services/ProductCategoryService';
 
 export default class UpdateProducts extends React.Component {
@@ -34,19 +32,12 @@ export default class UpdateProducts extends React.Component {
     openDialog: false,
     productPackages: [],
     productCategories: [],
-    description: '',
-    showHtmlEditor: false,
-    showUploadImage: false,
-    showTags: false,
   };
 
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
     this.updateVariations = this.updateVariations.bind(this);
-    this.updateTags = this.updateTags.bind(this);
-    this.updateImages = this.updateImages.bind(this);
-    this.updateWebsiteInfo = this.updateWebsiteInfo.bind(this);
     this.handleClose = this.handleClose.bind(this);
   }
 
@@ -65,9 +56,6 @@ export default class UpdateProducts extends React.Component {
   handleClose() {
     this.setState({
       openDialog: false,
-      showHtmlEditor: false,
-      showUploadImage: false,
-      showTags: false,
       productPackages: [],
     });
   }
@@ -91,31 +79,6 @@ export default class UpdateProducts extends React.Component {
     this.setState({
       openDialog: true,
       product: rowData,
-    });
-  }
-
-  updateTags(rowData) {
-    this.setState({
-      showTags: true,
-    });
-    // ProductService.getProductPackages(rowData.productId)
-    //   .then((data) => this.setState({ productPackages: data }));
-    // alert('update tag');
-    // this.setState({
-    //   openDialog: true,
-    //   product: rowData,
-    // });
-  }
-
-  updateImages(rowData) {
-    this.setState({
-      showUploadImage: true,
-    });
-  }
-
-  updateWebsiteInfo(rowData) {
-    this.setState({
-      showHtmlEditor: true,
     });
   }
 
@@ -264,10 +227,6 @@ export default class UpdateProducts extends React.Component {
       productPackages,
       product,
       openDialog,
-      showHtmlEditor,
-      showUploadImage,
-      showTags,
-      description,
     } = this.state;
 
     const packageColumns = [
@@ -303,53 +262,38 @@ export default class UpdateProducts extends React.Component {
               <CardHeader color="primary">
                 <div className={styles.cardTitleWhite}>Update Products</div>
               </CardHeader>
-            </Card>
-
-            <MaterialTable
-              columns={columns}
-              data={products}
-              detailPanel={detailPanel}
-              options={options}
-              onRowClick={this.rowClicked}
-              title=""
-              actions={[
-                {
-                  icon: 'image',
-                  tooltip: 'Update Images',
-                  onClick: (event, rowData) => this.updateImages(rowData),
-                },
-                {
-                  icon: 'description',
-                  tooltip: 'Website Info',
-                  onClick: (event, rowData) => this.updateWebsiteInfo(rowData),
-                },
-                {
-                  icon: 'local_offer',
-                  tooltip: 'Tags',
-                  onClick: (event, rowData) => this.updateTags(rowData),
-                },
-                {
-                  icon: 'attach_money',
-                  tooltip: 'Variations',
-                  onClick: (event, rowData) => this.updateVariations(rowData),
-                },
-              ]}
-              editable={{
-                onRowUpdate: (newData, oldData) => new Promise((resolve) => {
-                  setTimeout(() => {
+              <CardBody>
+                <MaterialTable
+                  columns={columns}
+                  data={products}
+                  detailPanel={detailPanel}
+                  options={options}
+                  onRowClick={this.rowClicked}
+                  title=""
+                  actions={[
                     {
-                      const index = products.indexOf(oldData);
-                      products[index] = newData;
-                      ProductService.updateProduct(newData);
-                      this.setState({ products }, () => resolve());
-                    }
-                    resolve();
-                  }, 1000);
-                }),
-              }}
-            />
-
-            {loading && (<LinearProgress />)}
+                      icon: 'attach_money',
+                      tooltip: 'Variations',
+                      onClick: (event, rowData) => this.updateVariations(rowData),
+                    },
+                  ]}
+                  editable={{
+                    onRowUpdate: (newData, oldData) => new Promise((resolve) => {
+                      setTimeout(() => {
+                        {
+                          const index = products.indexOf(oldData);
+                          products[index] = newData;
+                          ProductService.updateProduct(newData);
+                          this.setState({ products }, () => resolve());
+                        }
+                        resolve();
+                      }, 1000);
+                    }),
+                  }}
+                />
+                {loading && (<LinearProgress />)}
+              </CardBody>
+            </Card>
           </GridItem>
           <Snackbar
             place="tl"
@@ -439,60 +383,6 @@ export default class UpdateProducts extends React.Component {
               </Button>
             </DialogActions>
           </DialogContent>
-        </Dialog>
-        <Dialog
-          maxWidth="xl"
-          open={showHtmlEditor}
-          onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
-        >
-          <DialogContent>
-            <HtmlEditor value={description || ''} onBlur={this.handleDescriptionBlur} />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleUpdateDescription} color="primary">
-              Save
-            </Button>
-            <Button onClick={this.handleClose} color="info">
-              Cancel
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <Dialog
-          maxWidth="xl"
-          open={showUploadImage}
-          onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
-        >
-          <DialogContent>
-            <ImageUpload singleImage onChange={this.handleImageChange} />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleUploadImage} color="primary">
-              Save
-            </Button>
-            <Button onClick={this.handleClose} color="info">
-              Cancel
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <Dialog
-          maxWidth="xl"
-          open={showTags}
-          onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
-        >
-          <DialogContent>
-            Product Tags
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleUpdateTags} color="primary">
-              Save
-            </Button>
-            <Button onClick={this.handleClose} color="info">
-              Cancel
-            </Button>
-          </DialogActions>
         </Dialog>
       </div>
     );

@@ -34,6 +34,17 @@ export default class ProductService {
     }
   }
 
+  static async getWebsiteProducts() {
+    try {
+      const response = await RestUtilities.get(
+        'website/productdetails',
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getProductsForSalesV2(locationId) {
     try {
       const response = await RestUtilities.get(
