@@ -181,4 +181,28 @@ export default class ProductService {
       return false;
     }
   }
+
+  static async updateProductImages(id, images) {
+    try {
+      const response = await RestUtilities.postForm(
+        `products/${id}/upload`,
+        images,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async updateProductHeaderImage(id, image) {
+    try {
+      const response = await RestUtilities.postForm(
+        `products/${id}/uploadheaderimage`,
+        image,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }

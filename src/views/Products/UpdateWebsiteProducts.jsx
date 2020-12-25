@@ -26,20 +26,27 @@ export default class UpdateWebsiteProducts extends React.Component {
     snackbarMessage: '',
     snackbarColor: '',
     showHtmlEditor: false,
-    showUploadImage: false,
     showTags: false,
+    showUploadImageModal: false,
     showUploadHeaderImageModal: false,
+    headerImage: null,
+    images: null,
+    productId: null,
   };
 
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
     this.updateTags = this.updateTags.bind(this);
-    this.updateImages = this.updateImages.bind(this);
-    this.updateHeaderImages = this.updateHeaderImages.bind(this);
+    this.showUpdateImages = this.showUpdateImages.bind(this);
+    this.showUploadHeaderImage = this.showUploadHeaderImage.bind(this);
     this.updateDescription = this.updateDescription.bind(this);
     this.updateWarranty = this.updateWarranty.bind(this);
     this.updateCatalog = this.updateCatalog.bind(this);
+    this.handleImageChange = this.handleImageChange.bind(this);
+    this.handleImageHeaderChange = this.handleImageHeaderChange.bind(this);
+    this.handleUploadImage = this.handleUploadImage.bind(this);
+    this.handleUploadHeaderImage = this.handleUploadHeaderImage.bind(this);
     this.handleClose = this.handleClose.bind(this);
   }
 
@@ -54,8 +61,10 @@ export default class UpdateWebsiteProducts extends React.Component {
   handleClose() {
     this.setState({
       showHtmlEditor: false,
-      showUploadImage: false,
+      showUploadImageModal: false,
+      showUploadHeaderImageModal: false,
       showTags: false,
+      productId: null,
     });
   }
 
@@ -65,39 +74,82 @@ export default class UpdateWebsiteProducts extends React.Component {
       .then((data) => this.setState({ products: data, loading: false }));
   }
 
-  updateTags(rowData) {
+  updateTags() {
     this.setState({
       showTags: true,
     });
   }
 
-  updateImages(rowData) {
+  showUpdateImages(productId) {
     this.setState({
-      showUploadImage: true,
+      showUploadImageModal: true,
+      productId,
     });
   }
 
-  updateHeaderImages(rowData) {
+  showUploadHeaderImage(productId) {
     this.setState({
       showUploadHeaderImageModal: true,
+      productId,
     });
   }
 
-  updateDescription(rowData) {
+  updateDescription(productId) {
     this.setState({
       showHtmlEditor: true,
+      productId,
     });
   }
 
-  updateCatalog(rowData) {
+  updateCatalog(productId) {
     this.setState({
       showHtmlEditor: true,
+      productId,
     });
   }
 
-  updateWarranty(rowData) {
+  updateWarranty(productId) {
     this.setState({
       showHtmlEditor: true,
+      productId
+    });
+  }
+
+  handleImageChange(images) {
+    this.setState({
+      images,
+    });
+  }
+
+  handleImageHeaderChange(images) {
+    this.setState({
+      headerImage: images && images.length > 0 ? images[0] : null,
+    });
+  }
+
+  async handleUploadImage() {
+    const { productId, images } = this.state;
+    const formData = new FormData();
+    formData.append('file', images);
+    await ProductService.updateProductImages(productId, formData);
+    this.productCategoriesList();
+    this.setState({
+      showUploadImageModal: false,
+      productId: null,
+      images: null,
+    });
+  }
+
+  async handleUploadHeaderImage() {
+    const { productId, headerImage } = this.state;
+    const formData = new FormData();
+    formData.append('file', headerImage);
+    await ProductService.updateProductHeaderImage(productId, formData);
+    this.productsList();
+    this.setState({
+      showUploadHeaderImageModal: false,
+      productId: null,
+      headerImage: null,
     });
   }
 
@@ -188,9 +240,9 @@ export default class UpdateWebsiteProducts extends React.Component {
       snackbarMessage,
       snackbarColor,
       showHtmlEditor,
-      showUploadImage,
       showTags,
       description,
+      showUploadImageModal,
       showUploadHeaderImageModal,
     } = this.state;
 
@@ -224,36 +276,45 @@ export default class UpdateWebsiteProducts extends React.Component {
                     {
                       icon: 'wallpaper',
                       tooltip: 'Upload Website Images',
-                      onClick: (event, rowData) => this.showUploadImage(
-                        rowData.productTypeId,
+                      onClick: (event, rowData) => this.showUploadImages(
+                        rowData.productId,
                       ),
                     },
                     {
                       icon: 'panorama',
                       tooltip: 'Upload Header Image',
                       onClick: (event, rowData) => this.showUploadHeaderImage(
-                        rowData.productTypeId,
+                        rowData.productId,
                       ),
                     },
                     {
                       icon: 'description',
                       tooltip: 'Website Description',
-                      onClick: (event, rowData) => this.updateDescription(rowData),
+                      onClick: (event, rowData) => this.updateDescription(
+                        rowData.productId,
+                        rowData.description,
+                      ),
                     },
                     {
                       icon: 'book',
                       tooltip: 'Product Catalog',
-                      onClick: (event, rowData) => this.updateCatalog(rowData),
+                      onClick: (event, rowData) => this.updateCatalog(
+                        rowData.productId,
+                      ),
                     },
                     {
                       icon: 'layers',
                       tooltip: 'Product Warranty',
-                      onClick: (event, rowData) => this.updateWarranty(rowData),
+                      onClick: (event, rowData) => this.updateWarranty(
+                        rowData.productId,
+                      ),
                     },
                     {
                       icon: 'local_offer',
                       tooltip: 'Tags',
-                      onClick: (event, rowData) => this.updateTags(rowData),
+                      onClick: (event, rowData) => this.updateTags(
+                        rowData.productId,
+                      ),
                     },
                   ]}
                 />
@@ -292,7 +353,7 @@ export default class UpdateWebsiteProducts extends React.Component {
         </Dialog>
         <Dialog
           maxWidth="xl"
-          open={showUploadImage}
+          open={showUploadImageModal}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
         >
