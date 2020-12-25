@@ -205,4 +205,64 @@ export default class ProductService {
       return false;
     }
   }
+
+  static async updateProductDescription(product) {
+    try {
+      const response = await RestUtilities.put(
+        `products/${product.productId}/description`,
+        product,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async updateProductDetail(product) {
+    try {
+      const response = await RestUtilities.put(
+        `products/${product.productId}/detail`,
+        product,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async updateProductWarranty(product) {
+    try {
+      const response = await RestUtilities.put(
+        `products/${product.productId}/warranty`,
+        product,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async updateProductAdditionalInfo(product) {
+    try {
+      const response = await RestUtilities.put(
+        `products/${product.productId}/AdditionalInfo`,
+        product,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async updateProductCatalog(id, image) {
+    try {
+      const response = await RestUtilities.postForm(
+        `products/${id}/usermanual`,
+        image,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }

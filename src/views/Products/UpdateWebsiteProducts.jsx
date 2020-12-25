@@ -14,9 +14,10 @@ import GridItem from '../../components/Grid/GridItem';
 import Button from '../../components/CustomButtons/Button';
 import ProductService from '../../services/ProductService';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
+import FileUpload from '../../components/ImageUpload/FileUpload';
 import HtmlEditor from '../../components/HtmlEditor/HtmlEditor';
 
-const imagePlaceholder = require('../../assets/img/image-placeholder.jpg');
+// const imagePlaceholder = require('../../assets/img/image-placeholder.jpg');
 
 export default class UpdateWebsiteProducts extends React.Component {
   state = {
@@ -25,8 +26,10 @@ export default class UpdateWebsiteProducts extends React.Component {
     openSnackbar: false,
     snackbarMessage: '',
     snackbarColor: '',
-    showHtmlEditor: false,
-    showTags: false,
+    showDescriptionModal: false,
+    showDetailModal: false,
+    showWarrantyModal: false,
+    showTagsModal: false,
     showUploadImageModal: false,
     showUploadHeaderImageModal: false,
     headerImage: null,
@@ -37,17 +40,38 @@ export default class UpdateWebsiteProducts extends React.Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
-    this.updateTags = this.updateTags.bind(this);
-    this.showUpdateImages = this.showUpdateImages.bind(this);
-    this.showUploadHeaderImage = this.showUploadHeaderImage.bind(this);
-    this.updateDescription = this.updateDescription.bind(this);
-    this.updateWarranty = this.updateWarranty.bind(this);
-    this.updateCatalog = this.updateCatalog.bind(this);
-    this.handleImageChange = this.handleImageChange.bind(this);
-    this.handleImageHeaderChange = this.handleImageHeaderChange.bind(this);
-    this.handleUploadImage = this.handleUploadImage.bind(this);
-    this.handleUploadHeaderImage = this.handleUploadHeaderImage.bind(this);
     this.handleClose = this.handleClose.bind(this);
+
+    this.showUploadHeaderImage = this.showUploadHeaderImage.bind(this);
+    this.handleImageHeaderChange = this.handleImageHeaderChange.bind(this);
+    this.handleUploadHeaderImage = this.handleUploadHeaderImage.bind(this);
+
+    this.showUpdateImages = this.showUpdateImages.bind(this);
+    this.handleImageChange = this.handleImageChange.bind(this);
+    this.handleUploadImage = this.handleUploadImage.bind(this);
+
+    this.showUpdateCatalog = this.showUpdateCatalog.bind(this);
+    this.handleCatalogChange = this.handleCatalogChange.bind(this);
+    this.handleUploadCatalog = this.handleUploadCatalog.bind(this);
+
+    this.showUpdateDescription = this.showUpdateDescription.bind(this);
+    this.handleDescriptionBlur = this.handleDescriptionBlur.bind(this);
+    this.handleUpdateDescription = this.handleUpdateDescription.bind(this);
+
+    this.showUpdateDetail = this.showUpdateDetail.bind(this);
+    this.handleDetailBlur = this.handleDetailBlur.bind(this);
+    this.handleUpdateDetail = this.handleUpdateDetail.bind(this);
+
+    this.showUpdateWarranty = this.showUpdateWarranty.bind(this);
+    this.handleWarrantyBlur = this.handleWarrantyBlur.bind(this);
+    this.handleUpdateWarranty = this.handleUpdateWarranty.bind(this);
+
+    this.showUpdateAdditionalInfo = this.showUpdateAdditionalInfo.bind(this);
+    this.handleAdditionalInfoBlur = this.handleAdditionalInfoBlur.bind(this);
+    this.handleUpdateAdditionalInfo = this.handleUpdateAdditionalInfo.bind(this);
+
+    this.showUpdateTags = this.showUpdateTags.bind(this);
+    this.handleUpdateTags = this.handleUpdateTags.bind(this);
   }
 
   componentDidMount() {
@@ -60,10 +84,14 @@ export default class UpdateWebsiteProducts extends React.Component {
 
   handleClose() {
     this.setState({
-      showHtmlEditor: false,
+      showDescriptionModal: false,
+      showDetailModal: false,
+      showWarrantyModal: false,
+      showAdditionalInfoModal: false,
       showUploadImageModal: false,
       showUploadHeaderImageModal: false,
-      showTags: false,
+      showCatalogModal: false,
+      showTagsModal: false,
       productId: null,
     });
   }
@@ -74,9 +102,9 @@ export default class UpdateWebsiteProducts extends React.Component {
       .then((data) => this.setState({ products: data, loading: false }));
   }
 
-  updateTags() {
+  showUpdateTags() {
     this.setState({
-      showTags: true,
+      showTagsModal: true,
     });
   }
 
@@ -94,24 +122,10 @@ export default class UpdateWebsiteProducts extends React.Component {
     });
   }
 
-  updateDescription(productId) {
+  showUpdateCatalog(productId) {
     this.setState({
-      showHtmlEditor: true,
+      showCatalogModal: true,
       productId,
-    });
-  }
-
-  updateCatalog(productId) {
-    this.setState({
-      showHtmlEditor: true,
-      productId,
-    });
-  }
-
-  updateWarranty(productId) {
-    this.setState({
-      showHtmlEditor: true,
-      productId
     });
   }
 
@@ -124,6 +138,138 @@ export default class UpdateWebsiteProducts extends React.Component {
   handleImageHeaderChange(images) {
     this.setState({
       headerImage: images && images.length > 0 ? images[0] : null,
+    });
+  }
+
+  handleCatalogChange(images) {
+    this.setState({
+      catalogFile: images && images.length > 0 ? images[0] : null,
+    });
+  }
+
+  showUpdateDescription(productId, description) {
+    this.setState({
+      showDescriptionModal: true,
+      description,
+      productId,
+    });
+  }
+
+  handleDescriptionBlur(description) {
+    this.setState({
+      description,
+    });
+  }
+
+  async handleUpdateDescription() {
+    const { productId, description } = this.state;
+    const product = {
+      productId,
+      description,
+    };
+    await ProductService.updateProductDescription(product);
+    this.setState({
+      showDescriptionModal: false,
+      productId: null,
+      description: '',
+    });
+  }
+
+  showUpdateDetail(productId, detail) {
+    this.setState({
+      showDetailModal: true,
+      detail,
+      productId,
+    });
+  }
+
+  handleDetailBlur(detail) {
+    this.setState({
+      detail,
+    });
+  }
+
+  async handleUpdateDetail() {
+    const { productId, detail } = this.state;
+    const product = {
+      productId,
+      detail,
+    };
+    await ProductService.updateProductDetail(product);
+    this.setState({
+      showDetailModal: false,
+      productId: null,
+      detail: '',
+    });
+  }
+
+  showUpdateWarranty(productId, warrantyInformation) {
+    this.setState({
+      showWarrantyModal: true,
+      warrantyInformation,
+      productId,
+    });
+  }
+
+  handleWarrantyBlur(warrantyInformation) {
+    this.setState({
+      warrantyInformation,
+    });
+  }
+
+  async handleUpdateWarranty() {
+    const { productId, warrantyInformation } = this.state;
+    const product = {
+      productId,
+      warrantyInformation,
+    };
+    await ProductService.updateProductWarranty(product);
+    this.setState({
+      showWarrantyModal: false,
+      productId: null,
+      warrantyInformation: '',
+    });
+  }
+
+  showUpdateAdditionalInfo(productId, additionalInformation) {
+    this.setState({
+      showAdditionalInfoModal: true,
+      additionalInformation,
+      productId,
+    });
+  }
+
+  handleAdditionalInfoBlur(additionalInformation) {
+    this.setState({
+      additionalInformation,
+    });
+  }
+
+  async handleUpdateAdditionalInfo() {
+    const { productId, additionalInformation } = this.state;
+    const product = {
+      productId,
+      additionalInformation,
+    };
+    await ProductService.updateProductAdditionalInfo(product);
+    this.setState({
+      showAdditionalInfoModal: false,
+      productId: null,
+      additionalInformation: '',
+    });
+  }
+
+  async handleUpdateTags() {
+    const { productId, tags } = this.state;
+    const product = {
+      productId,
+      tags,
+    };
+    await ProductService.updateProductTags(product);
+    this.setState({
+      showTagsModal: false,
+      productId: null,
+      tags: '',
     });
   }
 
@@ -150,6 +296,18 @@ export default class UpdateWebsiteProducts extends React.Component {
       showUploadHeaderImageModal: false,
       productId: null,
       headerImage: null,
+    });
+  }
+
+  async handleUploadCatalog() {
+    const { productId, catalogFile } = this.state;
+    const formData = new FormData();
+    formData.append('file', catalogFile);
+    await ProductService.updateProductCatalog(productId, formData);
+    this.setState({
+      showCatalogModal: false,
+      productId: null,
+      catalogFile: null,
     });
   }
 
@@ -204,12 +362,13 @@ export default class UpdateWebsiteProducts extends React.Component {
         title: 'Website Image',
         filtering: false,
         render: (rowData) => (
-          <img
-            alt={(rowData.images && rowData.images[0] && rowData.productTypeName) || 'No Image'}
-            src={(rowData.images && rowData.images[0] && rowData.images[0].imagePath)
-              || imagePlaceholder}
-            style={{ width: 70 }}
-          />
+          rowData.images && rowData.images.length > 0 ? 'Yes' : 'No'
+          // <img
+          //   alt={(rowData.images && rowData.images[0] && rowData.productTypeName) || 'No Image'}
+          //   src={(rowData.images && rowData.images[0] && rowData.images[0].imagePath)
+          //     || imagePlaceholder}
+          //   style={{ width: 70 }}
+          // />
         ),
       },
       {
@@ -217,11 +376,12 @@ export default class UpdateWebsiteProducts extends React.Component {
         title: 'Header Image',
         filtering: false,
         render: (rowData) => (
-          <img
-            alt={(rowData.headerImagePath && rowData.productTypeName) || 'No Image'}
-            src={rowData.headerImagePath || imagePlaceholder}
-            style={{ width: 170, height: 50 }}
-          />
+          rowData.headerImagePath ? 'Yes' : 'No'
+          // <img
+          //   alt={(rowData.headerImagePath && rowData.productTypeName) || 'No Image'}
+          //   src={rowData.headerImagePath || imagePlaceholder}
+          //   style={{ width: 170, height: 50 }}
+          // />
         ),
       },
       {
@@ -239,11 +399,18 @@ export default class UpdateWebsiteProducts extends React.Component {
       openSnackbar,
       snackbarMessage,
       snackbarColor,
-      showHtmlEditor,
-      showTags,
       description,
+      detail,
+      warrantyInformation,
+      additionalInformation,
       showUploadImageModal,
       showUploadHeaderImageModal,
+      showCatalogModal,
+      showDescriptionModal,
+      showDetailModal,
+      showAdditionalInfoModal,
+      showWarrantyModal,
+      showTagsModal,
     } = this.state;
 
     const options = {
@@ -289,30 +456,47 @@ export default class UpdateWebsiteProducts extends React.Component {
                     },
                     {
                       icon: 'description',
-                      tooltip: 'Website Description',
-                      onClick: (event, rowData) => this.updateDescription(
+                      tooltip: 'Product Description',
+                      onClick: (event, rowData) => this.showUpdateDescription(
                         rowData.productId,
                         rowData.description,
                       ),
                     },
                     {
+                      icon: 'details',
+                      tooltip: 'Product Details',
+                      onClick: (event, rowData) => this.showUpdateDetail(
+                        rowData.productId,
+                        rowData.detail,
+                      ),
+                    },
+                    {
+                      icon: 'info',
+                      tooltip: 'Product Additional Info',
+                      onClick: (event, rowData) => this.showUpdateAdditionalInfo(
+                        rowData.productId,
+                        rowData.additionalInformation,
+                      ),
+                    },
+                    {
                       icon: 'book',
                       tooltip: 'Product Catalog',
-                      onClick: (event, rowData) => this.updateCatalog(
+                      onClick: (event, rowData) => this.showUpdateCatalog(
                         rowData.productId,
                       ),
                     },
                     {
                       icon: 'layers',
                       tooltip: 'Product Warranty',
-                      onClick: (event, rowData) => this.updateWarranty(
+                      onClick: (event, rowData) => this.showUpdateWarranty(
                         rowData.productId,
+                        rowData.warrantyInformation,
                       ),
                     },
                     {
                       icon: 'local_offer',
                       tooltip: 'Tags',
-                      onClick: (event, rowData) => this.updateTags(
+                      onClick: (event, rowData) => this.showUpdateTags(
                         rowData.productId,
                       ),
                     },
@@ -335,15 +519,105 @@ export default class UpdateWebsiteProducts extends React.Component {
         </GridContainer>
         <Dialog
           maxWidth="xl"
-          open={showHtmlEditor}
+          open={showDescriptionModal}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
         >
           <DialogContent>
-            <HtmlEditor value={description || ''} onBlur={this.handleDescriptionBlur} />
+            <Card>
+              <CardHeader color="primary">
+                <div className={styles.cardTitleWhite}>
+                  Product Website Description
+                </div>
+              </CardHeader>
+              <CardBody>
+                <HtmlEditor value={description || ''} onBlur={this.handleDescriptionBlur} />
+              </CardBody>
+            </Card>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleUpdateDescription} color="primary">
+              Save
+            </Button>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          maxWidth="xl"
+          open={showDetailModal}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <Card>
+              <CardHeader color="primary">
+                <div className={styles.cardTitleWhite}>
+                  Product Website Details
+                </div>
+              </CardHeader>
+              <CardBody>
+                <HtmlEditor value={detail || ''} onBlur={this.handleDetailBlur} />
+              </CardBody>
+            </Card>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleUpdateDetail} color="primary">
+              Save
+            </Button>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          maxWidth="xl"
+          open={showWarrantyModal}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <Card>
+              <CardHeader color="primary">
+                <div className={styles.cardTitleWhite}>
+                  Product Warranty
+                </div>
+              </CardHeader>
+              <CardBody>
+                <HtmlEditor value={warrantyInformation || ''} onBlur={this.handleWarrantyBlur} />
+              </CardBody>
+            </Card>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleUpdateWarranty} color="primary">
+              Save
+            </Button>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          maxWidth="xl"
+          open={showAdditionalInfoModal}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <Card>
+              <CardHeader color="primary">
+                <div className={styles.cardTitleWhite}>
+                  Product Additional Info
+                </div>
+              </CardHeader>
+              <CardBody>
+                <HtmlEditor value={additionalInformation || ''} onBlur={this.handleAdditionalInfoBlur} />
+              </CardBody>
+            </Card>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleUpdateAdditionalInfo} color="primary">
               Save
             </Button>
             <Button onClick={this.handleClose} color="info">
@@ -358,13 +632,22 @@ export default class UpdateWebsiteProducts extends React.Component {
           aria-labelledby="form-dialog-title"
         >
           <DialogContent>
-            <p>
-              Use one of the following sizes:
-              <ul>
-                <li><h3>600 * 800</h3></li>
-              </ul>
-            </p>
-            <ImageUpload onChange={this.handleImageChange} />
+            <Card>
+              <CardHeader color="primary">
+                <div className={styles.cardTitleWhite}>
+                  Update Product Images
+                </div>
+              </CardHeader>
+              <CardBody>
+                <p>
+                  Use one of the following sizes:
+                  <ul>
+                    <li><h3>600 * 800</h3></li>
+                  </ul>
+                </p>
+                <ImageUpload onChange={this.handleImageChange} />
+              </CardBody>
+            </Card>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleUploadImage} color="primary">
@@ -377,12 +660,21 @@ export default class UpdateWebsiteProducts extends React.Component {
         </Dialog>
         <Dialog
           maxWidth="xl"
-          open={showTags}
+          open={showTagsModal}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
         >
           <DialogContent>
-            Product Tags
+            <Card>
+              <CardHeader color="primary">
+                <div className={styles.cardTitleWhite}>
+                  Update Product Tags
+                </div>
+              </CardHeader>
+              <CardBody>
+                Update Product Tags
+              </CardBody>
+            </Card>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleUpdateTags} color="primary">
@@ -400,16 +692,52 @@ export default class UpdateWebsiteProducts extends React.Component {
           aria-labelledby="form-dialog-title"
         >
           <DialogContent>
-            <p>
-              Use one of the following sizes:
-              <ul>
-                <li><h3>1920 * 380</h3></li>
-              </ul>
-            </p>
-            <ImageUpload singleImage onChange={this.handleImageHeaderChange} />
+            <Card>
+              <CardHeader color="primary">
+                <div className={styles.cardTitleWhite}>
+                  Update Product Page Header Image
+                </div>
+              </CardHeader>
+              <CardBody>
+                <p>
+                  Use one of the following sizes:
+                  <ul>
+                    <li><h3>1920 * 380</h3></li>
+                  </ul>
+                </p>
+                <ImageUpload singleImage onChange={this.handleImageHeaderChange} />
+              </CardBody>
+            </Card>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleUploadHeaderImage} color="primary">
+              Save
+            </Button>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          maxWidth="xl"
+          open={showCatalogModal}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <Card>
+              <CardHeader color="primary">
+                <div className={styles.cardTitleWhite}>
+                  Update Product Catalog file
+                </div>
+              </CardHeader>
+              <CardBody>
+                <FileUpload onChange={this.handleCatalogChange} />
+              </CardBody>
+            </Card>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleUploadCatalog} color="primary">
               Save
             </Button>
             <Button onClick={this.handleClose} color="info">
