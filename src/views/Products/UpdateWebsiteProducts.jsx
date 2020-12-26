@@ -46,7 +46,7 @@ export default class UpdateWebsiteProducts extends React.Component {
     this.handleImageHeaderChange = this.handleImageHeaderChange.bind(this);
     this.handleUploadHeaderImage = this.handleUploadHeaderImage.bind(this);
 
-    this.showUpdateImages = this.showUpdateImages.bind(this);
+    this.showUploadImages = this.showUploadImages.bind(this);
     this.handleImageChange = this.handleImageChange.bind(this);
     this.handleUploadImage = this.handleUploadImage.bind(this);
 
@@ -108,24 +108,28 @@ export default class UpdateWebsiteProducts extends React.Component {
     });
   }
 
-  showUpdateImages(productId) {
+  showUploadImages(productId, images) {
+    var existingImages = images.map((item) => item.imagePath);
     this.setState({
       showUploadImageModal: true,
       productId,
+      existingImages,
     });
   }
 
-  showUploadHeaderImage(productId) {
+  showUploadHeaderImage(productId, existingHeaderImage) {
     this.setState({
       showUploadHeaderImageModal: true,
       productId,
+      existingHeaderImage,
     });
   }
 
-  showUpdateCatalog(productId) {
+  showUpdateCatalog(productId, existingCatalog) {
     this.setState({
       showCatalogModal: true,
       productId,
+      existingCatalog,
     });
   }
 
@@ -276,9 +280,10 @@ export default class UpdateWebsiteProducts extends React.Component {
   async handleUploadImage() {
     const { productId, images } = this.state;
     const formData = new FormData();
-    formData.append('file', images);
+    images.forEach((image) => {
+      formData.append('file', image);
+    });
     await ProductService.updateProductImages(productId, formData);
-    this.productCategoriesList();
     this.setState({
       showUploadImageModal: false,
       productId: null,
@@ -411,6 +416,9 @@ export default class UpdateWebsiteProducts extends React.Component {
       showAdditionalInfoModal,
       showWarrantyModal,
       showTagsModal,
+      existingImages,
+      existingHeaderImage,
+      existingCatalog,
     } = this.state;
 
     const options = {
@@ -445,6 +453,7 @@ export default class UpdateWebsiteProducts extends React.Component {
                       tooltip: 'Upload Website Images',
                       onClick: (event, rowData) => this.showUploadImages(
                         rowData.productId,
+                        rowData.images,
                       ),
                     },
                     {
@@ -452,6 +461,7 @@ export default class UpdateWebsiteProducts extends React.Component {
                       tooltip: 'Upload Header Image',
                       onClick: (event, rowData) => this.showUploadHeaderImage(
                         rowData.productId,
+                        rowData.headerImagePath,
                       ),
                     },
                     {
@@ -483,6 +493,7 @@ export default class UpdateWebsiteProducts extends React.Component {
                       tooltip: 'Product Catalog',
                       onClick: (event, rowData) => this.showUpdateCatalog(
                         rowData.productId,
+                        rowData.userManualPath,
                       ),
                     },
                     {
@@ -645,7 +656,11 @@ export default class UpdateWebsiteProducts extends React.Component {
                     <li><h3>600 * 800</h3></li>
                   </ul>
                 </p>
-                <ImageUpload onChange={this.handleImageChange} />
+                <ImageUpload
+                  existingImages={existingImages}
+                  isSingleImage={false}
+                  onChange={this.handleImageChange}
+                />
               </CardBody>
             </Card>
           </DialogContent>
@@ -705,7 +720,11 @@ export default class UpdateWebsiteProducts extends React.Component {
                     <li><h3>1920 * 380</h3></li>
                   </ul>
                 </p>
-                <ImageUpload singleImage onChange={this.handleImageHeaderChange} />
+                <ImageUpload
+                  existingImages={existingHeaderImage && [existingHeaderImage]}
+                  isSingleImage
+                  onChange={this.handleImageHeaderChange}
+                />
               </CardBody>
             </Card>
           </DialogContent>
@@ -732,7 +751,11 @@ export default class UpdateWebsiteProducts extends React.Component {
                 </div>
               </CardHeader>
               <CardBody>
-                <FileUpload onChange={this.handleCatalogChange} />
+                <FileUpload
+                  existingFiles={existingCatalog && [existingCatalog]}
+                  isSingleImage
+                  onChange={this.handleCatalogChange}
+                />
               </CardBody>
             </Card>
           </DialogContent>

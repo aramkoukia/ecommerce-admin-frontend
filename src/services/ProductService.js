@@ -182,11 +182,11 @@ export default class ProductService {
     }
   }
 
-  static async updateProductImages(id, images) {
+  static async updateProductImages(id, files) {
     try {
       const response = await RestUtilities.postForm(
         `products/${id}/upload`,
-        images,
+        files,
       );
       return response.content;
     } catch (err) {
