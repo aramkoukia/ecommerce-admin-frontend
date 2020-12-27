@@ -265,4 +265,16 @@ export default class ProductService {
       return false;
     }
   }
+
+  static async updateProductTags(id, tags) {
+    try {
+      const response = await RestUtilities.post(
+        `products/${id}/producttag`,
+        tags,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }

@@ -117,9 +117,11 @@ export default class UpdateWebsiteProducts extends React.Component {
       .then((data) => this.setState({ tags: data }));
   }
 
-  showUpdateTags() {
+  showUpdateTags(productId, productTags) {
     this.setState({
       showTagsModal: true,
+      productTags,
+      productId,
     });
   }
 
@@ -300,19 +302,15 @@ export default class UpdateWebsiteProducts extends React.Component {
 
   async handleUpdateTags() {
     this.setState({ loading: true });
-    const { products, productId, tags } = this.state;
-    const product = {
-      productId,
-      tags,
-    };
+    const { products, productId, productTags } = this.state;
     const index = products.findIndex(((obj) => obj.productId === productId));
-    products[index].tags = tags;
-    await ProductService.updateProductTags(product);
+    products[index].tags = productTags;
+    await ProductService.updateProductTags(productId, productTags);
     this.setState({
       showTagsModal: false,
       productId: null,
-      tags: '',
-      products,
+      // products,
+      productTags: [],
       loading: false,
     });
   }
@@ -410,7 +408,12 @@ export default class UpdateWebsiteProducts extends React.Component {
         title: 'URL', field: 'slugsUrl', readonly: true, editable: 'never',
       },
       {
-        title: 'Tags', field: 'tags', readonly: true, editable: 'never',
+        field: 'tags',
+        title: 'Tags',
+        filtering: false,
+        render: (rowData) => (
+          rowData.tags.map((tag) => (<Chip key={tag.tagId} label={tag.tagName} />))
+        ),
       },
       {
         title: 'Category', field: 'productTypeName', readonly: true, editable: 'never',
@@ -565,6 +568,7 @@ export default class UpdateWebsiteProducts extends React.Component {
                       tooltip: 'Tags',
                       onClick: (event, rowData) => this.showUpdateTags(
                         rowData.productId,
+                        rowData.tags,
                       ),
                     },
                   ]}
