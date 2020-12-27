@@ -5,6 +5,12 @@ import Check from '@material-ui/icons/Check';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import Chip from '@material-ui/core/Chip';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
@@ -13,6 +19,7 @@ import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
 import Button from '../../components/CustomButtons/Button';
 import ProductService from '../../services/ProductService';
+import TagService from '../../services/TagService';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
 import FileUpload from '../../components/ImageUpload/FileUpload';
 import HtmlEditor from '../../components/HtmlEditor/HtmlEditor';
@@ -22,6 +29,8 @@ import HtmlEditor from '../../components/HtmlEditor/HtmlEditor';
 export default class UpdateWebsiteProducts extends React.Component {
   state = {
     products: [],
+    tags: [],
+    productTags: [],
     loading: false,
     openSnackbar: false,
     snackbarMessage: '',
@@ -76,6 +85,7 @@ export default class UpdateWebsiteProducts extends React.Component {
 
   componentDidMount() {
     this.productsList();
+    this.tagsList();
   }
 
   handleChange(event) {
@@ -102,6 +112,11 @@ export default class UpdateWebsiteProducts extends React.Component {
       .then((data) => this.setState({ products: data, loading: false }));
   }
 
+  tagsList() {
+    TagService.getTags()
+      .then((data) => this.setState({ tags: data }));
+  }
+
   showUpdateTags() {
     this.setState({
       showTagsModal: true,
@@ -109,7 +124,7 @@ export default class UpdateWebsiteProducts extends React.Component {
   }
 
   showUploadImages(productId, images) {
-    var existingImages = images.map((item) => item.imagePath);
+    const existingImages = images.map((item) => item.imagePath);
     this.setState({
       showUploadImageModal: true,
       productId,
@@ -166,16 +181,21 @@ export default class UpdateWebsiteProducts extends React.Component {
   }
 
   async handleUpdateDescription() {
-    const { productId, description } = this.state;
+    this.setState({ loading: true });
+    const { products, productId, description } = this.state;
     const product = {
       productId,
       description,
     };
+    const index = products.findIndex(((obj) => obj.productId === productId));
+    products[index].description = description;
     await ProductService.updateProductDescription(product);
     this.setState({
       showDescriptionModal: false,
       productId: null,
       description: '',
+      products,
+      loading: false,
     });
   }
 
@@ -194,16 +214,21 @@ export default class UpdateWebsiteProducts extends React.Component {
   }
 
   async handleUpdateDetail() {
-    const { productId, detail } = this.state;
+    this.setState({ loading: true });
+    const { products, productId, detail } = this.state;
     const product = {
       productId,
       detail,
     };
+    const index = products.findIndex(((obj) => obj.productId === productId));
+    products[index].detail = detail;
     await ProductService.updateProductDetail(product);
     this.setState({
       showDetailModal: false,
       productId: null,
       detail: '',
+      products,
+      loading: false,
     });
   }
 
@@ -222,16 +247,21 @@ export default class UpdateWebsiteProducts extends React.Component {
   }
 
   async handleUpdateWarranty() {
-    const { productId, warrantyInformation } = this.state;
+    this.setState({ loading: true });
+    const { products, productId, warrantyInformation } = this.state;
     const product = {
       productId,
       warrantyInformation,
     };
+    const index = products.findIndex(((obj) => obj.productId === productId));
+    products[index].warrantyInformation = warrantyInformation;
     await ProductService.updateProductWarranty(product);
     this.setState({
       showWarrantyModal: false,
       productId: null,
       warrantyInformation: '',
+      products,
+      loading: false,
     });
   }
 
@@ -250,30 +280,40 @@ export default class UpdateWebsiteProducts extends React.Component {
   }
 
   async handleUpdateAdditionalInfo() {
-    const { productId, additionalInformation } = this.state;
+    this.setState({ loading: true });
+    const { products, productId, additionalInformation } = this.state;
     const product = {
       productId,
       additionalInformation,
     };
+    const index = products.findIndex(((obj) => obj.productId === productId));
+    products[index].additionalInformation = additionalInformation;
     await ProductService.updateProductAdditionalInfo(product);
     this.setState({
       showAdditionalInfoModal: false,
       productId: null,
       additionalInformation: '',
+      products,
+      loading: false,
     });
   }
 
   async handleUpdateTags() {
-    const { productId, tags } = this.state;
+    this.setState({ loading: true });
+    const { products, productId, tags } = this.state;
     const product = {
       productId,
       tags,
     };
+    const index = products.findIndex(((obj) => obj.productId === productId));
+    products[index].tags = tags;
     await ProductService.updateProductTags(product);
     this.setState({
       showTagsModal: false,
       productId: null,
       tags: '',
+      products,
+      loading: false,
     });
   }
 
@@ -284,6 +324,7 @@ export default class UpdateWebsiteProducts extends React.Component {
       formData.append('file', image);
     });
     await ProductService.updateProductImages(productId, formData);
+    this.productsList();
     this.setState({
       showUploadImageModal: false,
       productId: null,
@@ -309,12 +350,24 @@ export default class UpdateWebsiteProducts extends React.Component {
     const formData = new FormData();
     formData.append('file', catalogFile);
     await ProductService.updateProductCatalog(productId, formData);
+    this.productsList();
     this.setState({
       showCatalogModal: false,
       productId: null,
       catalogFile: null,
     });
   }
+
+  // handleChangeMultiple = (event) => {
+  //   const { options } = event.target;
+  //   const value = [];
+  //   for (let i = 0, l = options.length; i < l; i += 1) {
+  //     if (options[i].selected) {
+  //       value.push(options[i].value);
+  //     }
+  //   }
+  //   // setPersonName(value);
+  // };
 
   render() {
     const styles = {
@@ -419,6 +472,8 @@ export default class UpdateWebsiteProducts extends React.Component {
       existingImages,
       existingHeaderImage,
       existingCatalog,
+      tags,
+      productTags,
     } = this.state;
 
     const options = {
@@ -442,6 +497,7 @@ export default class UpdateWebsiteProducts extends React.Component {
                 </div>
               </CardHeader>
               <CardBody>
+                {loading && (<LinearProgress />)}
                 <MaterialTable
                   columns={columns}
                   data={products}
@@ -513,8 +569,6 @@ export default class UpdateWebsiteProducts extends React.Component {
                     },
                   ]}
                 />
-
-                {loading && (<LinearProgress />)}
               </CardBody>
             </Card>
           </GridItem>
@@ -547,6 +601,7 @@ export default class UpdateWebsiteProducts extends React.Component {
             </Card>
           </DialogContent>
           <DialogActions>
+            {loading && (<LinearProgress />)}
             <Button onClick={this.handleUpdateDescription} color="primary">
               Save
             </Button>
@@ -556,7 +611,8 @@ export default class UpdateWebsiteProducts extends React.Component {
           </DialogActions>
         </Dialog>
         <Dialog
-          maxWidth="xl"
+          fullWidth
+          maxWidth="md"
           open={showDetailModal}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
@@ -574,6 +630,7 @@ export default class UpdateWebsiteProducts extends React.Component {
             </Card>
           </DialogContent>
           <DialogActions>
+            {loading && (<LinearProgress />)}
             <Button onClick={this.handleUpdateDetail} color="primary">
               Save
             </Button>
@@ -583,7 +640,8 @@ export default class UpdateWebsiteProducts extends React.Component {
           </DialogActions>
         </Dialog>
         <Dialog
-          maxWidth="xl"
+          maxWidth="md"
+          fullWidth
           open={showWarrantyModal}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
@@ -601,6 +659,7 @@ export default class UpdateWebsiteProducts extends React.Component {
             </Card>
           </DialogContent>
           <DialogActions>
+            {loading && (<LinearProgress />)}
             <Button onClick={this.handleUpdateWarranty} color="primary">
               Save
             </Button>
@@ -610,7 +669,8 @@ export default class UpdateWebsiteProducts extends React.Component {
           </DialogActions>
         </Dialog>
         <Dialog
-          maxWidth="xl"
+          maxWidth="md"
+          fullWidth
           open={showAdditionalInfoModal}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
@@ -628,6 +688,7 @@ export default class UpdateWebsiteProducts extends React.Component {
             </Card>
           </DialogContent>
           <DialogActions>
+            {loading && (<LinearProgress />)}
             <Button onClick={this.handleUpdateAdditionalInfo} color="primary">
               Save
             </Button>
@@ -637,7 +698,8 @@ export default class UpdateWebsiteProducts extends React.Component {
           </DialogActions>
         </Dialog>
         <Dialog
-          maxWidth="xl"
+          maxWidth="md"
+          fullWidth
           open={showUploadImageModal}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
@@ -665,6 +727,7 @@ export default class UpdateWebsiteProducts extends React.Component {
             </Card>
           </DialogContent>
           <DialogActions>
+            {loading && (<LinearProgress />)}
             <Button onClick={this.handleUploadImage} color="primary">
               Save
             </Button>
@@ -674,7 +737,8 @@ export default class UpdateWebsiteProducts extends React.Component {
           </DialogActions>
         </Dialog>
         <Dialog
-          maxWidth="xl"
+          fullWidth
+          maxWidth="md"
           open={showTagsModal}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
@@ -687,11 +751,38 @@ export default class UpdateWebsiteProducts extends React.Component {
                 </div>
               </CardHeader>
               <CardBody>
-                Update Product Tags
+                <FormControl style={{ minWidth: 800 }}>
+                  <InputLabel id="demo-mutiple-chip-label">Select Tags</InputLabel>
+                  <Select
+                    fullWidth
+                    autoWidth="true"
+                    labelId="demo-mutiple-chip-label"
+                    id="productTags"
+                    multiple
+                    name="productTags"
+                    value={productTags}
+                    onChange={this.handleChange}
+                    input={<Input id="select-multiple-chip" />}
+                    renderValue={(selectedTags) => (
+                      <div>
+                        {selectedTags.map((tag) => (
+                          <Chip key={tag.tagId} label={tag.tagName} />
+                        ))}
+                      </div>
+                    )}
+                  >
+                    {tags.map((tag) => (
+                      <MenuItem key={tag.tagId} value={tag}>
+                        {tag.tagName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </CardBody>
             </Card>
           </DialogContent>
           <DialogActions>
+            {loading && (<LinearProgress />)}
             <Button onClick={this.handleUpdateTags} color="primary">
               Save
             </Button>
@@ -701,6 +792,7 @@ export default class UpdateWebsiteProducts extends React.Component {
           </DialogActions>
         </Dialog>
         <Dialog
+          fullWidth
           maxWidth="xl"
           open={showUploadHeaderImageModal}
           onClose={this.handleClose}
@@ -729,6 +821,7 @@ export default class UpdateWebsiteProducts extends React.Component {
             </Card>
           </DialogContent>
           <DialogActions>
+            {loading && (<LinearProgress />)}
             <Button onClick={this.handleUploadHeaderImage} color="primary">
               Save
             </Button>
@@ -738,7 +831,8 @@ export default class UpdateWebsiteProducts extends React.Component {
           </DialogActions>
         </Dialog>
         <Dialog
-          maxWidth="xl"
+          fullWidth
+          maxWidth="md"
           open={showCatalogModal}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
@@ -760,6 +854,7 @@ export default class UpdateWebsiteProducts extends React.Component {
             </Card>
           </DialogContent>
           <DialogActions>
+            {loading && (<LinearProgress />)}
             <Button onClick={this.handleUploadCatalog} color="primary">
               Save
             </Button>

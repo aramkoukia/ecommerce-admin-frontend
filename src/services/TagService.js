@@ -23,4 +23,27 @@ export default class TagService {
       return false;
     }
   }
+
+  static async updateTag(tag) {
+    try {
+      const response = await RestUtilities.put(
+        `tags/${tag.tagId}`,
+        tag,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async deleteTag(tagId) {
+    try {
+      const response = await RestUtilities.delete(
+        `tags/${tagId}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }

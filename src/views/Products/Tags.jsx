@@ -1,5 +1,6 @@
 import React from 'react';
-import MUIDataTable from 'mui-datatables';
+import MaterialTable from 'material-table';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
@@ -8,21 +9,19 @@ import CardBody from '../../components/Card/CardBody';
 import TagService from '../../services/TagService';
 
 export default class Tags extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { Tags: [] };
-  }
+  state = {
+    tags: [],
+    loading: false,
+  };
 
   componentDidMount() {
-    this.tagsList();
+    this.TagsList();
   }
 
-  tagsList() {
-    const columns = ['tagId', 'tagName'];
-    // TagService.getTags()
-    //   .then((results) => results.map((row) => columns.map((column) => (row[column] === null ? '' : row[column]))))
-    //   .then((data) => this.setState({ tags: data }));
+  TagsList() {
+    this.setState({ loading: true });
+    TagService.getTags()
+      .then((data) => this.setState({ tags: data, loading: false }));
   }
 
   render() {
@@ -56,14 +55,31 @@ export default class Tags extends React.Component {
       },
     };
 
-    const columns = ['Tag Name'];
+    const columns = [
+      {
+        title: 'Tag Name',
+        field: 'tagName',
+      },
+      {
+        title: 'Tag Id',
+        field: 'tagId',
+        hidden: true,
+        readonly: true,
+        editable: 'never',
+      },
+    ];
+
     const options = {
-      filterType: 'checkbox',
-      rowsPerPageOptions: [25, 50, 100],
-      rowsPerPage: 25,
+      paging: true,
+      pageSizeOptions: [25, 50, 100],
+      pageSize: 25,
+      columnsButton: true,
+      exportButton: true,
+      filtering: true,
+      search: true,
     };
 
-    const { tags } = this.state;
+    const { tags, loading } = this.state;
 
     return (
       <div>
@@ -74,11 +90,45 @@ export default class Tags extends React.Component {
                 <div className={styles.cardTitleWhite}>Tags List</div>
               </CardHeader>
               <CardBody>
-                <MUIDataTable
-                  data={tags}
+                <MaterialTable
                   columns={columns}
+                  data={tags}
                   options={options}
+                  title=""
+                  editable={{
+                    onRowUpdate: (newData, oldData) => new Promise((resolve) => {
+                      setTimeout(() => {
+                        {
+                          const index = tags.indexOf(oldData);
+                          tags[index] = newData;
+                          TagService.updateTag(newData);
+                          this.setState({ tags }, () => resolve());
+                        }
+                        resolve();
+                      }, 1000);
+                    }),
+                    onRowAdd: (newData) => new Promise((resolve) => {
+                      setTimeout(() => {
+                        tags.push(newData);
+                        TagService.addTag(newData);
+                        this.setState({ tags }, () => resolve());
+                        resolve();
+                      }, 1000);
+                    }),
+                    onRowDelete: (oldData) => new Promise((resolve) => {
+                      setTimeout(() => {
+                        {
+                          const index = tags.indexOf(oldData);
+                          tags.splice(index, 1);
+                          TagService.deleteTag(oldData.tagId);
+                          this.setState({ tags }, () => resolve());
+                        }
+                        resolve();
+                      }, 1000);
+                    }),
+                  }}
                 />
+                {loading && (<LinearProgress />)}
               </CardBody>
             </Card>
           </GridItem>
