@@ -77,6 +77,7 @@ import WebsiteSlider from '../views/WebsiteSliders/WebsiteSlider';
 import BlogPosts from '../views/BlogPosts/BlogPosts';
 import WebsiteAbout from '../views/Website/WebsiteAbout';
 import WebsiteAboutPopOver from '../views/Website/WebsiteAboutPopOver';
+import WebsiteFaq from '../views/Website/WebsiteFaq';
 import LoginHistory from '../views/LoginHistory/LoginHistory';
 import Permissions from '../stores/Permissions';
 
@@ -399,7 +400,7 @@ const dashboardRoutes = [
         permission: Permissions.ViewTags,
       },
       {
-        path: '/about',
+        path: '/websiteabout',
         sidebarName: 'Website About',
         Icon: Book,
         component: WebsiteAbout,
@@ -407,10 +408,18 @@ const dashboardRoutes = [
         permission: Permissions.ViewProductCategories,
       },
       {
-        path: '/aboutpopover',
+        path: '/websiteaboutpopover',
         sidebarName: 'Website About Pop Over',
         Icon: Book,
         component: WebsiteAboutPopOver,
+        needsPermission: true,
+        permission: Permissions.ViewProductCategories,
+      },
+      {
+        path: '/websitefaq',
+        sidebarName: 'Website FAQ',
+        Icon: Book,
+        component: WebsiteFaq,
         needsPermission: true,
         permission: Permissions.ViewProductCategories,
       },
