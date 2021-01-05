@@ -18,7 +18,7 @@
     "ajv": "^5.0.0",
     "applicationinsights": "^1.0.8",
     "autosuggest-highlight": "^3.1.1",
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "casl": "^1.1.0",
     "chartist": "0.10.1",
     "classnames": "^2.2.6",
