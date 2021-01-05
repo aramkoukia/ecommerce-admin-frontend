@@ -18,7 +18,7 @@ import WebsiteSliderService from '../../services/WebsiteSliderService';
 
 const imagePlaceholder = require('../../assets/img/image-placeholder.jpg');
 
-export default class WebsiteSlider extends React.Component {
+export default class WebsiteAbout extends React.Component {
   state = {
     websiteSliders: [],
     openSnackbar: false,
@@ -40,8 +40,8 @@ export default class WebsiteSlider extends React.Component {
   }
 
   websiteSlidersList() {
-    WebsiteSliderService.getWebsiteSliders()
-      .then((data) => this.setState({ websiteSliders: data }));
+    // WebsiteSliderService.getWebsiteSliders()
+    //   .then((data) => this.setState({ websiteSliders: data }));
   }
 
   handleImageChange(images) {
@@ -154,7 +154,7 @@ export default class WebsiteSlider extends React.Component {
           <GridItem xs={12} sm={12} md={12}>
             <Card>
               <CardHeader color="primary">
-                <div className={styles.cardTitleWhite}>Website Slider</div>
+                <div className={styles.cardTitleWhite}>Website About information</div>
               </CardHeader>
               <CardBody>
                 <MaterialTable

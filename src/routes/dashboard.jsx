@@ -75,6 +75,8 @@ import InvoiceEmailPrintSettings from '../views/Settings/InvoiceEmailPrintSettin
 import UpdateProducts from '../views/Products/UpdateProducts';
 import WebsiteSlider from '../views/WebsiteSliders/WebsiteSlider';
 import BlogPosts from '../views/BlogPosts/BlogPosts';
+import WebsiteAbout from '../views/Website/WebsiteAbout';
+import WebsiteAboutPopOver from '../views/Website/WebsiteAboutPopOver';
 import LoginHistory from '../views/LoginHistory/LoginHistory';
 import Permissions from '../stores/Permissions';
 
@@ -395,6 +397,22 @@ const dashboardRoutes = [
         component: Tags,
         needsPermission: true,
         permission: Permissions.ViewTags,
+      },
+      {
+        path: '/about',
+        sidebarName: 'Website About',
+        Icon: Book,
+        component: WebsiteAbout,
+        needsPermission: true,
+        permission: Permissions.ViewProductCategories,
+      },
+      {
+        path: '/aboutpopover',
+        sidebarName: 'Website About Pop Over',
+        Icon: Book,
+        component: WebsiteAboutPopOver,
+        needsPermission: true,
+        permission: Permissions.ViewProductCategories,
       },
     ],
   },
