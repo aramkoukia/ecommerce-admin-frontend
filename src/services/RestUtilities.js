@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
 import AuthStore from '../stores/Auth';
 import Api from './ApiConfig';
 
@@ -40,6 +41,7 @@ export default class RestUtilities {
     if (data) {
       if (typeof data === 'object') {
         headers.set('Content-Type', 'application/json');
+        headers.set('Idempotency-Key', uuidv4());
         body = JSON.stringify(data);
       } else {
         headers.set('Content-Type', 'application/x-www-form-urlencoded');
@@ -110,6 +112,7 @@ export default class RestUtilities {
     const headers = new Headers();
     headers.set('Authorization', `Bearer ${AuthStore.getToken()}`);
     headers.set('Content-Type', 'multipart/form-data');
+    headers.set('Idempotency-Key', uuidv4());
 
     return axios(`${Api.baseUrl}/${url}`,
       {
