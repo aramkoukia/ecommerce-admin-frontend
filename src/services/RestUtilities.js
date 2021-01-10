@@ -20,15 +20,15 @@ export default class RestUtilities {
     return RestUtilities.request('PUT', url, data);
   }
 
-  static post(url, data) {
-    return RestUtilities.request('POST', url, data);
+  static post(url, data, idempotency) {
+    return RestUtilities.request('POST', url, data, idempotency);
   }
 
-  static postForm(url, data) {
-    return RestUtilities.requestFormData('POST', url, data);
+  static postForm(url, data, idempotency) {
+    return RestUtilities.requestFormData('POST', url, data, idempotency);
   }
 
-  static request(method, url, data) {
+  static request(method, url, data, idempotency) {
     // let isJsonResponse = false;
     let isBadRequest = false;
     let body = data;
@@ -41,7 +41,11 @@ export default class RestUtilities {
     if (data) {
       if (typeof data === 'object') {
         headers.set('Content-Type', 'application/json');
-        headers.set('Idempotency-Key', uuidv4());
+        if (idempotency) {
+          headers.set('Idempotency-Key', idempotency);
+        } else {
+          headers.set('Idempotency-Key', uuidv4());
+        }
         body = JSON.stringify(data);
       } else {
         headers.set('Content-Type', 'application/x-www-form-urlencoded');
@@ -106,13 +110,17 @@ export default class RestUtilities {
       });
   }
 
-  static requestFormData(method, url, data) {
+  static requestFormData(method, url, data, idempotency) {
     // let isJsonResponse = false;
     let isBadRequest = false;
     const headers = new Headers();
     headers.set('Authorization', `Bearer ${AuthStore.getToken()}`);
     headers.set('Content-Type', 'multipart/form-data');
-    headers.set('Idempotency-Key', uuidv4());
+    if (idempotency) {
+      headers.set('Idempotency-Key', idempotency);
+    } else {
+      headers.set('Idempotency-Key', uuidv4());
+    }
 
     return axios(`${Api.baseUrl}/${url}`,
       {
