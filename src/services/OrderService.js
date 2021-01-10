@@ -27,7 +27,7 @@ export default class OrderService {
 
   static async updateOrderStatus(orderId, orderStatus) {
     try {
-      const response = await RestUtilities.put(
+      const response = await RestUtilities.post(
         `orders/${orderId}/status`,
         orderStatus,
       );
@@ -39,7 +39,7 @@ export default class OrderService {
 
   static async updateOrderPayment(orderId, orderPayment) {
     try {
-      const response = await RestUtilities.put(
+      const response = await RestUtilities.post(
         `orders/${orderId}/payment`,
         orderPayment,
       );
