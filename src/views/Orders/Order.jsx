@@ -16,6 +16,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { v4 as uuidv4 } from 'uuid';
 import Button from '../../components/CustomButtons/Button';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
@@ -69,6 +70,7 @@ export class Order extends React.Component {
     cashChange: 0,
     cashPaid: 0,
     locations: [],
+    idempotency: uuidv4(),
   };
 
   constructor(props) {
@@ -114,6 +116,7 @@ export class Order extends React.Component {
       isUpdatePayment: false,
       openUpdateLocationDialog: false,
       locations: [],
+      idempotency: uuidv4(),
     });
   }
 
@@ -251,7 +254,7 @@ export class Order extends React.Component {
   }
 
   updatePayment() {
-    const { order, } = this.state;
+    const { order } = this.state;
     let isCash = false;
     let isCheque = false;
     let isCreditDebit = false;
@@ -300,6 +303,7 @@ export class Order extends React.Component {
       creditDebitAmount: creditDebit,
       paypalAmazonUsdAmount: amazonUsd,
       storeCreditAmount: storeCredit,
+      idempotency: uuidv4(),
     });
   }
 
@@ -405,6 +409,7 @@ export class Order extends React.Component {
     const {
       payStoreCredit,
       storeCreditAmount,
+      idempotency,
     } = this.state;
     if (payStoreCredit && storeCreditAmount > order.customer.storeCredit) {
       this.setState({
@@ -417,7 +422,7 @@ export class Order extends React.Component {
 
     orderPayment = this.getOrderPayments();
 
-    const result = await OrderService.updateOrderPayment(order.orderId, { orderPayment });
+    const result = await OrderService.updateOrderPayment(order.orderId, { orderPayment }, idempotency);
     if (result === false
         || result === null
         || result.StatusCode === 500
@@ -462,9 +467,11 @@ export class Order extends React.Component {
       orderPayment = this.getOrderPayments();
     }
 
+    const { idempotency } = this.state;
     const result = await OrderService.updateOrderStatus(
       order.orderId,
       { orderStatus, orderPayment },
+      idempotency,
     );
     if (result === false
         || result === null

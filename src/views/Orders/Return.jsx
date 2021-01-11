@@ -11,6 +11,7 @@ import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Checkbox from '@material-ui/core/Checkbox';
+import { v4 as uuidv4 } from 'uuid';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
 import Button from '../../components/CustomButtons/Button';
@@ -63,6 +64,7 @@ export class Return extends React.Component {
     paypalAmazonUsdAmount: 0,
     restockingFeePercent: 10,
     restockingFeeAmount: 0,
+    idempotency: uuidv4(),
   };
 
   constructor(props) {
@@ -236,6 +238,7 @@ export class Return extends React.Component {
       total, subTotal, totalDiscount, notes, order, authCode,
       restockingFeePercent,
       restockingFeeAmount,
+      idempotency,
     } = this.state;
     const originalOrderId = this.props.match.params.id;
     const status = orderStatus;
@@ -288,7 +291,7 @@ export class Return extends React.Component {
       restockingFeeAmount,
     };
 
-    const result = await OrderService.saveOrder(returnOrder);
+    const result = await OrderService.saveOrder(returnOrder, idempotency);
     if (result === false
       || result === null
       || result.StatusCode === 500

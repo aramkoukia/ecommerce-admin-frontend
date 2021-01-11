@@ -14,6 +14,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import PropTypes from 'prop-types';
+import { v4 as uuidv4 } from 'uuid';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
 import Button from '../../components/CustomButtons/Button';
@@ -135,6 +136,7 @@ export default class AddOrder extends React.Component {
     showValidationDialog: false,
     orderStatus: '',
     loading: false,
+    idempotency: uuidv4(),
   };
 
   constructor(props) {
@@ -528,6 +530,8 @@ export default class AddOrder extends React.Component {
 
     const {
       customer, rows, total, subTotal, notes, taxes, poNumber, authCode,
+      idempotency,
+      paymentIdempotency,
     } = this.state;
     const locationId = Location.getStoreLocation();
     const status = orderStatus;
@@ -597,6 +601,7 @@ export default class AddOrder extends React.Component {
         const resultUpdateStatus = await OrderService.updateOrderStatus(
           orderId,
           { orderStatus: status, orderPayment },
+          idempotency,
         );
         if (resultUpdateStatus === false
           || resultUpdateStatus === null
@@ -612,7 +617,7 @@ export default class AddOrder extends React.Component {
         }
       }
     } else {
-      result = await OrderService.saveOrder(order);
+      result = await OrderService.saveOrder(order, idempotency);
     }
 
     if (result === false

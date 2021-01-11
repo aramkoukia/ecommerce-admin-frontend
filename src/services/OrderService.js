@@ -1,11 +1,12 @@
 import RestUtilities from './RestUtilities';
 
 export default class OrderService {
-  static async saveOrder(order) {
+  static async saveOrder(order, idempotency) {
     try {
       const response = await RestUtilities.post(
         'orders',
         order,
+        idempotency,
       );
       return response.content;
     } catch (err) {
@@ -25,11 +26,12 @@ export default class OrderService {
     }
   }
 
-  static async updateOrderStatus(orderId, orderStatus) {
+  static async updateOrderStatus(orderId, orderStatus, idempotency) {
     try {
       const response = await RestUtilities.post(
         `orders/${orderId}/status`,
         orderStatus,
+        idempotency,
       );
       return response.content;
     } catch (err) {
@@ -37,11 +39,12 @@ export default class OrderService {
     }
   }
 
-  static async updateOrderPayment(orderId, orderPayment) {
+  static async updateOrderPayment(orderId, orderPayment, idempotency) {
     try {
       const response = await RestUtilities.post(
         `orders/${orderId}/payment`,
         orderPayment,
+        idempotency,
       );
       return response.content;
     } catch (err) {
