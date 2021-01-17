@@ -190,7 +190,17 @@ export default class CustomApplications extends React.Component {
           <GridItem xs={12} sm={12} md={12}>
             <Card>
               <CardHeader color="primary">
-                <div className={styles.cardTitleWhite}>Custom Applications</div>
+                <div className={styles.cardTitleWhite}>
+                  Custom Applications. Updated &nbsp;
+                  <a
+                    target="_blank"
+                    rel="noreferrer"
+                    href="https://ecommerce-frontend-v2.vercel.app/"
+                    style={{ color: 'blue' }}
+                  >
+                    here
+                  </a>
+                </div>
               </CardHeader>
               <CardBody>
                 <MaterialTable

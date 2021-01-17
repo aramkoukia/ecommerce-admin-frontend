@@ -154,14 +154,24 @@ export default class WebsiteAbout extends React.Component {
           <GridItem xs={12} sm={12} md={12}>
             <Card>
               <CardHeader color="primary">
-                <div className={styles.cardTitleWhite}>Website About information</div>
+                <div className={styles.cardTitleWhite}>
+                  Website About information. Updated &nbsp;
+                  <a
+                    target="_blank"
+                    rel="noreferrer"
+                    href="https://ecommerce-frontend-v2.vercel.app/"
+                    style={{ color: 'blue' }}
+                  >
+                    here
+                  </a>
+                </div>
               </CardHeader>
               <CardBody>
                 <MaterialTable
                   columns={columns}
                   data={websiteSliders}
                   options={options}
-                  title="Updated here: https://ecommerce-frontend-v2.vercel.app/"
+                  title=""
                   actions={[
                     {
                       icon: 'image',

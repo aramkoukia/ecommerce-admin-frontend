@@ -496,7 +496,15 @@ export default class UpdateWebsiteProducts extends React.Component {
             <Card>
               <CardHeader color="primary">
                 <div className={styles.cardTitleWhite}>
-                  Update Product Content for the Public Website
+                  Update Product Content for the Public Website. Updated &nbsp;
+                  <a
+                    target="_blank"
+                    rel="noreferrer"
+                    href="https://ecommerce-frontend-v2.vercel.app/"
+                    style={{ color: 'blue' }}
+                  >
+                    here
+                  </a>
                 </div>
               </CardHeader>
               <CardBody>
