@@ -7,41 +7,55 @@ import {
   Button,
 } from '@material-ui/core';
 import Check from '@material-ui/icons/Check';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
 import Snackbar from '../../components/Snackbar/Snackbar';
+import HtmlEditor from '../../components/HtmlEditor/HtmlEditor';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
 import CardBody from '../../components/Card/CardBody';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
-import WebsiteSliderService from '../../services/WebsiteSliderService';
+import WebsiteAboutService from '../../services/WebsiteAboutService';
 
 const imagePlaceholder = require('../../assets/img/image-placeholder.jpg');
 
 export default class WebsiteAbout extends React.Component {
   state = {
-    websiteSliders: [],
+    websiteAbout: [],
     openSnackbar: false,
     snackbarMessage: '',
     snackbarColor: '',
-    showUploadImage: false,
     id: null,
+    showDialog: false,
   };
 
   constructor(props) {
     super(props);
     this.handleUploadImage = this.handleUploadImage.bind(this);
     this.handleImageChange = this.handleImageChange.bind(this);
+    this.onAddNew = this.onAddNew.bind(this);
+    this.onSave = this.onSave.bind(this);
+    this.onEdit = this.onEdit.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.handleDescriptionBlur = this.handleDescriptionBlur.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
-    this.websiteSlidersList();
+    this.websiteAboutList();
   }
 
-  websiteSlidersList() {
-    // WebsiteSliderService.getWebsiteSliders()
-    //   .then((data) => this.setState({ websiteSliders: data }));
+  websiteAboutList() {
+    WebsiteAboutService.getWebsiteAbouts()
+      .then((data) => this.setState({ websiteAbout: data }));
+  }
+
+  handleDescriptionBlur(aboutText) {
+    this.setState({
+      aboutText,
+    });
   }
 
   handleImageChange(images) {
@@ -50,29 +64,68 @@ export default class WebsiteAbout extends React.Component {
     });
   }
 
+  onAddNew() {
+    this.setState({
+      showDialog: true,
+    });
+  }
+
+  onEdit() {
+    this.setState({
+      showDialog: true,
+      // about = '',
+    });
+  }
+
+  async onSave() {
+    const {
+      title,
+      sortOrder,
+      aboutText,
+    } = this.state;
+
+    const about = {
+      title,
+      sortOrder,
+      aboutText,
+    };
+    const result = await WebsiteAboutService.createWebsiteAbout(about);
+    if (result && result.email) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'About Us record created!',
+        snackbarColor: 'success',
+      });
+    }
+    this.setState({
+      showDialog: false,
+      title: '',
+      sortOrder: 0,
+      aboutText: '',
+    });
+
+    this.websiteAboutList();
+  }
+
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
+  }
+
   async handleUploadImage() {
     const { id, image } = this.state;
     const formData = new FormData();
     formData.append('file', image);
-    await WebsiteSliderService.updateWebsiteSliderImage(id, formData);
-    this.websiteSlidersList();
+    await WebsiteAboutService.updateWebsiteAboutImage(id, formData);
+    this.websiteAboutList();
     this.setState({
-      showUploadImage: false,
       id: null,
       image: null,
     });
   }
 
-  showUploadImage(id) {
-    this.setState({
-      showUploadImage: true,
-      id,
-    });
-  }
-
   handleClose() {
     this.setState({
-      showUploadImage: false,
+      showDialog: false,
       id: null,
       image: null,
     });
@@ -110,19 +163,20 @@ export default class WebsiteAbout extends React.Component {
     };
 
     const {
-      websiteSliders,
+      websiteAbout,
       openSnackbar,
       snackbarMessage,
       snackbarColor,
-      showUploadImage,
+      showDialog,
+      title,
+      sortOrder,
+      aboutText,
     } = this.state;
 
     const columns = [
       { title: 'Id', field: 'id', editable: 'never' },
-      { title: 'Sub Title', field: 'subTitle' },
       { title: 'Title', field: 'title' },
-      { title: 'Url', field: 'url' },
-      { title: 'Background Color', field: 'bgColor' },
+      { title: 'Sort Order', field: 'sortOrder' },
       {
         field: 'image',
         title: 'Image',
@@ -130,9 +184,9 @@ export default class WebsiteAbout extends React.Component {
         filtering: false,
         render: (rowData) => (
           <img
-            alt={(rowData && rowData.image && rowData.title) || 'No Image'}
-            src={((rowData && rowData.image) || imagePlaceholder)}
-            style={{ width: 70 }}
+            alt={(rowData && rowData.headerImagePath) || 'No Image'}
+            src={((rowData && rowData.headerImagePath) || imagePlaceholder)}
+            style={{ width: 120 }}
           />
         ),
       },
@@ -167,9 +221,12 @@ export default class WebsiteAbout extends React.Component {
                 </div>
               </CardHeader>
               <CardBody>
+                <Button color="primary" onClick={this.onAddNew}>
+                  New About Us record
+                </Button>
                 <MaterialTable
                   columns={columns}
-                  data={websiteSliders}
+                  data={websiteAbout}
                   options={options}
                   title=""
                   actions={[
@@ -182,32 +239,13 @@ export default class WebsiteAbout extends React.Component {
                     },
                   ]}
                   editable={{
-                    onRowAdd: (newData) => new Promise((resolve) => {
-                      setTimeout(() => {
-                        websiteSliders.push(newData);
-                        WebsiteSliderService.createWebsiteSlider(newData);
-                        this.setState({ websiteSliders }, () => resolve());
-                        resolve();
-                      }, 1000);
-                    }),
-                    onRowUpdate: (newData, oldData) => new Promise((resolve) => {
-                      setTimeout(() => {
-                        {
-                          const index = websiteSliders.indexOf(oldData);
-                          websiteSliders[index] = newData;
-                          WebsiteSliderService.updateWebsiteSlider(newData);
-                          this.setState({ websiteSliders }, () => resolve());
-                        }
-                        resolve();
-                      }, 1000);
-                    }),
                     onRowDelete: (oldData) => new Promise((resolve) => {
                       setTimeout(() => {
                         {
-                          const index = websiteSliders.indexOf(oldData);
-                          websiteSliders.splice(index, 1);
-                          WebsiteSliderService.deleteWebsiteSlider(oldData);
-                          this.setState({ websiteSliders }, () => resolve());
+                          const index = websiteAbout.indexOf(oldData);
+                          websiteAbout.splice(index, 1);
+                          WebsiteAboutService.deleteWebsiteAbout(oldData);
+                          this.setState({ websiteAbout }, () => resolve());
                         }
                         resolve();
                       }, 1000);
@@ -228,28 +266,53 @@ export default class WebsiteAbout extends React.Component {
           />
         </GridContainer>
         <Dialog
-          maxWidth="xl"
-          open={showUploadImage}
+          open={showDialog}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
         >
+          <DialogTitle id="form-dialog-title">About Us</DialogTitle>
           <DialogContent>
-            <p>
-              Use one of the following sizes:
-              <ul>
-                <li>469 * 708</li>
-                <li>935 * 621</li>
-                <li>341 * 651</li>
-              </ul>
-            </p>
-            <ImageUpload singleImage onChange={this.handleImageChange} />
+            <GridContainer>
+              <GridItem xs={12}>
+                <TextField
+                  name="title"
+                  label="title"
+                  type="text"
+                  onChange={this.handleChange}
+                  value={title}
+                  fullWidth="true"
+                />
+              </GridItem>
+              <GridItem xs={12}>
+                <HtmlEditor value={aboutText || ''} onBlur={this.handleDescriptionBlur} />
+              </GridItem>
+              <GridItem xs={12}>
+                <TextField
+                  name="sortOrder"
+                  label="Sort Order"
+                  type="text"
+                  onChange={this.handleChange}
+                  value={sortOrder}
+                  fullWidth="false"
+                />
+              </GridItem>
+              {/* <GridItem xs={12}>
+                <p>
+                  Use the following size:
+                  <ul>
+                    <li>1920 * 380</li>
+                  </ul>
+                </p>
+                <ImageUpload singleImage onChange={this.handleImageChange} />
+              </GridItem> */}
+            </GridContainer>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleUploadImage} color="primary">
+            <Button onClick={this.onSave} color="primary">
               Save
             </Button>
             <Button onClick={this.handleClose} color="info">
-              Cancel
+              Close
             </Button>
           </DialogActions>
         </Dialog>
