@@ -67,13 +67,18 @@ export default class WebsiteAbout extends React.Component {
   onAddNew() {
     this.setState({
       showDialog: true,
+      isEdit: false,
     });
   }
 
-  onEdit() {
+  onEdit(id, title, sortOrder, aboutText) {
     this.setState({
+      id,
       showDialog: true,
-      // about = '',
+      title,
+      sortOrder,
+      aboutText,
+      isEdit: true,
     });
   }
 
@@ -82,20 +87,36 @@ export default class WebsiteAbout extends React.Component {
       title,
       sortOrder,
       aboutText,
+      isEdit,
+      id,
     } = this.state;
 
     const about = {
+      id,
       title,
       sortOrder,
       aboutText,
     };
-    const result = await WebsiteAboutService.createWebsiteAbout(about);
-    if (result && result.email) {
-      this.setState({
-        openSnackbar: true,
-        snackbarMessage: 'About Us record created!',
-        snackbarColor: 'success',
-      });
+    if (isEdit) {
+      const result = await WebsiteAboutService.updateWebsiteAbout(about);
+      if (result && result.email) {
+        this.setState({
+          openSnackbar: true,
+          snackbarMessage: 'About Us record created!',
+          snackbarColor: 'success',
+        });
+      }
+
+    } else {
+      const result = await WebsiteAboutService.createWebsiteAbout(about);
+      if (result && result.email) {
+        this.setState({
+          openSnackbar: true,
+          snackbarMessage: 'About Us record created!',
+          snackbarColor: 'success',
+        });
+      }
+
     }
     this.setState({
       showDialog: false,
@@ -230,6 +251,16 @@ export default class WebsiteAbout extends React.Component {
                   options={options}
                   title=""
                   actions={[
+                    {
+                      icon: 'edit',
+                      tooltip: 'Edit',
+                      onClick: (event, rowData) => this.onEdit(
+                        rowData.id,
+                        rowData.title,
+                        rowData.sortOrder,
+                        rowData.aboutText,
+                      ),
+                    },
                     {
                       icon: 'image',
                       tooltip: 'Upload Website Image',
