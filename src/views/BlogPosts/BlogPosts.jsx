@@ -28,6 +28,7 @@ import GridItem from '../../components/Grid/GridItem';
 import CardBody from '../../components/Card/CardBody';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
 import BlogPostService from '../../services/BlogPostService';
+import PortalSettingsService from '../../services/PortalSettingsService';
 
 export default class BlogPosts extends React.Component {
   state = {
@@ -42,6 +43,7 @@ export default class BlogPosts extends React.Component {
     longDescription: '',
     tags: '',
     id: null,
+    portalSettings: {},
   };
 
   constructor(props) {
@@ -55,6 +57,7 @@ export default class BlogPosts extends React.Component {
 
   componentDidMount() {
     this.blogPostsList();
+    this.getPortalSettings();
   }
 
   handleClose = () => {
@@ -94,6 +97,11 @@ export default class BlogPosts extends React.Component {
   blogPostsList() {
     BlogPostService.getBlogPosts()
       .then((data) => this.setState({ blogPosts: data }));
+  }
+
+  getPortalSettings() {
+    PortalSettingsService.getPortalSettings()
+      .then((data) => this.setState({ portalSettings: data }));
   }
 
   newPost() {
@@ -178,6 +186,7 @@ export default class BlogPosts extends React.Component {
       shortDescription,
       longDescription,
       tags,
+      portalSettings,
     } = this.state;
 
     const columns = [
@@ -208,7 +217,7 @@ export default class BlogPosts extends React.Component {
                   <a
                     target="_blank"
                     rel="noreferrer"
-                    href="https://ecommerce-frontend-v2.vercel.app/"
+                    href={portalSettings.publicWebsiteUrl}
                     style={{ color: 'blue' }}
                   >
                     here

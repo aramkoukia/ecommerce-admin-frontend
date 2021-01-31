@@ -15,6 +15,7 @@ import GridItem from '../../components/Grid/GridItem';
 import CardBody from '../../components/Card/CardBody';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
 import WebsiteSliderService from '../../services/WebsiteSliderService';
+import PortalSettingsService from '../../services/PortalSettingsService';
 
 const imagePlaceholder = require('../../assets/img/image-placeholder.jpg');
 
@@ -26,6 +27,7 @@ export default class WebsiteSlider extends React.Component {
     snackbarColor: '',
     showUploadImage: false,
     id: null,
+    portalSettings: {},
   };
 
   constructor(props) {
@@ -37,6 +39,12 @@ export default class WebsiteSlider extends React.Component {
 
   componentDidMount() {
     this.websiteSlidersList();
+    this.getPortalSettings();
+  }
+
+  getPortalSettings() {
+    PortalSettingsService.getPortalSettings()
+      .then((data) => this.setState({ portalSettings: data }));
   }
 
   websiteSlidersList() {
@@ -115,6 +123,7 @@ export default class WebsiteSlider extends React.Component {
       snackbarMessage,
       snackbarColor,
       showUploadImage,
+      portalSettings,
     } = this.state;
 
     const columns = [
@@ -159,7 +168,7 @@ export default class WebsiteSlider extends React.Component {
                   <a
                     target="_blank"
                     rel="noreferrer"
-                    href="https://ecommerce-frontend-v2.vercel.app/"
+                    href={portalSettings.publicWebsiteUrl}
                     style={{ color: 'blue' }}
                   >
                     here

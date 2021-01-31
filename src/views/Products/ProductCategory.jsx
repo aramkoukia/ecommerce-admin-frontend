@@ -16,6 +16,7 @@ import CardBody from '../../components/Card/CardBody';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
 import HtmlEditor from '../../components/HtmlEditor/HtmlEditor';
 import ProductCategoryService from '../../services/ProductCategoryService';
+import PortalSettingsService from '../../services/PortalSettingsService';
 
 const imagePlaceholder = require('../../assets/img/image-placeholder.jpg');
 
@@ -30,6 +31,7 @@ export default class ProductCategory extends React.Component {
     showUploadHeaderImageModal: false,
     description: '',
     productTypeId: null,
+    portalSettings: {},
   };
 
   constructor(props) {
@@ -45,6 +47,12 @@ export default class ProductCategory extends React.Component {
 
   componentDidMount() {
     this.productCategoriesList();
+    this.getPortalSettings();
+  }
+
+  getPortalSettings() {
+    PortalSettingsService.getPortalSettings()
+      .then((data) => this.setState({ portalSettings: data }));
   }
 
   productCategoriesList() {
@@ -184,6 +192,7 @@ export default class ProductCategory extends React.Component {
       showUploadImage,
       showUploadHeaderImageModal,
       description,
+      portalSettings,
     } = this.state;
 
     const columns = [
@@ -249,7 +258,7 @@ export default class ProductCategory extends React.Component {
                   <a
                     target="_blank"
                     rel="noreferrer"
-                    href="https://ecommerce-frontend-v2.vercel.app/"
+                    href={portalSettings.publicWebsiteUrl}
                     style={{ color: 'blue' }}
                   >
                     here
@@ -261,7 +270,7 @@ export default class ProductCategory extends React.Component {
                   columns={columns}
                   data={productCategories}
                   options={options}
-                  title="Check out the product here: https://ecommerce-frontend-v2.vercel.app/"
+                  title=""
                   actions={[
                     {
                       icon: 'subject',

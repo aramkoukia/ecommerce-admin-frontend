@@ -14,6 +14,7 @@ import GridItem from '../../components/Grid/GridItem';
 import Button from '../../components/CustomButtons/Button';
 import CardBody from '../../components/Card/CardBody';
 import ApplicationService from '../../services/ApplicationService';
+import PortalSettingsService from '../../services/PortalSettingsService';
 
 const imagePlaceholder = require('../../assets/img/image-placeholder.jpg');
 
@@ -25,6 +26,7 @@ export default class CustomApplications extends React.Component {
     snackbarMessage: '',
     snackbarColor: '',
     openDialog: false,
+    portalSettings: {},
   };
 
   constructor(props) {
@@ -35,6 +37,12 @@ export default class CustomApplications extends React.Component {
 
   componentDidMount() {
     this.applicationsList();
+    this.getPortalSettings();
+  }
+
+  getPortalSettings() {
+    PortalSettingsService.getPortalSettings()
+      .then((data) => this.setState({ portalSettings: data }));
   }
 
   handleChange(event) {
@@ -111,6 +119,7 @@ export default class CustomApplications extends React.Component {
       snackbarColor,
       applicationSteps,
       openDialog,
+      portalSettings,
     } = this.state;
 
     const detailColumns = [
@@ -195,7 +204,7 @@ export default class CustomApplications extends React.Component {
                   <a
                     target="_blank"
                     rel="noreferrer"
-                    href="https://ecommerce-frontend-v2.vercel.app/"
+                    href={portalSettings.publicWebsiteUrl}
                     style={{ color: 'blue' }}
                   >
                     here

@@ -7,15 +7,23 @@ import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import TagService from '../../services/TagService';
+import PortalSettingsService from '../../services/PortalSettingsService';
 
 export default class Tags extends React.Component {
   state = {
     tags: [],
     loading: false,
+    portalSettings: {},
   };
 
   componentDidMount() {
     this.TagsList();
+    this.getPortalSettings();
+  }
+
+  getPortalSettings() {
+    PortalSettingsService.getPortalSettings()
+      .then((data) => this.setState({ portalSettings: data }));
   }
 
   TagsList() {
@@ -79,7 +87,11 @@ export default class Tags extends React.Component {
       search: true,
     };
 
-    const { tags, loading } = this.state;
+    const {
+      tags,
+      loading,
+      portalSettings,
+    } = this.state;
 
     return (
       <div>
@@ -92,7 +104,7 @@ export default class Tags extends React.Component {
                   <a
                     target="_blank"
                     rel="noreferrer"
-                    href="https://ecommerce-frontend-v2.vercel.app/"
+                    href={portalSettings.publicWebsiteUrl}
                     style={{ color: 'blue' }}
                   >
                     here

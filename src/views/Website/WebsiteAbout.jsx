@@ -18,6 +18,7 @@ import GridItem from '../../components/Grid/GridItem';
 import CardBody from '../../components/Card/CardBody';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
 import WebsiteAboutService from '../../services/WebsiteAboutService';
+import PortalSettingsService from '../../services/PortalSettingsService';
 
 const imagePlaceholder = require('../../assets/img/image-placeholder.jpg');
 
@@ -29,6 +30,7 @@ export default class WebsiteAbout extends React.Component {
     snackbarColor: '',
     id: null,
     showDialog: false,
+    portalSettings: {},
   };
 
   constructor(props) {
@@ -45,6 +47,12 @@ export default class WebsiteAbout extends React.Component {
 
   componentDidMount() {
     this.websiteAboutList();
+    this.getPortalSettings();
+  }
+
+  getPortalSettings() {
+    PortalSettingsService.getPortalSettings()
+      .then((data) => this.setState({ portalSettings: data }));
   }
 
   websiteAboutList() {
@@ -192,6 +200,7 @@ export default class WebsiteAbout extends React.Component {
       title,
       sortOrder,
       aboutText,
+      portalSettings,
     } = this.state;
 
     const columns = [
@@ -234,7 +243,7 @@ export default class WebsiteAbout extends React.Component {
                   <a
                     target="_blank"
                     rel="noreferrer"
-                    href="https://ecommerce-frontend-v2.vercel.app/"
+                    href={portalSettings.publicWebsiteUrl}
                     style={{ color: 'blue' }}
                   >
                     here

@@ -23,6 +23,7 @@ import TagService from '../../services/TagService';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
 import FileUpload from '../../components/ImageUpload/FileUpload';
 import HtmlEditor from '../../components/HtmlEditor/HtmlEditor';
+import PortalSettingsService from '../../services/PortalSettingsService';
 
 // const imagePlaceholder = require('../../assets/img/image-placeholder.jpg');
 
@@ -44,6 +45,7 @@ export default class UpdateWebsiteProducts extends React.Component {
     headerImage: null,
     images: null,
     productId: null,
+    portalSettings: {},
   };
 
   constructor(props) {
@@ -86,6 +88,12 @@ export default class UpdateWebsiteProducts extends React.Component {
   componentDidMount() {
     this.productsList();
     this.tagsList();
+    this.getPortalSettings();
+  }
+
+  getPortalSettings() {
+    PortalSettingsService.getPortalSettings()
+      .then((data) => this.setState({ portalSettings: data }));
   }
 
   handleChange(event) {
@@ -477,6 +485,7 @@ export default class UpdateWebsiteProducts extends React.Component {
       existingCatalog,
       tags,
       productTags,
+      portalSettings,
     } = this.state;
 
     const options = {
@@ -500,7 +509,7 @@ export default class UpdateWebsiteProducts extends React.Component {
                   <a
                     target="_blank"
                     rel="noreferrer"
-                    href="https://ecommerce-frontend-v2.vercel.app/"
+                    href={portalSettings.publicWebsiteUrl}
                     style={{ color: 'blue' }}
                   >
                     here
@@ -513,7 +522,7 @@ export default class UpdateWebsiteProducts extends React.Component {
                   columns={columns}
                   data={products}
                   options={options}
-                  title="Check out the product here: https://ecommerce-frontend-v2.vercel.app/"
+                  title=""
                   actions={[
                     {
                       icon: 'wallpaper',
