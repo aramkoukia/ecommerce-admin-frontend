@@ -357,7 +357,7 @@ const dashboardRoutes = [
         Icon: Highlight,
         component: UpdateWebsiteProducts,
         needsPermission: true,
-        permission: Permissions.ViewProductCategories,
+        permission: Permissions.ViewWebsiteSettings,
       },
       {
         path: '/productcategories',
@@ -365,7 +365,7 @@ const dashboardRoutes = [
         Icon: Highlight,
         component: ProductCategory,
         needsPermission: true,
-        permission: Permissions.ViewProductCategories,
+        permission: Permissions.ViewWebsiteSettings,
       },
       {
         path: '/websitesliders',
@@ -373,7 +373,7 @@ const dashboardRoutes = [
         Icon: Highlight,
         component: WebsiteSlider,
         needsPermission: true,
-        permission: Permissions.ViewProductCategories,
+        permission: Permissions.ViewWebsiteSettings,
       },
       {
         path: '/blogposts',
@@ -381,7 +381,7 @@ const dashboardRoutes = [
         Icon: Book,
         component: BlogPosts,
         needsPermission: true,
-        permission: Permissions.ViewProductCategories,
+        permission: Permissions.ViewWebsiteSettings,
       },
       {
         path: '/custom-applications',
@@ -389,7 +389,7 @@ const dashboardRoutes = [
         Icon: CenterFocusWeak,
         component: CustomApplications,
         needsPermission: true,
-        permission: Permissions.ViewCustomApplications,
+        permission: Permissions.ViewWebsiteSettings,
       },
       {
         path: '/tags',
@@ -397,7 +397,7 @@ const dashboardRoutes = [
         Icon: LocalOffer,
         component: Tags,
         needsPermission: true,
-        permission: Permissions.ViewTags,
+        permission: Permissions.ViewWebsiteSettings,
       },
       {
         path: '/websiteabout',
@@ -405,7 +405,7 @@ const dashboardRoutes = [
         Icon: Book,
         component: WebsiteAbout,
         needsPermission: true,
-        permission: Permissions.ViewProductCategories,
+        permission: Permissions.ViewWebsiteSettings,
       },
       {
         path: '/websiteaboutpopover',
@@ -413,7 +413,7 @@ const dashboardRoutes = [
         Icon: Book,
         component: WebsiteAboutPopOver,
         needsPermission: true,
-        permission: Permissions.ViewProductCategories,
+        permission: Permissions.ViewWebsiteSettings,
       },
       {
         path: '/websitefaq',
@@ -421,7 +421,7 @@ const dashboardRoutes = [
         Icon: Book,
         component: WebsiteFaq,
         needsPermission: true,
-        permission: Permissions.ViewProductCategories,
+        permission: Permissions.ViewWebsiteSettings,
       },
     ],
   },
