@@ -86,6 +86,8 @@ export default class WebsiteHeaderImage extends React.Component {
       snackbarColor,
       image,
     } = this.state;
+    // const defaultImage = image === null || image === undefined
+    //   ? [websitePage.headerImagePath] : [];
 
     return (
       <div>
@@ -100,11 +102,16 @@ export default class WebsiteHeaderImage extends React.Component {
             <ImageUpload
               singleImage
               onChange={this.handleImageChange}
-              existingImages={[websitePage.headerImagePath]}
+              // existingImages={defaultImage}
             />
             <Button disabled={image === null || image === undefined} onClick={this.handleUploadImage} color="primary">
               Save
             </Button>
+            {websitePage && websitePage.headerImagePath && (
+              <div>
+                <img src={websitePage.headerImagePath} alt="" style={{ 'max-width': '1000px' }} />
+              </div>
+            )}
           </CardBody>
         </Card>
         <Snackbar
