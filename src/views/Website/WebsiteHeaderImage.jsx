@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '@material-ui/core';
 import Check from '@material-ui/icons/Check';
+import PropTypes from 'prop-types';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
@@ -96,7 +97,11 @@ export default class WebsiteHeaderImage extends React.Component {
           </CardHeader>
           <CardBody>
             Use the following size: 1920 * 380
-            <ImageUpload singleImage onChange={this.handleImageChange} existingImages={[websitePage.headerImagePath]} />
+            <ImageUpload
+              singleImage
+              onChange={this.handleImageChange}
+              existingImages={[websitePage.headerImagePath]}
+            />
             <Button disabled={image === null || image === undefined} onClick={this.handleUploadImage} color="primary">
               Save
             </Button>
@@ -115,3 +120,7 @@ export default class WebsiteHeaderImage extends React.Component {
     );
   }
 }
+
+WebsiteHeaderImage.propTypes = {
+  url: PropTypes.string.isRequired,
+};

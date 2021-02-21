@@ -35,8 +35,6 @@ export default class WebsiteAbout extends React.Component {
 
   constructor(props) {
     super(props);
-    this.handleUploadImage = this.handleUploadImage.bind(this);
-    this.handleImageChange = this.handleImageChange.bind(this);
     this.onAddNew = this.onAddNew.bind(this);
     this.onSave = this.onSave.bind(this);
     this.onEdit = this.onEdit.bind(this);
@@ -118,12 +116,6 @@ export default class WebsiteAbout extends React.Component {
       .then((data) => this.setState({ portalSettings: data }));
   }
 
-  handleImageChange(images) {
-    this.setState({
-      image: images && images.length > 0 ? images[0] : null,
-    });
-  }
-
   handleDescriptionBlur(aboutText) {
     this.setState({
       aboutText,
@@ -139,23 +131,10 @@ export default class WebsiteAbout extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
   }
 
-  async handleUploadImage() {
-    const { id, image } = this.state;
-    const formData = new FormData();
-    formData.append('file', image);
-    await WebsiteAboutService.updateWebsiteAboutImage(id, formData);
-    this.websiteAboutList();
-    this.setState({
-      id: null,
-      image: null,
-    });
-  }
-
   handleClose() {
     this.setState({
       showDialog: false,
       id: null,
-      image: null,
     });
   }
 
@@ -205,20 +184,8 @@ export default class WebsiteAbout extends React.Component {
     const columns = [
       { title: 'Id', field: 'id', editable: 'never' },
       { title: 'Title', field: 'title' },
+      { title: 'About Text', field: 'aboutText' },
       { title: 'Sort Order', field: 'sortOrder' },
-      {
-        field: 'image',
-        title: 'Image',
-        editable: 'never',
-        filtering: false,
-        render: (rowData) => (
-          <img
-            alt={(rowData && rowData.headerImagePath) || 'No Image'}
-            src={((rowData && rowData.headerImagePath) || imagePlaceholder)}
-            style={{ width: 120 }}
-          />
-        ),
-      },
     ];
 
     const options = {
@@ -240,6 +207,7 @@ export default class WebsiteAbout extends React.Component {
                 <div className={styles.cardTitleWhite}>
                   Website About information. Updated &nbsp;
                   <a
+                    // eslint-disable-next-line react/jsx-no-target-blank
                     target="_blank"
                     rel="noreferrer"
                     href={portalSettings.publicWebsiteUrl}

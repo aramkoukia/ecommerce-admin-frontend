@@ -1,11 +1,5 @@
 import React from 'react';
 import MaterialTable from 'material-table';
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  Button,
-} from '@material-ui/core';
 import Check from '@material-ui/icons/Check';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import Card from '../../components/Card/Card';
@@ -13,11 +7,9 @@ import CardHeader from '../../components/Card/CardHeader';
 import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
 import CardBody from '../../components/Card/CardBody';
-import ImageUpload from '../../components/ImageUpload/ImageUpload';
+import WebsiteHeaderImage from './WebsiteHeaderImage';
 import WebsiteFaqService from '../../services/WebsiteFaqService';
 import PortalSettingsService from '../../services/PortalSettingsService';
-
-const imagePlaceholder = require('../../assets/img/image-placeholder.jpg');
 
 export default class WebsiteFaq extends React.Component {
   state = {
@@ -25,17 +17,8 @@ export default class WebsiteFaq extends React.Component {
     openSnackbar: false,
     snackbarMessage: '',
     snackbarColor: '',
-    showUploadImage: false,
-    id: null,
     portalSettings: {},
   };
-
-  constructor(props) {
-    super(props);
-    this.handleUploadImage = this.handleUploadImage.bind(this);
-    this.handleImageChange = this.handleImageChange.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-  }
 
   componentDidMount() {
     this.websiteFaqsList();
@@ -50,37 +33,6 @@ export default class WebsiteFaq extends React.Component {
   websiteFaqsList() {
     WebsiteFaqService.getWebsiteFaqs()
       .then((data) => this.setState({ websiteFaqs: data }));
-  }
-
-  handleImageChange(images) {
-    this.setState({
-      image: images && images.length > 0 ? images[0] : null,
-    });
-  }
-
-  async handleUploadImage() {
-    const { image } = this.state;
-    const formData = new FormData();
-    formData.append('file', image);
-    await WebsiteFaqService.updateWebsiteFaqImage(formData);
-    this.websiteFaqsList();
-    this.setState({
-      showUploadImage: false,
-      image: null,
-    });
-  }
-
-  showUploadImage() {
-    this.setState({
-      showUploadImage: true,
-    });
-  }
-
-  handleClose() {
-    this.setState({
-      showUploadImage: false,
-      image: null,
-    });
   }
 
   render() {
@@ -119,7 +71,6 @@ export default class WebsiteFaq extends React.Component {
       openSnackbar,
       snackbarMessage,
       snackbarColor,
-      showUploadImage,
       portalSettings,
     } = this.state;
 
@@ -150,6 +101,7 @@ export default class WebsiteFaq extends React.Component {
                 <div className={styles.cardTitleWhite}>
                   Website FAQ information. Updated &nbsp;
                   <a
+                    // eslint-disable-next-line react/jsx-no-target-blank
                     target="_blank"
                     rel="noreferrer"
                     href={portalSettings.publicWebsiteUrl}
@@ -160,6 +112,8 @@ export default class WebsiteFaq extends React.Component {
                 </div>
               </CardHeader>
               <CardBody>
+                <WebsiteHeaderImage url="/faq" />
+                <br />
                 <MaterialTable
                   columns={columns}
                   data={websiteFaqs}
@@ -211,32 +165,6 @@ export default class WebsiteFaq extends React.Component {
             close
           />
         </GridContainer>
-        <Dialog
-          maxWidth="xl"
-          open={showUploadImage}
-          onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
-        >
-          <DialogContent>
-            <p>
-              Use one of the following sizes:
-              <ul>
-                <li>469 * 708</li>
-                <li>935 * 621</li>
-                <li>341 * 651</li>
-              </ul>
-            </p>
-            <ImageUpload singleImage onChange={this.handleImageChange} />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleUploadImage} color="primary">
-              Save
-            </Button>
-            <Button onClick={this.handleClose} color="info">
-              Cancel
-            </Button>
-          </DialogActions>
-        </Dialog>
       </div>
     );
   }
