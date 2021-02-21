@@ -250,7 +250,7 @@ export default class WebsiteAbout extends React.Component {
                 </div>
               </CardHeader>
               <CardBody>
-                <WebsiteHeaderImage url="" />
+                <WebsiteHeaderImage url="/about" />
                 <br />
                 <Button color="primary" onClick={this.onAddNew}>
                   New About Us record

@@ -1,10 +1,21 @@
 import RestUtilities from './RestUtilities';
 
 export default class WebsitePageService {
-  static async getWebsitePage() {
+  static async getWebsitePages() {
     try {
       const response = await RestUtilities.get(
-        'websitepages',
+        'websitepage',
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async getWebsitePage(url) {
+    try {
+      const response = await RestUtilities.get(
+        `websitepage/${url}`,
       );
       return response.content;
     } catch (err) {
@@ -15,7 +26,7 @@ export default class WebsitePageService {
   static async createWebsitePage(websitePage) {
     try {
       const response = await RestUtilities.post(
-        'websitepages',
+        'websitepage',
         websitePage,
       );
       return response.content;
@@ -27,7 +38,7 @@ export default class WebsitePageService {
   static async deleteWebsitePage(websitePage) {
     try {
       const response = await RestUtilities.delete(
-        `websitepages/${websitePage.id}`,
+        `websitepage/${websitePage.id}`,
         websitePage,
       );
       return response.content;
@@ -39,7 +50,7 @@ export default class WebsitePageService {
   static async updateWebsitePage(websitePage) {
     try {
       const response = await RestUtilities.put(
-        `websitepages/${websitePage.id}`,
+        `websitepage/${websitePage.id}`,
         websitePage,
       );
       return response.content;

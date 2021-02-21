@@ -13,7 +13,7 @@ export default class WebsiteHeaderImage extends React.Component {
     openSnackbar: false,
     snackbarMessage: '',
     snackbarColor: '',
-    // websitePage: {},
+    websitePage: {},
   };
 
   constructor(props) {
@@ -23,6 +23,15 @@ export default class WebsiteHeaderImage extends React.Component {
   }
 
   componentDidMount() {
+    this.loadHeaderImage();
+  }
+
+  async loadHeaderImage() {
+    const { url } = this.props;
+    const websitePage = await WebsitePageService.getWebsitePage(encodeURIComponent(url));
+    this.setState({
+      websitePage,
+    });
   }
 
   handleImageChange(images) {
@@ -40,9 +49,13 @@ export default class WebsiteHeaderImage extends React.Component {
     const { url } = this.props;
     const formData = new FormData();
     formData.append('file', image);
-    await WebsitePageService.updateWebsitePageImage(url, formData);
+    await WebsitePageService.updateWebsitePageImage(encodeURIComponent(url), formData);
     this.setState({
       image: null,
+      openSnackbar: true,
+      snackbarMessage: 'Header Image saved!',
+      snackbarColor: 'success',
+
     });
   }
 
@@ -66,10 +79,11 @@ export default class WebsiteHeaderImage extends React.Component {
     };
 
     const {
-      // websitePage,
+      websitePage,
       openSnackbar,
       snackbarMessage,
       snackbarColor,
+      image,
     } = this.state;
 
     return (
@@ -81,14 +95,9 @@ export default class WebsiteHeaderImage extends React.Component {
             </div>
           </CardHeader>
           <CardBody>
-            <p>
-              Use the following size:
-              <ul>
-                <li>1920 * 380</li>
-              </ul>
-            </p>
-            <ImageUpload singleImage onChange={this.handleImageChange} />
-            <Button onClick={this.handleUploadImage} color="primary">
+            Use the following size: 1920 * 380
+            <ImageUpload singleImage onChange={this.handleImageChange} existingImages={[websitePage.headerImagePath]} />
+            <Button disabled={image === null || image === undefined} onClick={this.handleUploadImage} color="primary">
               Save
             </Button>
           </CardBody>
