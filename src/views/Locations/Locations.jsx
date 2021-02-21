@@ -7,6 +7,7 @@ import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import LocationService from '../../services/LocationService';
+import WebsiteHeaderImage from '../Website/WebsiteHeaderImage';
 
 export default class Locations extends React.Component {
   state = {
@@ -102,8 +103,8 @@ export default class Locations extends React.Component {
 
     const options = {
       paging: true,
-      pageSizeOptions: [25, 50, 100],
-      pageSize: 25,
+      pageSizeOptions: [5, 50, 100],
+      pageSize: 5,
       columnsButton: true,
       exportButton: true,
       filtering: true,
@@ -160,6 +161,10 @@ export default class Locations extends React.Component {
                   }}
                 />
                 {loading && (<LinearProgress />)}
+
+                <WebsiteHeaderImage url="/contact" />
+                <br />
+
               </CardBody>
             </Card>
           </GridItem>

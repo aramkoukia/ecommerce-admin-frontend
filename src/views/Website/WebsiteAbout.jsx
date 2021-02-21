@@ -20,8 +20,6 @@ import WebsiteHeaderImage from './WebsiteHeaderImage';
 import WebsiteAboutService from '../../services/WebsiteAboutService';
 import PortalSettingsService from '../../services/PortalSettingsService';
 
-const imagePlaceholder = require('../../assets/img/image-placeholder.jpg');
-
 export default class WebsiteAbout extends React.Component {
   state = {
     websiteAbout: [],
