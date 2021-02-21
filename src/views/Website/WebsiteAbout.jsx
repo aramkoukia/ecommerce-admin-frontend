@@ -16,7 +16,7 @@ import CardHeader from '../../components/Card/CardHeader';
 import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
 import CardBody from '../../components/Card/CardBody';
-import ImageUpload from '../../components/ImageUpload/ImageUpload';
+import WebsiteHeaderImage from './WebsiteHeaderImage';
 import WebsiteAboutService from '../../services/WebsiteAboutService';
 import PortalSettingsService from '../../services/PortalSettingsService';
 
@@ -50,35 +50,6 @@ export default class WebsiteAbout extends React.Component {
     this.getPortalSettings();
   }
 
-  getPortalSettings() {
-    PortalSettingsService.getPortalSettings()
-      .then((data) => this.setState({ portalSettings: data }));
-  }
-
-  websiteAboutList() {
-    WebsiteAboutService.getWebsiteAbouts()
-      .then((data) => this.setState({ websiteAbout: data }));
-  }
-
-  handleDescriptionBlur(aboutText) {
-    this.setState({
-      aboutText,
-    });
-  }
-
-  handleImageChange(images) {
-    this.setState({
-      image: images && images.length > 0 ? images[0] : null,
-    });
-  }
-
-  onAddNew() {
-    this.setState({
-      showDialog: true,
-      isEdit: false,
-    });
-  }
-
   onEdit(id, title, sortOrder, aboutText) {
     this.setState({
       id,
@@ -87,6 +58,13 @@ export default class WebsiteAbout extends React.Component {
       sortOrder,
       aboutText,
       isEdit: true,
+    });
+  }
+
+  onAddNew() {
+    this.setState({
+      showDialog: true,
+      isEdit: false,
     });
   }
 
@@ -100,12 +78,12 @@ export default class WebsiteAbout extends React.Component {
     } = this.state;
 
     const about = {
-      id,
       title,
       sortOrder,
       aboutText,
     };
     if (isEdit) {
+      about.id = id;
       const result = await WebsiteAboutService.updateWebsiteAbout(about);
       if (result && result.email) {
         this.setState({
@@ -114,7 +92,6 @@ export default class WebsiteAbout extends React.Component {
           snackbarColor: 'success',
         });
       }
-
     } else {
       const result = await WebsiteAboutService.createWebsiteAbout(about);
       if (result && result.email) {
@@ -124,8 +101,8 @@ export default class WebsiteAbout extends React.Component {
           snackbarColor: 'success',
         });
       }
-
     }
+
     this.setState({
       showDialog: false,
       title: '',
@@ -134,6 +111,28 @@ export default class WebsiteAbout extends React.Component {
     });
 
     this.websiteAboutList();
+  }
+
+  getPortalSettings() {
+    PortalSettingsService.getPortalSettings()
+      .then((data) => this.setState({ portalSettings: data }));
+  }
+
+  handleImageChange(images) {
+    this.setState({
+      image: images && images.length > 0 ? images[0] : null,
+    });
+  }
+
+  handleDescriptionBlur(aboutText) {
+    this.setState({
+      aboutText,
+    });
+  }
+
+  websiteAboutList() {
+    WebsiteAboutService.getWebsiteAbouts()
+      .then((data) => this.setState({ websiteAbout: data }));
   }
 
   handleChange(event) {
@@ -251,6 +250,8 @@ export default class WebsiteAbout extends React.Component {
                 </div>
               </CardHeader>
               <CardBody>
+                <WebsiteHeaderImage url="" />
+                <br />
                 <Button color="primary" onClick={this.onAddNew}>
                   New About Us record
                 </Button>
@@ -268,13 +269,6 @@ export default class WebsiteAbout extends React.Component {
                         rowData.title,
                         rowData.sortOrder,
                         rowData.aboutText,
-                      ),
-                    },
-                    {
-                      icon: 'image',
-                      tooltip: 'Upload Website Image',
-                      onClick: (event, rowData) => this.showUploadImage(
-                        rowData.id,
                       ),
                     },
                   ]}
@@ -336,15 +330,6 @@ export default class WebsiteAbout extends React.Component {
                   fullWidth="false"
                 />
               </GridItem>
-              {/* <GridItem xs={12}>
-                <p>
-                  Use the following size:
-                  <ul>
-                    <li>1920 * 380</li>
-                  </ul>
-                </p>
-                <ImageUpload singleImage onChange={this.handleImageChange} />
-              </GridItem> */}
             </GridContainer>
           </DialogContent>
           <DialogActions>

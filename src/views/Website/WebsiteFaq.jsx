@@ -14,14 +14,14 @@ import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
 import CardBody from '../../components/Card/CardBody';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
-import WebsiteSliderService from '../../services/WebsiteSliderService';
+import WebsiteFaqService from '../../services/WebsiteFaqService';
 import PortalSettingsService from '../../services/PortalSettingsService';
 
 const imagePlaceholder = require('../../assets/img/image-placeholder.jpg');
 
 export default class WebsiteFaq extends React.Component {
   state = {
-    websiteSliders: [],
+    websiteFaqs: [],
     openSnackbar: false,
     snackbarMessage: '',
     snackbarColor: '',
@@ -38,7 +38,7 @@ export default class WebsiteFaq extends React.Component {
   }
 
   componentDidMount() {
-    this.websiteSlidersList();
+    this.websiteFaqsList();
     this.getPortalSettings();
   }
 
@@ -47,9 +47,9 @@ export default class WebsiteFaq extends React.Component {
       .then((data) => this.setState({ portalSettings: data }));
   }
 
-  websiteSlidersList() {
-    // WebsiteSliderService.getWebsiteSliders()
-    //   .then((data) => this.setState({ websiteSliders: data }));
+  websiteFaqsList() {
+    WebsiteFaqService.getWebsiteFaqs()
+      .then((data) => this.setState({ websiteFaqs: data }));
   }
 
   handleImageChange(images) {
@@ -59,29 +59,26 @@ export default class WebsiteFaq extends React.Component {
   }
 
   async handleUploadImage() {
-    const { id, image } = this.state;
+    const { image } = this.state;
     const formData = new FormData();
     formData.append('file', image);
-    await WebsiteSliderService.updateWebsiteSliderImage(id, formData);
-    this.websiteSlidersList();
+    await WebsiteFaqService.updateWebsiteFaqImage(formData);
+    this.websiteFaqsList();
     this.setState({
       showUploadImage: false,
-      id: null,
       image: null,
     });
   }
 
-  showUploadImage(id) {
+  showUploadImage() {
     this.setState({
       showUploadImage: true,
-      id,
     });
   }
 
   handleClose() {
     this.setState({
       showUploadImage: false,
-      id: null,
       image: null,
     });
   }
@@ -118,7 +115,7 @@ export default class WebsiteFaq extends React.Component {
     };
 
     const {
-      websiteSliders,
+      websiteFaqs,
       openSnackbar,
       snackbarMessage,
       snackbarColor,
@@ -128,23 +125,10 @@ export default class WebsiteFaq extends React.Component {
 
     const columns = [
       { title: 'Id', field: 'id', editable: 'never' },
-      { title: 'Sub Title', field: 'subTitle' },
-      { title: 'Title', field: 'title' },
-      { title: 'Url', field: 'url' },
-      { title: 'Background Color', field: 'bgColor' },
-      {
-        field: 'image',
-        title: 'Image',
-        editable: 'never',
-        filtering: false,
-        render: (rowData) => (
-          <img
-            alt={(rowData && rowData.image && rowData.title) || 'No Image'}
-            src={((rowData && rowData.image) || imagePlaceholder)}
-            style={{ width: 70 }}
-          />
-        ),
-      },
+      { title: 'Section', field: 'section' },
+      { title: 'Question', field: 'question' },
+      { title: 'Answer', field: 'answer' },
+      { title: 'Sort Order', field: 'sortOrder' },
     ];
 
     const options = {
@@ -178,34 +162,25 @@ export default class WebsiteFaq extends React.Component {
               <CardBody>
                 <MaterialTable
                   columns={columns}
-                  data={websiteSliders}
+                  data={websiteFaqs}
                   options={options}
                   title=""
-                  actions={[
-                    {
-                      icon: 'image',
-                      tooltip: 'Upload Website Image',
-                      onClick: (event, rowData) => this.showUploadImage(
-                        rowData.id,
-                      ),
-                    },
-                  ]}
                   editable={{
                     onRowAdd: (newData) => new Promise((resolve) => {
                       setTimeout(() => {
-                        websiteSliders.push(newData);
-                        WebsiteSliderService.createWebsiteSlider(newData);
-                        this.setState({ websiteSliders }, () => resolve());
+                        websiteFaqs.push(newData);
+                        WebsiteFaqService.createWebsiteFaq(newData);
+                        this.setState({ websiteFaqs }, () => resolve());
                         resolve();
                       }, 1000);
                     }),
                     onRowUpdate: (newData, oldData) => new Promise((resolve) => {
                       setTimeout(() => {
                         {
-                          const index = websiteSliders.indexOf(oldData);
-                          websiteSliders[index] = newData;
-                          WebsiteSliderService.updateWebsiteSlider(newData);
-                          this.setState({ websiteSliders }, () => resolve());
+                          const index = websiteFaqs.indexOf(oldData);
+                          websiteFaqs[index] = newData;
+                          WebsiteFaqService.updateWebsiteFaq(newData);
+                          this.setState({ websiteFaqs }, () => resolve());
                         }
                         resolve();
                       }, 1000);
@@ -213,10 +188,10 @@ export default class WebsiteFaq extends React.Component {
                     onRowDelete: (oldData) => new Promise((resolve) => {
                       setTimeout(() => {
                         {
-                          const index = websiteSliders.indexOf(oldData);
-                          websiteSliders.splice(index, 1);
-                          WebsiteSliderService.deleteWebsiteSlider(oldData);
-                          this.setState({ websiteSliders }, () => resolve());
+                          const index = websiteFaqs.indexOf(oldData);
+                          websiteFaqs.splice(index, 1);
+                          WebsiteFaqService.deleteWebsiteFaq(oldData);
+                          this.setState({ websiteFaqs }, () => resolve());
                         }
                         resolve();
                       }, 1000);
