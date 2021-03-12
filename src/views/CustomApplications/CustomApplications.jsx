@@ -94,17 +94,6 @@ export default class CustomApplications extends React.Component {
     const columns = [
       { title: 'Step Title', field: 'stepTitle' },
       { title: 'Step Description', field: 'stepDescription' },
-      {
-        title: 'Is Range?',
-        field: 'isRangeValue',
-        lookup: {
-          true: 'Yes',
-          false: 'No',
-        },
-      },
-      { title: 'Min Value', field: 'minValue', type: 'numeric' },
-      { title: 'Max Value', field: 'maxValue', type: 'numeric' },
-      { title: 'Value Unit', field: 'valueUnit' },
       { title: 'Sort Order', field: 'sortOrder' },
       {
         title: 'Application Step Id', field: 'applicationStepId', readonly: true, hidden: true,
