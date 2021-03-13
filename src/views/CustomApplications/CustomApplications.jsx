@@ -33,6 +33,7 @@ export default class CustomApplications extends React.Component {
     super(props);
     this.handleChange = this.handleChange.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.updateImage = this.updateImage.bind(this);
   }
 
   componentDidMount() {
@@ -43,6 +44,10 @@ export default class CustomApplications extends React.Component {
   getPortalSettings() {
     PortalSettingsService.getPortalSettings()
       .then((data) => this.setState({ portalSettings: data }));
+  }
+
+  updateImage() {
+    // this.setState({ openDialog: true });
   }
 
   handleChange(event) {
@@ -120,6 +125,7 @@ export default class CustomApplications extends React.Component {
         field: 'thumbnailImagePath',
         filtering: false,
         readonly: true,
+        editable: 'never',
         render: (rowData) => (
           <img
             alt={(rowData.thumbnailImagePath) || 'No Image'}
@@ -166,6 +172,12 @@ export default class CustomApplications extends React.Component {
               data={rowData.stepDetails}
               options={detailOptions}
               title=""
+              actions={[
+                {
+                  icon: 'image',
+                  tooltip: 'Image',
+                  onClick: (event, rowData) => this.updateImage(rowData),
+                }]}
               editable={{
                 onRowUpdate: (newData) => new Promise(() => {
                   // const index = rowData.stepDetails.map((item)
