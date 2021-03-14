@@ -111,7 +111,6 @@ export default class CustomApplications extends React.Component {
       openSnackbar,
       snackbarMessage,
       snackbarColor,
-      applicationSteps,
       openDialog,
       portalSettings,
     } = this.state;
@@ -126,10 +125,10 @@ export default class CustomApplications extends React.Component {
         filtering: false,
         readonly: true,
         editable: 'never',
-        render: (rowData) => (
+        render: (detailRowData) => (
           <img
-            alt={(rowData.thumbnailImagePath) || 'No Image'}
-            src={rowData.thumbnailImagePath || imagePlaceholder}
+            alt={(detailRowData && detailRowData.thumbnailImagePath) || 'No Image'}
+            src={(detailRowData && detailRowData.thumbnailImagePath) || imagePlaceholder}
             style={{ width: 100 }}
           />
         ),
@@ -176,7 +175,7 @@ export default class CustomApplications extends React.Component {
                 {
                   icon: 'image',
                   tooltip: 'Image',
-                  onClick: (event, rowData) => this.updateImage(rowData),
+                  onClick: (event, detailRowData) => this.updateImage(detailRowData),
                 }]}
               editable={{
                 onRowUpdate: (newData) => new Promise(() => {
@@ -185,17 +184,21 @@ export default class CustomApplications extends React.Component {
                 }),
                 onRowAdd: (newData) => new Promise((resolve) => {
                   setTimeout(() => {
+                    newData.applicationStepId = rowData.applicationStepId;
                     ApplicationService.createStepDetail(newData);
-                    this.setState({ applications }, () => resolve());
+                    window.location.reload();
+                    // rowData.stepDetails.push(newData);
+                    // this.setState({ applications }, () => resolve());
                   }, 1000);
                 }),
                 onRowDelete: (oldData) => new Promise((resolve) => {
                   setTimeout(() => {
                     {
-                      const index = applications.indexOf(oldData);
-                      applications.splice(index, 1);
+                      // const index = rowData.stepDetails.indexOf(oldData);
+                      // rowData.stepDetails.splice(index, 1);
                       ApplicationService.deleteStepDetail(oldData.applicationStepDetailId);
-                      this.setState({ applications }, () => resolve());
+                      window.location.reload();
+                      // this.setState({ applications }, () => resolve());
                     }
                     resolve();
                   }, 1000);
@@ -207,7 +210,6 @@ export default class CustomApplications extends React.Component {
         ),
       },
     ];
-
 
     return (
       <div>
@@ -295,50 +297,6 @@ export default class CustomApplications extends React.Component {
                   Custom Application Steps:
                 </CardHeader>
                 <CardBody>
-                  <MaterialTable
-                    columns={columns}
-                    data={applicationSteps}
-                    options={options}
-                    title=""
-                    editable={{
-                      onRowAdd: (newData) => new Promise((resolve) => {
-                        setTimeout(() => {
-                          applicationSteps.push(newData);
-                          ApplicationService.createStep(
-                            newData.applicationStepId,
-                            newData,
-                          );
-                          this.setState({ applicationSteps }, () => resolve());
-                          resolve();
-                        }, 1000);
-                      }),
-                      onRowUpdate: (newData, oldData) => new Promise((resolve) => {
-                        setTimeout(() => {
-                          {
-                            const index = applicationSteps.indexOf(oldData);
-                            applicationSteps[index] = newData;
-                            ApplicationService.updateStep(
-                              newData.applicationStepDetailId,
-                              newData,
-                            );
-                            this.setState({ applicationSteps }, () => resolve());
-                          }
-                          resolve();
-                        }, 1000);
-                      }),
-                      onRowDelete: (oldData) => new Promise((resolve) => {
-                        setTimeout(() => {
-                          {
-                            const index = applicationSteps.indexOf(oldData);
-                            applicationSteps.splice(index, 1);
-                            ApplicationService.deleteStep(oldData.productId, oldData);
-                            this.setState({ applicationSteps }, () => resolve());
-                          }
-                          resolve();
-                        }, 1000);
-                      }),
-                    }}
-                  />
                 </CardBody>
               </Card>
             </DialogContentText>
