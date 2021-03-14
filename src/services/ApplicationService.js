@@ -83,7 +83,6 @@ export default class ApplicationService {
     }
   }
 
-
   static async deleteStepDetail(stepDetailId) {
     try {
       const response = await RestUtilities.delete(
@@ -106,4 +105,17 @@ export default class ApplicationService {
       return false;
     }
   }
+
+  static async updateStepDetailTags(id, tags) {
+    try {
+      const response = await RestUtilities.post(
+        `custom-applications/step-details/${id}/tags`,
+        tags,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
 }

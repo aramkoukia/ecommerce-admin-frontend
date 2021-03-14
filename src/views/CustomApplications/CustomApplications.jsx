@@ -5,6 +5,12 @@ import Check from '@material-ui/icons/Check';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import Chip from '@material-ui/core/Chip';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import Card from '../../components/Card/Card';
@@ -15,6 +21,7 @@ import Button from '../../components/CustomButtons/Button';
 import CardBody from '../../components/Card/CardBody';
 import ApplicationService from '../../services/ApplicationService';
 import PortalSettingsService from '../../services/PortalSettingsService';
+import TagService from '../../services/TagService';
 
 const imagePlaceholder = require('../../assets/img/image-placeholder.jpg');
 
@@ -26,6 +33,9 @@ export default class CustomApplications extends React.Component {
     snackbarMessage: '',
     snackbarColor: '',
     showUploadImage: false,
+    showTagsModal: false,
+    stepDetailTags: [],
+    tags: [],
     portalSettings: {},
   };
 
@@ -33,13 +43,16 @@ export default class CustomApplications extends React.Component {
     super(props);
     this.handleChange = this.handleChange.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.updateImage = this.updateImage.bind(this);
+    this.showUpdateImage = this.showUpdateImage.bind(this);
+    this.showUpdateTags = this.showUpdateTags.bind(this);
     this.handleUploadImage = this.handleUploadImage.bind(this);
     this.handleImageChange = this.handleImageChange.bind(this);
+    this.handleUpdateTags = this.handleUpdateTags.bind(this);
   }
 
   componentDidMount() {
     this.applicationsList();
+    this.tagsList();
     this.getPortalSettings();
   }
 
@@ -48,13 +61,18 @@ export default class CustomApplications extends React.Component {
       .then((data) => this.setState({ portalSettings: data }));
   }
 
+  tagsList() {
+    TagService.getTags()
+      .then((data) => this.setState({ tags: data }));
+  }
+
   handleImageChange(images) {
     this.setState({
       image: images && images.length > 0 ? images[0] : null,
     });
   }
 
-  updateImage(detailRowData) {
+  showUpdateImage(detailRowData) {
     const { applicationStepDetailId } = detailRowData;
     this.setState({ showUploadImage: true, stepDetailId: applicationStepDetailId });
   }
@@ -72,6 +90,21 @@ export default class CustomApplications extends React.Component {
     });
   }
 
+  async handleUpdateTags() {
+    this.setState({ loading: true });
+    const { stepDetailId, stepDetailTags } = this.state;
+    // const index = applications.findIndex(((obj) => obj.productId === productId));
+    // applications[index].tags = productTags;
+    await ApplicationService.updateStepDetailTags(stepDetailId, stepDetailTags);
+    this.setState({
+      showTagsModal: false,
+      stepDetailId: null,
+      // applications,
+      stepDetailTags: [],
+      loading: false,
+    });
+  }
+
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
   }
@@ -79,6 +112,15 @@ export default class CustomApplications extends React.Component {
   handleClose() {
     this.setState({
       showUploadImage: false,
+    });
+  }
+
+  showUpdateTags(detailRowData) {
+    const { applicationStepDetailId, tags } = detailRowData;
+    this.setState({
+      showTagsModal: true,
+      stepDetailTags: tags,
+      stepDetailId: applicationStepDetailId,
     });
   }
 
@@ -134,12 +176,25 @@ export default class CustomApplications extends React.Component {
       snackbarMessage,
       snackbarColor,
       showUploadImage,
+      showTagsModal,
       portalSettings,
+      stepDetailTags,
+      tags,
     } = this.state;
 
     const detailColumns = [
       { title: 'Title', field: 'stepDetailTitle' },
       { title: 'Description', field: 'stepDetailDescription' },
+      {
+        field: 'tags',
+        title: 'Tags',
+        readonly: true,
+        editable: 'never',
+        filtering: false,
+        render: (rowData) => (
+          rowData.tags.map((tag) => (<Chip key={tag.tagId} label={tag.tagName} />))
+        ),
+      },
       { title: 'Sort Order', field: 'sortOrder' },
       {
         title: 'Image',
@@ -184,8 +239,8 @@ export default class CustomApplications extends React.Component {
         render: (rowData) => (
           <div
             style={{
-              width: '60%',
-              backgroundColor: '#ccf9ff',
+              width: '90%',
+              backgroundColor: 'green',
             }}
           >
             <MaterialTable
@@ -197,7 +252,12 @@ export default class CustomApplications extends React.Component {
                 {
                   icon: 'image',
                   tooltip: 'Image',
-                  onClick: (event, detailRowData) => this.updateImage(detailRowData),
+                  onClick: (event, detailRowData) => this.showUpdateImage(detailRowData),
+                },
+                {
+                  icon: 'local_offer',
+                  tooltip: 'Tags',
+                  onClick: (event, detailRowData) => this.showUpdateTags(detailRowData),
                 }]}
               editable={{
                 onRowUpdate: (newData) => new Promise(() => {
@@ -320,6 +380,61 @@ export default class CustomApplications extends React.Component {
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleUploadImage} color="primary">
+              Save
+            </Button>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          fullWidth
+          maxWidth="md"
+          open={showTagsModal}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <Card>
+              <CardHeader color="primary">
+                <div className={styles.cardTitleWhite}>
+                  Update Custom Application Step Tags
+                </div>
+              </CardHeader>
+              <CardBody>
+                <FormControl style={{ minWidth: 800 }}>
+                  <InputLabel id="demo-mutiple-chip-label">Select Tags</InputLabel>
+                  <Select
+                    fullWidth
+                    autoWidth="true"
+                    labelId="demo-mutiple-chip-label"
+                    id="stepDetailTags"
+                    multiple
+                    name="stepDetailTags"
+                    value={stepDetailTags}
+                    onChange={this.handleChange}
+                    input={<Input id="select-multiple-chip" />}
+                    renderValue={(selectedTags) => (
+                      <div>
+                        {selectedTags.map((tag) => (
+                          <Chip key={tag.tagId} label={tag.tagName} />
+                        ))}
+                      </div>
+                    )}
+                  >
+                    {tags.map((tag) => (
+                      <MenuItem key={tag.tagId} value={tag}>
+                        {tag.tagName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </CardBody>
+            </Card>
+          </DialogContent>
+          <DialogActions>
+            {loading && (<LinearProgress />)}
+            <Button onClick={this.handleUpdateTags} color="primary">
               Save
             </Button>
             <Button onClick={this.handleClose} color="info">
