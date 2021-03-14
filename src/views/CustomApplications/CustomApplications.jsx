@@ -5,7 +5,7 @@ import Check from '@material-ui/icons/Check';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
+import ImageUpload from '../../components/ImageUpload/ImageUpload';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
@@ -25,7 +25,7 @@ export default class CustomApplications extends React.Component {
     openSnackbar: false,
     snackbarMessage: '',
     snackbarColor: '',
-    openDialog: false,
+    showUploadImage: false,
     portalSettings: {},
   };
 
@@ -34,6 +34,8 @@ export default class CustomApplications extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.updateImage = this.updateImage.bind(this);
+    this.handleUploadImage = this.handleUploadImage.bind(this);
+    this.handleImageChange = this.handleImageChange.bind(this);
   }
 
   componentDidMount() {
@@ -46,8 +48,28 @@ export default class CustomApplications extends React.Component {
       .then((data) => this.setState({ portalSettings: data }));
   }
 
-  updateImage() {
-    // this.setState({ openDialog: true });
+  handleImageChange(images) {
+    this.setState({
+      image: images && images.length > 0 ? images[0] : null,
+    });
+  }
+
+  updateImage(detailRowData) {
+    const { applicationStepDetailId } = detailRowData;
+    this.setState({ showUploadImage: true, stepDetailId: applicationStepDetailId });
+  }
+
+  async handleUploadImage() {
+    const { stepDetailId, image } = this.state;
+    const formData = new FormData();
+    formData.append('file', image);
+    await ApplicationService.updateStepDetailImage(stepDetailId, formData);
+    this.applicationsList();
+    this.setState({
+      showUploadImage: false,
+      stepDetailId: null,
+      image: null,
+    });
   }
 
   handleChange(event) {
@@ -56,7 +78,7 @@ export default class CustomApplications extends React.Component {
 
   handleClose() {
     this.setState({
-      openDialog: false,
+      showUploadImage: false,
     });
   }
 
@@ -111,7 +133,7 @@ export default class CustomApplications extends React.Component {
       openSnackbar,
       snackbarMessage,
       snackbarColor,
-      openDialog,
+      showUploadImage,
       portalSettings,
     } = this.state;
 
@@ -193,14 +215,11 @@ export default class CustomApplications extends React.Component {
                 }),
                 onRowDelete: (oldData) => new Promise((resolve) => {
                   setTimeout(() => {
-                    {
-                      // const index = rowData.stepDetails.indexOf(oldData);
-                      // rowData.stepDetails.splice(index, 1);
-                      ApplicationService.deleteStepDetail(oldData.applicationStepDetailId);
-                      window.location.reload();
-                      // this.setState({ applications }, () => resolve());
-                    }
-                    resolve();
+                    // const index = rowData.stepDetails.indexOf(oldData);
+                    // rowData.stepDetails.splice(index, 1);
+                    ApplicationService.deleteStepDetail(oldData.applicationStepDetailId);
+                    window.location.reload();
+                    // this.setState({ applications }, () => resolve());
                   }, 1000);
                 }),
 
@@ -286,26 +305,27 @@ export default class CustomApplications extends React.Component {
           />
         </GridContainer>
         <Dialog
-          open={openDialog}
+          open={showUploadImage}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
         >
           <DialogContent>
-            <DialogContentText>
-              <Card>
-                <CardHeader color="primary">
-                  Custom Application Steps:
-                </CardHeader>
-                <CardBody>
-                </CardBody>
-              </Card>
-            </DialogContentText>
-            <DialogActions>
-              <Button onClick={this.handleClose} color="secondary">
-                Close
-              </Button>
-            </DialogActions>
+            <p>
+              Use one of the following sizes:
+              <ul>
+                <li><h3>438 * 438</h3></li>
+              </ul>
+            </p>
+            <ImageUpload singleImage onChange={this.handleImageChange} />
           </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleUploadImage} color="primary">
+              Save
+            </Button>
+            <Button onClick={this.handleClose} color="info">
+              Cancel
+            </Button>
+          </DialogActions>
         </Dialog>
       </div>
     );

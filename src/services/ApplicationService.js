@@ -94,4 +94,16 @@ export default class ApplicationService {
       return false;
     }
   }
+
+  static async updateStepDetailImage(id, stepDetail) {
+    try {
+      const response = await RestUtilities.postForm(
+        `custom-applications/step-details/${id}/upload`,
+        stepDetail,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }
