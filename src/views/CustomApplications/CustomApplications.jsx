@@ -62,7 +62,7 @@ export default class CustomApplications extends React.Component {
 
   applicationsList() {
     this.setState({ loading: true });
-    ApplicationService.getApplications()
+    ApplicationService.getStepsAndStepDetails()
       .then((data) => this.setState({ applications: data, loading: false }));
   }
 
@@ -180,12 +180,27 @@ export default class CustomApplications extends React.Component {
                 }]}
               editable={{
                 onRowUpdate: (newData) => new Promise(() => {
-                  // const index = rowData.stepDetails.map((item)
-                  // => item.applicationStepDetailId).indexOf(oldData.applicationStepDetailId);
-                  // rowData.stepDetails[index] = newData;
                   ApplicationService.updateStepDetail(newData.applicationStepDetailId, newData);
                   window.location.reload();
                 }),
+                onRowAdd: (newData) => new Promise((resolve) => {
+                  setTimeout(() => {
+                    ApplicationService.createStepDetail(newData);
+                    this.setState({ applications }, () => resolve());
+                  }, 1000);
+                }),
+                onRowDelete: (oldData) => new Promise((resolve) => {
+                  setTimeout(() => {
+                    {
+                      const index = applications.indexOf(oldData);
+                      applications.splice(index, 1);
+                      ApplicationService.deleteStepDetail(oldData.applicationStepDetailId);
+                      this.setState({ applications }, () => resolve());
+                    }
+                    resolve();
+                  }, 1000);
+                }),
+
               }}
             />
           </div>
@@ -220,19 +235,32 @@ export default class CustomApplications extends React.Component {
                   options={options}
                   onRowClick={this.rowClicked}
                   title=""
-                  // actions={[
-                  //   {
-                  //     icon: 'attach_money',
-                  //     tooltip: 'Variations',
-                  //     onClick: (event, rowData) => this.updateVariations(rowData),
-                  //   }]}
                   editable={{
                     onRowUpdate: (newData, oldData) => new Promise((resolve) => {
                       setTimeout(() => {
                         {
                           const index = applications.indexOf(oldData);
                           applications[index] = newData;
-                          ApplicationService.updateApplication(newData.applicationStepId, newData);
+                          ApplicationService.updateStep(newData.applicationStepId, newData);
+                          this.setState({ applications }, () => resolve());
+                        }
+                        resolve();
+                      }, 1000);
+                    }),
+                    onRowAdd: (newData) => new Promise((resolve) => {
+                      setTimeout(() => {
+                        ApplicationService.createStep(newData);
+                        window.location.reload();
+                        // applications.push(newData);
+                        // this.setState({ applications }, () => resolve());
+                      }, 1000);
+                    }),
+                    onRowDelete: (oldData) => new Promise((resolve) => {
+                      setTimeout(() => {
+                        {
+                          const index = applications.indexOf(oldData);
+                          applications.splice(index, 1);
+                          ApplicationService.deleteStep(oldData.applicationStepId);
                           this.setState({ applications }, () => resolve());
                         }
                         resolve();
@@ -276,7 +304,7 @@ export default class CustomApplications extends React.Component {
                       onRowAdd: (newData) => new Promise((resolve) => {
                         setTimeout(() => {
                           applicationSteps.push(newData);
-                          ApplicationService.createApplicationStep(
+                          ApplicationService.createStep(
                             newData.applicationStepId,
                             newData,
                           );
@@ -289,7 +317,7 @@ export default class CustomApplications extends React.Component {
                           {
                             const index = applicationSteps.indexOf(oldData);
                             applicationSteps[index] = newData;
-                            ApplicationService.updateApplicationStep(
+                            ApplicationService.updateStep(
                               newData.applicationStepDetailId,
                               newData,
                             );
@@ -303,7 +331,7 @@ export default class CustomApplications extends React.Component {
                           {
                             const index = applicationSteps.indexOf(oldData);
                             applicationSteps.splice(index, 1);
-                            ApplicationService.deleteApplicationStep(oldData.productId, oldData);
+                            ApplicationService.deleteStep(oldData.productId, oldData);
                             this.setState({ applicationSteps }, () => resolve());
                           }
                           resolve();
