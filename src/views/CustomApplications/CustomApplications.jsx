@@ -96,6 +96,7 @@ export default class CustomApplications extends React.Component {
     // const index = applications.findIndex(((obj) => obj.productId === productId));
     // applications[index].tags = productTags;
     await ApplicationService.updateStepDetailTags(stepDetailId, stepDetailTags);
+    this.applicationsList();
     this.setState({
       showTagsModal: false,
       stepDetailId: null,
