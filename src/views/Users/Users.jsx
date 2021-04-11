@@ -343,6 +343,12 @@ export default class Users extends React.Component {
         editable: 'never',
       },
       {
+        title: 'Customer Account',
+        field: 'isCustomer',
+        readonly: true,
+        editable: 'never',
+      },
+      {
         title: 'User Id',
         field: 'id',
         hidden: true,
