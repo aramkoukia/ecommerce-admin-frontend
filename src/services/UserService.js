@@ -110,7 +110,7 @@ export default class UserService {
         'users',
         user,
       );
-      return response.content;
+      return response;
     } catch (err) {
       return false;
     }

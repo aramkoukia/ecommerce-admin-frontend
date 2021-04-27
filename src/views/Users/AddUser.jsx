@@ -20,6 +20,10 @@ class AddUser extends React.Component {
       openSnackbar: false,
       snackbarMessage: '',
       snackbarColor: '',
+      userName: '',
+      email: '',
+      givenName: '',
+      passwordHash: '',
     };
   }
 
@@ -32,14 +36,62 @@ class AddUser extends React.Component {
   }
 
   async onSubmit(form) {
-    const result = await UserService.addUser(form.formData);
+    const { history, setTimeout } = this.props;
+    // eslint-disable-next-line camelcase
+    const {
+      userName, email, givenName, passwordHash,
+    } = form.formData;
+
+    if (userName === ''
+      || email === ''
+      || givenName === ''
+      || passwordHash === '') {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Please enter all the information!',
+        snackbarColor: 'danger',
+      });
+    }
+
     this.setState({
-      openSnackbar: true,
-      snackbarMessage: 'New user is saved!',
-      snackbarColor: 'success',
+      userName,
+      email,
+      givenName,
+      passwordHash,
     });
 
-    return this.props.setTimeout(this.props.history.push('/users', 2000));
+    const { is_error, error_content, content } = await UserService.addUser(form.formData);
+    // eslint-disable-next-line no-extra-boolean-cast
+    // eslint-disable-next-line camelcase
+    if (is_error) {
+      if (error_content) {
+        this.setState({
+          openSnackbar: true,
+          snackbarMessage: error_content.join('\r\n'),
+          snackbarColor: 'danger',
+        });
+      } else {
+        this.setState({
+          openSnackbar: true,
+          snackbarMessage: 'Oops, somthing went wrong!',
+          snackbarColor: 'danger',
+        });
+      }
+    } else {
+      if (content.id) {
+        this.setState({
+          openSnackbar: true,
+          snackbarMessage: 'New user is saved!',
+          snackbarColor: 'success',
+        });
+        return setTimeout(history.push('/users', 2000));
+      }
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Oops, somthing went wrong!',
+        snackbarColor: 'danger',
+      });
+    }
   }
 
   render() {
@@ -99,11 +151,16 @@ class AddUser extends React.Component {
       },
     };
 
+    const {
+      userName, email, givenName, passwordHash,
+    } = this.state;
+
     const initialFormData = {
-      userName: '',
-      email: '',
-      givenName: '',
-      password: '',
+      userName,
+      email,
+      givenName,
+      password: passwordHash,
+      passwordHash,
     };
 
     return (
