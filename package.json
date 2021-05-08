@@ -25,7 +25,7 @@
     "history": "^4.10.1",
     "jodit-react": "^1.0.42",
     "jsonschema-form-for-material-ui": "^1.4.0",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "material-table": "^1.57.2",
     "mui-datatables": "^2.14.0",
     "prop-types": "^15.7.2",
