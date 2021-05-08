@@ -66,6 +66,7 @@ import { Purchase } from '../views/Purchases/Purchase';
 import SignIn from '../views/Login/SignIn';
 import { Order } from '../views/Orders/Order';
 import { Return } from '../views/Orders/Return';
+import AwaitingPayments from '../views/Customers/AwaitingPayments';
 import Roles from '../views/Roles/Roles';
 import Settings from '../views/Settings/Settings';
 import PosSettings from '../views/Settings/PosSettings';
@@ -134,6 +135,14 @@ const dashboardRoutes = [
     sidebarName: 'Customers',
     Icon: ContactMail,
     component: Customers,
+    needsPermission: true,
+    permission: Permissions.ViewCustomers,
+  },
+  {
+    path: '/awaiting-payments',
+    sidebarName: 'Awaiting Payments',
+    Icon: ContactMail,
+    component: AwaitingPayments,
     needsPermission: true,
     permission: Permissions.ViewCustomers,
   },

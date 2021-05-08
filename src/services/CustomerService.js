@@ -23,6 +23,17 @@ export default class CustomerService {
     }
   }
 
+  static async getCustomersAwaitingPayments(showOverDue) {
+    try {
+      const response = await RestUtilities.get(
+        `customers/AwaitingPayments?showOverDue=${showOverDue}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getCustomer(customerId) {
     try {
       const response = await RestUtilities.get(

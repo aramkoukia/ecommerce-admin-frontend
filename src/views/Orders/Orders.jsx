@@ -104,7 +104,7 @@ export default class Orders extends React.Component {
         hidden: true,
       },
       {
-        title: 'Over Due',
+        title: 'Overdue',
         field: 'overDue',
         hidden: true,
       },
