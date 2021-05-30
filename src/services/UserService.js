@@ -12,6 +12,17 @@ export default class UserService {
     }
   }
 
+  static async getWebsiteUsers() {
+    try {
+      const response = await RestUtilities.get(
+        'users/website-users',
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async deleteUser(userName) {
     try {
       const response = await RestUtilities.delete(
@@ -49,6 +60,18 @@ export default class UserService {
     try {
       const response = await RestUtilities.get(
         `users/${authCode}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async linkCustomer(link) {
+    try {
+      const response = await RestUtilities.put(
+        'users/link-customer',
+        link,
       );
       return response.content;
     } catch (err) {

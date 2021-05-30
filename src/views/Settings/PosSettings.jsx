@@ -13,21 +13,20 @@ import Button from '../../components/CustomButtons/Button';
 import PosSettingsService from '../../services/PosSettingsService';
 
 class PosSettings extends React.Component {
+  state = {
+    openSnackbar: false,
+    snackbarMessage: '',
+    snackbarColor: '',
+    storeId: 'monca03695',
+    terminalId: 'P1217267',
+  };
+
   constructor(props) {
     super(props);
-
     this.pairPos = this.pairPos.bind(this);
     this.unpairPos = this.unpairPos.bind(this);
     this.initializePos = this.initializePos.bind(this);
     this.batchClose = this.batchClose.bind(this);
-
-    this.state = {
-      openSnackbar: false,
-      snackbarMessage: '',
-      snackbarColor: '',
-      storeId: 'monca03695',
-      terminalId: 'P1217267',
-    };
   }
 
   async componentDidMount() {
@@ -237,14 +236,14 @@ class PosSettings extends React.Component {
     return (
       <div>
         <GridContainer>
-          <GridItem xs={12} sm={12} md={9}>
+          <GridItem xs={12} sm={12} md={12}>
             <Card>
               <CardHeader color="primary">
-                <div className={styles.cardTitleWhite}>POS Setup</div>
+                <div className={styles.cardTitleWhite}>POS Client Setup</div>
               </CardHeader>
               <CardBody>
                 <GridContainer>
-                  <GridItem md={4}>
+                  <GridItem md={3}>
                     <TextField
                       name="storeId"
                       label="Store ID"
@@ -254,7 +253,7 @@ class PosSettings extends React.Component {
                       fullWidth="true"
                     />
                   </GridItem>
-                  <GridItem md={4}>
+                  <GridItem md={3}>
                     <TextField
                       name="terminalId"
                       label="Terminal Id"
@@ -264,7 +263,7 @@ class PosSettings extends React.Component {
                       fullWidth="true"
                     />
                   </GridItem>
-                  <GridItem md={4}>
+                  <GridItem md={6}>
                     <TextField
                       name="pairingToken"
                       label="Pairing Token (only needed for Pairing)"
@@ -275,41 +274,26 @@ class PosSettings extends React.Component {
                     />
                   </GridItem>
                   <br />
-                  <GridItem xs={12} />
-                  <GridItem xs={2}>
-                    <Button color="primary" onClick={this.initializePos}>
-                      &nbsp;
+                  <br />
+                  <GridItem md={12}>
+                    <Button color="secondary" onClick={this.initializePos}>
                       Initialize POS
                     </Button>
-                  </GridItem>
-                  <GridItem xs={2}>
-                    <Button color="primary" onClick={this.pairPos}>
-                      &nbsp;
+                    &nbsp;
+                    <Button color="secondary" onClick={this.pairPos}>
                       Pair POS
                     </Button>
-                  </GridItem>
-                  <GridItem xs={2}>
-                    <Button color="warning" onClick={this.unpairPos}>
-                      &nbsp;
+                    &nbsp;
+                    <Button color="secondary" onClick={this.unpairPos}>
                       Unpair POS
                     </Button>
-                  </GridItem>
-                  <GridItem xs={2}>
-                    <Button color="warning" onClick={this.batchClose}>
-                      &nbsp;
+                    &nbsp;
+                    <Button color="secondary" onClick={this.batchClose}>
                       Batch Close
                     </Button>
                   </GridItem>
                 </GridContainer>
-              </CardBody>
-            </Card>
-          </GridItem>
-          <GridItem xs={12} sm={12} md={9}>
-            <Card>
-              <CardHeader color="primary">
-                <div className={styles.cardTitleWhite}>POS Client Setup</div>
-              </CardHeader>
-              <CardBody>
+                <br />
                 <MaterialTable
                   columns={columns}
                   data={clientPosSettings}

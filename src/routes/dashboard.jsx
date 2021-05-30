@@ -59,6 +59,7 @@ import Orders from '../views/Orders/Orders';
 import Taxes from '../views/Taxes/Taxes';
 import CustomerStoreCredit from '../views/Customers/CustomerStoreCredit';
 import Users from '../views/Users/Users';
+import WebsiteUsers from '../views/Users/WebsiteUsers';
 import AddUser from '../views/Users/AddUser';
 import Purchases from '../views/Purchases/Purchases';
 import AddPurchase from '../views/Purchases/AddPurchase';
@@ -360,6 +361,14 @@ const dashboardRoutes = [
     needsPermission: true,
     permission: Permissions.ViewWebsiteSettings,
     items: [
+      {
+        path: '/website-users',
+        sidebarName: 'Website Users',
+        Icon: PeopleAlt,
+        component: WebsiteUsers,
+        needsPermission: true,
+        permission: Permissions.ViewUsers,
+      },
       {
         path: '/updatewebsiteproducts',
         sidebarName: 'Website Products',
