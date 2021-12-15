@@ -11,6 +11,7 @@ import CardBody from '../../components/Card/CardBody';
 import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
 import ShopifyService from '../../services/ShopifyService';
+// import ProductService from '../../services/ProductService';
 
 const imagePlaceholder = require('../../assets/img/image-placeholder.jpg');
 
@@ -41,8 +42,16 @@ export default class ShopifyProducts extends React.Component {
         width: 250,
       },
       {
-        title: 'Price',
+        title: 'POS Balance',
+        field: 'totalStoreInventory',
+        type: 'numeric',
+        readonly: true,
+        width: 250,
+      },
+      {
+        title: 'Price ($)',
         field: 'price',
+        type: 'numeric',
         readonly: true,
         width: 200,
       },
@@ -97,6 +106,7 @@ export default class ShopifyProducts extends React.Component {
           code: p.variants[0].sku,
           price: p.variants[0].price,
           image: p.image.src,
+          totalStoreInventory: p.totalStoreInventory,
         }));
         return this.setState({ products: flatResponse, loading: false });
       });
