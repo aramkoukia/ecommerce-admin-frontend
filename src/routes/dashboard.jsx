@@ -82,6 +82,7 @@ import WebsiteAboutPopOver from '../views/Website/WebsiteAboutPopOver';
 import WebsiteFaq from '../views/Website/WebsiteFaq';
 import LoginHistory from '../views/LoginHistory/LoginHistory';
 import Permissions from '../stores/Permissions';
+import ShopifyProducts from '../views/Settings/ShopifyProducts';
 
 const dashboardRoutes = [
   {
@@ -352,6 +353,22 @@ const dashboardRoutes = [
         component: CustomerStatementSettings,
         needsPermission: true,
         permission: Permissions.ViewCustomerStatementSettings,
+      },
+    ],
+  },
+  {
+    sidebarName: 'Shopify Admin',
+    Icon: Language,
+    needsPermission: true,
+    permission: Permissions.ViewWebsiteSettings,
+    items: [
+      {
+        path: '/shopify-products',
+        sidebarName: 'Shopify Products',
+        Icon: PeopleAlt,
+        component: ShopifyProducts,
+        needsPermission: true,
+        permission: Permissions.ViewUsers,
       },
     ],
   },

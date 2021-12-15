@@ -17,7 +17,7 @@ class PosSettings extends React.Component {
     openSnackbar: false,
     snackbarMessage: '',
     snackbarColor: '',
-    storeId: 'monca03695',
+    storeId: 'monca05727',
     terminalId: 'P1217267',
   };
 
