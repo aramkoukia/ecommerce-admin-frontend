@@ -23,8 +23,8 @@ export default class ShopifyProducts extends React.Component {
     snackbarColor: '',
     columns: [
       {
-        title: 'Shopify Product Code',
-        field: 'id',
+        title: 'Product Code',
+        field: 'code',
         readonly: true,
       },
       {
@@ -34,7 +34,7 @@ export default class ShopifyProducts extends React.Component {
         width: 600,
       },
       {
-        title: 'Balance',
+        title: 'Shopify Balance',
         field: 'balance',
         type: 'numeric',
         readonly: true,
@@ -94,6 +94,7 @@ export default class ShopifyProducts extends React.Component {
           id: p.id,
           title: p.title,
           balance: p.variants[0].inventory_quantity,
+          code: p.variants[0].sku,
           price: p.variants[0].price,
           image: p.image.src,
         }));
