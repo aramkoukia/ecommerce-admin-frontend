@@ -363,8 +363,8 @@ const dashboardRoutes = [
     permission: Permissions.ViewWebsiteSettings,
     items: [
       {
-        path: '/shopify-products',
-        sidebarName: 'Shopify Products',
+        path: '/gekpower-shopify-products',
+        sidebarName: 'GEKPOWER Shopify Products',
         Icon: PeopleAlt,
         component: ShopifyProducts,
         needsPermission: true,

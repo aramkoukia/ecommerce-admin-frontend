@@ -11,4 +11,16 @@ export default class ShopifyService {
       return false;
     }
   }
+
+  static async UpdateInventory(body) {
+    try {
+      const response = await RestUtilities.put(
+        'shopify/inventory',
+        body,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }
