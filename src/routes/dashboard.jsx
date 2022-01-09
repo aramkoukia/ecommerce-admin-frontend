@@ -83,6 +83,7 @@ import WebsiteFaq from '../views/Website/WebsiteFaq';
 import LoginHistory from '../views/LoginHistory/LoginHistory';
 import Permissions from '../stores/Permissions';
 import ShopifyProducts from '../views/Settings/ShopifyProducts';
+import ShopifyCustomers from '../views/Settings/ShopifyCustomers';
 
 const dashboardRoutes = [
   {
@@ -365,8 +366,16 @@ const dashboardRoutes = [
       {
         path: '/gekpower-shopify-products',
         sidebarName: 'GEKPOWER Shopify Products',
-        Icon: PeopleAlt,
+        Icon: DynamicFeed,
         component: ShopifyProducts,
+        needsPermission: true,
+        permission: Permissions.ViewUsers,
+      },
+      {
+        path: '/shopify-customers',
+        sidebarName: 'Shopify Customers',
+        Icon: ContactMail,
+        component: ShopifyCustomers,
         needsPermission: true,
         permission: Permissions.ViewUsers,
       },
