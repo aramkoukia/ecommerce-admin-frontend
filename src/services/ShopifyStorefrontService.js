@@ -12,10 +12,21 @@ export default class ShopifyStorefrontService {
     }
   }
 
-  static async approve(customerId, shopifyStoreId) {
+  static async removeApproval(shopifyCustomerId) {
     try {
       const response = await RestUtilities.get(
-        `shopify-storefront/link-shopify-customer?customerId=${customerId}&shopifyStoreId=${shopifyStoreId}`,
+        `shopify-storefront/unlink-shopify-customer?shopifyCustomerId=${shopifyCustomerId}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async approve(customerId, shopifyCustomerId) {
+    try {
+      const response = await RestUtilities.get(
+        `shopify-storefront/link-shopify-customer?customerId=${customerId}&shopifyCustomerId=${shopifyCustomerId}`,
       );
       return response.content;
     } catch (err) {

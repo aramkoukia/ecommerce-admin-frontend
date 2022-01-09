@@ -2,6 +2,11 @@ import React from 'react';
 import MaterialTable from 'material-table';
 import {
   LinearProgress,
+  DialogActions,
+  Dialog,
+  DialogContent,
+  Button,
+  TextField,
 } from '@material-ui/core';
 import Check from '@material-ui/icons/Check';
 import Snackbar from '../../components/Snackbar/Snackbar';
@@ -10,6 +15,7 @@ import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
+import CustomerSearch from '../Orders/CustomerSearch';
 import ShopifyStorefrontService from '../../services/ShopifyStorefrontService';
 
 export default class ShopifyCustomers extends React.Component {
@@ -17,6 +23,12 @@ export default class ShopifyCustomers extends React.Component {
     customers: [],
     loading: false,
     openSnackbar: false,
+    showApproveModal: false,
+    email: '',
+    firstName: '',
+    lastName: '',
+    shopifyCustomerId: '',
+    customerId: '',
     snackbarMessage: '',
     snackbarColor: '',
     columns: [
@@ -78,43 +90,97 @@ export default class ShopifyCustomers extends React.Component {
     super(props);
     this.approve = this.approve.bind(this);
     this.pushOrders = this.pushOrders.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.customerChanged = this.customerChanged.bind(this);
   }
 
   componentDidMount() {
     this.listCustomers();
   }
 
-  approve(rowData) {
-    const { customerId, shopifyCustomerId } = rowData;
+  handleClose() {
+    this.setState({ showApproveModal: false });
+  }
+
+  async customerChanged(customer) {
+    this.setState({
+      customerId: customer.customerId,
+    });
+  }
+
+  removeApproval(rowData) {
+    const { shopifyCustomerId } = rowData;
     this.setState({ loading: true });
-    ShopifyStorefrontService.approve(
-      {
-        customerId,
-        shopifyCustomerId,
-      },
-    ).then(() => this.setState({
-      loading: false,
-    }));
+    ShopifyStorefrontService.removeApproval(shopifyCustomerId)
+      .then(() => {
+        this.setState({
+          loading: false,
+        });
+        this.listCustomers();
+      });
+  }
+
+  approve() {
+    const { customerId, shopifyCustomerId } = this.state;
+    if (!customerId) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Please select a customer!',
+        snackbarColor: 'danger',
+      });
+      return;
+    }
+
+    this.setState({ loading: true });
+    ShopifyStorefrontService.approve(customerId, shopifyCustomerId)
+      .then(() => {
+        this.setState({
+          loading: false,
+          showApproveModal: false,
+        });
+        this.listCustomers();
+      });
+  }
+
+  showApprove(rowData) {
+    const {
+      customerId, shopifyCustomerId,
+      email, firstName, lastName,
+    } = rowData;
+    this.setState({
+      loading: true,
+      customerId,
+      email,
+      firstName,
+      lastName,
+      shopifyCustomerId,
+      showApproveModal: true,
+    });
   }
 
   pushOrders(rowData) {
     const { customerId } = rowData;
     this.setState({ loading: true });
-    ShopifyStorefrontService.pushOrders(
-      {
-        customerId,
-      },
-    ).then(() => this.setState({
-      loading: false,
-    }));
+
+    if (!customerId) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'This Shopify Customer is not linked to a POS Customer!',
+        snackbarColor: 'danger',
+      });
+      return;
+    }
+
+    ShopifyStorefrontService.pushOrders(customerId)
+      .then(() => this.setState({
+        loading: false,
+      }));
   }
 
   listCustomers() {
     this.setState({ loading: true });
     ShopifyStorefrontService.getCustomers()
-      .then((data) => {
-        return this.setState({ customers: data, loading: false });
-      });
+      .then((data) => this.setState({ customers: data, loading: false }));
   }
 
   render() {
@@ -156,6 +222,12 @@ export default class ShopifyCustomers extends React.Component {
       snackbarColor,
       columns,
       options,
+      showApproveModal,
+      email,
+      firstName,
+      lastName,
+      shopifyCustomerId,
+      customerId,
     } = this.state;
 
     return (
@@ -165,7 +237,7 @@ export default class ShopifyCustomers extends React.Component {
             <Card>
               <CardHeader color="primary">
                 <div className={styles.cardTitleWhite}>
-                  Shopify Customers - Orders Access Requests
+                  Shopify Customers: Link to POS Customers and Approve Online Orders Access
                 </div>
               </CardHeader>
               <CardBody>
@@ -174,9 +246,14 @@ export default class ShopifyCustomers extends React.Component {
                   data={customers}
                   actions={[
                     {
-                      icon: 'check',
-                      tooltip: 'Approve',
-                      onClick: (event, rowData) => this.approve(rowData),
+                      icon: 'link',
+                      tooltip: 'Approve & Link POS Customer',
+                      onClick: (event, rowData) => this.showApprove(rowData),
+                    },
+                    {
+                      icon: 'link_off',
+                      tooltip: 'Remove Approval & POS Customer',
+                      onClick: (event, rowData) => this.removeApproval(rowData),
                     },
                     {
                       icon: 'sync',
@@ -200,6 +277,79 @@ export default class ShopifyCustomers extends React.Component {
             closeNotification={() => this.setState({ openSnackbar: false })}
             close
           />
+          <Dialog
+            maxWidth="xl"
+            open={showApproveModal}
+            onClose={this.handleClose}
+            aria-labelledby="form-dialog-title"
+          >
+            <DialogContent>
+              <Card>
+                <CardHeader color="primary">
+                  <div className={styles.cardTitleWhite}>
+                    Shopify Customer: Link to POS Customers and Approve Online Orders Access
+                  </div>
+                </CardHeader>
+                <CardBody>
+                  <GridContainer md={12}>
+                    <GridItem md={6}>
+                      <TextField
+                        name="email"
+                        label="Shopify Customer Email"
+                        type="text"
+                        disabled
+                        value={email}
+                        fullWidth="true"
+                      />
+                    </GridItem>
+                    <GridItem md={6}>
+                      <TextField
+                        name="firstName"
+                        label="First Name"
+                        type="text"
+                        disabled
+                        value={firstName}
+                        fullWidth="true"
+                      />
+                    </GridItem>
+                    <GridItem md={6}>
+                      <TextField
+                        name="lastName"
+                        label="Last Name"
+                        type="text"
+                        disabled
+                        value={lastName}
+                        fullWidth="true"
+                      />
+                    </GridItem>
+                    <GridItem md={6}>
+                      <TextField
+                        name="shopifyCustomerId"
+                        label="Shopify Customer Code"
+                        type="text"
+                        disabled
+                        value={shopifyCustomerId}
+                        fullWidth="true"
+                      />
+                    </GridItem>
+                    <GridItem md={12}>
+                      <h4>Select a POS Customer to link to this Shopify Customer</h4>
+                      <CustomerSearch customerChanged={this.customerChanged} />
+                    </GridItem>
+                  </GridContainer>
+                </CardBody>
+              </Card>
+            </DialogContent>
+            <DialogActions>
+              {loading && (<LinearProgress />)}
+              <Button disabled={!customerId} onClick={this.approve} color="primary">
+                Approve Access
+              </Button>
+              <Button onClick={this.handleClose} color="info">
+                Cancel
+              </Button>
+            </DialogActions>
+          </Dialog>
         </GridContainer>
       </div>
     );
