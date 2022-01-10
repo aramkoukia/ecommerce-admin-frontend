@@ -142,6 +142,18 @@ export default class ShopifyCustomers extends React.Component {
       });
   }
 
+  showDetails(customerId) {
+    const { history } = this.props;
+    if (customerId) {
+      history.push(`/customer/${customerId}`);
+    }
+    this.setState({
+      openSnackbar: true,
+      snackbarMessage: 'This Shopify Customer is not linked to a POS Customer!',
+      snackbarColor: 'danger',
+    });
+  }
+
   showApprove(rowData) {
     const {
       customerId, shopifyCustomerId,
@@ -254,6 +266,11 @@ export default class ShopifyCustomers extends React.Component {
                       icon: 'link_off',
                       tooltip: 'Remove Approval & POS Customer',
                       onClick: (event, rowData) => this.removeApproval(rowData),
+                    },
+                    {
+                      icon: 'menu',
+                      tooltip: 'See Customer Details',
+                      onClick: (event, rowData) => this.showDetails(rowData.customerId),
                     },
                     {
                       icon: 'sync',

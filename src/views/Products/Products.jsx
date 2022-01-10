@@ -26,6 +26,7 @@ import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
 import Button from '../../components/CustomButtons/Button';
 import ProductService from '../../services/ProductService';
+import ShopifyStorefrontService from '../../services/ShopifyStorefrontService';
 import { Product } from './Product';
 
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
@@ -111,6 +112,7 @@ export default class Products extends React.Component {
   constructor(props) {
     super(props);
     this.syncProducts = this.syncProducts.bind(this);
+    this.pushProductsToShopify = this.pushProductsToShopify.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -141,6 +143,15 @@ export default class Products extends React.Component {
     this.setState({
       openSnackbar: true,
       snackbarMessage: 'Products sync process started. This could take 3-5 minutes to finish!',
+      snackbarColor: 'success',
+    });
+  }
+
+  pushProductsToShopify() {
+    ShopifyStorefrontService.pushProducts();
+    this.setState({
+      openSnackbar: true,
+      snackbarMessage: 'Shopoify Products update process started. This could take 3-5 minutes to finish!',
       snackbarColor: 'success',
     });
   }
@@ -245,6 +256,11 @@ export default class Products extends React.Component {
                 </Button>
                 &nbsp;
                 &nbsp;
+                <Button color="primary" disabled={loading} onClick={this.pushProductsToShopify}>
+                  Push Products to Lights and Parts Shopify Store
+                </Button>
+                &nbsp;
+                &nbsp;
                 <TextField
                   name="page"
                   label="Page Number"
@@ -253,6 +269,10 @@ export default class Products extends React.Component {
                   value={page}
                   min="1"
                 />
+                <h5>
+                  Lights and Parts Shopify Store: &nbsp;
+                  <a target="_blank" href="https://light-and-parts.myshopify.com/">https://light-and-parts.myshopify.com</a>
+                </h5>
               </CardBody>
             </Card>
             <MaterialTable

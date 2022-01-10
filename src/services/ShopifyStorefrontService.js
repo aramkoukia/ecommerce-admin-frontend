@@ -12,6 +12,17 @@ export default class ShopifyStorefrontService {
     }
   }
 
+  static async pushProducts() {
+    try {
+      const response = await RestUtilities.get(
+        'shopify-storefront/push-products',
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async removeApproval(shopifyCustomerId) {
     try {
       const response = await RestUtilities.get(
