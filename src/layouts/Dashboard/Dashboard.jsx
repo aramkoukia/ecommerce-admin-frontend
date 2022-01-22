@@ -1,3 +1,5 @@
+/* eslint-disable react/no-string-refs */
+/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route, Redirect } from 'react-router-dom';
@@ -5,7 +7,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import Sidebar from '../../components/Sidebar/Sidebar';
-import dashboardRoutes from '../../routes/dashboard';
+import { dashboardRoutes, headQuarterRoutes } from '../../routes/dashboard';
 import dashboardStyle from '../../assets/jss/material-dashboard-react/layouts/dashboardStyle';
 import Auth from '../../services/Auth';
 import AddOrder from '../../views/Orders/AddOrder';
@@ -14,16 +16,6 @@ import PortalSettingsService from '../../services/PortalSettingsService';
 import Api from '../../services/ApiConfig';
 import image from '../../assets/img/sidebar-2.jpg';
 import logo from '../../assets/img/logo.png';
-
-function flattenRoutes() {
-  const result = dashboardRoutes.map((prop, index) => {
-    if (prop.items && prop.items.length > 0) {
-      return prop.items;
-    }
-    return prop;
-  });
-  return result.flat();
-}
 
 function requireAuth(nextState, replace) {
   if (!Auth.isSignedIn) {
@@ -61,6 +53,7 @@ class App extends React.Component {
     if (e.history.location.pathname !== e.location.pathname) {
       this.refs.mainPanel.scrollTop = 0;
       if (mobileOpen) {
+        // eslint-disable-next-line react/no-did-update-set-state
         this.setState({ mobileOpen: false });
       }
     }
@@ -78,6 +71,28 @@ class App extends React.Component {
   handleDrawerToggle = () => {
     const { mobileOpen } = this.state;
     this.setState({ mobileOpen: !mobileOpen });
+  }
+
+  mergeRoutes() {
+    const { portalSettings } = this.state;
+    return portalSettings.isHeadQuarterStore
+      ? dashboardRoutes.concat(headQuarterRoutes)
+      : dashboardRoutes;
+  }
+
+  flattenRoutes() {
+    const { portalSettings } = this.state;
+    let routes = [];
+    if (portalSettings.isHeadQuarterStore) {
+      routes = dashboardRoutes.concat(headQuarterRoutes);
+    }
+    const result = routes.map((prop) => {
+      if (prop.items && prop.items.length > 0) {
+        return prop.items;
+      }
+      return prop;
+    });
+    return result.flat();
   }
 
   permissionsChanged() {
@@ -102,19 +117,20 @@ class App extends React.Component {
     const sidebarImageUrl = portalSettings ? `${Api.apiRoot}/${portalSettings.sidebarImageUrl}` : image;
     const sideBarTitle = portalSettings.ShowTitleOnSideBar ? portalSettings.portalTitle : '';
 
-    const routes = flattenRoutes();
+    const routes = this.flattenRoutes();
+    const mergedRoutes = this.mergeRoutes();
     const switchRoutes = (
       <Switch>
         {routes.map((prop, index) => {
           if (prop.redirect) {
-            return <Redirect from={prop.path} to={prop.to} key={index} />;
+            return <Redirect from={prop.path} to={prop.to} key={index.toString()} />;
           }
 
           if (prop.path === '/neworder/:id') {
             return (
               <Route
                 path={prop.path}
-                key={index}
+                key={index.toString()}
                 onEnter={requireAuth}
                 render={(props) => (
                   <AddOrder {...props} permissionsChanged={this.permissionsChanged} />)}
@@ -126,7 +142,7 @@ class App extends React.Component {
             return (
               <Route
                 path={prop.path}
-                key={index}
+                key={index.toString()}
                 onEnter={requireAuth}
                 render={(props) => (
                   <Return {...props} permissionsChanged={this.permissionsChanged} />)}
@@ -138,7 +154,7 @@ class App extends React.Component {
             <Route
               path={prop.path}
               component={prop.component}
-              key={index}
+              key={index.toString()}
               onEnter={requireAuth}
             />
           );
@@ -151,7 +167,7 @@ class App extends React.Component {
 
         { !this.isLogin() ? (
           <Sidebar
-            routes={dashboardRoutes}
+            routes={mergedRoutes}
             permissionsChanged={permissionsChanged}
             logoText={sideBarTitle}
             logo={logoImageUrl}

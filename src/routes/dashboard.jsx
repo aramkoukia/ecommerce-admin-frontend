@@ -1,38 +1,43 @@
-import Person from '@material-ui/icons/Person';
-import NewReleases from '@material-ui/icons/NewReleases';
-import Highlight from '@material-ui/icons/Highlight';
-import List from '@material-ui/icons/List';
-import ListAlt from '@material-ui/icons/ListAlt';
-import Money from '@material-ui/icons/Money';
-import ContactMail from '@material-ui/icons/ContactMail';
-import InsertChart from '@material-ui/icons/InsertChart';
-import VpnKey from '@material-ui/icons/VpnKey';
-import BubbleChart from '@material-ui/icons/BubbleChart';
-import MultilineChart from '@material-ui/icons/MultilineChart';
-import Assessment from '@material-ui/icons/Assessment';
-import PersonAdd from '@material-ui/icons/PersonAdd';
-import PeopleAlt from '@material-ui/icons/PeopleAlt';
-import SupervisedUserCircle from '@material-ui/icons/SupervisedUserCircle';
-import PictureAsPdf from '@material-ui/icons/PictureAsPdf';
-import Drafts from '@material-ui/icons/Drafts';
-import SettingsCell from '@material-ui/icons/SettingsCell';
-import LocalOffer from '@material-ui/icons/LocalOffer';
-import CenterFocusWeak from '@material-ui/icons/CenterFocusWeak';
-import CreateNewFolder from '@material-ui/icons/CreateNewFolder';
-import SettingsApplications from '@material-ui/icons/SettingsApplications';
-import DynamicFeed from '@material-ui/icons/DynamicFeed';
-import SpeakerNotes from '@material-ui/icons/SpeakerNotes';
-import Book from '@material-ui/icons/Book';
-import Language from '@material-ui/icons/Language';
-import Equalizer from '@material-ui/icons/Equalizer';
-import TrendingUp from '@material-ui/icons/TrendingUp';
-import TableChart from '@material-ui/icons/TableChart';
-import PieChart from '@material-ui/icons/PieChart';
-import Tune from '@material-ui/icons/Tune';
-import SupervisorAccount from '@material-ui/icons/SupervisorAccount';
-import SettingsBrightness from '@material-ui/icons/SettingsBrightness';
-import LocationOn from '@material-ui/icons/LocationOn';
-import ScreenLockLandscape from '@material-ui/icons/ScreenLockLandscape';
+import {
+  AccountBalance,
+  BrandingWatermark,
+  FormatListBulleted,
+  Person,
+  NewReleases,
+  Highlight,
+  List,
+  ListAlt,
+  Money,
+  ContactMail,
+  InsertChart,
+  MultilineChart,
+  VpnKey,
+  BubbleChart,
+  Assessment,
+  PersonAdd,
+  PeopleAlt,
+  SupervisedUserCircle,
+  PictureAsPdf,
+  Drafts,
+  SettingsCell,
+  LocalOffer,
+  CreateNewFolder,
+  SettingsApplications,
+  DynamicFeed,
+  SpeakerNotes,
+  Book,
+  Language,
+  Equalizer,
+  TrendingUp,
+  TableChart,
+  ScreenLockLandscape,
+  PieChart,
+  Tune,
+  SupervisorAccount,
+  SettingsBrightness,
+  CenterFocusWeak,
+  LocationOn,
+} from '@material-ui/icons';
 import Products from '../views/Products/Products';
 import Tags from '../views/Products/Tags';
 import { Product } from '../views/Products/Product';
@@ -527,4 +532,31 @@ const dashboardRoutes = [
   },
 ];
 
-export default dashboardRoutes;
+const headQuarterRoutes = [
+  {
+    sidebarName: 'Headquarter Settings',
+    Icon: AccountBalance,
+    needsPermission: true,
+    permission: Permissions.ViewReportsMenu,
+    items: [
+      {
+        path: '/brands',
+        sidebarName: 'Brands',
+        Icon: BrandingWatermark,
+        component: Products,
+        needsPermission: true,
+        permission: Permissions.ViewDashboardReport,
+      },
+      {
+        path: '/reports',
+        sidebarName: 'Generic Products',
+        Icon: FormatListBulleted,
+        component: Products,
+        needsPermission: true,
+        permission: Permissions.ViewDashboardReport,
+      },
+    ],
+  },
+];
+
+export { dashboardRoutes, headQuarterRoutes };
