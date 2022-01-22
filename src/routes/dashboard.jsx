@@ -41,6 +41,8 @@ import {
 import Products from '../views/Products/Products';
 import Tags from '../views/Products/Tags';
 import { Product } from '../views/Products/Product';
+import GenericProducts from '../views/Headquarter/GenericProducts';
+import Brands from '../views/Headquarter/Brands';
 import ProductCategory from '../views/Products/ProductCategory';
 import UpdateWebsiteProducts from '../views/Products/UpdateWebsiteProducts';
 import Locations from '../views/Locations/Locations';
@@ -523,13 +525,6 @@ const dashboardRoutes = [
     needsPermission: false,
     component: CustomerStoreCredit,
   },
-  {
-    redirect: true,
-    path: '/',
-    to: '/login',
-    needsPermission: false,
-    navbarName: 'Redirect',
-  },
 ];
 
 const headQuarterRoutes = [
@@ -543,15 +538,15 @@ const headQuarterRoutes = [
         path: '/brands',
         sidebarName: 'Brands',
         Icon: BrandingWatermark,
-        component: Products,
+        component: Brands,
         needsPermission: true,
         permission: Permissions.ViewDashboardReport,
       },
       {
-        path: '/reports',
+        path: '/generic-products',
         sidebarName: 'Generic Products',
         Icon: FormatListBulleted,
-        component: Products,
+        component: GenericProducts,
         needsPermission: true,
         permission: Permissions.ViewDashboardReport,
       },
@@ -559,4 +554,14 @@ const headQuarterRoutes = [
   },
 ];
 
-export { dashboardRoutes, headQuarterRoutes };
+const loginRoutes = [
+  {
+    redirect: true,
+    path: '/',
+    to: '/login',
+    needsPermission: false,
+    navbarName: 'Redirect',
+  },
+];
+
+export { dashboardRoutes, headQuarterRoutes, loginRoutes };

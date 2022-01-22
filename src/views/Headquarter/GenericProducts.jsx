@@ -29,11 +29,11 @@ import GridItem from '../../components/Grid/GridItem';
 import Button from '../../components/CustomButtons/Button';
 import ProductService from '../../services/ProductService';
 import ShopifyStorefrontService from '../../services/ShopifyStorefrontService';
-import { Product } from './Product';
+import { Product } from '../Products/Product';
 
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
-export default class Products extends React.Component {
+export default class GenericProducts extends React.Component {
   state = {
     products: [],
     loading: false,

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-target-blank */
 import React from 'react';
 import MaterialTable from 'material-table';
 import LinearProgress from '@material-ui/core/LinearProgress';

@@ -7,7 +7,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import Sidebar from '../../components/Sidebar/Sidebar';
-import { dashboardRoutes, headQuarterRoutes } from '../../routes/dashboard';
+import { dashboardRoutes, headQuarterRoutes, loginRoutes } from '../../routes/dashboard';
 import dashboardStyle from '../../assets/jss/material-dashboard-react/layouts/dashboardStyle';
 import Auth from '../../services/Auth';
 import AddOrder from '../../views/Orders/AddOrder';
@@ -26,11 +26,29 @@ function requireAuth(nextState, replace) {
   }
 }
 
+function flattenRoutes(isHeadQuarterStore) {
+  let routes = [];
+  if (isHeadQuarterStore) {
+    routes = dashboardRoutes.concat(headQuarterRoutes).concat(loginRoutes);
+  } else {
+    routes = dashboardRoutes.concat(loginRoutes);
+  }
+  const result = routes.map((prop) => {
+    if (prop.items && prop.items.length > 0) {
+      return prop.items;
+    }
+    return prop;
+  });
+  return result.flat();
+}
+
 class App extends React.Component {
   state = {
     mobileOpen: false,
     permissionsChanged: false,
     portalSettings: {},
+    mergedRoutes: [],
+    routes: [],
   };
 
   constructor(props) {
@@ -42,8 +60,14 @@ class App extends React.Component {
   async componentDidMount() {
     window.addEventListener('resize', this.resizeFunction);
     const portalSettings = await PortalSettingsService.getPortalSettings();
+    const mergedRoutes = portalSettings.isHeadQuarterStore
+      ? dashboardRoutes.concat(headQuarterRoutes).concat(loginRoutes)
+      : dashboardRoutes.concat(loginRoutes);
+    const routes = flattenRoutes(portalSettings.isHeadQuarterStore);
     this.setState({
       portalSettings,
+      mergedRoutes,
+      routes,
     });
     document.title = portalSettings.portalTitle;
   }
@@ -73,28 +97,6 @@ class App extends React.Component {
     this.setState({ mobileOpen: !mobileOpen });
   }
 
-  mergeRoutes() {
-    const { portalSettings } = this.state;
-    return portalSettings.isHeadQuarterStore
-      ? dashboardRoutes.concat(headQuarterRoutes)
-      : dashboardRoutes;
-  }
-
-  flattenRoutes() {
-    const { portalSettings } = this.state;
-    let routes = [];
-    if (portalSettings.isHeadQuarterStore) {
-      routes = dashboardRoutes.concat(headQuarterRoutes);
-    }
-    const result = routes.map((prop) => {
-      if (prop.items && prop.items.length > 0) {
-        return prop.items;
-      }
-      return prop;
-    });
-    return result.flat();
-  }
-
   permissionsChanged() {
     this.setState({ permissionsChanged: true });
   }
@@ -112,13 +114,17 @@ class App extends React.Component {
 
   render() {
     const { classes, color, ...rest } = this.props;
-    const { permissionsChanged, portalSettings, mobileOpen } = this.state;
+    const {
+      permissionsChanged,
+      portalSettings,
+      mobileOpen,
+      mergedRoutes,
+      routes,
+    } = this.state;
     const logoImageUrl = portalSettings ? `${Api.apiRoot}/${portalSettings.logoImageUrl}` : logo;
     const sidebarImageUrl = portalSettings ? `${Api.apiRoot}/${portalSettings.sidebarImageUrl}` : image;
     const sideBarTitle = portalSettings.ShowTitleOnSideBar ? portalSettings.portalTitle : '';
 
-    const routes = this.flattenRoutes();
-    const mergedRoutes = this.mergeRoutes();
     const switchRoutes = (
       <Switch>
         {routes.map((prop, index) => {
