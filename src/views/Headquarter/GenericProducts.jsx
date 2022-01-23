@@ -40,13 +40,13 @@ export default class GenericProducts extends React.Component {
     openSnackbar: false,
     snackbarMessage: '',
     snackbarColor: 'info',
-    page: 1,
-    showProduct: false,
-    productId: 0,
+    // page: 1,
+    // showProduct: false,
+    // productId: 0,
     columns: [
-      // {
-      //   title: 'Product Type', field: 'productTypeName', hidden: true, readonly: true,
-      // },
+      {
+        title: 'Product Type', field: 'productTypeName', readonly: true,
+      },
       {
         title: 'Generic Product Code',
         field: 'genericProductCode',
@@ -82,9 +82,9 @@ export default class GenericProducts extends React.Component {
       //     False: 'False',
       //   },
       // },
-      // {
-      //   title: 'Product Id', field: 'genericProductId', hidden: true, readonly: true,
-      // },
+      {
+        title: 'Product Id', field: 'genericProductId', hidden: true, readonly: true,
+      },
     ],
     options: {
       paging: true,
@@ -163,40 +163,40 @@ export default class GenericProducts extends React.Component {
       openSnackbar,
       snackbarMessage,
       snackbarColor,
-      page,
-      showProduct,
-      productId,
       columns,
       options,
     } = this.state;
 
-    console.log("PRODUCTS: " + genericProducts.length);
     const detailPanel = [
       {
         tooltip: 'Details',
         render: (rowData) => (
           <div
             style={{
-              width: '60%',
+              width: '90%',
               backgroundColor: '#ccf9ff',
             }}
           >
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Location</TableCell>
-                  <TableCell numeric>Balance</TableCell>
-                  <TableCell numeric>On Hold</TableCell>
-                  <TableCell numeric>Bin Code</TableCell>
+                  <TableCell>Brand</TableCell>
+                  <TableCell>SKU</TableCell>
+                  <TableCell>Product Name</TableCell>
+                  <TableCell numeric>Sale Price ($)</TableCell>
+                  <TableCell numeric>disabled</TableCell>
+                  <TableCell />
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rowData.inventory.map((row) => (
-                  <TableRow key={row.productId}>
-                    <TableCell>{row.locationName}</TableCell>
-                    <TableCell numeric>{row.balance}</TableCell>
-                    <TableCell numeric>{row.onHoldAmount}</TableCell>
-                    <TableCell>{row.binCode}</TableCell>
+                {rowData.brandProducts.map((row) => (
+                  <TableRow>
+                    <TableCell>{row.brandName}</TableCell>
+                    <TableCell>{row.brandProductCode ? row.brandProductCode : 'not sold'}</TableCell>
+                    <TableCell>{row.brandProductName}</TableCell>
+                    <TableCell numeric>{row.salesPrice}</TableCell>
+                    <TableCell>{row.disabled}</TableCell>
+                    <TableCell><Button>Add to brand</Button></TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -237,12 +237,10 @@ export default class GenericProducts extends React.Component {
                   Lights and Parts Shopify Store: &nbsp;
                   <a target="_blank" href="https://light-and-parts.myshopify.com/">https://light-and-parts.myshopify.com</a>
                 </h5> */}
-              </CardBody>
-            </Card>
-            <MaterialTable
-              columns={columns}
-              data={genericProducts}
-              // detailPanel={detailPanel}
+                <MaterialTable
+                  columns={columns}
+                  data={genericProducts}
+                  detailPanel={detailPanel}
               // actions={[
               //   {
               //     icon: 'menu',
@@ -250,20 +248,22 @@ export default class GenericProducts extends React.Component {
               //     onClick: (event, rowData) => this.showTransactions(rowData.genericProductId),
               //   },
               // ]}
-              options={options}
-              title=""
-            />
-            {loading && (<LinearProgress />)}
+                  options={options}
+                  title=""
+                />
+                {loading && (<LinearProgress />)}
+                <Snackbar
+                  place="tl"
+                  color={snackbarColor}
+                  icon={Check}
+                  message={snackbarMessage}
+                  open={openSnackbar}
+                  closeNotification={() => this.setState({ openSnackbar: false })}
+                  close
+                />
+              </CardBody>
+            </Card>
           </GridItem>
-          {/* <Snackbar
-            place="tl"
-            color={snackbarColor}
-            icon={Check}
-            message={snackbarMessage}
-            open={openSnackbar}
-            closeNotification={() => this.setState({ openSnackbar: false })}
-            close
-          /> */}
         </GridContainer>
         {/* <Dialog
           fullScreen
