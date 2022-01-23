@@ -40,7 +40,7 @@ export default class CustomerStoreCredit extends React.Component {
       showStoreCreditDialog: false,
       openSnackbar: false,
       snackbarMessage: '',
-      snackbarColor: '',
+      snackbarColor: 'info',
       loading: false,
     };
 

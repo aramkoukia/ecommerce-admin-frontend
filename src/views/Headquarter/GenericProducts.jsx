@@ -27,8 +27,8 @@ import CardBody from '../../components/Card/CardBody';
 import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
 import Button from '../../components/CustomButtons/Button';
-import ProductService from '../../services/ProductService';
-import ShopifyStorefrontService from '../../services/ShopifyStorefrontService';
+import GenericProductService from '../../services/GenericProductService';
+// import ShopifyStorefrontService from '../../services/ShopifyStorefrontService';
 import { Product } from '../Products/Product';
 
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
@@ -39,7 +39,7 @@ export default class GenericProducts extends React.Component {
     loading: false,
     openSnackbar: false,
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
     page: 1,
     showProduct: false,
     productId: 0,
@@ -48,14 +48,14 @@ export default class GenericProducts extends React.Component {
         title: 'Product Type', field: 'productTypeName', hidden: true, readonly: true,
       },
       {
-        title: 'Product Code',
-        field: 'productCode',
+        title: 'Generic Product Code',
+        field: 'genericProductCode',
         readonly: true,
         width: 200,
       },
       {
-        title: 'Product Name',
-        field: 'productName',
+        title: 'Generic Product Name',
+        field: 'genericProductName',
         readonly: true,
         width: 600,
       },
@@ -73,20 +73,6 @@ export default class GenericProducts extends React.Component {
         },
       },
       {
-        title: 'Balance',
-        field: 'balance',
-        type: 'numeric',
-        readonly: true,
-        width: 150,
-      },
-      {
-        title: 'On Hold',
-        field: 'onHoldAmount',
-        type: 'numeric',
-        readonly: true,
-        width: 150,
-      },
-      {
         title: 'Disabled',
         field: 'disabled',
         readonly: true,
@@ -97,7 +83,7 @@ export default class GenericProducts extends React.Component {
         },
       },
       {
-        title: 'Product Id', field: 'productId', hidden: true, readonly: true,
+        title: 'Product Id', field: 'genericProductId', hidden: true, readonly: true,
       },
     ],
     options: {
@@ -113,8 +99,8 @@ export default class GenericProducts extends React.Component {
 
   constructor(props) {
     super(props);
-    this.syncProducts = this.syncProducts.bind(this);
-    this.pushProductsToShopify = this.pushProductsToShopify.bind(this);
+    // this.syncProducts = this.syncProducts.bind(this);
+    // this.pushProductsToShopify = this.pushProductsToShopify.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -133,34 +119,9 @@ export default class GenericProducts extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
   }
 
-  showTransactions(productId) {
-    this.setState({
-      showProduct: true,
-      productId,
-    });
-  }
-
-  syncProducts() {
-    ProductService.syncProducts();
-    this.setState({
-      openSnackbar: true,
-      snackbarMessage: 'Products sync process started. This could take 3-5 minutes to finish!',
-      snackbarColor: 'success',
-    });
-  }
-
-  pushProductsToShopify() {
-    ShopifyStorefrontService.pushProducts();
-    this.setState({
-      openSnackbar: true,
-      snackbarMessage: 'Shopoify Products update process started. This could take 3-5 minutes to finish!',
-      snackbarColor: 'success',
-    });
-  }
-
   productsList() {
     this.setState({ loading: true });
-    ProductService.getProductWithInventory()
+    GenericProductService.getGenericProducts()
       .then((data) => this.setState({ products: data, loading: false }));
   }
 
@@ -249,11 +210,11 @@ export default class GenericProducts extends React.Component {
         <GridContainer>
           <GridItem xs={12} sm={12} md={12}>
             <Card>
-              <CardHeader color="primary">
-                <div className={styles.cardTitleWhite}>Products List</div>
+              <CardHeader color="info">
+                <div className={styles.cardTitleWhite}>Headquarter - Generic Products</div>
               </CardHeader>
               <CardBody>
-                <Button color="info" disabled={loading} onClick={this.syncProducts}>
+                {/* <Button color="info" disabled={loading} onClick={this.syncProducts}>
                   Sync Products From Wordpress
                 </Button>
                 &nbsp;
@@ -262,7 +223,7 @@ export default class GenericProducts extends React.Component {
                   Push Products to Lights and Parts Shopify Store
                 </Button>
                 &nbsp;
-                &nbsp;
+                &nbsp; */}
                 <TextField
                   name="page"
                   label="Page Number"
@@ -271,10 +232,10 @@ export default class GenericProducts extends React.Component {
                   value={page}
                   min="1"
                 />
-                <h5>
+                {/* <h5>
                   Lights and Parts Shopify Store: &nbsp;
                   <a target="_blank" href="https://light-and-parts.myshopify.com/">https://light-and-parts.myshopify.com</a>
-                </h5>
+                </h5> */}
               </CardBody>
             </Card>
             <MaterialTable

@@ -25,7 +25,7 @@ export default class WebsiteAbout extends React.Component {
     websiteAbout: [],
     openSnackbar: false,
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
     id: null,
     showDialog: false,
     portalSettings: {},

@@ -19,7 +19,7 @@ class AddUser extends React.Component {
     this.state = {
       openSnackbar: false,
       snackbarMessage: '',
-      snackbarColor: '',
+      snackbarColor: 'info',
       userName: '',
       email: '',
       givenName: '',
@@ -31,7 +31,7 @@ class AddUser extends React.Component {
     this.setState({
       openSnackbar: false,
       snackbarMessage: '',
-      snackbarColor: '',
+      snackbarColor: 'info',
     });
   }
 

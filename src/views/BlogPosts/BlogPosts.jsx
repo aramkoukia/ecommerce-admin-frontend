@@ -35,7 +35,7 @@ export default class BlogPosts extends React.Component {
     blogPosts: [],
     openSnackbar: false,
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
     showUploadImage: false,
     showPostDialog: false,
     title: '',

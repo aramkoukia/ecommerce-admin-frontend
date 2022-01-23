@@ -49,7 +49,7 @@ export class Return extends React.Component {
     order: null,
     openSnackbar: false,
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
     loading: false,
     openAuthDialog: true,
     openDialog: false,

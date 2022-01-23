@@ -31,7 +31,7 @@ export default class CustomApplications extends React.Component {
     loading: false,
     openSnackbar: false,
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
     showUploadImage: false,
     showTagsModal: false,
     stepDetailTags: [],

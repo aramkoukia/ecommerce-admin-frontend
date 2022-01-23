@@ -22,7 +22,7 @@ export default class WebsiteUsers extends React.Component {
     openDialog: false,
     openSnackbar: false,
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
   };
 
   constructor(props) {

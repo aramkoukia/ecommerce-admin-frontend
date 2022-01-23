@@ -14,7 +14,7 @@ class InvoiceEmailPrintSettings extends React.Component {
   state = {
     openSnackbar: false,
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
     emailSubject: '',
     emailAttachmentFileName: '',
     ccEmailAddress: '',
@@ -66,7 +66,7 @@ class InvoiceEmailPrintSettings extends React.Component {
       additionalChargesNote,
       openSnackbar: false,
       snackbarMessage: '',
-      snackbarColor: '',
+      snackbarColor: 'info',
     });
   }
 

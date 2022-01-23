@@ -21,7 +21,7 @@ class AddCustomer extends React.Component {
   state = {
     openSnackbar: false,
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
     country: 'Canada',
     province: 'BC',
     segment: 'None',
@@ -52,7 +52,7 @@ class AddCustomer extends React.Component {
     this.setState({
       openSnackbar: false,
       snackbarMessage: '',
-      snackbarColor: '',
+      snackbarColor: 'info',
     });
   }
 

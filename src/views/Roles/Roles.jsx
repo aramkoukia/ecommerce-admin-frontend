@@ -30,7 +30,7 @@ export default class Roles extends React.Component {
       selectedRow: null,
       openSnackbar: false,
       snackbarMessage: '',
-      snackbarColor: '',
+      snackbarColor: 'info',
       permissions: [],
       permissionsChecked: [0],
     };

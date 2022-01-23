@@ -24,7 +24,7 @@ export default class WebsiteSlider extends React.Component {
     websiteSliders: [],
     openSnackbar: false,
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
     showUploadImage: false,
     id: null,
     portalSettings: {},

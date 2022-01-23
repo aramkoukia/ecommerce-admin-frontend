@@ -16,7 +16,7 @@ class PosSettings extends React.Component {
   state = {
     openSnackbar: false,
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
     storeId: 'monca05727',
     terminalId: 'P1217267',
   };
@@ -33,7 +33,7 @@ class PosSettings extends React.Component {
     this.setState({
       openSnackbar: false,
       snackbarMessage: '',
-      snackbarColor: '',
+      snackbarColor: 'info',
     });
     this.clientPosSettingsList();
   }

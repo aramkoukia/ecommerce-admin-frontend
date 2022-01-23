@@ -53,7 +53,7 @@ export class Product extends React.Component {
     productTransactions: [],
     openSnackbar: false,
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
     fromDate: '',
     toDate: '',
     openTransferDialog: false,

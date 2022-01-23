@@ -35,7 +35,7 @@ export default class UpdateWebsiteProducts extends React.Component {
     loading: false,
     openSnackbar: false,
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
     showDescriptionModal: false,
     showDetailModal: false,
     showWarrantyModal: false,

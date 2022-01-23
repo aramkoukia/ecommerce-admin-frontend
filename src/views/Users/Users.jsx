@@ -32,7 +32,7 @@ export default class Users extends React.Component {
     selectedRow: null,
     openSnackbar: false,
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
     newPassword: '',
     newPasscodeRepeat: '',
     newPasscode: '',

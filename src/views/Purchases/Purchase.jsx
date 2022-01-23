@@ -38,7 +38,7 @@ export class Purchase extends React.Component {
     purchase: null,
     openSnackbar: false,
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
     loading: false,
   };
 

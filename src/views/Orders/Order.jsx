@@ -55,7 +55,7 @@ export class Order extends React.Component {
     order: null,
     openSnackbar: false,
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
     loading: false,
     openDialog: false,
     openEmailDialog: false,

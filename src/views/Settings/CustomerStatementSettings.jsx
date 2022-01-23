@@ -14,7 +14,7 @@ class CustomerStatementSettings extends React.Component {
   state = {
     openSnackbar: false,
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
     emailSubject: '',
     emailAttachmentFileName: '',
     ccEmailAddress: '',
@@ -42,7 +42,7 @@ class CustomerStatementSettings extends React.Component {
       emailBody,
       openSnackbar: false,
       snackbarMessage: '',
-      snackbarColor: '',
+      snackbarColor: 'info',
     });
   }
 

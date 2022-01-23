@@ -22,7 +22,7 @@ class EditCustomer extends React.Component {
   state = {
     openSnackbar: false,
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
     customer: {
       firstName: '',
       country: 'Canada',
@@ -61,7 +61,7 @@ class EditCustomer extends React.Component {
       customer,
       openSnackbar: false,
       snackbarMessage: '',
-      snackbarColor: '',
+      snackbarColor: 'info',
     });
   }
 

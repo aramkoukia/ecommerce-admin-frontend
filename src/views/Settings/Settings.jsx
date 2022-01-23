@@ -19,7 +19,7 @@ class Settings extends React.Component {
     this.state = {
       openSnackbar: false,
       snackbarMessage: '',
-      snackbarColor: '',
+      snackbarColor: 'info',
       settings: {},
     };
   }
@@ -30,7 +30,7 @@ class Settings extends React.Component {
       settings,
       openSnackbar: false,
       snackbarMessage: '',
-      snackbarColor: '',
+      snackbarColor: 'info',
     });
   }
 

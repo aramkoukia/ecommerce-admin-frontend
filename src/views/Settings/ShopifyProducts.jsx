@@ -26,7 +26,7 @@ export default class ShopifyProducts extends React.Component {
     loading: false,
     openSnackbar: false,
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
     showUpdateModal: false,
     productCode: '',
     shopifyProductId: 0,

@@ -39,7 +39,7 @@ export default class Products extends React.Component {
     loading: false,
     openSnackbar: false,
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
     page: 1,
     showProduct: false,
     productId: 0,

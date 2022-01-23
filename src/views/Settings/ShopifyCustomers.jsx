@@ -30,7 +30,7 @@ export default class ShopifyCustomers extends React.Component {
     shopifyCustomerId: '',
     customerId: '',
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
     columns: [
       {
         title: 'Shopify Customer Id',

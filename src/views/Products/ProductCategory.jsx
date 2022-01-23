@@ -25,7 +25,7 @@ export default class ProductCategory extends React.Component {
     productCategories: [],
     openSnackbar: false,
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
     showHtmlEditor: false,
     showUploadImage: false,
     showUploadHeaderImageModal: false,

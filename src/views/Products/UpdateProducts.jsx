@@ -28,7 +28,7 @@ export default class UpdateProducts extends React.Component {
     loading: false,
     openSnackbar: false,
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
     openDialog: false,
     productPackages: [],
     productCategories: [],

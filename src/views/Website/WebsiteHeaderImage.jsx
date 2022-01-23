@@ -13,7 +13,7 @@ export default class WebsiteHeaderImage extends React.Component {
   state = {
     openSnackbar: false,
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
     websitePage: {},
   };
 

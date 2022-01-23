@@ -16,7 +16,7 @@ export default class WebsiteFaq extends React.Component {
     websiteFaqs: [],
     openSnackbar: false,
     snackbarMessage: '',
-    snackbarColor: '',
+    snackbarColor: 'info',
     portalSettings: {},
   };
 
