@@ -427,14 +427,6 @@ const dashboardRoutes = [
         permission: Permissions.ViewWebsiteSettings,
       },
       {
-        path: '/blogposts',
-        sidebarName: 'Blog Posts',
-        Icon: Book,
-        component: BlogPosts,
-        needsPermission: true,
-        permission: Permissions.ViewWebsiteSettings,
-      },
-      {
         path: '/custom-applications',
         sidebarName: 'Custom Applications',
         Icon: CenterFocusWeak,

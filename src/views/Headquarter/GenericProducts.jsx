@@ -31,11 +31,11 @@ import GenericProductService from '../../services/GenericProductService';
 // import ShopifyStorefrontService from '../../services/ShopifyStorefrontService';
 import { Product } from '../Products/Product';
 
-const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
+// const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
 export default class GenericProducts extends React.Component {
   state = {
-    products: [],
+    genericProducts: [],
     loading: false,
     openSnackbar: false,
     snackbarMessage: '',
@@ -44,9 +44,9 @@ export default class GenericProducts extends React.Component {
     showProduct: false,
     productId: 0,
     columns: [
-      {
-        title: 'Product Type', field: 'productTypeName', hidden: true, readonly: true,
-      },
+      // {
+      //   title: 'Product Type', field: 'productTypeName', hidden: true, readonly: true,
+      // },
       {
         title: 'Generic Product Code',
         field: 'genericProductCode',
@@ -55,36 +55,36 @@ export default class GenericProducts extends React.Component {
       },
       {
         title: 'Generic Product Name',
-        field: 'genericProductName',
+        field: 'productName',
         readonly: true,
         width: 600,
       },
-      {
-        title: 'Sales Price($)',
-        field: 'salesPrice',
-        type: 'numeric',
-        readonly: true,
-        width: 150,
-        cellStyle: {
-          color: '#0716CB',
-        },
-        headerStyle: {
-          color: '#0716CB',
-        },
-      },
-      {
-        title: 'Disabled',
-        field: 'disabled',
-        readonly: true,
-        defaultFilter: ['False'],
-        lookup: {
-          True: 'True',
-          False: 'False',
-        },
-      },
-      {
-        title: 'Product Id', field: 'genericProductId', hidden: true, readonly: true,
-      },
+      // {
+      //   title: 'Sales Price($)',
+      //   field: 'salesPrice',
+      //   type: 'numeric',
+      //   readonly: true,
+      //   width: 150,
+      //   cellStyle: {
+      //     color: '#0716CB',
+      //   },
+      //   headerStyle: {
+      //     color: '#0716CB',
+      //   },
+      // },
+      // {
+      //   title: 'Disabled',
+      //   field: 'disabled',
+      //   readonly: true,
+      //   defaultFilter: ['False'],
+      //   lookup: {
+      //     True: 'True',
+      //     False: 'False',
+      //   },
+      // },
+      // {
+      //   title: 'Product Id', field: 'genericProductId', hidden: true, readonly: true,
+      // },
     ],
     options: {
       paging: true,
@@ -122,7 +122,7 @@ export default class GenericProducts extends React.Component {
   productsList() {
     this.setState({ loading: true });
     GenericProductService.getGenericProducts()
-      .then((data) => this.setState({ products: data, loading: false }));
+      .then((data) => this.setState({ genericProducts: data, loading: false }));
   }
 
   render() {
@@ -158,7 +158,7 @@ export default class GenericProducts extends React.Component {
 
 
     const {
-      products,
+      genericProducts,
       loading,
       openSnackbar,
       snackbarMessage,
@@ -170,6 +170,7 @@ export default class GenericProducts extends React.Component {
       options,
     } = this.state;
 
+    console.log("PRODUCTS: " + genericProducts.length);
     const detailPanel = [
       {
         tooltip: 'Details',
@@ -224,14 +225,14 @@ export default class GenericProducts extends React.Component {
                 </Button>
                 &nbsp;
                 &nbsp; */}
-                <TextField
+                {/* <TextField
                   name="page"
                   label="Page Number"
                   type="number"
                   onChange={this.handleChange}
                   value={page}
                   min="1"
-                />
+                /> */}
                 {/* <h5>
                   Lights and Parts Shopify Store: &nbsp;
                   <a target="_blank" href="https://light-and-parts.myshopify.com/">https://light-and-parts.myshopify.com</a>
@@ -240,21 +241,21 @@ export default class GenericProducts extends React.Component {
             </Card>
             <MaterialTable
               columns={columns}
-              data={products}
-              detailPanel={detailPanel}
-              actions={[
-                {
-                  icon: 'menu',
-                  tooltip: 'Transactions',
-                  onClick: (event, rowData) => this.showTransactions(rowData.productId),
-                },
-              ]}
+              data={genericProducts}
+              // detailPanel={detailPanel}
+              // actions={[
+              //   {
+              //     icon: 'menu',
+              //     tooltip: 'Transactions',
+              //     onClick: (event, rowData) => this.showTransactions(rowData.genericProductId),
+              //   },
+              // ]}
               options={options}
               title=""
             />
             {loading && (<LinearProgress />)}
           </GridItem>
-          <Snackbar
+          {/* <Snackbar
             place="tl"
             color={snackbarColor}
             icon={Check}
@@ -262,18 +263,19 @@ export default class GenericProducts extends React.Component {
             open={openSnackbar}
             closeNotification={() => this.setState({ openSnackbar: false })}
             close
-          />
+          /> */}
         </GridContainer>
-        <Dialog
+        {/* <Dialog
           fullScreen
           open={showProduct}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
-          TransitionComponent={Transition}
+          // TransitionComponent={Transition}
         >
           <AppBar style={{ position: 'relative' }}>
             <Toolbar>
-              <IconButton edge="start" color="inherit" onClick={this.handleClose} aria-label="close">
+              <IconButton edge="start"
+                          color="inherit" onClick={this.handleClose} aria-label="close">
                 <CloseIcon />
                 Close
               </IconButton>
@@ -287,7 +289,7 @@ export default class GenericProducts extends React.Component {
               Cancel
             </Button>
           </DialogActions>
-        </Dialog>
+        </Dialog> */}
       </div>
     );
   }
