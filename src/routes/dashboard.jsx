@@ -32,6 +32,7 @@ import {
   TableChart,
   ScreenLockLandscape,
   LocalConvenienceStore,
+  LocalConvenienceStoreTwoTone,
   PieChart,
   Tune,
   SupervisorAccount,
@@ -43,6 +44,7 @@ import Products from '../views/Products/Products';
 import Tags from '../views/Products/Tags';
 import { Product } from '../views/Products/Product';
 import GenericProducts from '../views/Headquarter/GenericProducts';
+import GenericProductInventory from '../views/Headquarter/GenericProductInventory';
 import Brands from '../views/Headquarter/Brands';
 import Warehouses from '../views/Headquarter/Warehouses';
 import ProductCategory from '../views/Products/ProductCategory';
@@ -549,6 +551,14 @@ const headQuarterRoutes = [
         sidebarName: 'Generic Products',
         Icon: FormatListBulleted,
         component: GenericProducts,
+        needsPermission: true,
+        permission: Permissions.ViewDashboardReport,
+      },
+      {
+        path: '/products-inventory',
+        sidebarName: 'Products Inventory',
+        Icon: LocalConvenienceStoreTwoTone,
+        component: GenericProductInventory,
         needsPermission: true,
         permission: Permissions.ViewDashboardReport,
       },
