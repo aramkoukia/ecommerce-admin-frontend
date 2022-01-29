@@ -5,15 +5,9 @@ import MaterialTable from 'material-table';
 import {
   LinearProgress,
   TextField,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
   Dialog,
   DialogActions,
   DialogContent,
-  AppBar,
   Toolbar,
   IconButton,
   Slide,
@@ -86,6 +80,32 @@ export default class GenericProducts extends React.Component {
         title: 'Product Id', field: 'genericProductId', hidden: true, readonly: true,
       },
     ],
+    detailPanelColumns: [
+      {
+        title: 'Brand Name', field: 'brandName', readonly: true,
+      },
+      {
+        title: 'Brand SKU', field: 'brandProductCode',
+      },
+      {
+        title: 'Brand Product Name', field: 'brandProductName',
+      },
+      {
+        title: 'Sales Price', field: 'salesPrice',
+      },
+      {
+        title: 'Disabled', field: 'disabled', readonly: true,
+      },
+    ],
+    inventoryPanelColumns: [
+      {
+        title: 'Location', field: 'locationName', readonly: true,
+      },
+      {
+        title: 'Balance', field: 'balance',
+      }
+    ],
+
     options: {
       paging: true,
       pageSizeOptions: [25, 50, 100],
@@ -94,6 +114,18 @@ export default class GenericProducts extends React.Component {
       exportButton: true,
       filtering: true,
       search: true,
+    },
+    detailPanelOptions: {
+      paging: false,
+      columnsButton: false,
+      exportButton: false,
+      showTitle: false,
+      toolbar: false,
+      filtering: false,
+      search: false,
+      headerStyle: {
+        backgroundColor: '#BAD7EE',
+      },
     },
   };
 
@@ -123,6 +155,25 @@ export default class GenericProducts extends React.Component {
     this.setState({ loading: true });
     GenericProductService.getGenericProducts()
       .then((data) => this.setState({ genericProducts: data, loading: false }));
+  }
+
+  addToBrand(rowData, detailRowData) {
+    const { genericProducts } = this.state;
+    console.log('rowData', rowData);
+    console.log('detailRowData', detailRowData);
+  }
+
+  disableInBrand(rowData, detailRowData) {
+    const { genericProducts } = this.state;
+    console.log('rowData', rowData);
+
+    console.log('detailRowData', detailRowData);
+  }
+
+  updateBrandProduct(rowData, oldData, newData) {
+    const { genericProducts } = this.state;
+    console.log('oldData', oldData);
+    console.log('newData', newData);
   }
 
   render() {
@@ -164,44 +215,46 @@ export default class GenericProducts extends React.Component {
       snackbarMessage,
       snackbarColor,
       columns,
+      detailPanelColumns,
       options,
+      detailPanelOptions,
     } = this.state;
 
     const detailPanel = [
       {
         tooltip: 'Details',
         render: (rowData) => (
-          <div
-            style={{
-              width: '90%',
-              backgroundColor: '#ccf9ff',
+          <MaterialTable
+            columns={detailPanelColumns}
+            data={rowData.brandProducts}
+            options={detailPanelOptions}
+            columnsButton={false}
+            title=""
+            editable={{
+              onRowUpdate: (newData, oldData) => new Promise((resolve) => {
+                setTimeout(() => {
+                  this.updateBrandProduct(rowData, oldData, newData);
+                  // const index = locations.indexOf(oldData);
+                  // locations[index] = newData;
+                  // LocationService.updateLocation(newData);
+                  // this.setState({ locations }, () => resolve());
+                  resolve();
+                }, 1000);
+              }),
             }}
-          >
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Brand</TableCell>
-                  <TableCell>SKU</TableCell>
-                  <TableCell>Product Name</TableCell>
-                  <TableCell numeric>Sale Price ($)</TableCell>
-                  <TableCell numeric>disabled</TableCell>
-                  <TableCell />
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rowData.brandProducts.map((row) => (
-                  <TableRow>
-                    <TableCell>{row.brandName}</TableCell>
-                    <TableCell>{row.brandProductCode ? row.brandProductCode : 'not sold'}</TableCell>
-                    <TableCell>{row.brandProductName}</TableCell>
-                    <TableCell numeric>{row.salesPrice}</TableCell>
-                    <TableCell>{row.disabled}</TableCell>
-                    <TableCell><Button>Add to brand</Button></TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+            actions={[
+              {
+                icon: 'add',
+                tooltip: 'Add to brand',
+                onClick: (_event, detailRowData) => this.addToBrand(rowData, detailRowData),
+              },
+              {
+                icon: 'delete',
+                tooltip: 'Disable in brand',
+                onClick: (_event, detailRowData) => this.disableInBrand(rowData, detailRowData),
+              },
+            ]}
+          />
         ),
       },
     ];

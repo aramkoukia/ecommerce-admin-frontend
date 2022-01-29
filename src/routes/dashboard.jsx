@@ -31,6 +31,7 @@ import {
   TrendingUp,
   TableChart,
   ScreenLockLandscape,
+  LocalConvenienceStore,
   PieChart,
   Tune,
   SupervisorAccount,
@@ -43,6 +44,7 @@ import Tags from '../views/Products/Tags';
 import { Product } from '../views/Products/Product';
 import GenericProducts from '../views/Headquarter/GenericProducts';
 import Brands from '../views/Headquarter/Brands';
+import Warehouses from '../views/Headquarter/Warehouses';
 import ProductCategory from '../views/Products/ProductCategory';
 import UpdateWebsiteProducts from '../views/Products/UpdateWebsiteProducts';
 import Locations from '../views/Locations/Locations';
@@ -83,7 +85,7 @@ import CustomerStatementSettings from '../views/Settings/CustomerStatementSettin
 import InvoiceEmailPrintSettings from '../views/Settings/InvoiceEmailPrintSettings';
 import UpdateProducts from '../views/Products/UpdateProducts';
 import WebsiteSlider from '../views/WebsiteSliders/WebsiteSlider';
-import BlogPosts from '../views/BlogPosts/BlogPosts';
+// import BlogPosts from '../views/BlogPosts/BlogPosts';
 import WebsiteAbout from '../views/Website/WebsiteAbout';
 import WebsiteAboutPopOver from '../views/Website/WebsiteAboutPopOver';
 import WebsiteFaq from '../views/Website/WebsiteFaq';
@@ -531,6 +533,14 @@ const headQuarterRoutes = [
         sidebarName: 'Brands',
         Icon: BrandingWatermark,
         component: Brands,
+        needsPermission: true,
+        permission: Permissions.ViewDashboardReport,
+      },
+      {
+        path: '/warehouses',
+        sidebarName: 'Warehouses',
+        Icon: LocalConvenienceStore,
+        component: Warehouses,
         needsPermission: true,
         permission: Permissions.ViewDashboardReport,
       },
