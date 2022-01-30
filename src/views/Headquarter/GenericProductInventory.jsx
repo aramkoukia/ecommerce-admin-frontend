@@ -82,7 +82,7 @@ export default class GenericProductInventory extends React.Component {
     ],
     detailPanelColumns: [
       {
-        title: 'Warehouse Name', field: 'warehouseName', readonly: true,
+        title: 'Warehouse Name', field: 'warehouseName', readonly: true, editable: 'never',
       },
       {
         title: 'Balance', field: 'balance',
@@ -138,7 +138,7 @@ export default class GenericProductInventory extends React.Component {
 
   productsList() {
     this.setState({ loading: true });
-    GenericProductService.getGenericProducts()
+    GenericProductService.getGenericProductInventories()
       .then((data) => this.setState({ genericProducts: data, loading: false }));
   }
 
@@ -211,7 +211,7 @@ export default class GenericProductInventory extends React.Component {
         render: (rowData) => (
           <MaterialTable
             columns={detailPanelColumns}
-            data={rowData.brandProducts}
+            data={rowData.warehouseBalances}
             options={detailPanelOptions}
             columnsButton={false}
             title=""
@@ -230,13 +230,8 @@ export default class GenericProductInventory extends React.Component {
             actions={[
               {
                 icon: 'add',
-                tooltip: 'Add to brand',
+                tooltip: 'Update Inventory',
                 onClick: (_event, detailRowData) => this.addToBrand(rowData, detailRowData),
-              },
-              {
-                icon: 'delete',
-                tooltip: 'Disable in brand',
-                onClick: (_event, detailRowData) => this.disableInBrand(rowData, detailRowData),
               },
             ]}
           />

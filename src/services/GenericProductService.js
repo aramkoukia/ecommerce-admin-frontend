@@ -12,6 +12,17 @@ export default class GenericProductService {
     }
   }
 
+  static async getGenericProductInventories() {
+    try {
+      const response = await RestUtilities.get(
+        'generic-product-inventories',
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async disableProduct(id) {
     try {
       const response = await RestUtilities.delete(
