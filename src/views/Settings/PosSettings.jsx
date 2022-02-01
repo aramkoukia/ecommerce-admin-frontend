@@ -40,7 +40,7 @@ class PosSettings extends React.Component {
 
   handleChange = (event) => {
     this.setState({ [event.target.name]: event.target.value });
-  };
+  }
 
   async pairPos() {
     const { storeId, terminalId, pairingToken } = this.state;

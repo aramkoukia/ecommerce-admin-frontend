@@ -22,14 +22,17 @@ import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
 import Button from '../../components/CustomButtons/Button';
 import GenericProductService from '../../services/GenericProductService';
+import ProductCategoryService from '../../services/ProductCategoryService';
 // import ShopifyStorefrontService from '../../services/ShopifyStorefrontService';
 import { Product } from '../Products/Product';
 
-// const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
+// const Transition = React.forwardRef((props, ref) =>
+//    <Slide direction="up" ref={ref} {...props} />);
 
 export default class GenericProducts extends React.Component {
   state = {
     genericProducts: [],
+    productCategories: [],
     loading: false,
     openSnackbar: false,
     snackbarMessage: '',
@@ -37,49 +40,6 @@ export default class GenericProducts extends React.Component {
     // page: 1,
     // showProduct: false,
     // productId: 0,
-    columns: [
-      {
-        title: 'Product Type', field: 'productTypeName', readonly: true,
-      },
-      {
-        title: 'Generic Product Code',
-        field: 'genericProductCode',
-        readonly: true,
-        width: 200,
-      },
-      {
-        title: 'Generic Product Name',
-        field: 'productName',
-        readonly: true,
-        width: 600,
-      },
-      // {
-      //   title: 'Sales Price($)',
-      //   field: 'salesPrice',
-      //   type: 'numeric',
-      //   readonly: true,
-      //   width: 150,
-      //   cellStyle: {
-      //     color: '#0716CB',
-      //   },
-      //   headerStyle: {
-      //     color: '#0716CB',
-      //   },
-      // },
-      // {
-      //   title: 'Disabled',
-      //   field: 'disabled',
-      //   readonly: true,
-      //   defaultFilter: ['False'],
-      //   lookup: {
-      //     True: 'True',
-      //     False: 'False',
-      //   },
-      // },
-      {
-        title: 'Product Id', field: 'genericProductId', hidden: true, readonly: true,
-      },
-    ],
     detailPanelColumns: [
       {
         title: 'Brand Name', field: 'brandName', readonly: true,
@@ -97,15 +57,6 @@ export default class GenericProducts extends React.Component {
         title: 'Disabled', field: 'disabled', readonly: true,
       },
     ],
-    inventoryPanelColumns: [
-      {
-        title: 'Location', field: 'locationName', readonly: true,
-      },
-      {
-        title: 'Balance', field: 'balance',
-      }
-    ],
-
     options: {
       paging: true,
       pageSizeOptions: [25, 50, 100],
@@ -114,6 +65,7 @@ export default class GenericProducts extends React.Component {
       exportButton: true,
       filtering: true,
       search: true,
+      addRowPosition: 'first',
     },
     detailPanelOptions: {
       paging: false,
@@ -138,6 +90,7 @@ export default class GenericProducts extends React.Component {
 
   componentDidMount() {
     this.productsList();
+    this.productCategoriesList();
   }
 
   handleClose = () => {
@@ -155,6 +108,15 @@ export default class GenericProducts extends React.Component {
     this.setState({ loading: true });
     GenericProductService.getGenericProducts()
       .then((data) => this.setState({ genericProducts: data, loading: false }));
+  }
+
+  productCategoriesList() {
+    this.setState({ loading: true });
+    ProductCategoryService.getProductCategories()
+      .then((data) => this.setState({
+        productCategories: Object.fromEntries(data.map((e) => [e.productTypeId, e.productTypeName])),
+        loading: false,
+      }));
   }
 
   addToBrand(rowData, detailRowData) {
@@ -207,18 +169,41 @@ export default class GenericProducts extends React.Component {
       },
     };
 
-
     const {
       genericProducts,
+      productCategories,
       loading,
       openSnackbar,
       snackbarMessage,
       snackbarColor,
-      columns,
       detailPanelColumns,
       options,
       detailPanelOptions,
     } = this.state;
+
+    const columns = [
+      {
+        title: 'Product Type',
+        field: 'productTypeId',
+        readonly: true,
+        lookup: productCategories,
+      },
+      {
+        title: 'Generic Product SKU',
+        field: 'genericProductCode',
+        readonly: true,
+        width: 200,
+      },
+      {
+        title: 'Generic Product Name',
+        field: 'productName',
+        readonly: true,
+        width: 600,
+      },
+      {
+        title: 'Product Id', field: 'genericProductId', hidden: true, readonly: true,
+      },
+    ];
 
     const detailPanel = [
       {
@@ -294,13 +279,38 @@ export default class GenericProducts extends React.Component {
                   columns={columns}
                   data={genericProducts}
                   detailPanel={detailPanel}
-              // actions={[
-              //   {
-              //     icon: 'menu',
-              //     tooltip: 'Transactions',
-              //     onClick: (event, rowData) => this.showTransactions(rowData.genericProductId),
-              //   },
-              // ]}
+                  editable={{
+                    onRowUpdate: (newData, oldData) => new Promise((resolve) => {
+                      setTimeout(() => {
+                        {
+                          const index = genericProducts.indexOf(oldData);
+                          genericProducts[index] = newData;
+                          GenericProductService.updateGenericProduct(newData);
+                          this.setState({ genericProducts }, () => resolve());
+                        }
+                        resolve();
+                      }, 1000);
+                    }),
+                    onRowAdd: (newData) => new Promise((resolve) => {
+                      setTimeout(() => {
+                        genericProducts.push(newData);
+                        GenericProductService.addGenericProduct(newData);
+                        this.setState({ genericProducts }, () => resolve());
+                        resolve();
+                      }, 1000);
+                    }),
+                    onRowDelete: (oldData) => new Promise((resolve) => {
+                      setTimeout(() => {
+                        {
+                          const index = genericProducts.indexOf(oldData);
+                          genericProducts.splice(index, 1);
+                          GenericProductService.deleteGenericProduct(oldData.genericProductId);
+                          this.setState({ genericProducts }, () => resolve());
+                        }
+                        resolve();
+                      }, 1000);
+                    }),
+                  }}
                   options={options}
                   title=""
                 />
