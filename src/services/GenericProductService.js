@@ -48,9 +48,16 @@ export default class GenericProductService {
 
   static async updateGenericProduct(product) {
     try {
+      const body = {
+        genericProductId: product.genericProductId,
+        productTypeId: product.productTypeId,
+        genericProductCode: product.genericProductCode,
+        productName: product.productName,
+      };
+
       const response = await RestUtilities.put(
-        `genericproducts/${product.productId}`,
-        product,
+        'genericproducts',
+        body,
       );
       return response.content;
     } catch (err) {

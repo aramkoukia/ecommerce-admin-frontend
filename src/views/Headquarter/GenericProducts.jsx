@@ -201,6 +201,16 @@ export default class GenericProducts extends React.Component {
         width: 600,
       },
       {
+        title: 'Disabled',
+        field: 'disabled',
+        readonly: true,
+        defaultFilter: ['No'],
+        lookup: {
+          Yes: 'Yes',
+          No: 'No',
+        },
+      },
+      {
         title: 'Product Id', field: 'genericProductId', hidden: true, readonly: true,
       },
     ];
@@ -231,11 +241,11 @@ export default class GenericProducts extends React.Component {
                 tooltip: 'Add to brand',
                 onClick: (_event, detailRowData) => this.addToBrand(rowData, detailRowData),
               },
-              {
-                icon: 'delete',
-                tooltip: 'Disable in brand',
-                onClick: (_event, detailRowData) => this.disableInBrand(rowData, detailRowData),
-              },
+              // {
+              //   icon: 'delete',
+              //   tooltip: 'Disable in brand',
+              //   onClick: (_event, detailRowData) => this.disableInBrand(rowData, detailRowData),
+              // },
             ]}
           />
         ),
@@ -300,6 +310,7 @@ export default class GenericProducts extends React.Component {
                     onRowDelete: (oldData) => new Promise((resolve) => {
                       setTimeout(() => {
                         {
+                          // todo: need to make this not delete but, disable/enable
                           const index = genericProducts.indexOf(oldData);
                           genericProducts.splice(index, 1);
                           GenericProductService.deleteGenericProduct(oldData.genericProductId);
