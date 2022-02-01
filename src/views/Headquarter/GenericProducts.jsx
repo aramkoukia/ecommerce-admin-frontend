@@ -217,14 +217,12 @@ export default class GenericProducts extends React.Component {
             title=""
             editable={{
               onRowUpdate: (newData, oldData) => new Promise((resolve) => {
-                setTimeout(() => {
-                  this.updateBrandProduct(rowData, oldData, newData);
-                  // const index = locations.indexOf(oldData);
-                  // locations[index] = newData;
-                  // LocationService.updateLocation(newData);
-                  // this.setState({ locations }, () => resolve());
-                  resolve();
-                }, 1000);
+                this.updateBrandProduct(rowData, oldData, newData);
+                // const index = locations.indexOf(oldData);
+                // locations[index] = newData;
+                // LocationService.updateLocation(newData);
+                // this.setState({ locations }, () => resolve());
+                resolve();
               }),
             }}
             actions={[
@@ -289,7 +287,7 @@ export default class GenericProducts extends React.Component {
                           this.setState({ genericProducts }, () => resolve());
                         }
                         resolve();
-                      }, 1000);
+                      }, 100);
                     }),
                     onRowAdd: (newData) => new Promise((resolve) => {
                       setTimeout(() => {
@@ -297,7 +295,7 @@ export default class GenericProducts extends React.Component {
                         GenericProductService.addGenericProduct(newData);
                         this.setState({ genericProducts }, () => resolve());
                         resolve();
-                      }, 1000);
+                      }, 100);
                     }),
                     onRowDelete: (oldData) => new Promise((resolve) => {
                       setTimeout(() => {
@@ -308,7 +306,7 @@ export default class GenericProducts extends React.Component {
                           this.setState({ genericProducts }, () => resolve());
                         }
                         resolve();
-                      }, 1000);
+                      }, 100);
                     }),
                   }}
                   options={options}

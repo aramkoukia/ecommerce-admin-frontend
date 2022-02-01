@@ -25,7 +25,6 @@ export default class GenericProductService {
 
   static async deleteGenericProduct(id) {
     try {
-      alert(id);
       const response = await RestUtilities.delete(
         `genericproducts/${id}`,
       );
@@ -37,7 +36,6 @@ export default class GenericProductService {
 
   static async addGenericProduct(product) {
     try {
-      alert(product);
       const response = await RestUtilities.post(
         'genericproducts',
         product,
@@ -50,7 +48,6 @@ export default class GenericProductService {
 
   static async updateGenericProduct(product) {
     try {
-      alert(product);
       const response = await RestUtilities.put(
         `genericproducts/${product.productId}`,
         product,
