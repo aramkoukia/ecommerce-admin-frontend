@@ -14,6 +14,7 @@ import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
 // import Button from '../../components/CustomButtons/Button';
 import GenericProductService from '../../services/GenericProductService';
+import BrandProductService from '../../services/BrandProductService';
 import ProductCategoryService from '../../services/ProductCategoryService';
 // import ShopifyStorefrontService from '../../services/ShopifyStorefrontService';
 // import { Product } from '../Products/Product';
@@ -29,12 +30,11 @@ export default class GenericProducts extends React.Component {
     openSnackbar: false,
     snackbarMessage: '',
     snackbarColor: 'info',
-    // page: 1,
-    // showProduct: false,
-    // productId: 0,
     detailPanelColumns: [
       {
-        title: 'Brand Name', field: 'brandName', readonly: true,
+        title: 'Brand Name',
+        field: 'brandName',
+        readonly: true,
         editable: 'never',
       },
       {
@@ -113,10 +113,34 @@ export default class GenericProducts extends React.Component {
       }));
   }
 
-  addOrUpdateBrandProduct(rowData, oldData, newData) {
+  addOrUpdateBrandProduct(rowData, newData) {
     const { genericProducts } = this.state;
-    console.log('oldData', oldData);
-    console.log('newData', newData);
+    const newBrandProduct = {
+      genericProdutId: rowData.genericProdutId,
+      brandId: newData.brandId,
+      brandProductCode: newData.brandProductCode,
+      brandProductId: newData.brandProductId,
+      brandProductName: newData.brandProductName,
+      disabled: newData.disabled,
+      salesPrice: newData.salesPrice,
+    };
+
+    const genericProduct = genericProducts.find(
+      (p) => p.genericProductId === rowData.genericProdutId,
+    );
+    const brandProduct = genericProduct.brandProducts.find(
+      (b) => b.brandProductId === newData.brandProductId
+      || b.brandId === newData.brandId,
+    );
+
+    brandProduct.brandProductCode = newData.brandProductCode;
+    brandProduct.brandProductName = newData.brandProductName;
+    brandProduct.disabled = newData.disabled;
+    brandProduct.salesPrice = newData.salesPrice;
+
+    this.setState({ genericProducts });
+
+    BrandProductService.addOrUpdateBrandProduct(newBrandProduct);
   }
 
   render() {
@@ -207,12 +231,8 @@ export default class GenericProducts extends React.Component {
             columnsButton={false}
             title=""
             editable={{
-              onRowUpdate: (newData, oldData) => new Promise((resolve) => {
-                this.addOrUpdateBrandProduct(rowData, oldData, newData);
-                // const index = locations.indexOf(oldData);
-                // locations[index] = newData;
-                // LocationService.updateLocation(newData);
-                // this.setState({ locations }, () => resolve());
+              onRowUpdate: (newData) => new Promise((resolve) => {
+                this.addOrUpdateBrandProduct(rowData, newData);
                 resolve();
               }),
             }}
