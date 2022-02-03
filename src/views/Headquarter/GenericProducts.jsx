@@ -4,27 +4,19 @@ import React from 'react';
 import MaterialTable from 'material-table';
 import {
   LinearProgress,
-  TextField,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  Toolbar,
-  IconButton,
-  Slide,
 } from '@material-ui/core';
 import Check from '@material-ui/icons/Check';
-import CloseIcon from '@material-ui/icons/Close';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
-import Button from '../../components/CustomButtons/Button';
+// import Button from '../../components/CustomButtons/Button';
 import GenericProductService from '../../services/GenericProductService';
 import ProductCategoryService from '../../services/ProductCategoryService';
 // import ShopifyStorefrontService from '../../services/ShopifyStorefrontService';
-import { Product } from '../Products/Product';
+// import { Product } from '../Products/Product';
 
 // const Transition = React.forwardRef((props, ref) =>
 //    <Slide direction="up" ref={ref} {...props} />);
@@ -43,6 +35,7 @@ export default class GenericProducts extends React.Component {
     detailPanelColumns: [
       {
         title: 'Brand Name', field: 'brandName', readonly: true,
+        editable: 'never',
       },
       {
         title: 'Brand SKU', field: 'brandProductCode',
@@ -54,7 +47,13 @@ export default class GenericProducts extends React.Component {
         title: 'Sales Price', field: 'salesPrice',
       },
       {
-        title: 'Disabled', field: 'disabled', readonly: true,
+        title: 'Disabled',
+        field: 'disabled',
+        readonly: true,
+        lookup: {
+          Yes: 'Yes',
+          No: 'No',
+        },
       },
     ],
     options: {
@@ -93,13 +92,6 @@ export default class GenericProducts extends React.Component {
     this.productCategoriesList();
   }
 
-  handleClose = () => {
-    this.setState({
-      showProduct: false,
-      productId: 0,
-    });
-  };
-
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
   }
@@ -114,25 +106,14 @@ export default class GenericProducts extends React.Component {
     this.setState({ loading: true });
     ProductCategoryService.getProductCategories()
       .then((data) => this.setState({
-        productCategories: Object.fromEntries(data.map((e) => [e.productTypeId, e.productTypeName])),
+        productCategories: Object.fromEntries(
+          data.map((e) => [e.productTypeId, e.productTypeName]),
+        ),
         loading: false,
       }));
   }
 
-  addToBrand(rowData, detailRowData) {
-    const { genericProducts } = this.state;
-    console.log('rowData', rowData);
-    console.log('detailRowData', detailRowData);
-  }
-
-  disableInBrand(rowData, detailRowData) {
-    const { genericProducts } = this.state;
-    console.log('rowData', rowData);
-
-    console.log('detailRowData', detailRowData);
-  }
-
-  updateBrandProduct(rowData, oldData, newData) {
+  addOrUpdateBrandProduct(rowData, oldData, newData) {
     const { genericProducts } = this.state;
     console.log('oldData', oldData);
     console.log('newData', newData);
@@ -227,7 +208,7 @@ export default class GenericProducts extends React.Component {
             title=""
             editable={{
               onRowUpdate: (newData, oldData) => new Promise((resolve) => {
-                this.updateBrandProduct(rowData, oldData, newData);
+                this.addOrUpdateBrandProduct(rowData, oldData, newData);
                 // const index = locations.indexOf(oldData);
                 // locations[index] = newData;
                 // LocationService.updateLocation(newData);
@@ -235,18 +216,18 @@ export default class GenericProducts extends React.Component {
                 resolve();
               }),
             }}
-            actions={[
-              {
-                icon: 'add',
-                tooltip: 'Add to brand',
-                onClick: (_event, detailRowData) => this.addToBrand(rowData, detailRowData),
-              },
-              // {
-              //   icon: 'delete',
-              //   tooltip: 'Disable in brand',
-              //   onClick: (_event, detailRowData) => this.disableInBrand(rowData, detailRowData),
-              // },
-            ]}
+            // actions={[
+            //   {
+            //     icon: 'add',
+            //     tooltip: 'Add to brand',
+            //     onClick: (_event, detailRowData) => this.addToBrand(rowData, detailRowData),
+            //   },
+            //   {
+            //     icon: 'delete',
+            //     tooltip: 'Disable in brand',
+            //     onClick: (_event, detailRowData) => this.disableInBrand(rowData, detailRowData),
+            //   },
+            // ]}
           />
         ),
       },
