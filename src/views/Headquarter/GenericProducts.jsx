@@ -77,6 +77,15 @@ export default class GenericProducts extends React.Component {
       headerStyle: {
         backgroundColor: '#BAD7EE',
       },
+      rowStyle(data) {
+        if (data.disabled === 'Yes') {
+          return {
+            backgroundColor: '#FFE9E9',
+            fontStyle: 'italic',
+          };
+        }
+        return {};
+      },
     },
   };
 
@@ -114,9 +123,8 @@ export default class GenericProducts extends React.Component {
   }
 
   addOrUpdateBrandProduct(rowData, newData) {
-    const { genericProducts } = this.state;
     const newBrandProduct = {
-      genericProdutId: rowData.genericProdutId,
+      genericProdutId: rowData.genericProductId,
       brandId: newData.brandId,
       brandProductCode: newData.brandProductCode,
       brandProductId: newData.brandProductId,
@@ -125,12 +133,15 @@ export default class GenericProducts extends React.Component {
       salesPrice: newData.salesPrice,
     };
 
+    const { genericProducts } = this.state;
+    const newItems = [...genericProducts];
+
     const genericProduct = genericProducts.find(
-      (p) => p.genericProductId === rowData.genericProdutId,
+      (p) => p.genericProductId === rowData.genericProductId,
     );
     const brandProduct = genericProduct.brandProducts.find(
       (b) => b.brandProductId === newData.brandProductId
-      || b.brandId === newData.brandId,
+        || b.brandId === newData.brandId,
     );
 
     brandProduct.brandProductCode = newData.brandProductCode;
@@ -138,7 +149,7 @@ export default class GenericProducts extends React.Component {
     brandProduct.disabled = newData.disabled;
     brandProduct.salesPrice = newData.salesPrice;
 
-    this.setState({ genericProducts });
+    this.setState({ genericProducts: newItems });
 
     BrandProductService.addOrUpdateBrandProduct(newBrandProduct);
   }
@@ -232,8 +243,10 @@ export default class GenericProducts extends React.Component {
             title=""
             editable={{
               onRowUpdate: (newData) => new Promise((resolve) => {
-                this.addOrUpdateBrandProduct(rowData, newData);
-                resolve();
+                setTimeout(() => {
+                  this.addOrUpdateBrandProduct(rowData, newData);
+                  resolve();
+                }, 100);
               }),
             }}
             // actions={[
