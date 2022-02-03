@@ -124,7 +124,7 @@ export default class GenericProducts extends React.Component {
 
   addOrUpdateBrandProduct(rowData, newData) {
     const newBrandProduct = {
-      genericProdutId: rowData.genericProductId,
+      genericProductId: rowData.genericProductId,
       brandId: newData.brandId,
       brandProductCode: newData.brandProductCode,
       brandProductId: newData.brandProductId,
