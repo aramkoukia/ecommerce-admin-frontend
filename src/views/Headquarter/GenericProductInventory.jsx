@@ -4,16 +4,12 @@ import React from 'react';
 import MaterialTable from 'material-table';
 import {
   LinearProgress,
-  TextField,
   Dialog,
   DialogActions,
+  DialogContentText,
   DialogContent,
-  Toolbar,
-  IconButton,
-  Slide,
 } from '@material-ui/core';
 import Check from '@material-ui/icons/Check';
-import CloseIcon from '@material-ui/icons/Close';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
@@ -22,21 +18,21 @@ import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
 import Button from '../../components/CustomButtons/Button';
 import GenericProductService from '../../services/GenericProductService';
+import GenericProductInventoryTransfer from './GenericProductInventoryTransfer';
 // import ShopifyStorefrontService from '../../services/ShopifyStorefrontService';
-import { Product } from '../Products/Product';
-
-// const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
+// import { Product } from '../Products/Product';
 
 export default class GenericProductInventory extends React.Component {
   state = {
     genericProducts: [],
+    fromWarehouses: [],
+    toWarehouses: [],
     loading: false,
     openSnackbar: false,
     snackbarMessage: '',
     snackbarColor: 'info',
-    // page: 1,
-    // showProduct: false,
-    // productId: 0,
+    product: {},
+    openTransferDialog: false,
     columns: [
       {
         title: 'Product Type', field: 'productTypeName', readonly: true,
@@ -121,14 +117,26 @@ export default class GenericProductInventory extends React.Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
+
   componentDidMount() {
     this.productsList();
   }
 
+  showTransferDialog = () => {
+    this.setState({
+      openTransferDialog: true,
+      product: {},
+    });
+  }
+
+  handleTransferFinished = () => {
+    alert('finish transfer');
+  }
+
   handleClose = () => {
     this.setState({
-      showProduct: false,
-      productId: 0,
+      openTransferDialog: false,
+      product: {},
     });
   };
 
@@ -140,19 +148,6 @@ export default class GenericProductInventory extends React.Component {
     this.setState({ loading: true });
     GenericProductService.getGenericProductInventories()
       .then((data) => this.setState({ genericProducts: data, loading: false }));
-  }
-
-  addToBrand(rowData, detailRowData) {
-    const { genericProducts } = this.state;
-    console.log('rowData', rowData);
-    console.log('detailRowData', detailRowData);
-  }
-
-  disableInBrand(rowData, detailRowData) {
-    const { genericProducts } = this.state;
-    console.log('rowData', rowData);
-
-    console.log('detailRowData', detailRowData);
   }
 
   updateBrandProduct(rowData, oldData, newData) {
@@ -203,6 +198,10 @@ export default class GenericProductInventory extends React.Component {
       detailPanelColumns,
       options,
       detailPanelOptions,
+      product,
+      fromWarehouses,
+      toWarehouses,
+      openTransferDialog,
     } = this.state;
 
     const detailPanel = [
@@ -230,8 +229,8 @@ export default class GenericProductInventory extends React.Component {
             actions={[
               {
                 icon: 'add',
-                tooltip: 'Update Inventory',
-                onClick: (_event, detailRowData) => this.addToBrand(rowData, detailRowData),
+                tooltip: 'Transfer Product',
+                onClick: (_event, detailRowData) => this.showTransferDialog(rowData, detailRowData),
               },
             ]}
           />
@@ -248,39 +247,10 @@ export default class GenericProductInventory extends React.Component {
                 <div className={styles.cardTitleWhite}>Headquarter - Products Inventory</div>
               </CardHeader>
               <CardBody>
-                {/* <Button color="info" disabled={loading} onClick={this.syncProducts}>
-                  Sync Products From Wordpress
-                </Button>
-                &nbsp;
-                &nbsp;
-                <Button color="primary" disabled={loading} onClick={this.pushProductsToShopify}>
-                  Push Products to Lights and Parts Shopify Store
-                </Button>
-                &nbsp;
-                &nbsp; */}
-                {/* <TextField
-                  name="page"
-                  label="Page Number"
-                  type="number"
-                  onChange={this.handleChange}
-                  value={page}
-                  min="1"
-                /> */}
-                {/* <h5>
-                  Lights and Parts Shopify Store: &nbsp;
-                  <a target="_blank" href="https://light-and-parts.myshopify.com/">https://light-and-parts.myshopify.com</a>
-                </h5> */}
                 <MaterialTable
                   columns={columns}
                   data={genericProducts}
                   detailPanel={detailPanel}
-              // actions={[
-              //   {
-              //     icon: 'menu',
-              //     tooltip: 'Transactions',
-              //     onClick: (event, rowData) => this.showTransactions(rowData.genericProductId),
-              //   },
-              // ]}
                   options={options}
                   title=""
                 />
@@ -298,31 +268,34 @@ export default class GenericProductInventory extends React.Component {
             </Card>
           </GridItem>
         </GridContainer>
-        {/* <Dialog
-          fullScreen
-          open={showProduct}
+        <Dialog
+          open={openTransferDialog}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
-          // TransitionComponent={Transition}
+          maxWidth="lg"
         >
-          <AppBar style={{ position: 'relative' }}>
-            <Toolbar>
-              <IconButton edge="start"
-                          color="inherit" onClick={this.handleClose} aria-label="close">
-                <CloseIcon />
-                Close
-              </IconButton>
-            </Toolbar>
-          </AppBar>
           <DialogContent>
-            <Product productId={productId} />
+            <DialogContentText>
+              Code:
+              {product && product.productCode}
+              <br />
+              Name:
+              {product && product.productName}
+              <br />
+            </DialogContentText>
+            <GenericProductInventoryTransfer
+              fromWarehouses={fromWarehouses}
+              toWarehouses={toWarehouses}
+              product={product}
+              handleClose={this.handleTransferFinished}
+            />
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="info">
               Cancel
             </Button>
           </DialogActions>
-        </Dialog> */}
+        </Dialog>
       </div>
     );
   }

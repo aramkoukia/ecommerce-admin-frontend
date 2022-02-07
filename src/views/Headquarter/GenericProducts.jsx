@@ -249,18 +249,6 @@ export default class GenericProducts extends React.Component {
                 }, 100);
               }),
             }}
-            // actions={[
-            //   {
-            //     icon: 'add',
-            //     tooltip: 'Add to brand',
-            //     onClick: (_event, detailRowData) => this.addToBrand(rowData, detailRowData),
-            //   },
-            //   {
-            //     icon: 'delete',
-            //     tooltip: 'Disable in brand',
-            //     onClick: (_event, detailRowData) => this.disableInBrand(rowData, detailRowData),
-            //   },
-            // ]}
           />
         ),
       },
@@ -351,31 +339,6 @@ export default class GenericProducts extends React.Component {
             </Card>
           </GridItem>
         </GridContainer>
-        {/* <Dialog
-          fullScreen
-          open={showProduct}
-          onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
-          // TransitionComponent={Transition}
-        >
-          <AppBar style={{ position: 'relative' }}>
-            <Toolbar>
-              <IconButton edge="start"
-                          color="inherit" onClick={this.handleClose} aria-label="close">
-                <CloseIcon />
-                Close
-              </IconButton>
-            </Toolbar>
-          </AppBar>
-          <DialogContent>
-            <Product productId={productId} />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleClose} color="info">
-              Cancel
-            </Button>
-          </DialogActions>
-        </Dialog> */}
       </div>
     );
   }
