@@ -18,6 +18,7 @@ import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
 import Button from '../../components/CustomButtons/Button';
 import GenericProductService from '../../services/GenericProductService';
+import WarehouseService from '../../services/WarehouseService';
 import GenericProductInventoryTransfer from './GenericProductInventoryTransfer';
 // import ShopifyStorefrontService from '../../services/ShopifyStorefrontService';
 // import { Product } from '../Products/Product';
@@ -120,6 +121,7 @@ export default class GenericProductInventory extends React.Component {
 
   componentDidMount() {
     this.productsList();
+    this.warehouseList();
   }
 
   showTransferDialog = () => {
@@ -148,6 +150,18 @@ export default class GenericProductInventory extends React.Component {
     this.setState({ loading: true });
     GenericProductService.getGenericProductInventories()
       .then((data) => this.setState({ genericProducts: data, loading: false }));
+  }
+
+  warehouseList() {
+    this.setState({ loading: true });
+    WarehouseService.getWarehouses()
+      .then((data) => this.setState(
+        {
+          fromWarehouses: data,
+          toWarehouses: data,
+          loading: false,
+        },
+      ));
   }
 
   updateBrandProduct(rowData, oldData, newData) {
