@@ -103,7 +103,7 @@ function GenericProductInventoryTransfer({ ...props }) {
     exportButton: false,
     filtering: false,
     search: false,
-    header: false,
+    title: false,
   };
 
   const columns = [
@@ -137,6 +137,7 @@ function GenericProductInventoryTransfer({ ...props }) {
                 columns={columns}
                 data={product.warehouseBalances}
                 options={options}
+                title="Current Inventory"
               />
             </GridItem>
             <GridItem xs={12} sm={12} md={6}>
