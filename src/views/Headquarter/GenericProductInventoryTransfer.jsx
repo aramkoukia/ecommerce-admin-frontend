@@ -80,7 +80,7 @@ function GenericProductInventoryTransfer({ ...props }) {
       const inventoryTransfer = {
         fromWarehouseId: fromWarehouse,
         toWarehouseId: toWarehouse,
-        productId: product.productId,
+        genericProductId: product.genericProductId,
         notes: transferNotes,
         transferQuantity,
         transferNotes,
