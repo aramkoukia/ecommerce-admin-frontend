@@ -17,7 +17,7 @@ import CardBody from '../../components/Card/CardBody';
 import GridItem from '../../components/Grid/GridItem';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import GridContainer from '../../components/Grid/GridContainer';
-import GenericProductService from '../../services/GenericProductService';
+import WarehouseService from '../../services/WarehouseService';
 
 function GenericProductInventoryTransfer({ ...props }) {
   const {
@@ -85,7 +85,7 @@ function GenericProductInventoryTransfer({ ...props }) {
         transferQuantity,
         transferNotes,
       };
-      const result = await GenericProductService.transferInventory(inventoryTransfer);
+      const result = await WarehouseService.transferInventory(inventoryTransfer);
       if (result) {
         setSnackBar({
           openSnackbar: true,
@@ -103,6 +103,7 @@ function GenericProductInventoryTransfer({ ...props }) {
     exportButton: false,
     filtering: false,
     search: false,
+    header: false,
   };
 
   const columns = [

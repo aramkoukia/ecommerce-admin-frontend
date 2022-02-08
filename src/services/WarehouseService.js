@@ -59,5 +59,15 @@ export default class WarehouseService {
     }
   }
 
-
+  static async transferInventory(genericProductInventoryTransfer) {
+    try {
+      const response = await RestUtilities.post(
+        'generic-product-inventories/transfer',
+        genericProductInventoryTransfer,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }
