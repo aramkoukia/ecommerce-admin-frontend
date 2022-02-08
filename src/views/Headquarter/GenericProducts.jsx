@@ -17,10 +17,7 @@ import GenericProductService from '../../services/GenericProductService';
 import BrandProductService from '../../services/BrandProductService';
 import ProductCategoryService from '../../services/ProductCategoryService';
 // import ShopifyStorefrontService from '../../services/ShopifyStorefrontService';
-// import { Product } from '../Products/Product';
 
-// const Transition = React.forwardRef((props, ref) =>
-//    <Slide direction="up" ref={ref} {...props} />);
 
 export default class GenericProducts extends React.Component {
   state = {

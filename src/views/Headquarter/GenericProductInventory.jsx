@@ -6,7 +6,6 @@ import {
   LinearProgress,
   Dialog,
   DialogActions,
-  DialogContentText,
   DialogContent,
 } from '@material-ui/core';
 import Check from '@material-ui/icons/Check';
@@ -20,8 +19,6 @@ import Button from '../../components/CustomButtons/Button';
 import GenericProductService from '../../services/GenericProductService';
 import WarehouseService from '../../services/WarehouseService';
 import GenericProductInventoryTransfer from './GenericProductInventoryTransfer';
-// import ShopifyStorefrontService from '../../services/ShopifyStorefrontService';
-// import { Product } from '../Products/Product';
 
 export default class GenericProductInventory extends React.Component {
   state = {
@@ -32,7 +29,9 @@ export default class GenericProductInventory extends React.Component {
     openSnackbar: false,
     snackbarMessage: '',
     snackbarColor: 'info',
-    product: {},
+    product: {
+      warehouseBalances: [],
+    },
     openTransferDialog: false,
     columns: [
       {
@@ -63,16 +62,6 @@ export default class GenericProductInventory extends React.Component {
           color: '#0716CB',
         },
       },
-      // {
-      //   title: 'Disabled',
-      //   field: 'disabled',
-      //   readonly: true,
-      //   defaultFilter: ['False'],
-      //   lookup: {
-      //     True: 'True',
-      //     False: 'False',
-      //   },
-      // },
       {
         title: 'Product Id', field: 'genericProductId', hidden: true, readonly: true,
       },
@@ -86,6 +75,9 @@ export default class GenericProductInventory extends React.Component {
       },
       {
         title: 'Bin Code', field: 'binCode', readonly: true,
+      },
+      {
+        title: 'Notes', field: 'notes', readonly: true,
       },
     ],
     options: {
@@ -124,10 +116,10 @@ export default class GenericProductInventory extends React.Component {
     this.warehouseList();
   }
 
-  showTransferDialog = () => {
+  showTransferDialog = (rowData) => {
     this.setState({
       openTransferDialog: true,
-      product: {},
+      product: rowData,
     });
   }
 
@@ -164,10 +156,32 @@ export default class GenericProductInventory extends React.Component {
       ));
   }
 
-  updateBrandProduct(rowData, oldData, newData) {
+  updateProductInventory(rowData, newData) {
+    const genericProductInventory = {
+      genericProductId: rowData.genericProductId,
+      warehouseId: newData.warehouseId,
+      balance: newData.balance,
+      binCode: newData.binCode,
+      notes: newData.notes,
+    };
+
     const { genericProducts } = this.state;
-    console.log('oldData', oldData);
-    console.log('newData', newData);
+    const newItems = [...genericProducts];
+
+    const genericProduct = genericProducts.find(
+      (p) => p.genericProductId === rowData.genericProductId,
+    );
+    const warehouseInventory = genericProduct.warehouseBalances.find(
+      (b) => b.warehouseId === newData.warehouseId,
+    );
+
+    warehouseInventory.balance = newData.balance;
+    warehouseInventory.binCode = newData.binCode;
+    warehouseInventory.notes = newData.notes;
+
+    this.setState({ genericProducts: newItems });
+
+    WarehouseService.uppdateGenericProductInventory(genericProductInventory);
   }
 
   render() {
@@ -229,20 +243,16 @@ export default class GenericProductInventory extends React.Component {
             columnsButton={false}
             title=""
             editable={{
-              onRowUpdate: (newData, oldData) => new Promise((resolve) => {
+              onRowUpdate: (newData) => new Promise((resolve) => {
                 setTimeout(() => {
-                  this.updateBrandProduct(rowData, oldData, newData);
-                  // const index = locations.indexOf(oldData);
-                  // locations[index] = newData;
-                  // LocationService.updateLocation(newData);
-                  // this.setState({ locations }, () => resolve());
+                  this.updateProductInventory(rowData, newData);
                   resolve();
-                }, 1000);
+                }, 100);
               }),
             }}
             actions={[
               {
-                icon: 'add',
+                icon: 'compare_arrows',
                 tooltip: 'Transfer Product',
                 onClick: (_event, detailRowData) => this.showTransferDialog(rowData, detailRowData),
               },
@@ -289,14 +299,6 @@ export default class GenericProductInventory extends React.Component {
           maxWidth="lg"
         >
           <DialogContent>
-            <DialogContentText>
-              Code:
-              {product && product.productCode}
-              <br />
-              Name:
-              {product && product.productName}
-              <br />
-            </DialogContentText>
             <GenericProductInventoryTransfer
               fromWarehouses={fromWarehouses}
               toWarehouses={toWarehouses}

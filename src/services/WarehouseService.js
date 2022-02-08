@@ -46,4 +46,18 @@ export default class WarehouseService {
       return false;
     }
   }
+
+  static async uppdateGenericProductInventory(genericProductInventory) {
+    try {
+      const response = await RestUtilities.post(
+        'generic-product-inventories',
+        genericProductInventory,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+
 }

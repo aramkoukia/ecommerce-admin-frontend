@@ -6,6 +6,7 @@ import {
   FormControl,
   Select,
   MenuItem,
+  Typography,
   InputLabel,
 } from '@material-ui/core';
 import Check from '@material-ui/icons/Check';
@@ -39,7 +40,7 @@ function GenericProductInventoryTransfer({ ...props }) {
 
   const handleFromWarehouseChange = (warehouseId) => {
     setFromWarehouse(warehouseId);
-    const { balance } = product.inventory.find((l) => l.warehouseId === warehouseId) || 0;
+    const { balance } = product.warehouseBalances.find((l) => l.warehouseId === warehouseId) || 0;
     setFromWarehouseBalance(balance);
   };
 
@@ -111,22 +112,32 @@ function GenericProductInventoryTransfer({ ...props }) {
 
   return (
     <>
-      <GridContainer>
-        <GridItem xs={12} sm={12} md={12}>
-          <MaterialTable
-            columns={columns}
-            data={product.inventory}
-            options={options}
-            title="Current Inventory"
-          />
-        </GridItem>
-      </GridContainer>
       <Card>
         <CardHeader color="info">
           Inventory Transfer
         </CardHeader>
         <CardBody>
           <GridContainer>
+            <GridItem xs={12} sm={12} md={12}>
+              <Typography variant="heading" gutterBottom>
+                Generic Product Code:
+                {' '}
+                {product && product.genericProductCode}
+              </Typography>
+              <br />
+              <Typography variant="heading" gutterBottom>
+                Generic Product Name:
+                {' '}
+                {product && product.productName}
+              </Typography>
+            </GridItem>
+            <GridItem xs={12} sm={12} md={12}>
+              <MaterialTable
+                columns={columns}
+                data={product.warehouseBalances}
+                options={options}
+              />
+            </GridItem>
             <GridItem xs={12} sm={12} md={6}>
               <FormControl>
                 <InputLabel htmlFor="fromWarehouse">From</InputLabel>
@@ -227,7 +238,8 @@ function GenericProductInventoryTransfer({ ...props }) {
 
 GenericProductInventoryTransfer.propTypes = {
   product: PropTypes.object.isRequired,
-  warehouses: PropTypes.object.isRequired,
+  fromWarehouses: PropTypes.object.isRequired,
+  toWarehouses: PropTypes.array.isRequired,
   handleClose: PropTypes.func.isRequired,
 };
 
