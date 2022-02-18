@@ -15,7 +15,7 @@
     "@material-ui/system": "^4.9.10",
     "@types/googlemaps": "3.30.13",
     "@types/markerclustererplus": "2.1.33",
-    "ajv": "^5.0.0",
+    "ajv": "^6.12.3",
     "applicationinsights": "^1.0.8",
     "autosuggest-highlight": "^3.1.1",
     "axios": "^0.21.1",
