@@ -1,7 +1,19 @@
 import React from 'react';
 import MUIDataTable from 'mui-datatables';
-import TextField from '@material-ui/core/TextField';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import MaterialTable from 'material-table';
+import {
+  CircularProgress,
+  LinearProgress,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Slide,
+} from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import Print from '@material-ui/icons/Print';
 import Search from '@material-ui/icons/Search';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
@@ -11,6 +23,7 @@ import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
+import { Order } from '../Orders/Order';
 import ReportService from '../../services/ReportService';
 
 function dateFormat(dateString) {
@@ -22,6 +35,8 @@ function dateFormat(dateString) {
   return stringDate;
 }
 
+const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
+
 Date.prototype.addHours = function (h) {
   this.setHours(this.getHours() + h);
   return this;
@@ -32,6 +47,18 @@ export default class SalesReport extends React.Component {
     fromDate: '',
     toDate: '',
     loading: false,
+    showOrder: false,
+    orderId: 0,
+    materialTableOptions: {
+      paging: true,
+      pageSizeOptions: [25, 50, 100],
+      pageSize: 25,
+      columnsButton: true,
+      exportButton: true,
+      filtering: true,
+      search: true,
+      addRowPosition: 'first',
+    },
   };
 
   constructor(props) {
@@ -77,13 +104,23 @@ export default class SalesReport extends React.Component {
     });
   };
 
+  handleClose = () => {
+    this.setState({
+      showOrder: false,
+      orderId: 0,
+    });
+  };
+
   search() {
     const { fromDate, toDate } = this.state;
     this.setState({ loading: true });
-    const columns = ['locationName', 'status', 'transactions', 'gst', 'pst', 'otherTax', 'discount', 'subTotal', 'total'];
+    const salesColumns = ['locationName', 'status', 'transactions', 'gst', 'pst', 'otherTax', 'discount', 'subTotal', 'total'];
     ReportService.getSales(fromDate, toDate)
-      .then((results) => results.map((row) => columns.map((column) => row[column] || '')))
+      .then((results) => results.map((row) => salesColumns.map((column) => row[column] || '')))
       .then((data) => this.setState({ reportData: data, loading: false }));
+
+    ReportService.getSalesOrders(fromDate, toDate)
+      .then((data) => this.setState({ orderData: data, loading: false }));
   }
 
   print() {
@@ -91,6 +128,13 @@ export default class SalesReport extends React.Component {
     this.setState({ loading: true });
     ReportService.getSalesPdf(fromDate, toDate)
       .then(() => this.setState({ loading: false }));
+  }
+
+  showDetails(orderId) {
+    this.setState({
+      orderId,
+      showOrder: true,
+    });
   }
 
   render() {
@@ -153,6 +197,40 @@ export default class SalesReport extends React.Component {
         name: 'Total ($)',
       }];
 
+    const orderColumns = [
+      {
+        title: 'Order Number',
+        field: 'orderId',
+      },
+      {
+        title: 'Order Date',
+        field: 'orderDate',
+      },
+      {
+        title: 'Sub Total ($)',
+        field: 'subTotal',
+      },
+      {
+        field: 'total',
+        title: 'Total ($)',
+      },
+      {
+        field: 'taxAmount',
+        title: 'Tax ($)',
+      },
+      {
+        field: 'totalDiscount',
+        title: 'Discount ($)',
+      },
+      {
+        field: 'restockingFeeAmount',
+        title: 'Restocking Fee ($)',
+      },
+      {
+        field: 'locationName',
+        title: 'Location',
+      }];
+
     const options = {
       filterType: 'checkbox',
       rowHover: true,
@@ -164,9 +242,13 @@ export default class SalesReport extends React.Component {
     };
 
     const {
-      reportData, fromDate, toDate, loading,
+      reportData, fromDate, toDate, loading, orderData,
+      materialTableOptions,
+      orderId,
+      showOrder,
     } = this.state;
     const salesReportTitle = `Sales Report. From: ${fromDate} To: ${toDate}`;
+    const salesDetailReportTitle = `Sales Detail Report. From: ${fromDate} To: ${toDate}`;
 
     return (
       <div>
@@ -226,9 +308,47 @@ export default class SalesReport extends React.Component {
                     options={options}
                   />
                 </MuiThemeProvider>
+                <MaterialTable
+                  columns={orderColumns}
+                  data={orderData}
+                  options={materialTableOptions}
+                  title={salesDetailReportTitle}
+                  actions={[
+                    {
+                      icon: 'menu',
+                      tooltip: 'See Details',
+                      onClick: (event, rowData) => this.showDetails(rowData.orderId),
+                    },
+                  ]}
+                />
+                {loading && (<LinearProgress />)}
               </CardBody>
             </Card>
           </GridItem>
+          <Dialog
+            fullScreen
+            open={showOrder}
+            onClose={this.handleClose}
+            aria-labelledby="form-dialog-title"
+            TransitionComponent={Transition}
+          >
+            <AppBar style={{ position: 'relative' }}>
+              <Toolbar>
+                <IconButton edge="start" color="inherit" onClick={this.handleClose} aria-label="close">
+                  <CloseIcon />
+                  Close
+                </IconButton>
+              </Toolbar>
+            </AppBar>
+            <DialogContent>
+              <Order orderId={orderId} {...this.props} />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.handleClose} color="info">
+                Cancel
+              </Button>
+            </DialogActions>
+          </Dialog>
         </GridContainer>
       </div>
     );
