@@ -223,6 +223,10 @@ export default class SalesReport extends React.Component {
         title: 'Discount ($)',
       },
       {
+        field: 'status',
+        title: 'Status',
+      },
+      {
         field: 'restockingFeeAmount',
         title: 'Restocking Fee ($)',
       },
