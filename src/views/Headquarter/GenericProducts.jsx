@@ -44,8 +44,8 @@ export default class GenericProducts extends React.Component {
         title: 'Sales Price', field: 'salesPrice',
       },
       {
-        title: 'Disabled',
-        field: 'disabled',
+        title: 'Enabled',
+        field: 'enabled',
         readonly: true,
         lookup: {
           Yes: 'Yes',
@@ -75,7 +75,7 @@ export default class GenericProducts extends React.Component {
         backgroundColor: '#BAD7EE',
       },
       rowStyle(data) {
-        if (data.disabled === 'Yes') {
+        if (data.enabled === 'No') {
           return {
             backgroundColor: '#FFE9E9',
             fontStyle: 'italic',
@@ -126,7 +126,7 @@ export default class GenericProducts extends React.Component {
       brandProductCode: newData.brandProductCode,
       brandProductId: newData.brandProductId,
       brandProductName: newData.brandProductName,
-      disabled: newData.disabled,
+      enabled: newData.enabled,
       salesPrice: newData.salesPrice,
     };
 
@@ -143,7 +143,7 @@ export default class GenericProducts extends React.Component {
 
     brandProduct.brandProductCode = newData.brandProductCode;
     brandProduct.brandProductName = newData.brandProductName;
-    brandProduct.disabled = newData.disabled;
+    brandProduct.enabled = newData.enabled;
     brandProduct.salesPrice = newData.salesPrice;
 
     this.setState({ genericProducts: newItems });
@@ -214,10 +214,10 @@ export default class GenericProducts extends React.Component {
         width: 600,
       },
       {
-        title: 'Disabled',
-        field: 'disabled',
+        title: 'Enabled',
+        field: 'enabled',
         readonly: true,
-        defaultFilter: ['No'],
+        defaultFilter: ['Yes'],
         lookup: {
           Yes: 'Yes',
           No: 'No',
