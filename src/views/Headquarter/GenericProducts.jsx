@@ -38,10 +38,19 @@ export default class GenericProducts extends React.Component {
         title: 'Brand SKU', field: 'brandProductCode',
       },
       {
-        title: 'Brand Product Name', field: 'brandProductName',
+        title: 'Brand Product Name',
+        field: 'brandProductName',
+        // readonly: true,
+        // editable: 'never',
       },
       {
         title: 'Sales Price', field: 'salesPrice',
+      },
+      {
+        title: 'Shopify Product Id',
+        field: 'shopifyProductId',
+        readonly: true,
+        editable: 'never',
       },
       {
         title: 'Enabled',

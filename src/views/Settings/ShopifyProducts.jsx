@@ -101,6 +101,13 @@ export default class ShopifyProducts extends React.Component {
         width: 200,
       },
       {
+        title: 'Generic Product Code',
+        field: 'genericProductCode',
+        type: 'numeric',
+        readonly: true,
+        width: 200,
+      },
+      {
         field: 'image',
         title: 'Image',
         editable: 'never',
