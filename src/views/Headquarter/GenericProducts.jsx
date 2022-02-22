@@ -49,6 +49,7 @@ export default class GenericProducts extends React.Component {
       {
         title: 'Shopify Product Id',
         field: 'shopifyProductId',
+        render: (rowData) => <a target='_blank' href={`${rowData.shopifyBaseUrl}/admin/products/${rowData.shopifyProductId}`}>{rowData.shopifyProductId}</a>,
         readonly: true,
         editable: 'never',
       },
