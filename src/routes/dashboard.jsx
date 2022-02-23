@@ -528,7 +528,7 @@ const headQuarterRoutes = [
     sidebarName: 'Headquarter Settings',
     Icon: AccountBalance,
     needsPermission: true,
-    permission: Permissions.ViewReportsMenu,
+    permission: Permissions.PurchaseReport,
     items: [
       {
         path: '/brands',
@@ -536,7 +536,7 @@ const headQuarterRoutes = [
         Icon: BrandingWatermark,
         component: Brands,
         needsPermission: true,
-        permission: Permissions.ViewDashboardReport,
+        permission: Permissions.PurchaseReport,
       },
       {
         path: '/warehouses',
@@ -544,7 +544,7 @@ const headQuarterRoutes = [
         Icon: LocalConvenienceStore,
         component: Warehouses,
         needsPermission: true,
-        permission: Permissions.ViewDashboardReport,
+        permission: Permissions.PurchaseReport,
       },
       {
         path: '/generic-products',
@@ -552,7 +552,7 @@ const headQuarterRoutes = [
         Icon: FormatListBulleted,
         component: GenericProducts,
         needsPermission: true,
-        permission: Permissions.ViewDashboardReport,
+        permission: Permissions.PurchaseReport,
       },
       {
         path: '/products-inventory',
@@ -560,7 +560,7 @@ const headQuarterRoutes = [
         Icon: LocalConvenienceStoreTwoTone,
         component: GenericProductInventory,
         needsPermission: true,
-        permission: Permissions.ViewDashboardReport,
+        permission: Permissions.PurchaseReport,
       },
     ],
   },
