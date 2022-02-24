@@ -27,6 +27,7 @@ class InvoiceEmailPrintSettings extends React.Component {
     payNote2: '',
     payNote3: '',
     additionalChargesNote: '',
+    customerServicePhone: '',
   };
 
   constructor(props) {
@@ -50,6 +51,7 @@ class InvoiceEmailPrintSettings extends React.Component {
       payNote2,
       payNote3,
       additionalChargesNote,
+      customerServicePhone,
     } = await InvoiceEmailPrintSettingsService.getSettings();
     this.setState({
       emailSubject,
@@ -64,6 +66,7 @@ class InvoiceEmailPrintSettings extends React.Component {
       payNote2,
       payNote3,
       additionalChargesNote,
+      customerServicePhone,
       openSnackbar: false,
       snackbarMessage: '',
       snackbarColor: 'info',
@@ -94,6 +97,7 @@ class InvoiceEmailPrintSettings extends React.Component {
       payNote2,
       payNote3,
       additionalChargesNote,
+      customerServicePhone,
     } = this.state;
 
     const settings = {
@@ -109,6 +113,7 @@ class InvoiceEmailPrintSettings extends React.Component {
       payNote2,
       payNote3,
       additionalChargesNote,
+      customerServicePhone,
     };
 
     const result = await InvoiceEmailPrintSettingsService.updateSettings(settings);
@@ -134,6 +139,7 @@ class InvoiceEmailPrintSettings extends React.Component {
       payNote2,
       payNote3,
       additionalChargesNote,
+      customerServicePhone,
     } = this.state;
 
     return (
@@ -283,6 +289,17 @@ class InvoiceEmailPrintSettings extends React.Component {
                       type="text"
                       onChange={this.handleChange}
                       value={additionalChargesNote}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={12} m={20}>
+                    <br />
+                    <TextField
+                      name="customerServicePhone"
+                      label="Customer Service Phone"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={customerServicePhone}
                       fullWidth="true"
                     />
                   </GridItem>
