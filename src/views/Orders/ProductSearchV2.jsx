@@ -120,7 +120,14 @@ class ProductSearchV2 extends React.Component {
   }
 
   async componentDidMount() {
-    const suggestions = await ProductService.getProductsForSales();
+    let suggestions = await ProductService.getProductsForSales();
+    const { customerId, walkinPricePercent } = this.props;
+    if ((customerId <= 0)
+      && walkinPricePercent && walkinPricePercent > 0) {
+      suggestions.forEach((item) => {
+        item.salesPrice = parseFloat((item.salesPrice + (walkinPricePercent * item.salesPrice) / 100).toFixed(2));
+      });
+    }
     this.setState({ suggestions });
   }
 
@@ -184,7 +191,7 @@ class ProductSearchV2 extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, customerId } = this.props;
     const { filteredSuggestions, value } = this.state;
 
     const autosuggestProps = {
@@ -197,7 +204,7 @@ class ProductSearchV2 extends React.Component {
     };
 
     return (
-      <div className={classes.root}>
+      <div key={customerId} className={classes.root}>
         <Autosuggest
           {...autosuggestProps}
           inputProps={{

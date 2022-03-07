@@ -172,6 +172,7 @@ export default class AddOrder extends React.Component {
 
   async componentDidMount() {
     const taxes = await TaxService.getTaxes('Canada', 'BC');
+    const setting = await SettingsService.getSettings();
     this.setState({
       taxes,
       allTaxes: taxes,
@@ -180,7 +181,9 @@ export default class AddOrder extends React.Component {
       openAuthDialog: true,
       userGivenName: '',
       chequeNo: '',
+      walkinPricePercent: setting.walkinPricePercent,
     });
+
     const { match, location } = this.props;
     const orderId = match.params.id || location.state.orderId;
 
@@ -858,7 +861,12 @@ export default class AddOrder extends React.Component {
       taxes,
       discountAmount,
       discountPercent,
-      customer, openSnackbar, snackbarMessage, snackbarColor, notes, poNumber,
+      customer,
+      openSnackbar,
+      snackbarMessage,
+      snackbarColor,
+      notes,
+      poNumber,
       chargePst,
       openDialog,
       openAuthDialog,
@@ -883,11 +891,12 @@ export default class AddOrder extends React.Component {
       validationResult,
       warnInSufficientStockOnOrder,
       blockInSufficientStockOnOrder,
+      walkinPricePercent,
       loading,
     } = this.state;
 
     const locationId = Location.getStoreLocation();
-
+    const customerId = customer ? customer.customerId : -100;
     return (
       <div>
         <GridContainer>
@@ -1052,7 +1061,13 @@ export default class AddOrder extends React.Component {
                 ) : (<div />)}
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={12}>
-                    <ProductSearchV2 productChanged={this.productChanged} locationId={locationId} />
+                    <ProductSearchV2
+                      key={customerId}
+                      customerId={customerId}
+                      walkinPricePercent={walkinPricePercent}
+                      productChanged={this.productChanged}
+                      locationId={locationId}
+                    />
                   </GridItem>
                   <GridItem xs={12} sm={12} md={3} />
                 </GridContainer>
