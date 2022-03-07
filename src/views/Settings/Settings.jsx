@@ -71,6 +71,7 @@ class Settings extends React.Component {
         'blockInSufficientStockOnOrder',
         'enablePosIntegration',
         'allowedIPAddresses',
+        'walkinPricePercent',
       ],
       properties: {
         adminEmail: {
@@ -116,6 +117,10 @@ class Settings extends React.Component {
         allowedIPAddresses: {
           type: 'string',
           title: 'Allowed IP Addresses (Comma seperated)',
+        },
+        walkinPricePercent: {
+          type: 'string',
+          title: 'Walk-in customer additional charges percent (%)',
         },
       },
     };
@@ -170,7 +175,10 @@ class Settings extends React.Component {
         'ui:autofocus': true,
         'ui:emptyValue': '',
       },
-
+      walkinPricePercent: {
+        'ui:autofocus': true,
+        'ui:emptyValue': '0',
+      },
     };
 
     const initialFormData = {
@@ -185,6 +193,7 @@ class Settings extends React.Component {
       blockInSufficientStockOnOrder: settings.blockInSufficientStockOnOrder,
       allowedIPAddresses: settings.allowedIPAddresses,
       enablePosIntegration: settings.enablePosIntegration,
+      walkinPricePercent: settings.walkinPricePercent,
     };
 
     return (
