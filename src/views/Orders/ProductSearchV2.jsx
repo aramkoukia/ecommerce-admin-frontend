@@ -126,6 +126,11 @@ class ProductSearchV2 extends React.Component {
       && walkinPricePercent && walkinPricePercent > 0) {
       suggestions.forEach((item) => {
         item.salesPrice = parseFloat((item.salesPrice + (walkinPricePercent * item.salesPrice) / 100).toFixed(2));
+        if (item.productPackages && item.productPackages.length > 0) {
+          item.productPackages.forEach((p) => {
+            p.packagePrice = parseFloat((p.packagePrice + (walkinPricePercent * p.packagePrice) / 100).toFixed(2));
+          });
+        }
       });
     }
     this.setState({ suggestions });
