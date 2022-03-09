@@ -45,6 +45,7 @@ import Tags from '../views/Products/Tags';
 import { Product } from '../views/Products/Product';
 import GenericProducts from '../views/Headquarter/GenericProducts';
 import GenericProductInventory from '../views/Headquarter/GenericProductInventory';
+import HeadquarterOrders from '../views/Headquarter/HeadquarterOrders';
 import Brands from '../views/Headquarter/Brands';
 import Warehouses from '../views/Headquarter/Warehouses';
 import ProductCategory from '../views/Products/ProductCategory';
@@ -559,6 +560,14 @@ const headQuarterRoutes = [
         sidebarName: 'Products Inventory',
         Icon: LocalConvenienceStoreTwoTone,
         component: GenericProductInventory,
+        needsPermission: true,
+        permission: Permissions.ViewSettingsMenu,
+      },
+      {
+        path: '/brand-orders',
+        sidebarName: 'Brand Orders',
+        Icon: FormatListBulleted,
+        component: HeadquarterOrders,
         needsPermission: true,
         permission: Permissions.ViewSettingsMenu,
       },
