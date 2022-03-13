@@ -71,11 +71,13 @@ export default class ShopifyProducts extends React.Component {
       {
         title: 'Product Code',
         field: 'code',
+        render: (rowData) => <a target='_blank' href={`https://gekpower.myshopify.com/admin/products/${rowData.id}`}>{rowData.code}</a>,
         readonly: true,
       },
       {
         title: 'Product Name',
         field: 'title',
+        render: (rowData) => <a target='_blank' href={`https://gekpower.myshopify.com/admin/products/${rowData.id}`}>{rowData.title}</a>,
         readonly: true,
         width: 600,
       },
