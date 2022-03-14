@@ -103,6 +103,12 @@ export default class ShopifyProducts extends React.Component {
         width: 200,
       },
       {
+        title: 'Status',
+        field: 'status',
+        readonly: true,
+        width: 200,
+      },
+      {
         title: 'Generic Product Code',
         field: 'genericProductCode',
         type: 'numeric',
@@ -222,6 +228,7 @@ export default class ShopifyProducts extends React.Component {
         const flatResponse = result.map((p) => ({
           id: p.id,
           title: p.title,
+          status: p.status,
           balance: p.variants[0].inventory_quantity,
           variantId: p.variants[0]?.id,
           code: p.variants[0]?.sku,
