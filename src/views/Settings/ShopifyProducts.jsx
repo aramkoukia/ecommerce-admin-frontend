@@ -5,9 +5,9 @@ import {
   DialogActions,
   Dialog,
   DialogContent,
-  Button,
   TextField,
 } from '@material-ui/core';
+import Button from '../../components/CustomButtons/Button';
 import Check from '@material-ui/icons/Check';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import Card from '../../components/Card/Card';
@@ -151,6 +151,7 @@ export default class ShopifyProducts extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.updateInventory = this.updateInventory.bind(this);
+    this.syncWithGEKPower = this.syncWithGEKPower.bind(this);
   }
 
   componentDidMount() {
@@ -194,6 +195,15 @@ export default class ShopifyProducts extends React.Component {
       showUpdateModal: false,
       loading: false,
     }));
+  }
+
+  syncWithGEKPower() {
+    ShopifyService.syncWithGEKPower();
+    this.setState({
+      openSnackbar: true,
+      snackbarMessage: 'GEK Power Shopify Products sync started. This could take 5-10 minutes to finish!',
+      snackbarColor: 'success',
+    });
   }
 
   handleChange(event) {
@@ -281,8 +291,12 @@ export default class ShopifyProducts extends React.Component {
             <Card>
               <CardHeader color="primary">
                 <div className={styles.cardTitleWhite}>GEKPOWER Shopify Products and Inventory</div>
+                {loading && (<LinearProgress />)}
               </CardHeader>
               <CardBody>
+                <Button color="info" disabled={loading} onClick={this.syncWithGEKPower}>
+                  Sync with GEKPower
+                </Button>
                 <MaterialTable
                   columns={columns}
                   data={products}

@@ -23,4 +23,16 @@ export default class ShopifyService {
       return false;
     }
   }
+
+  static async syncWithGEKPower() {
+    try {
+      const response = await RestUtilities.put(
+        'shopify/all-product-inventory',
+        {},
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
 }

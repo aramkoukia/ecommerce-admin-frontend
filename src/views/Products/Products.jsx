@@ -257,11 +257,11 @@ export default class Products extends React.Component {
                   Sync Products From Wordpress
                 </Button>
                 &nbsp;
-                &nbsp;
+                {/* &nbsp;
                 <Button color="primary" disabled={loading} onClick={this.pushProductsToShopify}>
                   Push Products to Lights and Parts Shopify Store
                 </Button>
-                &nbsp;
+                &nbsp; */}
                 &nbsp;
                 <TextField
                   name="page"
