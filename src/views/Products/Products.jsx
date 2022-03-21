@@ -257,11 +257,11 @@ export default class Products extends React.Component {
                   Sync Products From Wordpress
                 </Button>
                 &nbsp;
-                {/* &nbsp;
+                &nbsp;
                 <Button color="primary" disabled={loading} onClick={this.pushProductsToShopify}>
                   Push Products to Lights and Parts Shopify Store
                 </Button>
-                &nbsp; */}
+                &nbsp;
                 &nbsp;
                 <TextField
                   name="page"
@@ -273,7 +273,7 @@ export default class Products extends React.Component {
                 />
                 <h5>
                   Lights and Parts Shopify Store: &nbsp;
-                  <a target="_blank" href="https://light-and-parts.myshopify.com/">https://light-and-parts.myshopify.com</a>
+                  <a target="_blank" href="https://ledlightsandparts.myshopify.com/admin">https://ledlightsandparts.myshopify.com/admin</a>
                 </h5>
               </CardBody>
             </Card>
