@@ -27,6 +27,8 @@ class PosSettings extends React.Component {
     this.unpairPos = this.unpairPos.bind(this);
     this.initializePos = this.initializePos.bind(this);
     this.batchClose = this.batchClose.bind(this);
+    this.enableMobilePinpad = this.enableMobilePinpad.bind(this);
+    this.disableMobilePinpad = this.disableMobilePinpad.bind(this);
   }
 
   async componentDidMount() {
@@ -142,6 +144,60 @@ class PosSettings extends React.Component {
     };
 
     const result = await PosSettingsService.initializePos(request);
+    let snackbarColor = 'success';
+    let snackbarMessage = 'Done!';
+    if (result.is_error) {
+      snackbarColor = 'danger';
+      snackbarMessage = result.error_content;
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage,
+        snackbarColor,
+      });
+    } else {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage,
+        snackbarColor,
+      });
+    }
+  }
+
+  async disableMobilePinpad() {
+    const { storeId, terminalId } = this.state;
+    const request = {
+      storeId,
+      terminalId,
+    };
+
+    const result = await PosSettingsService.disableMobilePinpad(request);
+    let snackbarColor = 'success';
+    let snackbarMessage = 'Done!';
+    if (result.is_error) {
+      snackbarColor = 'danger';
+      snackbarMessage = result.error_content;
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage,
+        snackbarColor,
+      });
+    } else {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage,
+        snackbarColor,
+      });
+    }
+  }
+
+  async enableMobilePinpad() {
+    const { storeId, terminalId } = this.state;
+    const request = {
+      storeId,
+      terminalId,
+    };
+
+    const result = await PosSettingsService.enableMobilePinpad(request);
     let snackbarColor = 'success';
     let snackbarMessage = 'Done!';
     if (result.is_error) {
@@ -290,6 +346,14 @@ class PosSettings extends React.Component {
                     &nbsp;
                     <Button color="secondary" onClick={this.batchClose}>
                       Batch Close
+                    </Button>
+                    &nbsp;
+                    <Button color="secondary" onClick={this.enableMobilePinpad}>
+                      Enable Mobile Pinpad
+                    </Button>
+                    &nbsp;
+                    <Button color="secondary" onClick={this.disableMobilePinpad}>
+                      Disable Mobile Pinpad
                     </Button>
                   </GridItem>
                 </GridContainer>

@@ -28,6 +28,7 @@ import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
 import Button from '../../components/CustomButtons/Button';
 import ProductService from '../../services/ProductService';
+import ProductCategoryService from '../../services/ProductCategoryService';
 import ShopifyStorefrontService from '../../services/ShopifyStorefrontService';
 import { Product } from './Product';
 
@@ -36,6 +37,7 @@ const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={r
 export default class Products extends React.Component {
   state = {
     products: [],
+    productCategories: [],
     loading: false,
     openSnackbar: false,
     snackbarMessage: '',
@@ -43,63 +45,6 @@ export default class Products extends React.Component {
     page: 1,
     showProduct: false,
     productId: 0,
-    columns: [
-      {
-        title: 'Product Type', field: 'productTypeName', hidden: true, readonly: true,
-      },
-      {
-        title: 'Product Code',
-        field: 'productCode',
-        readonly: true,
-        width: 200,
-      },
-      {
-        title: 'Product Name',
-        field: 'productName',
-        readonly: true,
-        width: 600,
-      },
-      {
-        title: 'Sales Price($)',
-        field: 'salesPrice',
-        type: 'numeric',
-        readonly: true,
-        width: 150,
-        cellStyle: {
-          color: '#0716CB',
-        },
-        headerStyle: {
-          color: '#0716CB',
-        },
-      },
-      {
-        title: 'Balance',
-        field: 'balance',
-        type: 'numeric',
-        readonly: true,
-        width: 150,
-      },
-      {
-        title: 'On Hold',
-        field: 'onHoldAmount',
-        type: 'numeric',
-        readonly: true,
-        width: 150,
-      },
-      {
-        title: 'Disabled',
-        field: 'disabled',
-        readonly: true,
-        defaultFilter: ['False'],
-        lookup: {
-          True: 'True',
-          False: 'False',
-        },
-      },
-      {
-        title: 'Product Id', field: 'productId', hidden: true, readonly: true,
-      },
-    ],
     options: {
       paging: true,
       pageSizeOptions: [25, 50, 100],
@@ -108,6 +53,7 @@ export default class Products extends React.Component {
       exportButton: true,
       filtering: true,
       search: true,
+      addRowPosition: 'first',
     },
   };
 
@@ -120,6 +66,7 @@ export default class Products extends React.Component {
 
   componentDidMount() {
     this.productsList();
+    this.productCategoriesList();
   }
 
   handleClose = () => {
@@ -164,6 +111,17 @@ export default class Products extends React.Component {
       .then((data) => this.setState({ products: data, loading: false }));
   }
 
+  productCategoriesList() {
+    this.setState({ loading: true });
+    ProductCategoryService.getProductCategories()
+      .then((data) => this.setState({
+        productCategories: Object.fromEntries(
+          data.map((e) => [e.productTypeId, e.productTypeName]),
+        ),
+        loading: false,
+      }));
+  }
+
   render() {
     const styles = {
       cardCategoryWhite: {
@@ -205,9 +163,77 @@ export default class Products extends React.Component {
       page,
       showProduct,
       productId,
-      columns,
       options,
+      productCategories,
     } = this.state;
+
+    const columns = [
+      {
+        title: 'Product Code',
+        field: 'productCode',
+        readonly: true,
+        width: 200,
+      },
+      {
+        title: 'Product Name',
+        field: 'productName',
+        readonly: true,
+        width: 600,
+      },
+      {
+        title: 'Sales Price($)',
+        field: 'salesPrice',
+        type: 'numeric',
+        readonly: true,
+        width: 150,
+        cellStyle: {
+          color: '#0716CB',
+        },
+        headerStyle: {
+          color: '#0716CB',
+        },
+      },
+      {
+        title: 'Balance',
+        field: 'balance',
+        type: 'numeric',
+        readonly: true,
+        width: 150,
+        editable: 'never',
+      },
+      {
+        title: 'On Hold',
+        field: 'onHoldAmount',
+        type: 'numeric',
+        readonly: true,
+        editable: 'never',
+        width: 150,
+      },
+      {
+        title: 'Disabled',
+        field: 'disabled',
+        editable: 'never',
+        readonly: true,
+        defaultFilter: ['False'],
+        lookup: {
+          True: 'True',
+          False: 'False',
+        },
+      },
+      {
+        title: 'Product Type',
+        field: 'productTypeId',
+        readonly: true,
+        lookup: productCategories,
+      },
+      {
+        title: 'Product Id',
+        field: 'productId',
+        hidden: true,
+        readonly: true,
+        editable: 'never',
+      },
+    ];
 
     const detailPanel = [
       {
@@ -281,6 +307,27 @@ export default class Products extends React.Component {
               columns={columns}
               data={products}
               detailPanel={detailPanel}
+              editable={{
+                onRowUpdate: (newData, oldData) => new Promise((resolve) => {
+                  setTimeout(() => {
+                    {
+                      const index = products.indexOf(oldData);
+                      products[index] = newData;
+                      ProductService.updateProductGenericInfo(newData);
+                      this.setState({ products }, () => resolve());
+                    }
+                    resolve();
+                  }, 100);
+                }),
+                onRowAdd: (newData) => new Promise((resolve) => {
+                  setTimeout(() => {
+                    products.push(newData);
+                    ProductService.addProduct(newData);
+                    this.setState({ products }, () => resolve());
+                    resolve();
+                  }, 100);
+                }),
+              }}
               actions={[
                 {
                   icon: 'menu',

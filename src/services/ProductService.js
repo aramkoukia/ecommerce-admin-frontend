@@ -218,6 +218,30 @@ export default class ProductService {
     }
   }
 
+  static async addProduct(product) {
+    try {
+      const response = await RestUtilities.post(
+        'products',
+        product,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async updateProductGenericInfo(product) {
+    try {
+      const response = await RestUtilities.put(
+        `products/${product.productId}/genericinfo`,
+        product,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async updateProductDetail(product) {
     try {
       const response = await RestUtilities.put(

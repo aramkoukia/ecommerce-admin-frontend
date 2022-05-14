@@ -38,6 +38,30 @@ export default class PosSettingsService {
     }
   }
 
+  static async enableMobilePinpad(request) {
+    try {
+      const response = await RestUtilities.post(
+        'moneris/enableMobilePinpad',
+        request,
+      );
+      return response;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async disableMobilePinpad(request) {
+    try {
+      const response = await RestUtilities.post(
+        'moneris/disableMobilePinpad',
+        request,
+      );
+      return response;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async batchClose(request) {
     try {
       const response = await RestUtilities.post(
