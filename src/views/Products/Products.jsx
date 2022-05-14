@@ -321,9 +321,21 @@ export default class Products extends React.Component {
                 }),
                 onRowAdd: (newData) => new Promise((resolve) => {
                   setTimeout(() => {
-                    products.push(newData);
-                    ProductService.addProduct(newData);
-                    this.setState({ products }, () => resolve());
+                    ProductService.addProduct(newData).then((result) => {
+                      if (result === false
+                        || result === null
+                        || result.StatusCode === 500
+                        || result.StatusCode === 400) {
+                        this.setState({
+                          openSnackbar: true,
+                          loading: false,
+                          snackbarMessage: 'Oops, looks like something went wrong!',
+                          snackbarColor: 'danger',
+                        });
+                      }
+                    });
+                    this.productsList();
+                    // this.setState({ products }, () => resolve());
                     resolve();
                   }, 100);
                 }),
