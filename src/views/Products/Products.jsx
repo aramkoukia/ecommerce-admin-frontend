@@ -59,7 +59,7 @@ export default class Products extends React.Component {
 
   constructor(props) {
     super(props);
-    this.syncProducts = this.syncProducts.bind(this);
+    // this.syncProducts = this.syncProducts.bind(this);
     this.pushProductsToShopify = this.pushProductsToShopify.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
@@ -279,13 +279,13 @@ export default class Products extends React.Component {
                 <div className={styles.cardTitleWhite}>Products List</div>
               </CardHeader>
               <CardBody>
-                <Button color="info" disabled={loading} onClick={this.syncProducts}>
+                {/* <Button color="info" disabled={loading} onClick={this.syncProducts}>
                   Sync Products From Wordpress
                 </Button>
                 &nbsp;
-                &nbsp;
+                &nbsp; */}
                 <Button color="primary" disabled={loading} onClick={this.pushProductsToShopify}>
-                  Push Products to Lights and Parts Shopify Store
+                  Push Products to Shopify Store
                 </Button>
                 &nbsp;
                 &nbsp;
@@ -300,6 +300,10 @@ export default class Products extends React.Component {
                 <h5>
                   Lights and Parts Shopify Store: &nbsp;
                   <a target="_blank" href="https://ledlightsandparts.myshopify.com/admin">https://ledlightsandparts.myshopify.com/admin</a>
+                </h5>
+                <h5>
+                  Veroboard Store: &nbsp;
+                  <a target="_blank" href="https://veroboard-canada.myshopify.com/admin">https://veroboard-canada.myshopify.com/admin</a>
                 </h5>
               </CardBody>
             </Card>
