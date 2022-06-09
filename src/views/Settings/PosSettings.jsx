@@ -18,7 +18,7 @@ class PosSettings extends React.Component {
     snackbarMessage: '',
     snackbarColor: 'info',
     storeId: 'gwca057284',
-    terminalId: 'P1217267',
+    terminalId: '',
   };
 
   constructor(props) {
