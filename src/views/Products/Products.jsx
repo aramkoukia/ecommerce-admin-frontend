@@ -30,12 +30,14 @@ import Button from '../../components/CustomButtons/Button';
 import ProductService from '../../services/ProductService';
 import ProductCategoryService from '../../services/ProductCategoryService';
 import ShopifyStorefrontService from '../../services/ShopifyStorefrontService';
+import PortalSettingsService from '../../services/PortalSettingsService';
 import { Product } from './Product';
 
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
 export default class Products extends React.Component {
   state = {
+    posSettings: {},
     products: [],
     productCategories: [],
     loading: false,
@@ -67,6 +69,12 @@ export default class Products extends React.Component {
   componentDidMount() {
     this.productsList();
     this.productCategoriesList();
+    this.getPosSettings();
+  }
+
+  getPosSettings() {
+    PortalSettingsService.getPortalSettings()
+      .then((data) => this.setState({ posSettings: data, loading: false }));
   }
 
   handleClose = () => {
@@ -165,6 +173,7 @@ export default class Products extends React.Component {
       productId,
       options,
       productCategories,
+      posSettings,
     } = this.state;
 
     const columns = [
@@ -272,23 +281,18 @@ export default class Products extends React.Component {
 
     return (
       <div>
-        <GridContainer>
-          <GridItem xs={12} sm={12} md={12}>
-            <Card>
-              <CardHeader color="primary">
-                <div className={styles.cardTitleWhite}>Products List</div>
-              </CardHeader>
-              <CardBody>
-                {/* <Button color="info" disabled={loading} onClick={this.syncProducts}>
-                  Sync Products From Wordpress
-                </Button>
-                &nbsp;
-                &nbsp; */}
+        <Card>
+          <CardHeader color="primary">
+            <div className={styles.cardTitleWhite}>Products List</div>
+          </CardHeader>
+          <CardBody>
+            <GridContainer>
+              <GridItem md={3}>
                 <Button color="primary" disabled={loading} onClick={this.pushProductsToShopify}>
                   Push Products to Shopify Store
                 </Button>
-                &nbsp;
-                &nbsp;
+              </GridItem>
+              <GridItem md={1}>
                 <TextField
                   name="page"
                   label="Page Number"
@@ -297,75 +301,87 @@ export default class Products extends React.Component {
                   value={page}
                   min="1"
                 />
+              </GridItem>
+              <GridItem md={8}>
+                {posSettings.portalTitle && posSettings.portalTitle.includes('Verobaord') && (
                 <h5>
-                  Lights and Parts Shopify Store: &nbsp;
-                  <a target="_blank" href="https://ledlightsandparts.myshopify.com/admin">https://ledlightsandparts.myshopify.com/admin</a>
-                </h5>
-                <h5>
-                  Veroboard Store: &nbsp;
+                  {posSettings.portalTitle}
+                  {' '}
+                  Shopify store: &nbsp;
                   <a target="_blank" href="https://veroboard-canada.myshopify.com/admin">https://veroboard-canada.myshopify.com/admin</a>
                 </h5>
-              </CardBody>
-            </Card>
-            <MaterialTable
-              columns={columns}
-              data={products}
-              detailPanel={detailPanel}
-              editable={{
-                onRowUpdate: (newData, oldData) => new Promise((resolve) => {
-                  setTimeout(() => {
-                    {
-                      const index = products.indexOf(oldData);
-                      products[index] = newData;
-                      ProductService.updateProductGenericInfo(newData);
-                      this.setState({ products }, () => resolve());
-                    }
-                    resolve();
-                  }, 100);
-                }),
-                onRowAdd: (newData) => new Promise((resolve) => {
-                  setTimeout(() => {
-                    ProductService.addProduct(newData).then((result) => {
-                      if (result === false
-                        || result === null
-                        || result.StatusCode === 500
-                        || result.StatusCode === 400) {
-                        this.setState({
-                          openSnackbar: true,
-                          loading: false,
-                          snackbarMessage: 'Oops, looks like something went wrong!',
-                          snackbarColor: 'danger',
+                )}
+                {posSettings.portalTitle && posSettings.portalTitle.includes('Lights') && (
+                <h5>
+                  {posSettings.portalTitle}
+                  {' '}
+                  Shopify store: &nbsp;
+                  <a target="_blank" href="https://ledlightsandparts.myshopify.com/admin">https://ledlightsandparts.myshopify.com/admin</a>
+                </h5>
+                )}
+              </GridItem>
+              <GridItem md={12}>
+                <MaterialTable
+                  columns={columns}
+                  data={products}
+                  detailPanel={detailPanel}
+                  editable={{
+                    onRowUpdate: (newData, oldData) => new Promise((resolve) => {
+                      setTimeout(() => {
+                        {
+                          const index = products.indexOf(oldData);
+                          products[index] = newData;
+                          ProductService.updateProductGenericInfo(newData);
+                          this.setState({ products }, () => resolve());
+                        }
+                        resolve();
+                      }, 100);
+                    }),
+                    onRowAdd: (newData) => new Promise((resolve) => {
+                      setTimeout(() => {
+                        ProductService.addProduct(newData).then((result) => {
+                          if (result === false
+                                || result === null
+                                || result.StatusCode === 500
+                                || result.StatusCode === 400) {
+                            this.setState({
+                              openSnackbar: true,
+                              loading: false,
+                              snackbarMessage: 'Oops, looks like something went wrong!',
+                              snackbarColor: 'danger',
+                            });
+                          }
                         });
-                      }
-                    });
-                    this.productsList();
-                    // this.setState({ products }, () => resolve());
-                    resolve();
-                  }, 100);
-                }),
-              }}
-              actions={[
-                {
-                  icon: 'menu',
-                  tooltip: 'Transactions',
-                  onClick: (event, rowData) => this.showTransactions(rowData.productId),
-                },
-              ]}
-              options={options}
-              title=""
-            />
-            {loading && (<LinearProgress />)}
-          </GridItem>
-          <Snackbar
-            place="tl"
-            color={snackbarColor}
-            icon={Check}
-            message={snackbarMessage}
-            open={openSnackbar}
-            closeNotification={() => this.setState({ openSnackbar: false })}
-            close
-          />
-        </GridContainer>
+                        this.productsList();
+                        // this.setState({ products }, () => resolve());
+                        resolve();
+                      }, 100);
+                    }),
+                  }}
+                  actions={[
+                    {
+                      icon: 'menu',
+                      tooltip: 'Transactions',
+                      onClick: (event, rowData) => this.showTransactions(rowData.productId),
+                    },
+                  ]}
+                  options={options}
+                  title=""
+                />
+                {loading && (<LinearProgress />)}
+              </GridItem>
+            </GridContainer>
+          </CardBody>
+        </Card>
+        <Snackbar
+          place="tl"
+          color={snackbarColor}
+          icon={Check}
+          message={snackbarMessage}
+          open={openSnackbar}
+          closeNotification={() => this.setState({ openSnackbar: false })}
+          close
+        />
         <Dialog
           fullScreen
           open={showProduct}
