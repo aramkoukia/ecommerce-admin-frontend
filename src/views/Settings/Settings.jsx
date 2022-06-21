@@ -110,10 +110,6 @@ class Settings extends React.Component {
           type: 'boolean',
           title: 'Block InSufficient Stock On Order',
         },
-        enablePosIntegration: {
-          type: 'boolean',
-          title: 'Enable Moneris POS integration',
-        },
         allowedIPAddresses: {
           type: 'string',
           title: 'Allowed IP Addresses (Comma seperated)',
@@ -121,6 +117,26 @@ class Settings extends React.Component {
         walkinPricePercent: {
           type: 'string',
           title: 'Walk-in customer additional charges percent (%)',
+        },
+        enablePosIntegration: {
+          type: 'boolean',
+          title: 'Enable Moneris POS integration',
+        },
+        monerisBaseUrl: {
+          type: 'string',
+          title: 'Moneris Base URL',
+        },
+        monerisStoreId: {
+          type: 'string',
+          title: 'Moneris Store Id',
+        },
+        monerisApiToken: {
+          type: 'string',
+          title: 'Moneris API Token',
+        },
+        monerisPostbackUrl: {
+          type: 'string',
+          title: 'Moneris Postback URL',
         },
       },
     };
@@ -179,6 +195,22 @@ class Settings extends React.Component {
         'ui:autofocus': true,
         'ui:emptyValue': '0',
       },
+      monerisBaseUrl: {
+        'ui:autofocus': true,
+        'ui:emptyValue': '',
+      },
+      monerisStoreId: {
+        'ui:autofocus': true,
+        'ui:emptyValue': '',
+      },
+      monerisApiToken: {
+        'ui:autofocus': true,
+        'ui:emptyValue': '',
+      },
+      monerisPostbackUrl: {
+        'ui:autofocus': true,
+        'ui:emptyValue': '',
+      },
     };
 
     const initialFormData = {
@@ -192,8 +224,12 @@ class Settings extends React.Component {
       warnInSufficientStockOnOrder: settings.warnInSufficientStockOnOrder,
       blockInSufficientStockOnOrder: settings.blockInSufficientStockOnOrder,
       allowedIPAddresses: settings.allowedIPAddresses,
-      enablePosIntegration: settings.enablePosIntegration,
       walkinPricePercent: settings.walkinPricePercent,
+      enablePosIntegration: settings.enablePosIntegration,
+      monerisBaseUrl: settings.monerisBaseUrl,
+      monerisStoreId: settings.monerisStoreId,
+      monerisApiToken: settings.monerisApiToken,
+      monerisPostbackUrl: settings.monerisPostbackUrl,
     };
 
     return (

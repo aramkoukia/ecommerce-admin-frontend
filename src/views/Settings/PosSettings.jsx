@@ -269,7 +269,9 @@ class PosSettings extends React.Component {
     const columns = [
       { title: 'Store ID', field: 'storeId' },
       { title: 'Terminal ID', field: 'terminalId' },
-      { title: 'Client IP', field: 'clientIp' },
+      { title: 'Remote Client IP', field: 'clientIp' },
+      { title: 'Local IP', field: 'localIp' },
+      { title: 'Computer Name', field: 'computerName' },
       { title: 'Id', field: 'Id', hidden: true },
     ];
 
