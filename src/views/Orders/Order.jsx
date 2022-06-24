@@ -94,6 +94,7 @@ export class Order extends React.Component {
     this.editQuote = this.editQuote.bind(this);
     this.updatePayment = this.updatePayment.bind(this);
     this.updateLocationClicked = this.updateLocationClicked.bind(this);
+    this.payByMonerisClicked = this.payByMonerisClicked.bind(this);
     this.updateLocation = this.updateLocation.bind(this);
     this.handleUpdateLocationClose = this.handleUpdateLocationClose.bind(this);
     this.handleLocationChange = this.handleLocationChange.bind(this);
@@ -253,6 +254,10 @@ export class Order extends React.Component {
     });
   }
 
+  payByMonerisClicked() {
+
+  }
+
   updatePayment() {
     const { order } = this.state;
     let isCash = false;
@@ -277,10 +282,10 @@ export class Order extends React.Component {
       } else if (order.orderPayment[0].paymentTypeId == 23) {
         isCreditDebit = true;
         creditDebit = amount;
-      } else if(order.orderPayment[0].paymentTypeId == 24) {
+      } else if (order.orderPayment[0].paymentTypeId == 24) {
         isCheque = true;
         cheque = amount;
-      } else if(order.orderPayment[0].paymentTypeId == 25) {
+      } else if (order.orderPayment[0].paymentTypeId == 25) {
         isAmazonUsd = true;
         amazonUsd = amount;
       } else if (order.orderPayment[0].paymentTypeId == 26) {
@@ -741,6 +746,11 @@ export class Order extends React.Component {
                         <GridItem xs>
                           <Button color="info" disabled={loading} onClick={this.updateLocationClicked}>Update Location</Button>
                         </GridItem>
+                        {(order.status === 'Paid' || order.status === 'Return') && (
+                        <GridItem xs>
+                          <Button color="primary" disabled={loading} onClick={this.payByMonerisClicked}>Pay by Moneris</Button>
+                        </GridItem>
+                        )}
                         <GridItem xs>
                           { loading && <CircularProgress /> }
                         </GridItem>
