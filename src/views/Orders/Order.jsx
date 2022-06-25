@@ -254,8 +254,36 @@ export class Order extends React.Component {
     });
   }
 
-  payByMonerisClicked() {
-
+  async payByMonerisClicked() {
+    const {
+      order,
+    } = this.state;
+    const result = await OrderService.payByMoneris(order.orderId);
+    if (result === false
+      || result === null
+      || result.StatusCode === 500
+      || result.StatusCode === 400) {
+      this.setState({
+        openSnackbar: true,
+        loading: false,
+        snackbarMessage: 'Oops, looks like something went wrong!',
+        snackbarColor: 'danger',
+      });
+    } else if (result.is_error) {
+      this.setState({
+        openSnackbar: true,
+        loading: false,
+        snackbarMessage: result.content,
+        snackbarColor: 'danger',
+      });
+    } else if (!result.is_error) {
+      this.setState({
+        openSnackbar: true,
+        loading: false,
+        snackbarMessage: 'Follow the instructions on the Card Reader',
+        snackbarColor: 'success',
+      });
+    }
   }
 
   updatePayment() {

@@ -3,12 +3,25 @@ import RestUtilities from './RestUtilities';
 export default class OrderService {
   static async saveOrder(order, idempotency) {
     try {
-      const response = await RestUtilities.post(
+      const response = await RestUtilities.get(
         'orders',
         order,
         idempotency,
       );
       return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async payByMoneris(orderId) {
+    try {
+      const response = await RestUtilities.get(
+        `orders/${orderId}/sendforpayment`,
+      );
+      return response.is_error
+        ? { is_error: response.is_error, content: response.error_content }
+        : { is_error: response.is_error, content: response.content };
     } catch (err) {
       return false;
     }
