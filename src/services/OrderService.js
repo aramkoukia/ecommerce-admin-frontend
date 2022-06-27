@@ -3,7 +3,7 @@ import RestUtilities from './RestUtilities';
 export default class OrderService {
   static async saveOrder(order, idempotency) {
     try {
-      const response = await RestUtilities.get(
+      const response = await RestUtilities.post(
         'orders',
         order,
         idempotency,
