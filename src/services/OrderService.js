@@ -14,6 +14,7 @@ export default class OrderService {
     }
   }
 
+
   static async payByMoneris(orderId) {
     try {
       const response = await RestUtilities.get(
