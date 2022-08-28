@@ -1,7 +1,6 @@
 import React from 'react';
 import Check from '@material-ui/icons/Check';
 import ReactTimeout from 'react-timeout';
-import MaterialTable from 'material-table';
 import TextField from '@material-ui/core/TextField';
 import GridItem from '../../components/Grid/GridItem';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -11,6 +10,8 @@ import Card from '../../components/Card/Card';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import Button from '../../components/CustomButtons/Button';
 import PosSettingsService from '../../services/PosSettingsService';
+import PosSetting from '../../stores/PosSetting';
+
 
 class PosSettings extends React.Component {
   state = {
@@ -19,6 +20,8 @@ class PosSettings extends React.Component {
     snackbarColor: 'info',
     storeId: 'gwca057284',
     terminalId: '',
+    localStoreId: 'gwca057284',
+    localTerminalId: '',
   };
 
   constructor(props) {
@@ -27,17 +30,21 @@ class PosSettings extends React.Component {
     this.unpairPos = this.unpairPos.bind(this);
     this.initializePos = this.initializePos.bind(this);
     this.batchClose = this.batchClose.bind(this);
+    this.savePosLocalSetting = this.savePosLocalSetting.bind(this);
     this.enableMobilePinpad = this.enableMobilePinpad.bind(this);
     this.disableMobilePinpad = this.disableMobilePinpad.bind(this);
   }
 
   async componentDidMount() {
+    const localStoreId = PosSetting.getPOSStoreId();
+    const localTerminalId = PosSetting.getPOSTerminalId();
     this.setState({
       openSnackbar: false,
       snackbarMessage: '',
       snackbarColor: 'info',
+      localStoreId,
+      localTerminalId,
     });
-    this.clientPosSettingsList();
   }
 
   handleChange = (event) => {
@@ -80,6 +87,21 @@ class PosSettings extends React.Component {
         snackbarColor,
       });
     }
+  }
+
+
+  savePosLocalSetting() {
+    const { localStoreId, localTerminalId } = this.state;
+    const snackbarColor = 'success';
+    const snackbarMessage = 'Local POS settings saved!';
+
+    PosSetting.setPOSStoreId(localStoreId);
+    PosSetting.setPOSTerminalId(localTerminalId);
+    this.setState({
+      openSnackbar: true,
+      snackbarMessage,
+      snackbarColor,
+    });
   }
 
   async unpairPos() {
@@ -217,17 +239,11 @@ class PosSettings extends React.Component {
     }
   }
 
-  clientPosSettingsList() {
-    PosSettingsService.getClientPosSettings()
-      .then((data) => this.setState({ clientPosSettings: data }));
-  }
-
   render() {
     const {
       openSnackbar,
       snackbarMessage,
       snackbarColor,
-      clientPosSettings,
     } = this.state;
 
     const styles = {
@@ -266,29 +282,12 @@ class PosSettings extends React.Component {
       },
     };
 
-    const columns = [
-      { title: 'Store ID', field: 'storeId' },
-      { title: 'Terminal ID', field: 'terminalId' },
-      { title: 'Remote Client IP', field: 'clientIp' },
-      { title: 'Local IP', field: 'localIp' },
-      { title: 'Computer Name', field: 'computerName' },
-      { title: 'Id', field: 'Id', hidden: true },
-    ];
-
-    const options = {
-      paging: true,
-      pageSizeOptions: [15, 30, 100],
-      pageSize: 15,
-      columnsButton: true,
-      exportButton: true,
-      filtering: true,
-      search: true,
-    };
-
     const {
       storeId,
       terminalId,
       pairingToken,
+      localStoreId,
+      localTerminalId,
     } = this.state;
 
     return (
@@ -359,45 +358,42 @@ class PosSettings extends React.Component {
                     </Button>
                   </GridItem>
                 </GridContainer>
-                <br />
-                <MaterialTable
-                  columns={columns}
-                  data={clientPosSettings}
-                  options={options}
-                  title=""
-                  editable={{
-                    onRowAdd: (newData) => new Promise((resolve) => {
-                      setTimeout(() => {
-                        clientPosSettings.push(newData);
-                        PosSettingsService.createClientPosSetting(newData);
-                        this.setState({ clientPosSettings }, () => resolve());
-                        resolve();
-                      }, 1000);
-                    }),
-                    onRowUpdate: (newData, oldData) => new Promise((resolve) => {
-                      setTimeout(() => {
-                        {
-                          const index = clientPosSettings.indexOf(oldData);
-                          clientPosSettings[index] = newData;
-                          PosSettingsService.updateClientPosSetting(newData);
-                          this.setState({ clientPosSettings }, () => resolve());
-                        }
-                        resolve();
-                      }, 1000);
-                    }),
-                    onRowDelete: (oldData) => new Promise((resolve) => {
-                      setTimeout(() => {
-                        {
-                          const index = clientPosSettings.indexOf(oldData);
-                          clientPosSettings.splice(index, 1);
-                          PosSettingsService.deleteClientPosSetting(oldData);
-                          this.setState({ clientPosSettings }, () => resolve());
-                        }
-                        resolve();
-                      }, 1000);
-                    }),
-                  }}
-                />
+              </CardBody>
+            </Card>
+          </GridItem>
+          <GridItem xs={12} sm={12} md={12}>
+            <Card>
+              <CardHeader color="primary">
+                <div className={styles.cardTitleWhite}>Local Computer POS Device Setting</div>
+              </CardHeader>
+              <CardBody>
+                <GridContainer>
+                  <GridItem md={3}>
+                    <TextField
+                      name="localStoreId"
+                      label="Store ID"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={localStoreId}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={3}>
+                    <TextField
+                      name="localTerminalId"
+                      label="Terminal Id"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={localTerminalId}
+                      fullWidth="true"
+                    />
+                  </GridItem>
+                  <GridItem md={3}>
+                    <Button color="primary" onClick={this.savePosLocalSetting}>
+                      Save
+                    </Button>
+                  </GridItem>
+                </GridContainer>
               </CardBody>
             </Card>
           </GridItem>
