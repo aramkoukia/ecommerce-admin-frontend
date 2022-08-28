@@ -1,4 +1,5 @@
 import RestUtilities from './RestUtilities';
+import PosSetting from '../stores/PosSetting';
 
 export default class OrderService {
   static async saveOrder(order, idempotency) {
@@ -16,8 +17,10 @@ export default class OrderService {
 
   static async payByMoneris(orderId) {
     try {
+      const localPOSStoreId = PosSetting.getPOSStoreId();
+      const localPOSTerminalId = PosSetting.getPOSTerminalId();
       const response = await RestUtilities.get(
-        `orders/${orderId}/sendforpayment`,
+        `orders/${orderId}/sendforpayment?localPOSStoreId=${localPOSStoreId}&localPOSTerminalId=${localPOSTerminalId}`,
       );
       return response.is_error
         ? { is_error: response.is_error, content: response.error_content }
