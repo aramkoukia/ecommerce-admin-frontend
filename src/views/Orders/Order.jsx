@@ -31,6 +31,7 @@ import CustomerInfo from './CustomerInfo';
 import OrderService from '../../services/OrderService';
 import CustomerSearch from './CustomerSearch';
 import LocationService from '../../services/LocationService';
+import PosSetting from '../../stores/PosSetting';
 
 const styles = {
   chip: {
@@ -258,7 +259,9 @@ export class Order extends React.Component {
     const {
       order,
     } = this.state;
-    const result = await OrderService.payByMoneris(order.orderId);
+    const localStoreId = PosSetting.getPOSStoreId();
+    const localTerminalId = PosSetting.getPOSTerminalId();
+    const result = await OrderService.payByMoneris(order.orderId, localStoreId, localTerminalId);
     if (result === false
       || result === null
       || result.StatusCode === 500
@@ -683,6 +686,9 @@ export class Order extends React.Component {
       locationId,
     } = this.state;
 
+    const localStoreId = PosSetting.getPOSStoreId();
+    const localTerminalId = PosSetting.getPOSTerminalId();
+
     return (
       <div>
         { order && (
@@ -775,9 +781,20 @@ export class Order extends React.Component {
                           <Button color="info" disabled={loading} onClick={this.updateLocationClicked}>Update Location</Button>
                         </GridItem>
                         {(order.status === 'Paid' || order.status === 'Return') && (
-                        <GridItem xs>
-                          <Button color="primary" disabled={loading} onClick={this.payByMonerisClicked}>Pay by Moneris</Button>
-                        </GridItem>
+                          <>
+                            <GridItem xs>
+                              <Button tool  color="primary" disabled={loading} onClick={this.payByMonerisClicked}>Pay by Moneris</Button>
+                            </GridItem>
+                            <GridItem>
+                              POS Store Id:
+                              {' '}
+                              {localStoreId}
+                              <br />
+                              POS Terminal Id:
+                              {' '}
+                              {localTerminalId}
+                            </GridItem>
+                          </>
                         )}
                         <GridItem xs>
                           { loading && <CircularProgress /> }
