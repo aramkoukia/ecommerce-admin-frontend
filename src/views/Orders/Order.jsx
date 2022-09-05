@@ -783,7 +783,7 @@ export class Order extends React.Component {
                         {(order.status === 'Paid' || order.status === 'Return') && (
                           <>
                             <GridItem xs>
-                              <Button tool  color="primary" disabled={loading} onClick={this.payByMonerisClicked}>Pay by Moneris</Button>
+                              <Button color="primary" disabled={loading} onClick={this.payByMonerisClicked}>Pay by Moneris</Button>
                             </GridItem>
                             <GridItem>
                               POS Store Id:
