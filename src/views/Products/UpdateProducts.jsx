@@ -200,6 +200,12 @@ export default class UpdateProducts extends React.Component {
         width: 100,
       },
       {
+        title: 'Inventory Code',
+        field: 'inventoryProductCode',
+        readonly: true,
+        width: 150,
+      },
+      {
         title: 'Disabled',
         field: 'disabled',
         readonly: true,

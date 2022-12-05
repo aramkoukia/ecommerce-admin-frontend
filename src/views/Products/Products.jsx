@@ -108,7 +108,7 @@ export default class Products extends React.Component {
     ShopifyStorefrontService.pushProducts();
     this.setState({
       openSnackbar: true,
-      snackbarMessage: 'Shopoify Products update process started. This could take 3-5 minutes to finish!',
+      snackbarMessage: 'Shopify Products update process started. This could take 3-5 minutes to finish!',
       snackbarColor: 'success',
     });
   }
@@ -216,6 +216,12 @@ export default class Products extends React.Component {
         type: 'numeric',
         readonly: true,
         editable: 'never',
+        width: 150,
+      },
+      {
+        title: 'Inventory Code',
+        field: 'inventoryProductCode',
+        readonly: true,
         width: 150,
       },
       {
