@@ -15,6 +15,17 @@ export default class OrderService {
     }
   }
 
+  static async getIncomingOrdersList(showProcessed) {
+    try {
+      const response = await RestUtilities.get(
+        `orders/incoming?showProcessed=${showProcessed}`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async payByMoneris(orderId) {
     try {
       const localPOSStoreId = PosSetting.getPOSStoreId();

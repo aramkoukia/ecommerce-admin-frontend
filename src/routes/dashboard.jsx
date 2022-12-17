@@ -68,6 +68,7 @@ import InventoryValueReport from '../views/Reports/InventoryValueReport';
 import SalesByPurchasePriceReport from '../views/Reports/SalesByPurchasePriceReport';
 import AddOrder from '../views/Orders/AddOrder';
 import Orders from '../views/Orders/Orders';
+import IncomingOrders from '../views/Orders/IncomingOrders';
 import Taxes from '../views/Taxes/Taxes';
 import CustomerStoreCredit from '../views/Customers/CustomerStoreCredit';
 import Users from '../views/Users/Users';
@@ -160,6 +161,14 @@ const dashboardRoutes = [
     component: AwaitingPayments,
     needsPermission: true,
     permission: Permissions.ViewCustomers,
+  },
+  {
+    path: '/incomingorders',
+    sidebarName: 'Incoming Orders',
+    Icon: List,
+    component: IncomingOrders,
+    needsPermission: true,
+    permission: Permissions.ViewSettingsMenu,
   },
   {
     path: '/addpurchase/:id',
