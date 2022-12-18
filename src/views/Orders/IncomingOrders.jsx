@@ -150,19 +150,26 @@ export default class IncomingOrders extends React.Component {
               <TableHead>
                 <TableRow>
                   <TableCell>Location</TableCell>
+                  <TableCell numeric>Balance</TableCell>
                   <TableCell numeric>Amount</TableCell>
                   <TableCell>createdDate</TableCell>
                   <TableCell>createdByUserId</TableCell>
-
+                  <TableCell>
+                    <Button color="primary">Save</Button>
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {rowData.processedDetails.map((row) => (
                   <TableRow key={row.BrandOrderDetailProcessedId}>
                     <TableCell>{row.locationName}</TableCell>
-                    <TableCell numeric align="right">{row.amount}</TableCell>
-                    <TableCell>{row.createdDate}</TableCell>
+                    <TableCell numeric align="right">{row.balance}</TableCell>
+                    <TableCell numeric align="right">
+                      <TextField disabled={row.BrandOrderDetailProcessedId > 0} value={row.amount} />
+                    </TableCell>
+                    <TableCell>{dateFormat(row.createdDate)}</TableCell>
                     <TableCell>{row.createdByUserId}</TableCell>
+                    <TableCell></TableCell>
                   </TableRow>
                 ))}
               </TableBody>
