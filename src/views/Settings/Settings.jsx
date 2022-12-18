@@ -146,6 +146,10 @@ class Settings extends React.Component {
           type: 'boolean',
           title: 'Publish Order Creation To Inventory',
         },
+        automaticallyDeductInventoryOnIncomingOrders: {
+          type: 'boolean',
+          title: 'Automatically Deduct Inventory On Incoming Orders',
+        },
       },
     };
 
@@ -228,6 +232,11 @@ class Settings extends React.Component {
         'ui:emptyValue': '',
         'ui:widget': 'checkbox',
       },
+      automaticallyDeductInventoryOnIncomingOrders: {
+        'ui:autofocus': true,
+        'ui:emptyValue': '',
+        'ui:widget': 'checkbox',
+      },
     };
 
     const initialFormData = {
@@ -249,6 +258,7 @@ class Settings extends React.Component {
       monerisPostbackUrl: settings.monerisPostbackUrl,
       inventorySystemWebhookUrl: settings.inventorySystemWebhookUrl,
       publishOrderCreationToInventory: settings.publishOrderCreationToInventory,
+      automaticallyDeductInventoryOnIncomingOrders: settings.automaticallyDeductInventoryOnIncomingOrders,
     };
 
     return (
