@@ -138,6 +138,14 @@ class Settings extends React.Component {
           type: 'string',
           title: 'Moneris Postback URL',
         },
+        inventorySystemWebhookUrl: {
+          type: 'string',
+          title: 'Inventory System Webhook URL',
+        },
+        publishOrderCreationToInventory: {
+          type: 'boolean',
+          title: 'Publish Order Creation To Inventory',
+        },
       },
     };
 
@@ -211,6 +219,15 @@ class Settings extends React.Component {
         'ui:autofocus': true,
         'ui:emptyValue': '',
       },
+      inventorySystemWebhookUrl: {
+        'ui:autofocus': true,
+        'ui:emptyValue': '',
+      },
+      publishOrderCreationToInventory: {
+        'ui:autofocus': true,
+        'ui:emptyValue': '',
+        'ui:widget': 'checkbox',
+      },
     };
 
     const initialFormData = {
@@ -230,6 +247,8 @@ class Settings extends React.Component {
       monerisStoreId: settings.monerisStoreId,
       monerisApiToken: settings.monerisApiToken,
       monerisPostbackUrl: settings.monerisPostbackUrl,
+      inventorySystemWebhookUrl: settings.inventorySystemWebhookUrl,
+      publishOrderCreationToInventory: settings.publishOrderCreationToInventory,
     };
 
     return (
