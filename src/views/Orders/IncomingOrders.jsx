@@ -1,3 +1,4 @@
+/* eslint-disable react/destructuring-assignment */
 import React from 'react';
 import {
   CircularProgress,
@@ -21,6 +22,7 @@ import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import OrderService from '../../services/OrderService';
+import LocationService from '../../services/LocationService';
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'mt',
@@ -47,6 +49,8 @@ export default class IncomingOrders extends React.Component {
     loading: false,
     openDialog: false,
     selectedRow: {},
+    locations: [],
+    totalAmount: 0,
     columns: [
       { title: 'Brand Name', field: 'brandName' },
       { title: 'Order No', field: 'brandOrderNo' },
@@ -71,7 +75,7 @@ export default class IncomingOrders extends React.Component {
     super(props);
     this.showProcessInventory = this.showProcessInventory.bind(this);
     this.processInventory = this.processInventory.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    this.handleAmountChange = this.handleAmountChange.bind(this);
     this.handleClose = this.handleClose.bind(this);
   }
 
@@ -84,6 +88,9 @@ export default class IncomingOrders extends React.Component {
 
     OrderService.getIncomingOrdersList()
       .then((data) => this.setState({ orders: data, loading: false }));
+
+    LocationService.getLocations()
+      .then((data) => this.setState({ locations: data, loading: false }));
   }
 
   showProcessInventory(rowData) {
@@ -102,8 +109,21 @@ export default class IncomingOrders extends React.Component {
     });
   }
 
-  handleChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
+  handleAmountChange(event) {
+    const { locations } = this.state;
+    let totalAmount = 0;
+    locations.forEach((location) => {
+      if (location.locationName !== event.target.name) {
+        totalAmount += (parseFloat(this.state[location.locationName]) || 0);
+      }
+    });
+
+    totalAmount += parseFloat(event.target.value) || 0;
+
+    this.setState({
+      totalAmount,
+      [event.target.name]: event.target.value,
+    });
   }
 
   handleClose() {
@@ -198,6 +218,7 @@ export default class IncomingOrders extends React.Component {
       selectedRow,
       columns,
       options,
+      totalAmount,
     } = this.state;
 
     return (
@@ -276,30 +297,30 @@ export default class IncomingOrders extends React.Component {
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {selectedRow && selectedRow.inventoryList && (selectedRow.inventoryList.map((row) => (
-                            <TableRow key={row.productId}>
-                              <TableCell>{row.locationName}</TableCell>
-                              <TableCell numeric>{row.balance}</TableCell>
-                              <TableCell>
-                                <TextField
-                                  name={`${row.locationName}`}
-                                  label={row.locationName}
-                                  type="text"
-                                  onChange={this.handleChange}
-                                  style={styles.smallText}
-                                  // eslint-disable-next-line react/destructuring-assignment
-                                  value={this.state[`${row.locationName}`]}
-                                />
-                              </TableCell>
-                            </TableRow>
-                          )))}
+                          {selectedRow && selectedRow.inventoryList
+                            && (selectedRow.inventoryList.map((row) => (
+                              <TableRow key={row.productId}>
+                                <TableCell>{row.locationName}</TableCell>
+                                <TableCell numeric>{row.balance}</TableCell>
+                                <TableCell>
+                                  <TextField
+                                    name={`${row.locationName}`}
+                                    label={row.locationName}
+                                    type="text"
+                                    onChange={this.handleAmountChange}
+                                    style={styles.smallText}
+                                    value={this.state[`${row.locationName}`]}
+                                  />
+                                </TableCell>
+                              </TableRow>
+                            )))}
                         </TableBody>
                       </Table>
                     </GridItem>
                     <GridItem md={12}>
                       Total:
                       {' '}
-                      {'TBD'}
+                      {totalAmount}
                     </GridItem>
 
                   </GridContainer>
