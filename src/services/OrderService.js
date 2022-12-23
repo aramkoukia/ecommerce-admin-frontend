@@ -15,6 +15,18 @@ export default class OrderService {
     }
   }
 
+  static async processInventory(inventory) {
+    try {
+      const response = await RestUtilities.post(
+        'orders/processIncomingOrderInventory',
+        inventory,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getIncomingOrdersList(showProcessed) {
     try {
       const response = await RestUtilities.get(

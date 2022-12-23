@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+/* eslint-disable jsx-quotes */
 import React from 'react';
 import MaterialTable from 'material-table';
 import {
@@ -7,8 +9,8 @@ import {
   DialogContent,
   TextField,
 } from '@material-ui/core';
-import Button from '../../components/CustomButtons/Button';
 import Check from '@material-ui/icons/Check';
+import Button from '../../components/CustomButtons/Button';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';

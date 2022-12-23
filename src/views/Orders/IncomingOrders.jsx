@@ -1,11 +1,8 @@
 import React from 'react';
 import {
-  MenuItem,
   CircularProgress,
-  Select,
   TextField,
   FormControl,
-  InputLabel,
   Table,
   TableBody,
   TableCell,
@@ -14,12 +11,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Slide,
 } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
 import MaterialTable from 'material-table';
 import { StylesProvider, createGenerateClassName } from '@material-ui/styles';
 import GridItem from '../../components/Grid/GridItem';
@@ -29,8 +21,6 @@ import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import OrderService from '../../services/OrderService';
-import LocationService from '../../services/LocationService';
-import { Order } from './Order';
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'mt',
@@ -46,22 +36,17 @@ function dateFormat(dateString) {
   return stringDate;
 }
 
-function ccyFormat(num) {
-  return `${num.toFixed(2)} $`;
-}
-
 Date.prototype.addHours = function (h) {
   this.setHours(this.getHours() + h);
   return this;
 };
 
-const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
-
 export default class IncomingOrders extends React.Component {
   state = {
     orders: [],
     loading: false,
-    showOrder: false,
+    openDialog: false,
+    selectedRow: {},
     columns: [
       { title: 'Brand Name', field: 'brandName' },
       { title: 'Order No', field: 'brandOrderNo' },
@@ -84,6 +69,10 @@ export default class IncomingOrders extends React.Component {
 
   constructor(props) {
     super(props);
+    this.showProcessInventory = this.showProcessInventory.bind(this);
+    this.processInventory = this.processInventory.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   async componentDidMount() {
@@ -95,6 +84,30 @@ export default class IncomingOrders extends React.Component {
 
     OrderService.getIncomingOrdersList()
       .then((data) => this.setState({ orders: data, loading: false }));
+  }
+
+  showProcessInventory(rowData) {
+    this.setState({
+      openDialog: true,
+      selectedRow: rowData,
+    });
+  }
+
+  processInventory(rowData) {
+    OrderService.processInventory(rowData.productId)
+      .then((data) => this.setState({ productPackages: data }));
+
+    this.setState({
+      openDialog: false,
+    });
+  }
+
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
+  }
+
+  handleClose() {
+    this.setState({ openDialog: false });
   }
 
   render() {
@@ -154,9 +167,6 @@ export default class IncomingOrders extends React.Component {
                   <TableCell numeric>Amount</TableCell>
                   <TableCell>createdDate</TableCell>
                   <TableCell>createdByUserId</TableCell>
-                  <TableCell>
-                    <Button color="primary">Save</Button>
-                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -165,11 +175,13 @@ export default class IncomingOrders extends React.Component {
                     <TableCell>{row.locationName}</TableCell>
                     <TableCell numeric align="right">{row.balance}</TableCell>
                     <TableCell numeric align="right">
-                      <TextField disabled={row.BrandOrderDetailProcessedId > 0} value={row.amount} />
+                      <TextField
+                        disabled={row.BrandOrderDetailProcessedId > 0}
+                        value={row.amount}
+                      />
                     </TableCell>
                     <TableCell>{dateFormat(row.createdDate)}</TableCell>
                     <TableCell>{row.createdByUserId}</TableCell>
-                    <TableCell></TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -182,8 +194,8 @@ export default class IncomingOrders extends React.Component {
     const {
       orders,
       loading,
-      orderId,
-      showOrder,
+      openDialog,
+      selectedRow,
       columns,
       options,
     } = this.state;
@@ -194,7 +206,9 @@ export default class IncomingOrders extends React.Component {
           <GridItem xs={12} sm={12} md={12}>
             <Card>
               <CardHeader color="primary">
-                <div className={styles.cardTitleWhite}>Incoming Orders from Veroboard and GEK Power</div>
+                <div className={styles.cardTitleWhite}>
+                  Incoming Orders from Veroboard and GEK Power
+                </div>
               </CardHeader>
               <CardBody>
                 <StylesProvider generateClassName={generateClassName}>
@@ -204,7 +218,14 @@ export default class IncomingOrders extends React.Component {
                     data={orders}
                     detailPanel={detailPanel}
                     options={options}
-                    onRowClick={this.rowClicked}
+                    actions={[
+                      {
+                        icon: 'move_up',
+                        tooltip: 'Process Inventory',
+                        onClick: (event, rowData) => this.showProcessInventory(rowData),
+                      },
+                    ]}
+
                     title=""
                   />
                 </StylesProvider>
@@ -213,24 +234,83 @@ export default class IncomingOrders extends React.Component {
           </GridItem>
         </GridContainer>
         <Dialog
-          fullScreen
-          open={showOrder}
+          open={openDialog}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
-          TransitionComponent={Transition}
+          maxWidth="lg"
         >
-          <AppBar style={{ position: 'relative' }}>
-            <Toolbar>
-              <IconButton edge="start" color="inherit" onClick={this.handleClose} aria-label="close">
-                <CloseIcon />
-                Close
-              </IconButton>
-            </Toolbar>
-          </AppBar>
           <DialogContent>
-            <Order orderId={orderId} {...this.props} />
+            <Card>
+              <CardHeader color="info">
+                <div>Enter amount to transfer from each location</div>
+              </CardHeader>
+              <CardBody>
+                <FormControl component="fieldset">
+                  <GridContainer>
+                    <GridItem md={12}>
+                      Order From:
+                      {' '}
+                      {selectedRow && (selectedRow.brandName)}
+                    </GridItem>
+                    <GridItem md={12}>
+                      Product Code:
+                      {' '}
+                      {selectedRow && (selectedRow.productCode)}
+                    </GridItem>
+                    <GridItem md={12}>
+                      Product Name:
+                      {' '}
+                      {selectedRow && (selectedRow.productName)}
+                    </GridItem>
+                    <GridItem md={12}>
+                      Amount:
+                      {' '}
+                      {selectedRow && (selectedRow.amount)}
+                    </GridItem>
+                    <GridItem>
+                      <Table size="small" style={{ backgroundColor: '#DFFCF7' }}>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>Location</TableCell>
+                            <TableCell numeric>Balance</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {selectedRow && selectedRow.inventoryList && (selectedRow.inventoryList.map((row) => (
+                            <TableRow key={row.productId}>
+                              <TableCell>{row.locationName}</TableCell>
+                              <TableCell numeric>{row.balance}</TableCell>
+                              <TableCell>
+                                <TextField
+                                  name={`${row.locationName}`}
+                                  label={row.locationName}
+                                  type="text"
+                                  onChange={this.handleChange}
+                                  style={styles.smallText}
+                                  // eslint-disable-next-line react/destructuring-assignment
+                                  value={this.state[`${row.locationName}`]}
+                                />
+                              </TableCell>
+                            </TableRow>
+                          )))}
+                        </TableBody>
+                      </Table>
+                    </GridItem>
+                    <GridItem md={12}>
+                      Total:
+                      {' '}
+                      {'TBD'}
+                    </GridItem>
+
+                  </GridContainer>
+                </FormControl>
+              </CardBody>
+            </Card>
           </DialogContent>
           <DialogActions>
+            <Button onClick={this.processInventory} color="primary">
+              Save
+            </Button>
             <Button onClick={this.handleClose} color="info">
               Cancel
             </Button>
