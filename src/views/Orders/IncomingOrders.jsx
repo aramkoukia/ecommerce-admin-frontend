@@ -13,8 +13,10 @@ import {
   DialogActions,
   DialogContent,
 } from '@material-ui/core';
+import Check from '@material-ui/icons/Check';
 import MaterialTable from 'material-table';
 import { StylesProvider, createGenerateClassName } from '@material-ui/styles';
+import Snackbar from '../../components/Snackbar/Snackbar';
 import GridItem from '../../components/Grid/GridItem';
 import Button from '../../components/CustomButtons/Button';
 import GridContainer from '../../components/Grid/GridContainer';
@@ -51,6 +53,9 @@ export default class IncomingOrders extends React.Component {
     selectedRow: {},
     locations: [],
     totalAmount: 0,
+    snackbarMessage: '',
+    openSnackbar: false,
+    snackbarColor: 'info',
     columns: [
       { title: 'Brand Name', field: 'brandName' },
       { title: 'Order No', field: 'brandOrderNo' },
@@ -58,6 +63,7 @@ export default class IncomingOrders extends React.Component {
       { title: 'Product Code', field: 'productCode' },
       { title: 'Product Name', field: 'productName' },
       { title: 'Amount', field: 'amount' },
+      { title: 'Status', field: 'status' },
       { title: 'Processed', field: 'processed' },
     ],
     options: {
@@ -100,13 +106,37 @@ export default class IncomingOrders extends React.Component {
     });
   }
 
-  processInventory(rowData) {
-    OrderService.processInventory(rowData.productId)
-      .then((data) => this.setState({ productPackages: data }));
+  processInventory() {
+    const { locations, totalAmount, selectedRow } = this.state;
+    if (selectedRow.amount !== totalAmount) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: `Total amount entered ${totalAmount} does not match the incoming order amount ${selectedRow.amount} !`,
+        snackbarColor: 'danger',
+      });
+      return;
+    }
 
-    this.setState({
-      openDialog: false,
+    const locationAmounts = [];
+    locations.forEach((location) => {
+      if ((this.state[location.locationName] || 0) > 0) {
+        locationAmounts.push(
+          {
+            locationId: location.locationId,
+            amount: this.state[location.locationName],
+          },
+        );
+      }
     });
+
+    const inventoryProcessData = {
+      productId: selectedRow.productId,
+      brandOrderDetailId: selectedRow.brandOrderDetailId,
+      locationAmounts,
+    };
+
+    OrderService.processInventory(inventoryProcessData)
+      .then(() => this.setState({ openDialog: false }));
   }
 
   handleAmountChange(event) {
@@ -219,6 +249,9 @@ export default class IncomingOrders extends React.Component {
       columns,
       options,
       totalAmount,
+      snackbarMessage,
+      openSnackbar,
+      snackbarColor,
     } = this.state;
 
     return (
@@ -337,6 +370,15 @@ export default class IncomingOrders extends React.Component {
             </Button>
           </DialogActions>
         </Dialog>
+        <Snackbar
+                place="tl"
+                color={snackbarColor}
+                icon={Check}
+                message={snackbarMessage}
+                open={openSnackbar}
+                closeNotification={() => this.setState({ openSnackbar: false })}
+                close
+        />
       </div>
     );
   }
