@@ -31,14 +31,14 @@ const generateClassName = createGenerateClassName({
   seed: 'mt',
 });
 
-function dateFormat(dateString) {
-  const date = new Date(dateString);
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, 0);
-  const day = `${date.getUTCDate()}`.padStart(2, 0);
-  const stringDate = [year, month, day].join('-');
-  return stringDate;
-}
+// function dateFormat(dateString) {
+//   const date = new Date(dateString);
+//   const year = date.getFullYear();
+//   const month = `${date.getMonth() + 1}`.padStart(2, 0);
+//   const day = `${date.getUTCDate()}`.padStart(2, 0);
+//   const stringDate = [year, month, day].join('-');
+//   return stringDate;
+// }
 
 Date.prototype.addHours = function (h) {
   this.setHours(this.getHours() + h);
@@ -107,12 +107,15 @@ export default class IncomingOrders extends React.Component {
   }
 
   processInventory() {
+    this.setState({ loading: true });
+
     const { locations, totalAmount, selectedRow } = this.state;
     if (selectedRow.amount !== totalAmount) {
       this.setState({
         openSnackbar: true,
         snackbarMessage: `Total amount entered ${totalAmount} does not match the incoming order amount ${selectedRow.amount} !`,
         snackbarColor: 'danger',
+        loading: false
       });
       return;
     }
@@ -123,7 +126,7 @@ export default class IncomingOrders extends React.Component {
         locationAmounts.push(
           {
             locationId: location.locationId,
-            amount: this.state[location.locationName],
+            amount: parseFloat(this.state[location.locationName] || 0),
           },
         );
       }
@@ -136,7 +139,12 @@ export default class IncomingOrders extends React.Component {
     };
 
     OrderService.processInventory(inventoryProcessData)
-      .then(() => this.setState({ openDialog: false }));
+      .then(() => {
+        OrderService.getIncomingOrdersList()
+          .then((data) => this.setState({ orders: data, loading: false, openDialog: false }));
+      });
+
+    this.setState({ openDialog: false });
   }
 
   handleAmountChange(event) {
@@ -199,47 +207,42 @@ export default class IncomingOrders extends React.Component {
       },
     };
 
-    const detailPanel = [
-      {
-        tooltip: 'Details',
-        render: (rowData) => (
-          <div
-            style={{
-              width: '60%',
-              backgroundColor: '#ccf9ff',
-            }}
-          >
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Location</TableCell>
-                  <TableCell numeric>Balance</TableCell>
-                  <TableCell numeric>Amount</TableCell>
-                  <TableCell>createdDate</TableCell>
-                  <TableCell>createdByUserId</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rowData.processedDetails.map((row) => (
-                  <TableRow key={row.BrandOrderDetailProcessedId}>
-                    <TableCell>{row.locationName}</TableCell>
-                    <TableCell numeric align="right">{row.balance}</TableCell>
-                    <TableCell numeric align="right">
-                      <TextField
-                        disabled={row.BrandOrderDetailProcessedId > 0}
-                        value={row.amount}
-                      />
-                    </TableCell>
-                    <TableCell>{dateFormat(row.createdDate)}</TableCell>
-                    <TableCell>{row.createdByUserId}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        ),
-      },
-    ];
+    // const detailPanel = [
+    //   {
+    //     tooltip: 'Details',
+    //     render: (rowData) => (
+    //       <div
+    //         style={{
+    //           width: '60%',
+    //           backgroundColor: '#ccf9ff',
+    //         }}
+    //       >
+    //         <Table>
+    //           <TableHead>
+    //             <TableRow>
+    //               <TableCell>Location</TableCell>
+    //               <TableCell numeric>Balance</TableCell>
+    //               <TableCell numeric>Amount</TableCell>
+    //               <TableCell>createdDate</TableCell>
+    //               <TableCell>createdByUserId</TableCell>
+    //             </TableRow>
+    //           </TableHead>
+    //           <TableBody>
+    //             {rowData.processedDetails.map((row) => (
+    //               <TableRow key={row.BrandOrderDetailProcessedId}>
+    //                 <TableCell>{row.locationName}</TableCell>
+    //                 <TableCell numeric align="right">{row.balance}</TableCell>
+    //                 <TableCell numeric align="right">{row.amount}</TableCell>
+    //                 <TableCell>{dateFormat(row.createdDate)}</TableCell>
+    //                 <TableCell>{row.createdByUserId}</TableCell>
+    //               </TableRow>
+    //             ))}
+    //           </TableBody>
+    //         </Table>
+    //       </div>
+    //     ),
+    //   },
+    // ];
 
     const {
       orders,
@@ -270,7 +273,7 @@ export default class IncomingOrders extends React.Component {
                   <MaterialTable
                     columns={columns}
                     data={orders}
-                    detailPanel={detailPanel}
+                    // detailPanel={detailPanel}
                     options={options}
                     actions={[
                       {
@@ -362,7 +365,7 @@ export default class IncomingOrders extends React.Component {
             </Card>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.processInventory} color="primary">
+            <Button disabled={loading} onClick={this.processInventory} color="primary">
               Save
             </Button>
             <Button onClick={this.handleClose} color="info">
@@ -371,13 +374,13 @@ export default class IncomingOrders extends React.Component {
           </DialogActions>
         </Dialog>
         <Snackbar
-                place="tl"
-                color={snackbarColor}
-                icon={Check}
-                message={snackbarMessage}
-                open={openSnackbar}
-                closeNotification={() => this.setState({ openSnackbar: false })}
-                close
+          place="tl"
+          color={snackbarColor}
+          icon={Check}
+          message={snackbarMessage}
+          open={openSnackbar}
+          closeNotification={() => this.setState({ openSnackbar: false })}
+          close
         />
       </div>
     );
