@@ -34,7 +34,7 @@ const Sidebar = ({ ...props }) => {
       )}
       {!logoText && (
       <div className={classes.logoWithoutTitle}>
-          <img src={logo} alt="logo" className={classes.imgWithoutTitle} />
+        <img src={logo} alt="logo" className={classes.imgWithoutTitle} />
       </div>
       )}
     </div>

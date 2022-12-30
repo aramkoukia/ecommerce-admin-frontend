@@ -200,7 +200,7 @@ export default class WebsiteUsers extends React.Component {
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
           fullWidth
-          maxWidth={"md"}
+          maxWidth="md"
         >
           <DialogContent>
             <Card>

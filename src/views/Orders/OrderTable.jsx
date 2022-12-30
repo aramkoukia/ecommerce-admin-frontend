@@ -118,7 +118,8 @@ export default class OrderTable extends React.Component {
     for (const i in orderRows) {
       if (orderRows[i].id == event.target.name) {
         const rowProductPackage = orderRows[i].productPackages.find(
-          (p) => p.productPackageId === event.target.value);
+          (p) => p.productPackageId === event.target.value,
+        );
         orderRows[i].salesPrice = rowProductPackage.packagePrice;
         orderRows[i].productPackageId = event.target.value;
         orderRows[i].total = orderRows[i].qty * orderRows[i].salesPrice;

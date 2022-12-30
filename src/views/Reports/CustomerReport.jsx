@@ -88,7 +88,7 @@ export default class CustomerReport extends React.Component {
         }
         return row[column] || '';
       })))
-      .then((data) => this.setState({ customerPaidData: data, loading: false, }));
+      .then((data) => this.setState({ customerPaidData: data, loading: false }));
 
     const customerUnPaidColumns = ['orderId', 'poNumber', 'total', 'status', 'orderDate', 'dueDate', 'companyName', 'address', 'city', 'province', 'postalCode'];
     ReportService.getCustomerUnPaid(fromDate, toDate)

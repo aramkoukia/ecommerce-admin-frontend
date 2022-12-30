@@ -115,7 +115,7 @@ export default class IncomingOrders extends React.Component {
         openSnackbar: true,
         snackbarMessage: `Total amount entered ${totalAmount} does not match the incoming order amount ${selectedRow.amount} !`,
         snackbarColor: 'danger',
-        loading: false
+        loading: false,
       });
       return;
     }

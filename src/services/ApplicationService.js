@@ -117,5 +117,4 @@ export default class ApplicationService {
       return false;
     }
   }
-
 }

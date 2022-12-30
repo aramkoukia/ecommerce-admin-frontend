@@ -120,7 +120,7 @@ class ProductSearchV2 extends React.Component {
   }
 
   async componentDidMount() {
-    let suggestions = await ProductService.getProductsForSales();
+    const suggestions = await ProductService.getProductsForSales();
     const { customerId, walkinPricePercent } = this.props;
     if ((customerId <= 0)
       && walkinPricePercent && walkinPricePercent > 0) {
