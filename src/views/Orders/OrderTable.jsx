@@ -1,3 +1,5 @@
+/* eslint-disable eqeqeq */
+/* eslint-disable no-restricted-syntax */
 import React from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -62,11 +64,6 @@ export default class OrderTable extends React.Component {
     }
   }
 
-  handleProductRemoved(event) {
-    const { productRemoved } = this.props;
-    productRemoved(Number(event.currentTarget.name));
-  }
-
   handleDiscountTypeChanged(event) {
     const orderRows = this.state.orderRows.slice();
     const { taxes, priceChanged } = this.props;
@@ -120,7 +117,8 @@ export default class OrderTable extends React.Component {
     const { orderRows } = this.state;
     for (const i in orderRows) {
       if (orderRows[i].id == event.target.name) {
-        const rowProductPackage = orderRows[i].productPackages.find((p) => p.productPackageId === event.target.value);
+        const rowProductPackage = orderRows[i].productPackages.find(
+          (p) => p.productPackageId === event.target.value);
         orderRows[i].salesPrice = rowProductPackage.packagePrice;
         orderRows[i].productPackageId = event.target.value;
         orderRows[i].total = orderRows[i].qty * orderRows[i].salesPrice;
@@ -225,6 +223,11 @@ export default class OrderTable extends React.Component {
     });
   };
 
+  handleProductRemoved(event) {
+    const { productRemoved } = this.props;
+    productRemoved(Number(event.currentTarget.name));
+  }
+
   ccyFormat(num) {
     return `${num.toFixed(2)} $`;
   }
@@ -253,7 +256,7 @@ export default class OrderTable extends React.Component {
     if (taxes) {
       const totalTax = taxes.map(({ percentage }) => (percentage / 100) * subTotal).reduce((sum, i) => sum + i, 0);
       return subTotal + totalTax;
-    } 
+    }
     return 0;
   }
 
