@@ -168,7 +168,7 @@ const dashboardRoutes = [
     Icon: List,
     component: IncomingOrders,
     needsPermission: true,
-    permission: Permissions.ViewSettingsMenu,
+    permission: Permissions.ViewProducts,
   },
   {
     path: '/addpurchase/:id',
