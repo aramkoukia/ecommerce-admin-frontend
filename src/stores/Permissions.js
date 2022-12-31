@@ -70,4 +70,6 @@ export default class Permissions {
   static ViewCustomApplications = 'View Custom Applications';
 
   static ViewTags = 'View Tags';
+
+  static ViewIncomingOrders = 'View Incoming Orders';
 }
