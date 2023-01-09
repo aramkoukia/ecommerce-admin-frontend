@@ -122,7 +122,7 @@ export default class IncomingOrders extends React.Component {
 
     const locationAmounts = [];
     locations.forEach((location) => {
-      if ((this.state[location.locationName] || 0) > 0) {
+      if ((this.state[location.locationName] || 0) !== 0) {
         locationAmounts.push(
           {
             locationId: location.locationId,
