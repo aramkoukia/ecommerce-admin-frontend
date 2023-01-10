@@ -71,7 +71,7 @@ class CustomerStatementSettings extends React.Component {
       emailBody,
     };
 
-    const result = await CustomerStatementSettingsService.updateSettings(settings);
+    await CustomerStatementSettingsService.updateSettings(settings);
     this.setState({
       openSnackbar: true,
       snackbarMessage: 'Settings is updated!',
