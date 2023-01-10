@@ -328,9 +328,11 @@ export default class IncomingOrders extends React.Component {
                     <GridItem md={12}>
                       <b>Total Order Amount:</b>
                       {' '}
-                      {selectedRow && (selectedRow.amountInMainPackage
-                        ? selectedRow.amount * selectedRow.amountInMainPackage
-                        : selectedRow.amount)}
+                      <b>
+                        {selectedRow && (selectedRow.amountInMainPackage
+                          ? selectedRow.amount * selectedRow.amountInMainPackage
+                          : selectedRow.amount)}
+                      </b>
                     </GridItem>
                     <GridItem md={12}>
                       Package:
