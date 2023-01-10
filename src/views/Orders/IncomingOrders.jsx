@@ -63,6 +63,8 @@ export default class IncomingOrders extends React.Component {
       { title: 'Product Code', field: 'productCode' },
       { title: 'Product Name', field: 'productName' },
       { title: 'Amount', field: 'amount' },
+      { title: 'Package', field: 'package' },
+      { title: 'Amount Package', field: 'amountInMainPackage' },
       { title: 'Status', field: 'status' },
       { title: 'Processed', field: 'processed' },
     ],
