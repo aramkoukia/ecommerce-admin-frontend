@@ -112,10 +112,14 @@ export default class IncomingOrders extends React.Component {
     this.setState({ loading: true });
 
     const { locations, totalAmount, selectedRow } = this.state;
-    if (selectedRow.amount !== totalAmount) {
+    const actualAmount = selectedRow.amountInMainPackage
+      ? selectedRow.amount * selectedRow.amountInMainPackage
+      : selectedRow.amount;
+
+    if (actualAmount !== totalAmount) {
       this.setState({
         openSnackbar: true,
-        snackbarMessage: `Total amount entered ${totalAmount} does not match the incoming order amount ${selectedRow.amount} !`,
+        snackbarMessage: `Total amount entered ${totalAmount} does not match the incoming order amount ${actualAmount} !`,
         snackbarColor: 'danger',
         loading: false,
       });
@@ -322,9 +326,21 @@ export default class IncomingOrders extends React.Component {
                       {selectedRow && (selectedRow.productName)}
                     </GridItem>
                     <GridItem md={12}>
-                      Amount:
+                      <b>Total Order Amount:</b>
                       {' '}
-                      {selectedRow && (selectedRow.amount)}
+                      {selectedRow && (selectedRow.amountInMainPackage
+                        ? selectedRow.amount * selectedRow.amountInMainPackage
+                        : selectedRow.amount)}
+                    </GridItem>
+                    <GridItem md={12}>
+                      Package:
+                      {' '}
+                      {selectedRow && (selectedRow.package)}
+                    </GridItem>
+                    <GridItem md={12}>
+                      Amount In Package:
+                      {' '}
+                      {selectedRow && (selectedRow.amountInMainPackage)}
                     </GridItem>
                     <GridItem>
                       <Table size="small" style={{ backgroundColor: '#DFFCF7' }}>
