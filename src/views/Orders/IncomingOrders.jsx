@@ -113,8 +113,8 @@ export default class IncomingOrders extends React.Component {
 
     const { locations, totalAmount, selectedRow } = this.state;
     const actualAmount = selectedRow.amountInMainPackage
-      ? selectedRow.amount * selectedRow.amountInMainPackage
-      : selectedRow.amount;
+      ? (selectedRow.amount * selectedRow.amountInMainPackage).toFixed(2)
+      : selectedRow.amount
 
     if (actualAmount !== totalAmount) {
       this.setState({
@@ -145,12 +145,19 @@ export default class IncomingOrders extends React.Component {
     };
 
     OrderService.processInventory(inventoryProcessData)
-      .then(() => {
-        OrderService.getIncomingOrdersList()
-          .then((data) => this.setState({ orders: data, loading: false, openDialog: false }));
+      .then((result) => {
+        const { is_error, content } = result;
+        if (is_error) {
+          this.setState({
+            openSnackbar: true,
+            snackbarMessage: content,
+            snackbarColor: 'danger',
+          });
+        } else {
+          OrderService.getIncomingOrdersList()
+            .then((data) => this.setState({ orders: data, loading: false, openDialog: false }));
+        }
       });
-
-    this.setState({ openDialog: false });
   }
 
   handleAmountChange(event) {
@@ -330,7 +337,7 @@ export default class IncomingOrders extends React.Component {
                       {' '}
                       <b>
                         {selectedRow && (selectedRow.amountInMainPackage
-                          ? selectedRow.amount * selectedRow.amountInMainPackage
+                          ? (selectedRow.amount * selectedRow.amountInMainPackage).toFixed(2)
                           : selectedRow.amount)}
                       </b>
                     </GridItem>

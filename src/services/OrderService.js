@@ -21,7 +21,9 @@ export default class OrderService {
         'orders/processIncomingOrderInventory',
         inventory,
       );
-      return response.content;
+      return response.is_error
+        ? { is_error: response.is_error, content: response.error_content }
+        : { is_error: response.is_error, content: response.content };
     } catch (err) {
       return false;
     }
