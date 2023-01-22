@@ -114,9 +114,9 @@ export default class IncomingOrders extends React.Component {
     const { locations, totalAmount, selectedRow } = this.state;
     const actualAmount = selectedRow.amountInMainPackage
       ? (selectedRow.amount * selectedRow.amountInMainPackage).toFixed(2)
-      : selectedRow.amount
+      : selectedRow.amount.toFixed(2)
 
-    if (actualAmount !== totalAmount) {
+    if (actualAmount !== totalAmount.toFixed(2)) {
       this.setState({
         openSnackbar: true,
         snackbarMessage: `Total amount entered ${totalAmount} does not match the incoming order amount ${actualAmount} !`,
