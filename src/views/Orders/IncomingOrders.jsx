@@ -119,7 +119,7 @@ export default class IncomingOrders extends React.Component {
     if (actualAmount !== totalAmount.toFixed(2)) {
       this.setState({
         openSnackbar: true,
-        snackbarMessage: `Total amount entered ${totalAmount} does not match the incoming order amount ${actualAmount} !`,
+        snackbarMessage: `Total amount entered ${totalAmount.toFixed(2)} does not match the incoming order amount ${actualAmount} !`,
         snackbarColor: 'danger',
         loading: false,
       });
