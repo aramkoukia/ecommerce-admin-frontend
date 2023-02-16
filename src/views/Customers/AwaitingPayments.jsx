@@ -39,6 +39,7 @@ export default class AwaitingPayments extends React.Component {
   state = {
     showOverDue: true,
     customers: [],
+    summary: [],
     loading: false,
     columns: [
       {
@@ -128,6 +129,29 @@ export default class AwaitingPayments extends React.Component {
         hidden: true,
       },
     ],
+    summaryColumns: [
+      {
+        title: 'Location',
+        field: 'locationName',
+        readonly: true,
+      },
+      {
+        title: 'Awaiting Payment ($)',
+        field: 'total',
+        cellStyle: {
+          color: '#0716CB',
+        },
+        headerStyle: {
+          color: '#0716CB',
+        },
+        readonly: true,
+      },
+      {
+        title: 'Order Count',
+        field: 'orderCount',
+        readonly: true,
+      },
+    ],
     options: {
       paging: true,
       pageSizeOptions: [25, 50, 100],
@@ -136,6 +160,13 @@ export default class AwaitingPayments extends React.Component {
       exportButton: true,
       filtering: true,
       search: true,
+    },
+    summaryOptions: {
+      paging: false,
+      columnsButton: false,
+      exportButton: false,
+      filtering: false,
+      search: false,
     },
   };
 
@@ -157,7 +188,8 @@ export default class AwaitingPayments extends React.Component {
   async customersList(showOverDue) {
     this.setState({ loading: true });
     const result = await CustomerService.getCustomersAwaitingPayments(showOverDue);
-    this.setState({ customers: result, loading: false });
+    const summary = await CustomerService.getCustomersAwaitingPaymentsSummary();
+    this.setState({ customers: result, summary, loading: false });
   }
 
   showDetails(customerId) {
@@ -265,7 +297,7 @@ export default class AwaitingPayments extends React.Component {
 
     const {
       customers, loading, columns, options,
-      showOverDue,
+      showOverDue, summary, summaryColumns, summaryOptions,
     } = this.state;
     return (
       <div>
@@ -287,6 +319,14 @@ export default class AwaitingPayments extends React.Component {
                   )}
                   label="Ony Show Overdue Invoices"
                 />
+                {summary && (
+                  <MaterialTable
+                    title="Awaiting Payments Summary"
+                    columns={summaryColumns}
+                    data={summary}
+                    options={summaryOptions}
+                  />
+                )}
                 {customers && (
                   <MaterialTable
                     columns={columns}
@@ -310,7 +350,7 @@ export default class AwaitingPayments extends React.Component {
                       },
                     ]}
                     options={options}
-                    title=""
+                    title="Customers with awaiting payment orders"
                   />
                 )}
               </CardBody>

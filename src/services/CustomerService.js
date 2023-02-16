@@ -34,6 +34,17 @@ export default class CustomerService {
     }
   }
 
+  static async getCustomersAwaitingPaymentsSummary() {
+    try {
+      const response = await RestUtilities.get(
+        'customers/AwaitingPaymentsSummary',
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async getCustomer(customerId) {
     try {
       const response = await RestUtilities.get(
