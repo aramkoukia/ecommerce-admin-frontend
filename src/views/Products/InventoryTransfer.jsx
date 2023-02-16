@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import MaterialTable from 'material-table';
 import PropTypes from 'prop-types';
@@ -25,9 +26,9 @@ function InventoryTransfer({ ...props }) {
     toLocations,
     handleClose,
   } = props;
-  const [fromLocation, setFromLocation] = useState(fromLocations[0].locationId);
-  const [toLocation, setToLocation] = useState(toLocations[1].locationId);
-  const [fromLocationBalance, setFromLocationBalance] = useState(fromLocations[0].balance);
+  const [fromLocation, setFromLocation] = useState(0);
+  const [toLocation, setToLocation] = useState(0);
+  const [fromLocationBalance, setFromLocationBalance] = useState(0);
   const [transferQuantity, setTransferQuantity] = useState(0);
   const [transferNotes, setTransferNotes] = useState('');
   const [loading, setLoading] = useState(false);
