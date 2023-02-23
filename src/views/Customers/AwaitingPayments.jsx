@@ -147,8 +147,24 @@ export default class AwaitingPayments extends React.Component {
         readonly: true,
       },
       {
-        title: 'Order Count',
+        title: 'Total Order Count',
         field: 'orderCount',
+        readonly: true,
+      },
+      {
+        title: 'Overdue Awaiting Payment ($)',
+        field: 'overDueTotal',
+        cellStyle: {
+          color: '#0716CB',
+        },
+        headerStyle: {
+          color: '#0716CB',
+        },
+        readonly: true,
+      },
+      {
+        title: 'Overdue Order Count',
+        field: 'overDueOrderCount',
         readonly: true,
       },
     ],
