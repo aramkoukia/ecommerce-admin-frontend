@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import Check from '@material-ui/icons/Check';
 import TextField from '@material-ui/core/TextField';
@@ -38,6 +39,7 @@ class EditCustomer extends React.Component {
       pstNumber: '',
       creditLimit: 0,
       email: '',
+      notes: '',
       creditCardOnFile: false,
       disabled: false,
       mergeToCustomerId: 0,
@@ -292,6 +294,16 @@ class EditCustomer extends React.Component {
                         <MenuItem value="Same Day">Same Day</MenuItem>
                       </Select>
                     </FormControl>
+                  </GridItem>
+                  <GridItem md={4}>
+                    <TextField
+                      name="notes"
+                      label="Notes (Shows at time of order)"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={customer.notes}
+                      fullWidth="true"
+                    />
                   </GridItem>
                   <GridItem md={4}>
                     <FormControlLabel

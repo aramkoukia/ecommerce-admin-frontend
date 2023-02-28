@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import MaterialTable from 'material-table';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -94,6 +95,11 @@ export default class Customers extends React.Component {
         },
       },
       {
+        title: 'Notes',
+        field: 'notes',
+        readonly: true,
+      },
+      {
         title: 'Customer Id',
         field: 'customerId',
         readonly: true,
@@ -110,7 +116,6 @@ export default class Customers extends React.Component {
       search: true,
     },
   };
-
 
   async componentDidMount() {
     await this.customersList();

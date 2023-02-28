@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import Check from '@material-ui/icons/Check';
 import Add from '@material-ui/icons/Add';
@@ -20,6 +21,7 @@ import GridContainer from '../../components/Grid/GridContainer';
 import Button from '../../components/CustomButtons/Button';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
+import Danger from '../../components/Typography/Danger';
 import CardBody from '../../components/Card/CardBody';
 import CardFooter from '../../components/Card/CardFooter';
 import CustomInput from '../../components/CustomInput/CustomInput';
@@ -400,6 +402,15 @@ export default class AddOrder extends React.Component {
     }
 
     this.updateTaxes(customer, chargePst);
+
+    if (customer.notes) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: customer.notes,
+        snackbarColor: 'danger',
+      });
+    }
+
     this.setState({
       customer,
     });
@@ -999,7 +1010,6 @@ export default class AddOrder extends React.Component {
                                 }}
                               />
                             </GridItem>
-
                           </GridContainer>
                           <GridContainer alignItems="flex-end">
                             <GridItem xs={12} sm={12} md={3}>
@@ -1053,6 +1063,11 @@ export default class AddOrder extends React.Component {
                             <GridItem xs={12} sm={12} md={3}>
                               <Button color="info" onClick={this.clearCustomer}>Clear</Button>
                             </GridItem>
+                            {customer.notes && (
+                              <GridItem xs={12} sm={12} md={12}>
+                                <Danger>{customer.notes}</Danger>
+                              </GridItem>
+                            )}
                           </GridContainer>
                         </CardBody>
                       </Card>

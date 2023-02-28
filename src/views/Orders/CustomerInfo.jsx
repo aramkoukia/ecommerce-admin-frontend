@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import Chip from '@material-ui/core/Chip';
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -57,6 +58,13 @@ function CustomerInfo(props) {
                 customer.storeCredit,
                 customer.isCreditCardOnFile,
                 customer.chargePreference],
+            ]}
+          />
+          <Table
+            tableHeaderColor="primary"
+            tableHead={['Notes (Shows at time of order)']}
+            tableData={[
+              [customer.notes],
             ]}
           />
         </>

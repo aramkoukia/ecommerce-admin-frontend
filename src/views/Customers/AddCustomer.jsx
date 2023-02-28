@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import Check from '@material-ui/icons/Check';
 import TextField from '@material-ui/core/TextField';
@@ -115,6 +116,7 @@ class AddCustomer extends React.Component {
       province: 'BC',
       postalCode: '',
       pstNumber: '',
+      notes: '',
       creditLimit: 0,
       email: '',
       segment: 'None',
@@ -163,6 +165,7 @@ class AddCustomer extends React.Component {
       creditLimit,
       email,
       creditCardOnFile,
+      notes,
       disabled,
       chargePreference,
     } = this.state;
@@ -344,6 +347,16 @@ class AddCustomer extends React.Component {
                         <MenuItem value="Same Day">Same Day</MenuItem>
                       </Select>
                     </FormControl>
+                  </GridItem>
+                  <GridItem md={4}>
+                    <TextField
+                      name="notes"
+                      label="Notes (Shows at time of order)"
+                      type="text"
+                      onChange={this.handleChange}
+                      value={notes}
+                      fullWidth="true"
+                    />
                   </GridItem>
                   <GridItem md={4}>
                     <FormControlLabel
