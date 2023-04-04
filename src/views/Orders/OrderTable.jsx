@@ -35,6 +35,7 @@ export default class OrderTable extends React.Component {
     });
 
     this.handleQuantityChanged = this.handleQuantityChanged.bind(this);
+    this.handleItemNotesChanged = this.handleItemNotesChanged.bind(this);
     this.handleSalePriceChanged = this.handleSalePriceChanged.bind(this);
     this.handleDiscountAmountChanged = this.handleDiscountAmountChanged.bind(this);
     this.handleDiscountPercentChanged = this.handleDiscountPercentChanged.bind(this);
@@ -64,6 +65,12 @@ export default class OrderTable extends React.Component {
     }
   }
 
+  handleChange = (name) => (event) => {
+    this.setState({
+      [name]: event.target.value,
+    });
+  }
+
   handleDiscountTypeChanged(event) {
     const orderRows = this.state.orderRows.slice();
     const { taxes, priceChanged } = this.props;
@@ -86,6 +93,17 @@ export default class OrderTable extends React.Component {
     );
 
     priceChanged(subTotal, total, totalDiscount);
+  }
+
+  handleItemNotesChanged(event) {
+    const { orderRows } = this.state;
+    for (const i in orderRows) {
+      if (orderRows[i].id == event.target.name) {
+        orderRows[i].itemNotes = event.target.value;
+        this.setState({ orderRows });
+        break;
+      }
+    }
   }
 
   handleQuantityChanged(event) {
@@ -218,12 +236,6 @@ export default class OrderTable extends React.Component {
     priceChanged(subTotal, total, totalDiscount);
   }
 
-  handleChange = (name) => (event) => {
-    this.setState({
-      [name]: event.target.value,
-    });
-  };
-
   handleProductRemoved(event) {
     const { productRemoved } = this.props;
     productRemoved(Number(event.currentTarget.name));
@@ -296,6 +308,20 @@ export default class OrderTable extends React.Component {
                     />
                   </IconButton>
                   {row.productName}
+                  <br />
+                  <FormControlLabel
+                    value={row.itemNotes}
+                    control={(
+                      <Input
+                        onChange={this.handleItemNotesChanged}
+                        value={row.itemNotes}
+                        name={row.id}
+                        aria-label="Notes "
+                      />
+                    )}
+                    label="Notes "
+                    labelPlacement="start"
+                  />
                 </TableCell>
                 <TableCell size="small">
                   {row.productPackages && row.productPackages.length !== 0 && (

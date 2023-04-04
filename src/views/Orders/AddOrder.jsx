@@ -559,6 +559,7 @@ export default class AddOrder extends React.Component {
         discountPercent: row.discountPercent,
         discountAmount: row.discountAmount,
         discountType: row.discountType,
+        itemNotes: row.itemNotes,
         subTotal: row.total,
         package: row.package,
         amountInMainPackage: row.amountInMainPackage,

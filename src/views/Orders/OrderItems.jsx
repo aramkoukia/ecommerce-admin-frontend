@@ -64,6 +64,10 @@ function OrderItems(props) {
                   {row.package && (
                     ` ( pkg: ${row.package} ) ${row.amountInMainPackage}x`
                   )}
+                  <i>
+                    {row.itemNotes && <br />}
+                    {row.itemNotes && (row.itemNotes)}
+                  </i>
                 </TableCell>
                 <TableCell numeric align="right">{row.amount}</TableCell>
                 <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
