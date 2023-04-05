@@ -211,6 +211,7 @@ export default class AddOrder extends React.Component {
               discountPercent: row.discountPercent,
               total: row.total,
               productPackages: row.product.productPackage,
+              itemNotes: row.itemNotes,
               package: row.package,
               productPackageId: row.product.productPackage && row.product.productPackage.length > 0
                 ? row.product.productPackage.find((p) => p.package == row.package)
