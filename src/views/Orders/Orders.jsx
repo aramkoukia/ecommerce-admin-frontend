@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import {
   MenuItem,
@@ -79,7 +81,7 @@ export default class Orders extends React.Component {
         title: 'Status',
         field: 'status',
         lookup: {
-          Paid: 'Paid', Return: 'Return', Account: 'Account', Quote: 'Quote', OnHold: 'OnHold',
+          Paid: 'Paid', Return: 'Return', Account: 'Account', Quote: 'Quote', OnHold: 'OnHold', RMA: 'RMA',
         },
       },
       { title: 'PO Number', field: 'poNumber' },

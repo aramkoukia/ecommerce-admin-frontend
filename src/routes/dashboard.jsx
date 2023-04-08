@@ -80,6 +80,7 @@ import { Purchase } from '../views/Purchases/Purchase';
 import SignIn from '../views/Login/SignIn';
 import { Order } from '../views/Orders/Order';
 import { Return } from '../views/Orders/Return';
+import { RMA } from '../views/Orders/RMA';
 import AwaitingPayments from '../views/Customers/AwaitingPayments';
 import Roles from '../views/Roles/Roles';
 import Settings from '../views/Settings/Settings';
@@ -502,6 +503,13 @@ const dashboardRoutes = [
     Icon: Person,
     needsPermission: false,
     component: Return,
+  },
+  {
+    path: '/rma/:id',
+    sidebarName: '',
+    Icon: Person,
+    needsPermission: false,
+    component: RMA,
   },
   {
     path: '/purchase/:id',

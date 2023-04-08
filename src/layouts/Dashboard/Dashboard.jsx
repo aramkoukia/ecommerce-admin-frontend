@@ -12,6 +12,7 @@ import dashboardStyle from '../../assets/jss/material-dashboard-react/layouts/da
 import Auth from '../../services/Auth';
 import AddOrder from '../../views/Orders/AddOrder';
 import { Return } from '../../views/Orders/Return';
+import { RMA } from '../../views/Orders/RMA';
 import PortalSettingsService from '../../services/PortalSettingsService';
 import Api from '../../services/ApiConfig';
 import image from '../../assets/img/sidebar-2.jpg';
@@ -152,6 +153,18 @@ class App extends React.Component {
                 onEnter={requireAuth}
                 render={(props) => (
                   <Return {...props} permissionsChanged={this.permissionsChanged} />)}
+              />
+            );
+          }
+
+          if (prop.path === '/rma/:id') {
+            return (
+              <Route
+                path={prop.path}
+                key={index.toString()}
+                onEnter={requireAuth}
+                render={(props) => (
+                  <RMA {...props} permissionsChanged={this.permissionsChanged} />)}
               />
             );
           }

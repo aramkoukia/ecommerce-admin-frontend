@@ -78,6 +78,7 @@ export class Order extends React.Component {
     super(props);
     this.saveAsPaid = this.saveAsPaid.bind(this);
     this.saveAsHold = this.saveAsHold.bind(this);
+    this.saveRMA = this.saveRMA.bind(this);
     this.refundOrder = this.refundOrder.bind(this);
     this.emailOrder = this.emailOrder.bind(this);
     this.printOrder = this.printOrder.bind(this);
@@ -537,6 +538,14 @@ export class Order extends React.Component {
     });
   }
 
+  async saveRMA() {
+    const orderId = this.props.orderId || this.props.location.state.orderId;
+    this.props.history.push({
+      pathname: `/rma/${orderId}`,
+      state: { orderId },
+    });
+  }
+
   async emailOrder() {
     const { order, customerEmail } = this.state;
     this.setState({
@@ -590,7 +599,12 @@ export class Order extends React.Component {
       storeCreditAmount,
       isUpdatePayment,
     } = this.state;
-    const paidAmount = Number(cashAmount) + Number(creditDebitAmount) + Number(chequeAmount) + Number(storeCreditAmount) + Number(paypalAmazonUsdAmount);
+
+    const paidAmount = Number(cashAmount)
+      + Number(creditDebitAmount)
+      + Number(chequeAmount)
+      + Number(storeCreditAmount)
+      + Number(paypalAmazonUsdAmount);
     if ((Number(paidAmount)).toFixed(2) !== (Number(order.total)).toFixed(2)) {
       this.setState({
         openSnackbar: true,
@@ -757,9 +771,14 @@ export class Order extends React.Component {
                         )}
 
                         {(order.status === 'Paid' || order.status === 'Account') && (
-                        <GridItem xs>
-                          <Button color="info" disabled={loading} onClick={this.refundOrder}>Return</Button>
-                        </GridItem>
+                          <>
+                            <GridItem xs>
+                              <Button color="info" disabled={loading} onClick={this.refundOrder}>Return</Button>
+                            </GridItem>
+                            <GridItem xs>
+                              <Button color="info" disabled={loading} onClick={this.saveRMA}>RMA</Button>
+                            </GridItem>
+                          </>
                         )}
 
                         { order.status === 'OnHold' && (
