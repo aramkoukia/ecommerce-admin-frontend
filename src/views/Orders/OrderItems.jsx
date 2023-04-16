@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Table from '@material-ui/core/Table';
@@ -57,24 +58,26 @@ function OrderItems(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {order.orderDetail.map((row) => (
-              <TableRow key={row.productId}>
-                <TableCell>
-                  {row.product.productName}
-                  {row.package && (
-                    ` ( pkg: ${row.package} ) ${row.amountInMainPackage}x`
-                  )}
-                  <i>
-                    {row.itemNotes && <br />}
-                    {row.itemNotes && (row.itemNotes)}
-                  </i>
-                </TableCell>
-                <TableCell numeric align="right">{row.amount}</TableCell>
-                <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
-                <TableCell numeric>{ccyFormat(row.totalDiscount)}</TableCell>
-                <TableCell numeric>{ccyFormat(row.total)}</TableCell>
-              </TableRow>
-            ))}
+            {order.orderDetail
+              .sort((a, b) => (a.rowOrder > b.rowOrder ? 1 : -1))
+              .map((row) => (
+                <TableRow key={row.productId}>
+                  <TableCell>
+                    {row.product.productName}
+                    {row.package && (
+                      ` ( pkg: ${row.package} ) ${row.amountInMainPackage}x`
+                    )}
+                    <i>
+                      {row.itemNotes && <br />}
+                      {row.itemNotes && (row.itemNotes)}
+                    </i>
+                  </TableCell>
+                  <TableCell numeric align="right">{row.amount}</TableCell>
+                  <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
+                  <TableCell numeric>{ccyFormat(row.totalDiscount)}</TableCell>
+                  <TableCell numeric>{ccyFormat(row.total)}</TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
         <GridContainer>

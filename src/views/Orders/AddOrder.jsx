@@ -106,6 +106,7 @@ function createRow(productId, productName, salesPrice, productPackages, id) {
     productPackageId,
     package: pkg,
     amountInMainPackage,
+    rowOrder: id,
   };
 }
 
@@ -546,7 +547,6 @@ export default class AddOrder extends React.Component {
     const {
       customer, rows, total, subTotal, notes, taxes, poNumber, authCode,
       idempotency,
-      paymentIdempotency,
     } = this.state;
     const locationId = Location.getStoreLocation();
     const status = orderStatus;
@@ -563,6 +563,7 @@ export default class AddOrder extends React.Component {
         itemNotes: row.itemNotes,
         subTotal: row.total,
         package: row.package,
+        rowOrder: row.rowOrder,
         amountInMainPackage: row.amountInMainPackage,
         totalDiscount: (row.discountType === 'percent' ? (row.discountPercent / 100) * row.total : row.discountAmount),
         total: row.total - (row.discountType === 'percent' ? (row.discountPercent / 100) * row.total : row.discountAmount),
