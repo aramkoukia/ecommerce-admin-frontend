@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react/destructuring-assignment */
 import React from 'react';
 import PropTypes from 'prop-types';
 import Check from '@material-ui/icons/Check';
@@ -329,7 +331,6 @@ export class Order extends React.Component {
     this.setState({
       openDialog: true,
       isUpdatePayment: true,
-      creditDebitAmount: order.total.toFixed(2),
       payCash: isCash,
       payCreditDebit: isCreditDebit,
       payAmazonUsd: isAmazonUsd,
@@ -345,11 +346,23 @@ export class Order extends React.Component {
   }
 
   editQuote() {
-    const orderId = this.props.orderId || this.props.location.state.orderId;
-    this.props.history.push({
-      pathname: `/neworder/${orderId}`,
-      state: { orderId },
-    });
+    const orderId = this.props.orderId
+      || this.props.location.state.orderId
+      || this.props.match.params.id;
+    const { order } = this.state;
+
+    if (order.status === 'Quote') {
+      this.props.history.push({
+        pathname: `/neworder/${orderId}`,
+        state: { orderId },
+      });
+    }
+    // if (order.status === 'RMA') {
+    //   this.props.history.push({
+    //     pathname: `/rma/${orderId}`,
+    //     state: { orderId },
+    //   });
+    // }
   }
 
   async updateCustomer() {
@@ -781,12 +794,21 @@ export class Order extends React.Component {
                           </>
                         )}
 
+                        {(order.status === 'RMA') && (
+                          <>
+                            <GridItem xs>
+                              <Button color="info" disabled={loading} onClick={this.refundOrder}>Return</Button>
+                            </GridItem>
+                          </>
+                        )}
+
                         { order.status === 'OnHold' && (
                         <GridItem xs>
                           <Button color="info" disabled={loading} onClick={this.cancelHold}>Cancel On Hold</Button>
                         </GridItem>
                         )}
-                        { order.status === 'Quote' && (
+                        {/* { (order.status === 'Quote' || order.status === 'RMA') && ( */}
+                        { (order.status === 'Quote') && (
                         <GridItem xs>
                           <Button color="info" disabled={loading} onClick={this.editQuote}>Edit</Button>
                         </GridItem>
