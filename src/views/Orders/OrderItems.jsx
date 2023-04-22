@@ -91,9 +91,11 @@ function OrderItems(props) {
                 </TableRow>
                 <TableRow>
                   <TableCell colspan="2">Total Discount</TableCell>
-                  <TableCell numeric>{ccyFormat(order.orderDetail.map((item) => item.totalDiscount).reduce((prev, next) => prev + next, 0))}</TableCell>
+                  <TableCell numeric>
+                    {ccyFormat(order.orderDetail.map((item) => item.totalDiscount).reduce((prev, next) => prev + next, 0))}
+                  </TableCell>
                 </TableRow>
-                {order.status === 'Return' && (
+                {(order.status === 'Return' || order.status === 'RMA') && (
                 <TableRow>
                   <TableCell><b>Re-Stocking Fee (%)</b></TableCell>
                   <TableCell numeric>
@@ -118,7 +120,13 @@ function OrderItems(props) {
                 ))}
                 <TableRow>
                   <TableCell colspan="2"><h3>Total</h3></TableCell>
-                  <TableCell numeric><Success><h3>{ccyFormat(order.total)}</h3></Success></TableCell>
+                  <TableCell numeric>
+                    <Success>
+                      <h3>
+                        {ccyFormat(order.total)}
+                      </h3>
+                    </Success>
+                  </TableCell>
                 </TableRow>
               </TableBody>
             </Table>

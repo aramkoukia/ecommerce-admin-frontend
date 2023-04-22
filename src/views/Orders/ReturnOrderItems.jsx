@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -24,17 +25,17 @@ function dateFormat(dateString) {
 }
 
 export default class ReturnOrderItems extends React.Component {
+  state = {
+    orderRows: [],
+    subTotal: 0,
+    total: 0,
+    totalDiscount: 0,
+    restockingFeePercent: 10,
+    restockingFeeAmount: 0,
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      orderRows: [],
-      subTotal: 0,
-      total: 0,
-      totalDiscount: 0,
-      restockingFeePercent: 10,
-      restockingFeeAmount: 0,
-    };
   }
 
   componentDidMount() {
@@ -58,7 +59,7 @@ export default class ReturnOrderItems extends React.Component {
 
     const totalDiscount = this.discount(rows);
     const subTotal = this.subtotal(rows, totalDiscount);
-    const restockingFeeAmount = subTotal * restockingFeePercent / 100 * -1;
+    const restockingFeeAmount = ((subTotal * restockingFeePercent) / 100) * -1;
     const total = this.total(subTotal, taxes, restockingFeeAmount);
 
     this.setState({

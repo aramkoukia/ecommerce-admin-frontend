@@ -274,7 +274,7 @@ export class RMA extends React.Component {
                   <GridItem>
                     <GridContainer>
                       <GridItem>
-                        <Button color="primary" onClick={this.saveRMA()}>
+                        <Button color="primary" onClick={() => this.saveRMA()}>
                           <Save />
                           &nbsp;
                           Create RMA
