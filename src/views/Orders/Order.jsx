@@ -759,7 +759,7 @@ export class Order extends React.Component {
                           </Button>
                         </GridItem>
 
-                        { (order.status === 'Account' || order.status === 'Paid')
+                        { (order.status === 'Account' || order.status === 'Paid' || order.status === 'RMA')
                         && (
                         <GridItem>
                           <Button color="warning" disabled={loading} onClick={this.packingOrder}>
