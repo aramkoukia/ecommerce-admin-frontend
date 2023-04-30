@@ -309,18 +309,15 @@ export default class OrderTable extends React.Component {
                   </IconButton>
                   {row.productName}
                   <br />
-                  <FormControlLabel
+                  <TextField
+                    multiline
+                    rowsMax={3}
+                    name={row.id}
+                    label="Notes"
+                    type="text"
+                    onChange={this.handleItemNotesChanged}
                     value={row.itemNotes}
-                    control={(
-                      <Input
-                        onChange={this.handleItemNotesChanged}
-                        value={row.itemNotes}
-                        name={row.id}
-                        aria-label="Notes "
-                      />
-                    )}
-                    label="Notes "
-                    labelPlacement="start"
+                    fullWidth="true"
                   />
                 </TableCell>
                 <TableCell size="small">
