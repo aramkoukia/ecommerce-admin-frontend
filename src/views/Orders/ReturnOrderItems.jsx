@@ -111,7 +111,7 @@ export default class ReturnOrderItems extends React.Component {
         orderRows[i].subTotal = event.target.value * orderRows[i].unitPrice * -1;
         const discountAmount = orderRows[i].discountAmount === '' ? 0 : orderRows[i].discountAmount;
         const discountPercent = orderRows[i].discountPercent === '' ? 0 : orderRows[i].discountPercent;
-        orderRows[i].totalDiscount = -1 * Math.abs((orderRows[i].discountType === 'percent')
+        orderRows[i].totalDiscount = Math.abs((orderRows[i].discountType === 'percent')
           ? (discountPercent / 100) * orderRows[i].subTotal
           : Number(discountAmount));
         orderRows[i].total = event.target.value * orderRows[i].unitPrice * -1 + orderRows[i].totalDiscount;
@@ -147,7 +147,7 @@ export default class ReturnOrderItems extends React.Component {
     for (const i in orderRows) {
       totalDiscount += orderRows[i].totalDiscount === '' ? 0 : orderRows[i].totalDiscount;
     }
-    return totalDiscount * -1;
+    return totalDiscount;
   }
 
   total(subTotal, taxes, restockingFeeAmount) {
@@ -241,7 +241,7 @@ export default class ReturnOrderItems extends React.Component {
               ))}
               <TableRow>
                 <TableCell rowSpan={6} />
-                <TableCell colSpan={3}>Subtotal</TableCell>
+                <TableCell colSpan={3}>Subtotal (after discount)</TableCell>
                 <TableCell numeric>{ccyFormat(subTotal)}</TableCell>
               </TableRow>
               <TableRow>
