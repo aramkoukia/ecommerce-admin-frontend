@@ -200,9 +200,12 @@ export default class AddOrder extends React.Component {
         //   customer, rows, total, subTotal, notes, taxes, poNumber, authCode,
         // } = this.state;
         this.setState({
-          rows: order.orderDetail.map((row, index) => (
+          rows: order.orderDetail
+            .sort((a, b) => (a.rowOrder > b.rowOrder ? 1 : -1))
+            .map((row, index) => (
             {
               id: index + 1,
+              rowOrder: row.rowOrder,
               productId: row.productId,
               qty: row.amount,
               salesPrice: row.unitPrice,

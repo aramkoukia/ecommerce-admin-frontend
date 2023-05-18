@@ -295,7 +295,6 @@ export default class OrderTable extends React.Component {
           </TableHead>
           <TableBody>
             {orderRows
-              .sort((a, b) => (a.rowOrder > b.rowOrder ? 1 : -1))
               .map((row) => (
                 <TableRow key={row.id}>
                   <TableCell size="small">
