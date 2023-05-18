@@ -181,28 +181,30 @@ export default class ReturnOrderItems extends React.Component {
             </TableHead>
             {orderRows && taxes && (
             <TableBody>
-              {orderRows.map((row) => (
-                <TableRow key={row.id}>
-                  <TableCell>
-                    {row.product.productName}
-                    {row.package && (
-                      ` ( pkg: ${row.package} ) ${row.amountInMainPackage}x`
-                    )}
-                  </TableCell>
-                  <TableCell numeric align="right">
-                    <TextField
-                      name={row.id}
-                      value={row.amount}
-                      onChange={this.handleQuantityChanged}
-                      type="number"
-                      inputProps={{
-                        min: '0',
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
-                  <TableCell>
-                    {row.discountType === 'amount'
+                {orderRows
+                  .sort((a, b) => (a.rowOrder > b.rowOrder ? 1 : -1))
+                  .map((row) => (
+                    <TableRow key={row.id}>
+                      <TableCell>
+                        {row.product.productName}
+                        {row.package && (
+                          ` ( pkg: ${row.package} ) ${row.amountInMainPackage}x`
+                        )}
+                      </TableCell>
+                      <TableCell numeric align="right">
+                        <TextField
+                          name={row.id}
+                          value={row.amount}
+                          onChange={this.handleQuantityChanged}
+                          type="number"
+                          inputProps={{
+                            min: '0',
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
+                      <TableCell>
+                        {row.discountType === 'amount'
                       && (
                       <div>
                         <TextField
@@ -218,7 +220,7 @@ export default class ReturnOrderItems extends React.Component {
                         </div>
                       </div>
                       )}
-                    {row.discountType === 'percent'
+                        {row.discountType === 'percent'
                       && (
                       <div>
                         <TextField
@@ -234,11 +236,11 @@ export default class ReturnOrderItems extends React.Component {
                         </div>
                       </div>
                       )}
-                  </TableCell>
-                  <TableCell numeric>{ccyFormat(row.totalDiscount)}</TableCell>
-                  <TableCell numeric>{ccyFormat(row.total)}</TableCell>
-                </TableRow>
-              ))}
+                      </TableCell>
+                      <TableCell numeric>{ccyFormat(row.totalDiscount)}</TableCell>
+                      <TableCell numeric>{ccyFormat(row.total)}</TableCell>
+                    </TableRow>
+                  ))}
               <TableRow>
                 <TableCell rowSpan={6} />
                 <TableCell colSpan={3}>Subtotal (after discount)</TableCell>

@@ -294,43 +294,45 @@ export default class OrderTable extends React.Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {orderRows.map((row) => (
-              <TableRow key={row.id}>
-                <TableCell size="small">
-                  <IconButton
-                    aria-label="Delete"
-                    name={row.id}
-                    onClick={this.handleProductRemoved}
-                  >
-                    <DeleteIcon
+            {orderRows
+              .sort((a, b) => (a.rowOrder > b.rowOrder ? 1 : -1))
+              .map((row) => (
+                <TableRow key={row.id}>
+                  <TableCell size="small">
+                    <IconButton
+                      aria-label="Delete"
                       name={row.id}
-                      fontSize="small"
-                    />
-                  </IconButton>
-                  {row.productName}
-                  <br />
-                  <TextField
-                    multiline
-                    rowsMax={3}
-                    name={row.id}
-                    label="Notes"
-                    type="text"
-                    onChange={this.handleItemNotesChanged}
-                    value={row.itemNotes}
-                    fullWidth="true"
-                  />
-                </TableCell>
-                <TableCell size="small">
-                  {row.productPackages && row.productPackages.length !== 0 && (
-                  <FormControl>
-                    <Select
-                      value={row.productPackageId}
-                      name={row.id}
-                      onChange={this.handleProductPackageChanged}
-                      input={<Input name="variations" id="variations" />}
-                      fullWidth="true"
+                      onClick={this.handleProductRemoved}
                     >
-                      {
+                      <DeleteIcon
+                        name={row.id}
+                        fontSize="small"
+                      />
+                    </IconButton>
+                    {row.productName}
+                    <br />
+                    <TextField
+                      multiline
+                      rowsMax={3}
+                      name={row.id}
+                      label="Notes"
+                      type="text"
+                      onChange={this.handleItemNotesChanged}
+                      value={row.itemNotes}
+                      fullWidth="true"
+                    />
+                  </TableCell>
+                  <TableCell size="small">
+                    {row.productPackages && row.productPackages.length !== 0 && (
+                    <FormControl>
+                      <Select
+                        value={row.productPackageId}
+                        name={row.id}
+                        onChange={this.handleProductPackageChanged}
+                        input={<Input name="variations" id="variations" />}
+                        fullWidth="true"
+                      >
+                        {
                         row.productPackages.map((l, key) => (
                           <MenuItem name={key} value={l.productPackageId}>
                             {l.package}
@@ -340,33 +342,33 @@ export default class OrderTable extends React.Component {
                           </MenuItem>
                         ))
                       }
-                    </Select>
-                  </FormControl>
-                  )}
-                </TableCell>
-                <TableCell size="small">
-                  <TextField
-                    name={row.id}
-                    value={row.qty}
-                    onChange={this.handleQuantityChanged}
-                    type="number"
-                    style={{ width: 70 }}
-                  />
-                </TableCell>
-                <TableCell size="small" numeric>
-                  <TextField
-                    name={row.id}
-                    value={row.salesPrice}
-                    onChange={this.handleSalePriceChanged}
-                    type="number"
-                    style={{ width: 70 }}
-                  />
-                </TableCell>
-                <TableCell
-                  style={{ width: 50 }}
-                  size="small"
-                >
-                  { row.discountType === 'amount'
+                      </Select>
+                    </FormControl>
+                    )}
+                  </TableCell>
+                  <TableCell size="small">
+                    <TextField
+                      name={row.id}
+                      value={row.qty}
+                      onChange={this.handleQuantityChanged}
+                      type="number"
+                      style={{ width: 70 }}
+                    />
+                  </TableCell>
+                  <TableCell size="small" numeric>
+                    <TextField
+                      name={row.id}
+                      value={row.salesPrice}
+                      onChange={this.handleSalePriceChanged}
+                      type="number"
+                      style={{ width: 70 }}
+                    />
+                  </TableCell>
+                  <TableCell
+                    style={{ width: 50 }}
+                    size="small"
+                  >
+                    { row.discountType === 'amount'
                   && (
                   <div>
                     <TextField
@@ -378,7 +380,7 @@ export default class OrderTable extends React.Component {
                     />
                   </div>
                   )}
-                  { row.discountType === 'percent'
+                    { row.discountType === 'percent'
                   && (
                   <div>
                     <TextField
@@ -390,40 +392,40 @@ export default class OrderTable extends React.Component {
                     />
                   </div>
                   )}
-                </TableCell>
-                <TableCell size="small">
-                  <FormControlLabel
-                    value="end"
-                    control={(
-                      <Radio
-                        checked={row.discountType === 'percent'}
-                        onChange={this.handleDiscountTypeChanged}
-                        value="percent"
-                        name={row.id}
-                        aria-label="B"
-                      />
+                  </TableCell>
+                  <TableCell size="small">
+                    <FormControlLabel
+                      value="end"
+                      control={(
+                        <Radio
+                          checked={row.discountType === 'percent'}
+                          onChange={this.handleDiscountTypeChanged}
+                          value="percent"
+                          name={row.id}
+                          aria-label="B"
+                        />
                     )}
-                    label="%"
-                    labelPlacement="end"
-                  />
-                  <FormControlLabel
-                    value="end"
-                    control={(
-                      <Radio
-                        checked={row.discountType === 'amount'}
-                        onChange={this.handleDiscountTypeChanged}
-                        value="amount"
-                        name={row.id}
-                        aria-label="B"
-                      />
+                      label="%"
+                      labelPlacement="end"
+                    />
+                    <FormControlLabel
+                      value="end"
+                      control={(
+                        <Radio
+                          checked={row.discountType === 'amount'}
+                          onChange={this.handleDiscountTypeChanged}
+                          value="amount"
+                          name={row.id}
+                          aria-label="B"
+                        />
                     )}
-                    label="$"
-                    labelPlacement="end"
-                  />
-                </TableCell>
-                <TableCell size="small" numeric>{this.ccyFormat(row.salesPrice * row.qty)}</TableCell>
-              </TableRow>
-            ))}
+                      label="$"
+                      labelPlacement="end"
+                    />
+                  </TableCell>
+                  <TableCell size="small" numeric>{this.ccyFormat(row.salesPrice * row.qty)}</TableCell>
+                </TableRow>
+              ))}
             <TableRow style={{ 'background-color': 'lightgray' }}>
               <TableCell />
               <TableCell />
