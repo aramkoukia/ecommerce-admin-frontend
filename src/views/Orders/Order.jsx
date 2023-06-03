@@ -102,6 +102,7 @@ export class Order extends React.Component {
     this.updateLocation = this.updateLocation.bind(this);
     this.handleUpdateLocationClose = this.handleUpdateLocationClose.bind(this);
     this.handleLocationChange = this.handleLocationChange.bind(this);
+    this.saveAsAccountClicked = this.saveAsAccountClicked.bind(this);
   }
 
   async componentDidMount() {
@@ -119,6 +120,8 @@ export class Order extends React.Component {
       customerEmail: order.customer.email,
       chequeNo: '',
       isUpdatePayment: false,
+      isAccount: false,
+      isPaid: false,
       openUpdateLocationDialog: false,
       locations: [],
       idempotency: uuidv4(),
@@ -290,6 +293,35 @@ export class Order extends React.Component {
         snackbarColor: 'success',
       });
     }
+  }
+
+  async saveAsAccountClicked() {
+    if (this.orderExceedsCustomerCredit()) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Customer is exceeding the credit limit!',
+        snackbarColor: 'danger',
+      });
+      return;
+    }
+    const { rows } = this.state;
+    const locationId = Location.getStoreLocation();
+    const validationExecuted = await this.validateInventory(rows, 'Account', locationId);
+    if (validationExecuted) {
+      return;
+    }
+    this.saveAsAccount();
+  }
+
+  orderExceedsCustomerCredit() {
+    const { order, total } = this.state;
+    if (order.customer
+      && order.customer.creditLimit
+      && order.customer.creditLimit > order.customer.accountBalance + total) {
+      return false;
+    }
+
+    return true;
   }
 
   updatePayment() {
@@ -598,6 +630,19 @@ export class Order extends React.Component {
     this.setState({
       openDialog: true,
       isUpdatePayment: false,
+      isAccount: false,
+      isPaid: true,
+      creditDebitAmount: order.total.toFixed(2),
+    });
+  }
+
+  async saveAsAccount() {
+    const { order } = this.state;
+    this.setState({
+      openDialog: true,
+      isUpdatePayment: false,
+      isAccount: true,
+      isPaid: false,
       creditDebitAmount: order.total.toFixed(2),
     });
   }
@@ -611,6 +656,8 @@ export class Order extends React.Component {
       paypalAmazonUsdAmount,
       storeCreditAmount,
       isUpdatePayment,
+      isAccount,
+      isPaid,
     } = this.state;
 
     const paidAmount = Number(cashAmount)
@@ -640,13 +687,13 @@ export class Order extends React.Component {
         });
       }
     } else {
-      const status = 'Paid';
+      const status = isPaid ? 'Paid' : 'Account';
       const resultStatusResult = await this.updateOrderStatus(status);
       if (resultStatusResult && resultStatusResult.orderId) {
         const updatedOrder = await OrderService.getOrderDetail(order.orderId);
         this.setState({
           openSnackbar: true,
-          snackbarMessage: 'Order was marked as Paid successfully!',
+          snackbarMessage: `Order was marked as ${status} successfully!`,
           snackbarColor: 'success',
           openDialog: false,
           order: updatedOrder,
@@ -781,6 +828,12 @@ export class Order extends React.Component {
                         <GridItem xs>
                           <Button color="info" disabled={loading} onClick={this.saveAsHold}>Put On Hold</Button>
                         </GridItem>
+                        )}
+
+                        {order.status === 'Quote' && order.customer && order.customer.creditLimit > 0 && (
+                          <GridItem xs>
+                            <Button color="info" disabled={loading} onClick={this.saveAsAccountClicked}>Use Customers Account</Button>
+                          </GridItem>
                         )}
 
                         {(order.status === 'Paid' || order.status === 'Account') && (
