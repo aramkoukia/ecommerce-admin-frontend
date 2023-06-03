@@ -179,7 +179,7 @@ export default class AddOrder extends React.Component {
     this.setState({
       taxes,
       allTaxes: taxes,
-      chargePst: true,
+      chargePst: setting.chargePstByDefault,
       openDialog: false,
       openAuthDialog: true,
       userGivenName: '',
