@@ -72,6 +72,7 @@ class Settings extends React.Component {
         'enablePosIntegration',
         'allowedIPAddresses',
         'walkinPricePercent',
+        'chargePstByDefault',
       ],
       properties: {
         adminEmail: {
@@ -149,6 +150,10 @@ class Settings extends React.Component {
         automaticallyDeductInventoryOnIncomingOrders: {
           type: 'boolean',
           title: 'Automatically Deduct Inventory On Incoming Orders',
+        },
+        chargePstByDefault: {
+          type: 'boolean',
+          title: 'Charge PST By Default',
         },
       },
     };
@@ -237,6 +242,11 @@ class Settings extends React.Component {
         'ui:emptyValue': '',
         'ui:widget': 'checkbox',
       },
+      chargePstByDefault: {
+        'ui:autofocus': true,
+        'ui:emptyValue': '',
+        'ui:widget': 'checkbox',
+      },
     };
 
     const initialFormData = {
@@ -259,6 +269,7 @@ class Settings extends React.Component {
       inventorySystemWebhookUrl: settings.inventorySystemWebhookUrl,
       publishOrderCreationToInventory: settings.publishOrderCreationToInventory,
       automaticallyDeductInventoryOnIncomingOrders: settings.automaticallyDeductInventoryOnIncomingOrders,
+      chargePstByDefault: settings.chargePstByDefault,
     };
 
     return (
