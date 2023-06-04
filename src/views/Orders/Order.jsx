@@ -314,10 +314,10 @@ export class Order extends React.Component {
   }
 
   orderExceedsCustomerCredit() {
-    const { order, total } = this.state;
+    const { order } = this.state;
     if (order.customer
       && order.customer.creditLimit
-      && order.customer.creditLimit > order.customer.accountBalance + total) {
+      && order.customer.creditLimit > order.customer.accountBalance + order.total) {
       return false;
     }
 
