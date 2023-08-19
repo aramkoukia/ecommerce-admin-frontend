@@ -57,6 +57,7 @@ import AddCustomer from '../views/Customers/AddCustomer';
 import EditCustomer from '../views/Customers/EditCustomer';
 import Reports from '../views/Reports/Reports';
 import SalesReport from '../views/Reports/SalesReport';
+import SalespersonReport from '../views/Reports/SalespersonReport';
 import ProductReport from '../views/Reports/ProductReport';
 import ProductTypeReport from '../views/Reports/ProductTypeReport';
 import SalesForecastReport from '../views/Reports/SalesForecastReport';
@@ -206,6 +207,14 @@ const dashboardRoutes = [
         sidebarName: 'Sales Report',
         Icon: Tune,
         component: SalesReport,
+        needsPermission: true,
+        permission: Permissions.ViewSalesReport,
+      },
+      {
+        path: '/salespersonreport',
+        sidebarName: 'Salesperson Report',
+        Icon: Tune,
+        component: SalespersonReport,
         needsPermission: true,
         permission: Permissions.ViewSalesReport,
       },
