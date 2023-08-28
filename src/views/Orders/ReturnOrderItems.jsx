@@ -182,7 +182,7 @@ export default class ReturnOrderItems extends React.Component {
             {orderRows && taxes && (
             <TableBody>
                 {orderRows
-                  .sort((a, b) => (a.rowOrder > b.rowOrder ? 1 : -1))
+                  // .sort((a, b) => (a.rowOrder > b.rowOrder ? 1 : -1))
                   .map((row) => (
                     <TableRow key={row.id}>
                       <TableCell>
