@@ -59,7 +59,8 @@ export default class ReturnOrderItems extends React.Component {
 
     const totalDiscount = this.discount(rows);
     const subTotal = this.subtotal(rows, totalDiscount);
-    const restockingFeeAmount = Math.abs((subTotal * restockingFeePercent) / 100);
+    const multiplier = subTotal > 0 ? -1 : 1;
+    const restockingFeeAmount = Math.abs((subTotal * restockingFeePercent) / 100) * multiplier;
     const total = this.total(subTotal, taxes, restockingFeeAmount);
 
     this.setState({
@@ -83,7 +84,8 @@ export default class ReturnOrderItems extends React.Component {
     const totalDiscount = this.discount(orderRows);
     const subTotal = this.subtotal(orderRows, totalDiscount);
     const restockingFeePercent = Number(event.target.value);
-    const restockingFeeAmount = Math.abs((subTotal * restockingFeePercent) / 100);
+    const multiplier = subTotal > 0 ? -1 : 1;
+    const restockingFeeAmount = Math.abs((subTotal * restockingFeePercent) / 100) * multiplier;
     const total = this.total(subTotal, taxes, restockingFeeAmount);
 
     this.setState({
@@ -122,7 +124,8 @@ export default class ReturnOrderItems extends React.Component {
 
     const totalDiscount = this.discount(orderRows);
     const subTotal = this.subtotal(orderRows, totalDiscount);
-    const restockingFeeAmount = Math.abs((subTotal * restockingFeePercent) / 100);
+    const multiplier = subTotal > 0 ? -1 : 1;
+    const restockingFeeAmount = Math.abs((subTotal * restockingFeePercent) / 100) * multiplier;
     const total = this.total(subTotal, taxes, restockingFeeAmount);
     this.setState({
       subTotal,
