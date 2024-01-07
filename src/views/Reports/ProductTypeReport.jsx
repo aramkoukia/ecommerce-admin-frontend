@@ -74,7 +74,7 @@ export default class ProductTypeSalesReport extends React.Component {
 
   search() {
     const { fromDate, toDate } = this.state;
-    const columns = ['locationName', 'productTypeName', 'totalSales'];
+    const columns = ['locationName', 'productTypeName', 'totalSales', 'totalAmount'];
     ReportService.getProductTypeSales(fromDate, toDate)
       .then((results) => results.map((row) => columns.map((column) => row[column] || '')))
       .then((data) => this.setState({ reportData: data }));
@@ -120,6 +120,12 @@ export default class ProductTypeSalesReport extends React.Component {
       },
       {
         name: 'Sales($)',
+        options: {
+          filter: false,
+        },
+      },
+      {
+        name: 'Amount',
         options: {
           filter: false,
         },
