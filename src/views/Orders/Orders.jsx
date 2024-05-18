@@ -112,6 +112,10 @@ export default class Orders extends React.Component {
       },
       { title: 'Location', field: 'locationName' },
       { title: 'User', field: 'givenName' },
+      {
+        title: 'Ship To',
+        field: 'shippingAddress',
+      },
     ],
     options: {
       paging: true,

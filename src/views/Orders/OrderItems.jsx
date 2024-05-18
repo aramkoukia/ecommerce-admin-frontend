@@ -69,7 +69,7 @@ function OrderItems(props) {
                     )}
                     <i>
                       {row.itemNotes && <br />}
-                      {row.itemNotes && (row.itemNotes)}
+                      {row.itemNotes && <span dangerouslySetInnerHTML={{ __html: row.itemNotes.replace(/(?:\r\n|\r|\n)/g, '<br>') }} />}
                     </i>
                   </TableCell>
                   <TableCell numeric align="right">{row.amount}</TableCell>
