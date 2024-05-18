@@ -21,6 +21,7 @@ export default class OrderNotes extends React.Component {
       orderPoNumber: '',
       cardAuthCode: '',
       cardLastFourDigits: '',
+      shippingAddress: '',
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -31,6 +32,7 @@ export default class OrderNotes extends React.Component {
     const { order } = this.props;
     this.setState({
       orderNotes: order.notes,
+      shippingAddress: order.shippingAddress,
       orderPoNumber: order.poNumber,
       authorizedBy: order.authorizedBy,
       phoneNumber: order.phoneNumber,
@@ -52,6 +54,7 @@ export default class OrderNotes extends React.Component {
       cardLastFourDigits,
       authorizedBy,
       phoneNumber,
+      shippingAddress,
     } = this.state;
 
     this.setState({
@@ -65,6 +68,7 @@ export default class OrderNotes extends React.Component {
       cardLastFourDigits,
       authorizedBy,
       phoneNumber,
+      shippingAddress,
     };
 
     const result = await OrderService.updateOrderInfo(order.orderId, orderInfo);
@@ -95,6 +99,7 @@ export default class OrderNotes extends React.Component {
       cardLastFourDigits,
       authorizedBy,
       phoneNumber,
+      shippingAddress,
     } = this.state;
 
     const { order } = this.props;
@@ -163,6 +168,18 @@ export default class OrderNotes extends React.Component {
                 type="text"
                 onChange={this.handleChange}
                 value={orderNotes}
+                multiline="true"
+                rows="3"
+                fullWidth="true"
+              />
+            </GridItem>
+            <GridItem md={12}>
+              <TextField
+                name="shippingAddress"
+                label="Ship To"
+                type="text"
+                onChange={this.handleChange}
+                value={shippingAddress}
                 multiline="true"
                 rows="3"
                 fullWidth="true"

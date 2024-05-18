@@ -140,6 +140,7 @@ export default class AddOrder extends React.Component {
     orderStatus: '',
     loading: false,
     idempotency: uuidv4(),
+    shippingAddress: '',
   };
 
   constructor(props) {
@@ -226,6 +227,7 @@ export default class AddOrder extends React.Component {
             })),
           notes: order.notes,
           poNumber: order.poNumber,
+          shippingAddress: order.shippingAddress,
           subTotal: order.subTotal,
           total: order.total,
         });
@@ -549,6 +551,7 @@ export default class AddOrder extends React.Component {
 
     const {
       customer, rows, total, subTotal, notes, taxes, poNumber, authCode,
+      shippingAddress,
       idempotency,
     } = this.state;
     const locationId = Location.getStoreLocation();
@@ -604,6 +607,7 @@ export default class AddOrder extends React.Component {
       status,
       notes,
       poNumber,
+      shippingAddress,
       pstNumber: customer !== null ? customer.pstNumber : null,
       orderTax: orderTaxes,
       orderDetail: orderDetails,
@@ -910,6 +914,7 @@ export default class AddOrder extends React.Component {
       blockInSufficientStockOnOrder,
       walkinPricePercent,
       loading,
+      shippingAddress,
     } = this.state;
 
     const locationId = Location.getStoreLocation();
@@ -1118,7 +1123,7 @@ export default class AddOrder extends React.Component {
                       }}
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={12} md={9}>
+                  <GridItem xs={12} sm={12} md={5}>
                     <CustomInput
                       labelText="Notes"
                       formControlProps={{
@@ -1126,9 +1131,24 @@ export default class AddOrder extends React.Component {
                       }}
                       inputProps={{
                         multiline: true,
-                        rows: 1,
+                        rows: 3,
                         value: notes,
                         name: 'notes',
+                        onChange: this.handleChange,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={4}>
+                    <CustomInput
+                      labelText="Ship To"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                      inputProps={{
+                        multiline: true,
+                        rows: 3,
+                        value: shippingAddress,
+                        name: 'shippingAddress',
                         onChange: this.handleChange,
                       }}
                     />
