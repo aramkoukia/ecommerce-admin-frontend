@@ -57,6 +57,7 @@ export default class OrderNotes extends React.Component {
       shippingAddress,
     } = this.state;
 
+
     this.setState({
       loading: true,
     });
