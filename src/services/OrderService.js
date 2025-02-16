@@ -2,6 +2,42 @@ import RestUtilities from './RestUtilities';
 import PosSetting from '../stores/PosSetting';
 
 export default class OrderService {
+
+  static async uploadAttachment(orderId, orderFile) {
+    try {
+      const response = await RestUtilities.postForm(
+        `orders/${orderId}/attach-to-invoice`,
+        orderFile,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async downloadAttachment(orderId, fileName) {
+    try {
+      const response = await RestUtilities.requestAnyBlob(
+        `orders/${orderId}/invoice-attachment`,
+        fileName,
+      );
+      return response;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async deleteAttachment(orderId) {
+    try {
+      const response = await RestUtilities.get(
+        `orders/${orderId}/delete-attachment`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async saveOrder(order, idempotency) {
     try {
       const response = await RestUtilities.post(

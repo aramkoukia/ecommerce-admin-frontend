@@ -110,6 +110,47 @@ export default class RestUtilities {
       });
   }
 
+  static saveFile(fileName, data) {
+  }
+
+  static requestAnyBlob(url, fileName) {
+    axios(`${Api.baseUrl}/${url}`, {
+      method: 'GET',
+      responseType: 'blob', // Force to receive data in a Blob Format
+      headers: {
+        Authorization: `Bearer ${AuthStore.getToken()}`,
+      },
+    })
+      .then((response) => {
+
+        if (window.navigator.msSaveOrOpenBlob) {
+          window.navigator.msSaveOrOpenBlob(response.data, fileName);
+        } else {
+          const a = document.createElement('a');
+          document.body.appendChild(a);
+          const url = window.URL.createObjectURL(response.data);
+          a.href = url;
+          a.download = fileName;
+          a.click();
+          setTimeout(() => {
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+          }, 0)
+        }
+
+        // const file = new File(
+        //   [response.data],
+        //   fileName,
+        //   { type: response.data.type },
+        // );
+
+        // const fileURL = URL.createObjectURL(file);
+        // window.open(fileURL);
+      })
+      .catch(() => {
+      });
+  }
+
   static requestFormData(method, url, data, idempotency) {
     // let isJsonResponse = false;
     let isBadRequest = false;
