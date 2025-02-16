@@ -9,6 +9,9 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Chip from '@material-ui/core/Chip';
 import Print from '@material-ui/icons/Print';
 import Email from '@material-ui/icons/Email';
+import CloudUpload from '@material-ui/icons/CloudUpload';
+import CloudDownload from '@material-ui/icons/CloudDownload';
+import Delete from '@material-ui/icons/Delete';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -26,6 +29,7 @@ import CardBody from '../../components/Card/CardBody';
 import CardFooter from '../../components/Card/CardFooter';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import GridContainer from '../../components/Grid/GridContainer';
+import FileUpload from '../../components/ImageUpload/FileUpload';
 import GridItem from '../../components/Grid/GridItem';
 import OrderNotes from './OrderNotes';
 import OrderItems from './OrderItems';
@@ -98,11 +102,17 @@ export class Order extends React.Component {
     this.editQuote = this.editQuote.bind(this);
     this.updatePayment = this.updatePayment.bind(this);
     this.updateLocationClicked = this.updateLocationClicked.bind(this);
+    this.attachmentDialogClicked = this.attachmentDialogClicked.bind(this);
+    this.deleteAttachmentClicked = this.deleteAttachmentClicked.bind(this);
+    this.uploadAttachmentClicked = this.uploadAttachmentClicked.bind(this);
+    this.downloadAttachmentClicked = this.downloadAttachmentClicked.bind(this);
+    this.handleAttachmentClose = this.handleAttachmentClose.bind(this);
     this.payByMonerisClicked = this.payByMonerisClicked.bind(this);
     this.updateLocation = this.updateLocation.bind(this);
     this.handleUpdateLocationClose = this.handleUpdateLocationClose.bind(this);
     this.handleLocationChange = this.handleLocationChange.bind(this);
     this.saveAsAccountClicked = this.saveAsAccountClicked.bind(this);
+    this.handleFileChange = this.handleFileChange.bind(this);
   }
 
   async componentDidMount() {
@@ -636,6 +646,46 @@ export class Order extends React.Component {
     });
   }
 
+  async attachmentDialogClicked() {
+    this.setState({
+      openAttachmentDialog: true,
+    });
+  }
+
+  async uploadAttachmentClicked() {
+    const { order, orderFile } = this.state;
+    const formData = new FormData();
+    formData.append('file', orderFile);
+
+    await OrderService.uploadAttachment(order.orderId, formData);
+    this.setState({
+      openAttachmentDialog: false,
+      orderFile: null,
+    });
+  }
+
+  async downloadAttachmentClicked() {
+    const { order } = this.state;
+    await OrderService.downloadAttachment(order.orderId, order.attachmentPath);
+  }
+
+  async deleteAttachmentClicked() {
+    const { order } = this.state;
+    await OrderService.deleteAttachment(order.orderId);
+  }
+
+  handleAttachmentClose() {
+    this.setState({
+      openAttachmentDialog: false,
+    });
+  }
+
+  handleFileChange(images) {
+    this.setState({
+      orderFile: images && images.length > 0 ? images[0] : null,
+    });
+  }
+
   async saveAsAccount() {
     const { order } = this.state;
     this.setState({
@@ -740,6 +790,8 @@ export class Order extends React.Component {
     const {
       order, openSnackbar, snackbarMessage, snackbarColor, loading,
       openDialog,
+      openAttachmentDialog,
+      existingFile,
       openEmailDialog,
       customerEmail,
       chequeNo,
@@ -771,10 +823,11 @@ export class Order extends React.Component {
             <GridItem xs={12} sm={12} md={12}>
               <Card>
                 <CardHeader color="primary">
-                  <div>
-                    Order #
-                    &nbsp;
-                    <b>{order.orderId}</b>
+                    <GridContainer alignItems="center">
+            <GridItem xs={6} sm={6} md={6}>
+                Order #
+                &nbsp;
+                <b>{order.orderId}</b>
                   &nbsp;&nbsp;
                     {dateFormat(order.orderDate)}
                   &nbsp;&nbsp;&nbsp;
@@ -785,7 +838,36 @@ export class Order extends React.Component {
                     {order.status === 'Return' && order.isAccountReturn && (
                       <Chip label="Added to customer account" color="secondary" />
                     )}
-                  </div>
+                  </GridItem>
+                  <GridItem xs={6} sm={6} md={6}>
+                    {order.attachmentPath && (
+                      <Button size="small" color="info" disabled={loading} onClick={this.downloadAttachmentClicked}>
+                        <CloudDownload />
+                        Download Attachment
+                      </Button>
+                    )}
+                   {order.attachmentPath && (
+                      <Button size="small" color="warning" disabled={loading} onClick={this.attachmentDialogClicked}>
+                        <CloudUpload />
+                        &nbsp;
+                        Replace Attachment
+                      </Button>
+                     )}
+                    {!order.attachmentPath && (
+                      <Button size="small" color="success" disabled={loading} onClick={this.attachmentDialogClicked}>
+                        <CloudUpload />
+                        &nbsp;
+                        Attach File
+                      </Button>
+                    )}
+                    {order.attachmentPath && (
+                      <Button size="small" color="error" disabled={loading} onClick={this.deleteAttachmentClicked}>
+                        <Delete />
+                        Delete Attachment
+                      </Button>
+                    )}
+                    </GridItem>
+                  </GridContainer>
                 </CardHeader>
                 <CardBody>
                   <GridContainer>
@@ -1220,6 +1302,37 @@ export class Order extends React.Component {
               </Button>
               <Button disabled={loading} onClick={this.updateLocation} color="primary">
                 Update
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <Dialog
+            open={openAttachmentDialog}
+              onClose={this.handleAttachmentClose}
+            aria-labelledby="form-dialog-title"
+          >
+            <DialogContent>
+              <Card>
+                <CardHeader color="info">
+                  <div>Attach File</div>
+                </CardHeader>
+                <CardBody>
+                  <InputLabel htmlFor="location">File</InputLabel>
+                  <FormControl>
+                    <FileUpload
+                      existingFiles={existingFile && [existingFile]}
+                      isSingleImage
+                      onChange={this.handleFileChange}
+                    />
+                  </FormControl>
+                </CardBody>
+              </Card>
+            </DialogContent>
+            <DialogActions>
+              <Button disabled={loading} onClick={this.handleAttachmentClose} color="info">
+                Cancel
+              </Button>
+              <Button disabled={loading} onClick={this.uploadAttachmentClicked} color="primary">
+                Attach
               </Button>
             </DialogActions>
           </Dialog>
