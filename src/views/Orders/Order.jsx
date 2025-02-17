@@ -657,6 +657,7 @@ export class Order extends React.Component {
     const formData = new FormData();
     formData.append('file', orderFile);
 
+    order.attachmentPath = orderFile.name;
     this.setState({
       loading: true,
     });
@@ -666,6 +667,7 @@ export class Order extends React.Component {
       openAttachmentDialog: false,
       orderFile: null,
       loading: false,
+      order,
     });
   }
 
@@ -686,9 +688,11 @@ export class Order extends React.Component {
     this.setState({
       loading: true,
     });
+    order.attachmentPath = null;
     await OrderService.deleteAttachment(order.orderId);
     this.setState({
       loading: false,
+      order,
     });
   }
 
