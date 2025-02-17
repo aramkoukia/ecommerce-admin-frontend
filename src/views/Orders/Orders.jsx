@@ -116,6 +116,10 @@ export default class Orders extends React.Component {
         title: 'Ship To',
         field: 'shippingAddress',
       },
+      {
+        title: 'Attachment',
+        field: 'attachmentPath',
+      },
     ],
     options: {
       paging: true,
