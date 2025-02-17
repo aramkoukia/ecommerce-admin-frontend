@@ -18,6 +18,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -103,10 +104,12 @@ export class Order extends React.Component {
     this.updatePayment = this.updatePayment.bind(this);
     this.updateLocationClicked = this.updateLocationClicked.bind(this);
     this.attachmentDialogClicked = this.attachmentDialogClicked.bind(this);
+    this.deleteAttachmentConfirmedClicked = this.deleteAttachmentConfirmedClicked.bind(this);
     this.deleteAttachmentClicked = this.deleteAttachmentClicked.bind(this);
     this.uploadAttachmentClicked = this.uploadAttachmentClicked.bind(this);
     this.downloadAttachmentClicked = this.downloadAttachmentClicked.bind(this);
     this.handleAttachmentClose = this.handleAttachmentClose.bind(this);
+    this.handleConfirmationClose = this.handleConfirmationClose.bind(this);
     this.payByMonerisClicked = this.payByMonerisClicked.bind(this);
     this.updateLocation = this.updateLocation.bind(this);
     this.handleUpdateLocationClose = this.handleUpdateLocationClose.bind(this);
@@ -127,6 +130,7 @@ export class Order extends React.Component {
       order,
       openDialog: false,
       openEmailDialog: false,
+      openDeleteConfirmation: false,
       customerEmail: order.customer.email,
       chequeNo: '',
       isUpdatePayment: false,
@@ -683,7 +687,19 @@ export class Order extends React.Component {
     });
   }
 
-  async deleteAttachmentClicked() {
+  handleConfirmationClose() {
+    this.setState({
+      openDeleteConfirmation: false,
+    });
+  }
+
+  deleteAttachmentClicked() {
+    this.setState({
+      openDeleteConfirmation: true,
+    });
+  }
+
+  async deleteAttachmentConfirmedClicked() {
     const { order } = this.state;
     this.setState({
       loading: true,
@@ -693,6 +709,7 @@ export class Order extends React.Component {
     this.setState({
       loading: false,
       order,
+      openDeleteConfirmation: false,
     });
   }
 
@@ -813,6 +830,7 @@ export class Order extends React.Component {
       order, openSnackbar, snackbarMessage, snackbarColor, loading,
       openDialog,
       openAttachmentDialog,
+      openDeleteConfirmation,
       existingFile,
       openEmailDialog,
       customerEmail,
@@ -1358,6 +1376,25 @@ export class Order extends React.Component {
               </Button>
             </DialogActions>
           </Dialog>
+            <Dialog
+              open={openDeleteConfirmation}
+              onClose={this.handleConfirmationClose}
+            >
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  Are you sure you want to delete this Invoice attachment?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={this.handleConfirmationClose} color="info">
+                  Cancel
+                </Button>
+                <Button onClick={this.deleteAttachmentConfirmedClicked} color="primary" autoFocus>
+                  Yes
+                </Button>
+              </DialogActions>
+            </Dialog>
+
 
         </div>
         ) }
