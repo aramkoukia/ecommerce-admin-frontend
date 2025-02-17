@@ -657,21 +657,39 @@ export class Order extends React.Component {
     const formData = new FormData();
     formData.append('file', orderFile);
 
+    this.setState({
+      loading: true,
+    });
+
     await OrderService.uploadAttachment(order.orderId, formData);
     this.setState({
       openAttachmentDialog: false,
       orderFile: null,
+      loading: false,
     });
   }
 
   async downloadAttachmentClicked() {
     const { order } = this.state;
+    this.setState({
+      loading: true,
+    });
+
     await OrderService.downloadAttachment(order.orderId, order.attachmentPath);
+    this.setState({
+      loading: false,
+    });
   }
 
   async deleteAttachmentClicked() {
     const { order } = this.state;
+    this.setState({
+      loading: true,
+    });
     await OrderService.deleteAttachment(order.orderId);
+    this.setState({
+      loading: false,
+    });
   }
 
   handleAttachmentClose() {
