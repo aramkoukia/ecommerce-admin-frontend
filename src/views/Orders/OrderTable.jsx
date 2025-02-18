@@ -18,7 +18,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 import PropTypes from 'prop-types';
 import Success from '../../components/Typography/Success';
-
+import {DraggableComponent, DroppableComponent} from './DragableComponent'
 
 export default class OrderTable extends React.Component {
   state = {
@@ -42,6 +42,7 @@ export default class OrderTable extends React.Component {
     this.handleDiscountTypeChanged = this.handleDiscountTypeChanged.bind(this);
     this.handleProductRemoved = this.handleProductRemoved.bind(this);
     this.handleProductPackageChanged = this.handleProductPackageChanged.bind(this);
+    this.onDragEnd = this.onDragEnd.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -63,6 +64,36 @@ export default class OrderTable extends React.Component {
 
       priceChanged(subTotal, total, totalDiscount);
     }
+  }
+
+  reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list)
+    const [removed] = result.splice(startIndex, 1)
+    result.splice(endIndex, 0, removed)
+
+    return result
+  }
+
+  onDragEnd(result) {
+    // dropped outside the list
+    if (!result.destination) {
+      return
+    }
+
+    // console.log(`dragEnd ${result.source.index} to  ${result.destination.index}`)
+    const orderRows = this.reorder(
+      this.state.orderRows,
+      result.source.index,
+      result.destination.index
+    );
+
+    orderRows.forEach(function (row, i) {
+      row.rowOrder = i + 1;
+    });
+
+    this.setState({
+      orderRows
+    });
   }
 
   handleChange = (name) => (event) => {
@@ -284,6 +315,7 @@ export default class OrderTable extends React.Component {
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell>Row</TableCell>
               <TableCell>Product</TableCell>
               <TableCell />
               <TableCell>Amount</TableCell>
@@ -293,10 +325,11 @@ export default class OrderTable extends React.Component {
               <TableCell numeric>Total Price ($)</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          <TableBody component={DroppableComponent(this.onDragEnd)}>
             {orderRows
-              .map((row) => (
-                <TableRow key={row.id}>
+              .map((row, index) => (
+                <TableRow component={DraggableComponent(`item-${row.id}`, index)} key={row.id}>
+                  <TableCell scope="row">{index + 1}</TableCell>
                   <TableCell size="small">
                     <IconButton
                       aria-label="Delete"
@@ -430,11 +463,13 @@ export default class OrderTable extends React.Component {
               <TableCell />
               <TableCell />
               <TableCell />
+              <TableCell />
               <TableCell>Total Discount</TableCell>
               <TableCell />
               <TableCell numeric>{this.ccyFormat(totalDiscount)}</TableCell>
             </TableRow>
             <TableRow style={{ 'background-color': 'lightgray' }}>
+              <TableCell />
               <TableCell />
               <TableCell />
               <TableCell />
@@ -449,12 +484,14 @@ export default class OrderTable extends React.Component {
                 <TableCell />
                 <TableCell />
                 <TableCell />
+                <TableCell />
                 <TableCell>{tax.taxName}</TableCell>
                 <TableCell numeric>{`${(tax.percentage).toFixed(0)} %`}</TableCell>
                 <TableCell numeric>{this.ccyFormat((tax.percentage / 100) * subTotal)}</TableCell>
               </TableRow>
             ))}
             <TableRow>
+              <TableCell />
               <TableCell />
               <TableCell />
               <TableCell />
