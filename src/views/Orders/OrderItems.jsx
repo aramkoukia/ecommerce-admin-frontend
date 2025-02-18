@@ -50,6 +50,7 @@ function OrderItems(props) {
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
+              <TableCell>Row</TableCell>
               <TableCell>Product</TableCell>
               <TableCell numeric>Amount</TableCell>
               <TableCell numeric>Unit Price</TableCell>
@@ -62,6 +63,7 @@ function OrderItems(props) {
               .sort((a, b) => (a.rowOrder > b.rowOrder ? 1 : -1))
               .map((row) => (
                 <TableRow key={row.productId}>
+                  <TableCell>{row.rowOrder}</TableCell>
                   <TableCell>
                     {row.product.productName}
                     {row.package && (
@@ -85,6 +87,7 @@ function OrderItems(props) {
           <GridItem md={6}>
             <Table className={classes.table}>
               <TableBody>
+                <TableRow></TableRow>
                 <TableRow>
                   <TableCell colspan="2">Subtotal (after discount)</TableCell>
                   <TableCell numeric>{ccyFormat(order.subTotal)}</TableCell>
@@ -136,6 +139,7 @@ function OrderItems(props) {
           <TableBody>
             {order.orderPayment && order.orderPayment.map((orderPayment) => (
               <TableRow>
+                <TableRow></TableRow>
                 <TableCell><h4>Payment</h4></TableCell>
                 <TableCell><h4>{dateFormat(orderPayment.paymentDate)}</h4></TableCell>
                 <TableCell><h4>{orderPayment.paymentType.paymentTypeName}</h4></TableCell>
