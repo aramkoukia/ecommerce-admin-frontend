@@ -879,10 +879,10 @@ export class Order extends React.Component {
                       <Chip label="Added to customer account" color="secondary" />
                     )}
                     {order.status === 'Return' && order.rmaReturnOrder === 'Yes' && (
-                      <span><br/>{' (RMA #:'} {order.originalOrderId} + {')'}</span>
+                      <span><br/>{'RMA #:'} {order.originalOrderId}</span>
                     )}
                     {order.status === 'Return' && order.rmaReturnOrder === 'No' && (
-                          <span><br />{' (Returned Invoice #:'} + {order.originalOrderId} + {')'}</span>
+                          <span><br />{'Return of Invoice #:'} {order.originalOrderId}</span>
                     )}
                   </GridItem>
                   <GridItem xs={6} sm={6} md={6}>
