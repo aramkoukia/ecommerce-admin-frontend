@@ -120,6 +120,14 @@ export default class Orders extends React.Component {
         title: 'Attachment',
         field: 'attachmentPath',
       },
+      {
+        title: 'Returned RMA or Invoice',
+        field: 'originalOrderId',
+      },
+      {
+        title: 'Had RMA',
+        field: 'rmaReturnOrder',
+      },
     ],
     options: {
       paging: true,

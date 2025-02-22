@@ -256,7 +256,7 @@ export class RMA extends React.Component {
                 <div>
                   <b>Creating RMA (Return Merchandise Authorization)</b>
                   &nbsp;
-                  Order #
+                  Invoice #
                   &nbsp;
                   <b>{order.orderId}</b>
                   &nbsp;&nbsp;

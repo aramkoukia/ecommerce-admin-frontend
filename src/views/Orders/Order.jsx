@@ -865,11 +865,11 @@ export class Order extends React.Component {
                 <CardHeader color="primary">
                     <GridContainer alignItems="center">
             <GridItem xs={6} sm={6} md={6}>
-                Order #
+                Invoice #
                 &nbsp;
                 <b>{order.orderId}</b>
                   &nbsp;&nbsp;
-                    {dateFormat(order.orderDate)}
+                  {dateFormat(order.orderDate)}
                   &nbsp;&nbsp;&nbsp;
                     {order.location.locationName}
                   &nbsp;&nbsp;&nbsp;
@@ -877,6 +877,12 @@ export class Order extends React.Component {
                     &nbsp;&nbsp;
                     {order.status === 'Return' && order.isAccountReturn && (
                       <Chip label="Added to customer account" color="secondary" />
+                    )}
+                    {order.status === 'Return' && order.rmaReturnOrder === 'Yes' && (
+                      <span><br/>{' (RMA #:'} {order.originalOrderId} + {')'}</span>
+                    )}
+                    {order.status === 'Return' && order.rmaReturnOrder === 'No' && (
+                          <span><br />{' (Returned Invoice #:'} + {order.originalOrderId} + {')'}</span>
                     )}
                   </GridItem>
                   <GridItem xs={6} sm={6} md={6}>
