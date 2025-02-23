@@ -325,11 +325,11 @@ export default class OrderTable extends React.Component {
               <TableCell numeric>Total Price ($)</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody component={DroppableComponent(this.onDragEnd)}>
+          <TableBody /*component={DroppableComponent(this.onDragEnd)} */>
             {orderRows
               .map((row, index) => (
-                <TableRow component={DraggableComponent(`item-${row.id}`, index)} key={row.id}>
-                  <TableCell scope="row">{index + 1}</TableCell>
+                <TableRow>
+                  <TableCell scope="row" /*component={DraggableComponent(`item-${row.id}`, index)}*/ key={row.id}>{index + 1}</TableCell>
                   <TableCell size="small">
                     <IconButton
                       aria-label="Delete"
