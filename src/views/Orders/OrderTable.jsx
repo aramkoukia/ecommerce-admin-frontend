@@ -15,10 +15,12 @@ import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import DeleteIcon from '@material-ui/icons/Delete';
+import ArrowUpward from '@material-ui/icons/ArrowUpward';
+import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import IconButton from '@material-ui/core/IconButton';
 import PropTypes from 'prop-types';
 import Success from '../../components/Typography/Success';
-import {DraggableComponent, DroppableComponent} from './DragableComponent'
+// import {DraggableComponent, DroppableComponent} from './DragableComponent'
 
 export default class OrderTable extends React.Component {
   state = {
@@ -41,8 +43,10 @@ export default class OrderTable extends React.Component {
     this.handleDiscountPercentChanged = this.handleDiscountPercentChanged.bind(this);
     this.handleDiscountTypeChanged = this.handleDiscountTypeChanged.bind(this);
     this.handleProductRemoved = this.handleProductRemoved.bind(this);
+    this.handleRowUp = this.handleRowUp.bind(this);
+    this.handleRowDown = this.handleRowDown.bind(this);
     this.handleProductPackageChanged = this.handleProductPackageChanged.bind(this);
-    this.onDragEnd = this.onDragEnd.bind(this);
+    // this.onDragEnd = this.onDragEnd.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -74,27 +78,27 @@ export default class OrderTable extends React.Component {
     return result
   }
 
-  onDragEnd(result) {
-    // dropped outside the list
-    if (!result.destination) {
-      return
-    }
+  // onDragEnd(result) {
+  //   // dropped outside the list
+  //   if (!result.destination) {
+  //     return
+  //   }
 
-    // console.log(`dragEnd ${result.source.index} to  ${result.destination.index}`)
-    const orderRows = this.reorder(
-      this.state.orderRows,
-      result.source.index,
-      result.destination.index
-    );
+  //   // console.log(`dragEnd ${result.source.index} to  ${result.destination.index}`)
+  //   const orderRows = this.reorder(
+  //     this.state.orderRows,
+  //     result.source.index,
+  //     result.destination.index
+  //   );
 
-    orderRows.forEach(function (row, i) {
-      row.rowOrder = i + 1;
-    });
+  //   orderRows.forEach(function (row, i) {
+  //     row.rowOrder = i + 1;
+  //   });
 
-    this.setState({
-      orderRows
-    });
-  }
+  //   this.setState({
+  //     orderRows
+  //   });
+  // }
 
   handleChange = (name) => (event) => {
     this.setState({
@@ -272,6 +276,55 @@ export default class OrderTable extends React.Component {
     productRemoved(Number(event.currentTarget.name));
   }
 
+  handleRowUp(event) {
+    const { orderRows } = this.state;
+    const rowNumber = Number(event.currentTarget.name);
+    // if it is first one, do nothing
+    if (rowNumber === 1) {
+      return
+    }
+
+    const newOrderRows = this.reorder(
+      orderRows,
+      rowNumber - 1,
+      rowNumber - 2
+    );
+
+    newOrderRows.forEach(function (row, i) {
+      row.rowOrder = i + 1;
+      row.id = i + 1;
+    });
+
+    this.setState({
+      orderRows: newOrderRows
+    });
+  }
+
+  handleRowDown(event) {
+    // if it is last one, do nothing
+    const { orderRows } = this.state;
+    const rowNumber = Number(event.currentTarget.name);
+
+    if (rowNumber === orderRows.length) {
+      return;
+    }
+
+    const newOrderRows = this.reorder(
+      orderRows,
+      rowNumber-1,
+      rowNumber
+    );
+
+    newOrderRows.forEach(function (row, i) {
+      row.rowOrder = i + 1;
+      row.id = i + 1;
+    });
+
+     this.setState({
+       orderRows: newOrderRows
+     });
+  }
+
   ccyFormat(num) {
     return `${num.toFixed(2)} $`;
   }
@@ -325,18 +378,52 @@ export default class OrderTable extends React.Component {
               <TableCell numeric>Total Price ($)</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody /*component={DroppableComponent(this.onDragEnd)} */>
+          <TableBody
+          // component={DroppableComponent(this.onDragEnd)}
+          >
             {orderRows
               .map((row, index) => (
                 <TableRow>
-                  <TableCell scope="row" /*component={DraggableComponent(`item-${row.id}`, index)}*/ key={row.id}>{index + 1}</TableCell>
-                  <TableCell size="small">
+                  <TableCell sx={{ fontSize: 6 }} scope="row" align="center" padding="none">
                     <IconButton
+                      padding="none"
+                      sx={{ fontSize: 6 }}
+                      aria-label="Move Down"
+                      name={row.id}
+                      onClick={this.handleRowUp}
+                    >
+                    <ArrowUpward
+                      padding="none"
+                      name={row.id}
+                      sx={{ fontSize: 6 }}
+                    />
+                    </IconButton>
+                    <br />
+                    {index + 1}
+                    <br />
+                    <IconButton
+                      sx={{ fontSize: 6 }}
+                      aria-label="Move Up"
+                      name={row.id}
+                      padding="none"
+                      onClick={this.handleRowDown}
+                    >
+                    <ArrowDownward
+                      padding="none"
+                      name={row.id}
+                      sx={{ fontSize: 6 }}
+                    />
+                    </IconButton>
+                  </TableCell>
+                  <TableCell size="small" padding="none">
+                    <IconButton
+                      padding="none"
                       aria-label="Delete"
                       name={row.id}
                       onClick={this.handleProductRemoved}
                     >
                       <DeleteIcon
+                        padding="none"
                         name={row.id}
                         fontSize="small"
                       />
@@ -344,6 +431,7 @@ export default class OrderTable extends React.Component {
                     {row.productName}
                     <br />
                     <TextField
+                      padding="none"
                       multiline
                       rowsMax={3}
                       name={row.id}
@@ -354,7 +442,7 @@ export default class OrderTable extends React.Component {
                       fullWidth="true"
                     />
                   </TableCell>
-                  <TableCell size="small">
+                  <TableCell size="small" padding="none">
                     {row.productPackages && row.productPackages.length !== 0 && (
                     <FormControl>
                       <Select
@@ -378,7 +466,7 @@ export default class OrderTable extends React.Component {
                     </FormControl>
                     )}
                   </TableCell>
-                  <TableCell size="small">
+                  <TableCell size="small" padding="none">
                     <TextField
                       name={row.id}
                       value={row.qty}
@@ -387,7 +475,7 @@ export default class OrderTable extends React.Component {
                       style={{ width: 70 }}
                     />
                   </TableCell>
-                  <TableCell size="small" numeric>
+                  <TableCell size="small" numeric padding="none">
                     <TextField
                       name={row.id}
                       value={row.salesPrice}
@@ -425,7 +513,7 @@ export default class OrderTable extends React.Component {
                   </div>
                   )}
                   </TableCell>
-                  <TableCell size="small">
+                  <TableCell size="small" padding="none">
                     <FormControlLabel
                       value="end"
                       control={(
@@ -455,7 +543,9 @@ export default class OrderTable extends React.Component {
                       labelPlacement="end"
                     />
                   </TableCell>
-                  <TableCell size="small" numeric>{this.ccyFormat(row.salesPrice * row.qty)}</TableCell>
+                  <TableCell size="small" numeric padding="none">
+                    {this.ccyFormat(row.salesPrice * row.qty)}
+                  </TableCell>
                 </TableRow>
               ))}
             <TableRow style={{ 'background-color': 'lightgray' }}>
@@ -496,9 +586,8 @@ export default class OrderTable extends React.Component {
               <TableCell />
               <TableCell />
               <TableCell />
-              <TableCell><h3>Total</h3></TableCell>
-              <TableCell />
-              <TableCell numeric><Success><h3>{this.ccyFormat(total)}</h3></Success></TableCell>
+              <TableCell><h4>Total</h4></TableCell>
+              <TableCell align="right" colspan="2" numeric><Success><h4>{this.ccyFormat(total)}</h4></Success></TableCell>
             </TableRow>
           </TableBody>
         </Table>
