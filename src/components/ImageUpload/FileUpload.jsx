@@ -16,8 +16,8 @@ const FileUpload = ({ onChange, isSingleImage, existingFiles }) => {
       singleImage={isSingleImage}
       onChange={onDrop}
       imgExtension={['.pdf', '.jpg', '.png', '.gif', '.docx', '.doc']}
-      maxFileSize={5242880}
-      label="Max file size: 5 MB. Accepted: pdf, docx, doc, jpg, gif, png, docx"
+      maxFileSize={52428800}
+      label="Max file size: 50 MB. Accepted: pdf, docx, doc, jpg, gif, png, docx"
       defaultImages={existingFiles}
     />
   );
