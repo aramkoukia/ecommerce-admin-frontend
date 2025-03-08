@@ -433,6 +433,7 @@ export default class OrderTable extends React.Component {
                     <TextField
                       padding="none"
                       multiline
+                      variant="outlined"
                       rowsMax={3}
                       name={row.id}
                       label="Notes"
