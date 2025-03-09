@@ -155,6 +155,14 @@ class Settings extends React.Component {
           type: 'boolean',
           title: 'Charge PST By Default',
         },
+        posDefaultTaxCountry: {
+          type: 'string',
+          title: 'Default Tax Country',
+        },
+        posDefaultTaxProvince: {
+          type: 'string',
+          title: 'Default Tax Province/State',
+        },
       },
     };
 
@@ -247,6 +255,14 @@ class Settings extends React.Component {
         'ui:emptyValue': '',
         'ui:widget': 'checkbox',
       },
+      posDefaultTaxCountry: {
+        'ui:autofocus': true,
+        'ui:emptyValue': '',
+      },
+      posDefaultTaxProvince: {
+        'ui:autofocus': true,
+        'ui:emptyValue': '',
+      },
     };
 
     const initialFormData = {
@@ -270,6 +286,8 @@ class Settings extends React.Component {
       publishOrderCreationToInventory: settings.publishOrderCreationToInventory,
       automaticallyDeductInventoryOnIncomingOrders: settings.automaticallyDeductInventoryOnIncomingOrders,
       chargePstByDefault: settings.chargePstByDefault,
+      posDefaultTaxCountry: settings.posDefaultTaxCountry,
+      posDefaultTaxProvince: settings.posDefaultTaxProvince,
     };
 
     return (

@@ -175,8 +175,10 @@ export default class AddOrder extends React.Component {
   }
 
   async componentDidMount() {
-    const taxes = await TaxService.getTaxes('Canada', 'BC');
     const setting = await SettingsService.getSettings();
+    const { posDefaulTaxCountry, posDefaulTaxProvince } = setting;
+    const taxes = await TaxService.getTaxes(posDefaulTaxCountry, posDefaulTaxProvince);
+
     this.setState({
       taxes,
       allTaxes: taxes,

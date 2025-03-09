@@ -17,14 +17,13 @@ import CardBody from '../../components/Card/CardBody';
 import Card from '../../components/Card/Card';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import CustomerService from '../../services/CustomerService';
+import SettingsService from '../../services/SettingsService';
 
 class AddCustomer extends React.Component {
   state = {
     openSnackbar: false,
     snackbarMessage: '',
     snackbarColor: 'info',
-    country: 'Canada',
-    province: 'BC',
     segment: 'None',
     firstName: '',
     lastName: '',
@@ -40,6 +39,12 @@ class AddCustomer extends React.Component {
     creditCardOnFile: false,
     disabled: false,
     chargePreference: 'None',
+    posDefaulTaxCountry: '',
+    posDefaulTaxProvince: '',
+    provinces: [],
+    stateTitle: '',
+    taxTitle:'',
+    postalCodeTitle: '',
   };
 
   constructor(props) {
@@ -50,10 +55,36 @@ class AddCustomer extends React.Component {
   }
 
   async componentDidMount() {
+    const setting = await SettingsService.getSettings();
+    const { posDefaulTaxCountry, posDefaulTaxProvince } = setting;
+    let provinces = [];
+    let stateTitle = '';
+    let taxTitle = '';
+    let postalCodeTitle = '';
+    if (posDefaulTaxCountry == 'Canada') {
+      provinces = ['BC', 'AB', 'MB', 'NL', 'NS', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT', 'Other'];
+      stateTitle = 'Province';
+      taxTitle = 'PST Number';
+      postalCodeTitle = 'Postal Code';
+    } else {
+      provinces = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY']
+      stateTitle = 'State';
+      taxTitle = 'Tax Number';
+      postalCodeTitle = 'Zip Code';
+    }
+
     this.setState({
       openSnackbar: false,
       snackbarMessage: '',
       snackbarColor: 'info',
+      country: posDefaulTaxCountry,
+      province: posDefaulTaxProvince,
+      posDefaulTaxCountry,
+      posDefaulTaxProvince,
+      provinces,
+      stateTitle,
+      taxTitle,
+      postalCodeTitle,
     });
   }
 
@@ -76,6 +107,8 @@ class AddCustomer extends React.Component {
       creditCardOnFile,
       chargePreference,
       disabled,
+      posDefaulTaxCountry,
+      posDefaulTaxProvince,
     } = this.state;
 
     const customer = {
@@ -110,10 +143,10 @@ class AddCustomer extends React.Component {
       companyName: '',
       phoneNumber: '',
       mobile: '',
-      country: 'Canada',
+      country: posDefaulTaxCountry,
       address: '',
       city: '',
-      province: 'BC',
+      province: posDefaulTaxProvince,
       postalCode: '',
       pstNumber: '',
       notes: '',
@@ -135,7 +168,38 @@ class AddCustomer extends React.Component {
   }
 
   handleChange = (event) => {
-    this.setState({ [event.target.name]: event.target.value });
+    if (event.target.name === 'country') {
+      let provinces = [];
+      let stateTitle = '';
+      let taxTitle = '';
+      let province = '';
+      let postalCodeTitle = '';
+      if (event.target.value == 'Canada') {
+        provinces = ['BC', 'AB', 'MB', 'NL', 'NS', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT', 'Other'];
+        stateTitle = 'Province';
+        taxTitle = 'PST Number';
+        postalCodeTitle = 'Postal Code';
+        province = 'BC';
+      } else {
+        provinces = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY']
+        stateTitle = 'State';
+        taxTitle = 'Tax Number';
+        postalCodeTitle = 'Zip Code';
+        province = 'WA';
+      }
+      this.setState({
+        [event.target.name]: event.target.value,
+        provinces,
+        stateTitle,
+        taxTitle,
+        postalCodeTitle,
+        province
+      });
+    } else {
+      this.setState({
+        [event.target.name]: event.target.value,
+      });
+    }
   };
 
   handleCheckChange(event) {
@@ -168,6 +232,10 @@ class AddCustomer extends React.Component {
       notes,
       disabled,
       chargePreference,
+      provinces,
+      stateTitle,
+      taxTitle,
+      postalCodeTitle,
     } = this.state;
 
     return (
@@ -245,6 +313,7 @@ class AddCustomer extends React.Component {
                       <InputLabel htmlFor="country">Country</InputLabel>
                       <Select
                         value={country}
+                        defaultValue={province}
                         onChange={this.handleChange}
                         input={<Input name="country" id="country" />}
                         fullWidth="true"
@@ -257,26 +326,17 @@ class AddCustomer extends React.Component {
                   </GridItem>
                   <GridItem md={4}>
                     <FormControl>
-                      <InputLabel htmlFor="province">Province</InputLabel>
+                      <InputLabel htmlFor="province">{stateTitle}</InputLabel>
                       <Select
                         value={province}
+                        defaultValue={province}
                         onChange={this.handleChange}
                         input={<Input name="province" id="province" />}
                         fullWidth="true"
                       >
-                        <MenuItem value="BC">BC</MenuItem>
-                        <MenuItem value="AB">AB</MenuItem>
-                        <MenuItem value="MB">MB</MenuItem>
-                        <MenuItem value="NB">NB</MenuItem>
-                        <MenuItem value="NL">NL</MenuItem>
-                        <MenuItem value="NS">NS</MenuItem>
-                        <MenuItem value="NU">NU</MenuItem>
-                        <MenuItem value="ON">ON</MenuItem>
-                        <MenuItem value="PE">PE</MenuItem>
-                        <MenuItem value="QC">QC</MenuItem>
-                        <MenuItem value="SK">SK</MenuItem>
-                        <MenuItem value="YT">YT</MenuItem>
-                        <MenuItem value="Other">Other</MenuItem>
+                        {provinces.map((p) => (
+                          <MenuItem value={p}>{p}</MenuItem>
+                        ))}
                       </Select>
                     </FormControl>
                   </GridItem>
@@ -303,7 +363,7 @@ class AddCustomer extends React.Component {
                   <GridItem md={4}>
                     <TextField
                       name="postalCode"
-                      label="Postal Code"
+                      label={postalCodeTitle}
                       type="text"
                       onChange={this.handleChange}
                       value={postalCode}
@@ -314,7 +374,7 @@ class AddCustomer extends React.Component {
                   <GridItem md={4}>
                     <TextField
                       name="creditLimit"
-                      label="CreditLimit"
+                      label="Credit Limit"
                       type="number"
                       onChange={this.handleChange}
                       value={creditLimit}
@@ -324,7 +384,7 @@ class AddCustomer extends React.Component {
                   <GridItem md={4}>
                     <TextField
                       name="pstNumber"
-                      label="PST Number"
+                      label={taxTitle}
                       type="text"
                       onChange={this.handleChange}
                       value={pstNumber}

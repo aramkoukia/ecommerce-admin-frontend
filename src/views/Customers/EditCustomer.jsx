@@ -18,6 +18,7 @@ import Card from '../../components/Card/Card';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import CustomerService from '../../services/CustomerService';
 import CustomerSearch from '../Orders/CustomerSearch';
+import SettingsService from '../../services/SettingsService';
 
 class EditCustomer extends React.Component {
   state = {
@@ -45,6 +46,12 @@ class EditCustomer extends React.Component {
       mergeToCustomerId: 0,
       chargePreference: 'None',
     },
+    posDefaulTaxCountry: '',
+    posDefaulTaxProvince: '',
+    provinces: [],
+    stateTitle: '',
+    taxTitle: '',
+    postalCodeTitle: '',
   };
 
   constructor(props) {
@@ -59,11 +66,33 @@ class EditCustomer extends React.Component {
     const { match } = this.props;
     const customerId = match.params.id;
     const customer = await CustomerService.getCustomer(customerId);
+    const setting = await SettingsService.getSettings();
+    const { posDefaulTaxCountry, posDefaulTaxProvince } = setting;
+    let provinces = [];
+    let stateTitle = '';
+    let taxTitle = '';
+    let postalCodeTitle = '';
+    if (posDefaulTaxCountry == 'Canada') {
+      provinces = ['BC', 'AB', 'MB', 'NL', 'NS', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT', 'Other'];
+      stateTitle = 'Province';
+      taxTitle = 'PST Number';
+      postalCodeTitle = 'Postal Code';
+    } else {
+      provinces = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY']
+      stateTitle = 'State';
+      taxTitle = 'Tax Number';
+      postalCodeTitle = 'Zip Code';
+    }
+
     this.setState({
       customer,
       openSnackbar: false,
       snackbarMessage: '',
       snackbarColor: 'info',
+      provinces,
+      stateTitle,
+      taxTitle,
+      postalCodeTitle,
     });
   }
 
@@ -85,7 +114,36 @@ class EditCustomer extends React.Component {
     const { name, value } = event.target;
     currentState[name] = value;
 
-    this.setState({ customer: currentState });
+    if (event.target.name === 'country') {
+      let provinces = [];
+      let stateTitle = '';
+      let taxTitle = '';
+      let province = '';
+      let postalCodeTitle = '';
+      if (event.target.value == 'Canada') {
+        provinces = ['BC', 'AB', 'MB', 'NL', 'NS', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT', 'Other'];
+        stateTitle = 'Province';
+        taxTitle = 'PST Number';
+        postalCodeTitle = 'Postal Code';
+        currentState.province = 'BC';
+      } else {
+        provinces = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY']
+        stateTitle = 'State';
+        taxTitle = 'Tax Number';
+        postalCodeTitle = 'Zip Code'
+        province = 'WA';
+      }
+      this.setState({
+        customer: currentState,
+        provinces,
+        stateTitle,
+        taxTitle,
+        postalCodeTitle,
+        province
+      });
+    } else {
+      this.setState({ customer: currentState });
+    }
   };
 
   handleCheckChange(event) {
@@ -115,6 +173,10 @@ class EditCustomer extends React.Component {
       snackbarMessage,
       snackbarColor,
       customer,
+      provinces,
+      stateTitle,
+      taxTitle,
+      postalCodeTitle,
     } = this.state;
 
     return (
@@ -204,26 +266,16 @@ class EditCustomer extends React.Component {
                   </GridItem>
                   <GridItem md={4}>
                     <FormControl>
-                      <InputLabel htmlFor="province">Province</InputLabel>
+                      <InputLabel htmlFor="province">{stateTitle}</InputLabel>
                       <Select
                         value={customer.province}
                         onChange={this.handleChange}
                         input={<Input name="province" id="province" />}
                         fullWidth="true"
                       >
-                        <MenuItem value="BC">BC</MenuItem>
-                        <MenuItem value="AB">AB</MenuItem>
-                        <MenuItem value="MB">MB</MenuItem>
-                        <MenuItem value="NB">NB</MenuItem>
-                        <MenuItem value="NL">NL</MenuItem>
-                        <MenuItem value="NS">NS</MenuItem>
-                        <MenuItem value="NU">NU</MenuItem>
-                        <MenuItem value="ON">ON</MenuItem>
-                        <MenuItem value="PE">PE</MenuItem>
-                        <MenuItem value="QC">QC</MenuItem>
-                        <MenuItem value="SK">SK</MenuItem>
-                        <MenuItem value="YT">YT</MenuItem>
-                        <MenuItem value="Other">Other</MenuItem>
+                        {provinces.map((p) => (
+                          <MenuItem value={p}>{p}</MenuItem>
+                        ))}
                       </Select>
                     </FormControl>
                   </GridItem>
@@ -250,7 +302,7 @@ class EditCustomer extends React.Component {
                   <GridItem md={4}>
                     <TextField
                       name="postalCode"
-                      label="Postal Code"
+                      label={postalCodeTitle}
                       type="text"
                       onChange={this.handleChange}
                       value={customer.postalCode}
@@ -261,7 +313,7 @@ class EditCustomer extends React.Component {
                   <GridItem md={4}>
                     <TextField
                       name="creditLimit"
-                      label="CreditLimit"
+                      label="Credit Limit"
                       type="number"
                       onChange={this.handleChange}
                       value={customer.creditLimit}
@@ -271,7 +323,7 @@ class EditCustomer extends React.Component {
                   <GridItem md={4}>
                     <TextField
                       name="pstNumber"
-                      label="PST Number"
+                      label={taxTitle}
                       type="text"
                       onChange={this.handleChange}
                       value={customer.pstNumber}
