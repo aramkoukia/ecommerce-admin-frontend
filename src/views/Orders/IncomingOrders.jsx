@@ -277,7 +277,7 @@ export default class IncomingOrders extends React.Component {
             <Card>
               <CardHeader color="primary">
                 <div className={styles.cardTitleWhite}>
-                  Incoming Orders from Veroboard and GEK Power
+                  Incoming Orders from Veroboard Canada, Veroboard USA, and GEK Power
                 </div>
               </CardHeader>
               <CardBody>
