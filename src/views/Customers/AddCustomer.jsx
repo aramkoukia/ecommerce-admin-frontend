@@ -57,21 +57,7 @@ class AddCustomer extends React.Component {
   async componentDidMount() {
     const setting = await SettingsService.getSettings();
     const { posDefaulTaxCountry, posDefaulTaxProvince } = setting;
-    let provinces = [];
-    let stateTitle = '';
-    let taxTitle = '';
-    let postalCodeTitle = '';
-    if (posDefaulTaxCountry == 'Canada') {
-      provinces = ['BC', 'AB', 'MB', 'NL', 'NS', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT', 'Other'];
-      stateTitle = 'Province';
-      taxTitle = 'PST Number';
-      postalCodeTitle = 'Postal Code';
-    } else {
-      provinces = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY']
-      stateTitle = 'State';
-      taxTitle = 'Tax Number';
-      postalCodeTitle = 'Zip Code';
-    }
+    const { provinces, stateTitle, taxTitle, postalCodeTitle } = SettingsService.getCountryInfo(posDefaulTaxCountry, posDefaulTaxProvince);
 
     this.setState({
       openSnackbar: false,
@@ -169,24 +155,9 @@ class AddCustomer extends React.Component {
 
   handleChange = (event) => {
     if (event.target.name === 'country') {
-      let provinces = [];
-      let stateTitle = '';
-      let taxTitle = '';
-      let province = '';
-      let postalCodeTitle = '';
-      if (event.target.value == 'Canada') {
-        provinces = ['BC', 'AB', 'MB', 'NL', 'NS', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT', 'Other'];
-        stateTitle = 'Province';
-        taxTitle = 'PST Number';
-        postalCodeTitle = 'Postal Code';
-        province = 'BC';
-      } else {
-        provinces = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY']
-        stateTitle = 'State';
-        taxTitle = 'Tax Number';
-        postalCodeTitle = 'Zip Code';
-        province = 'WA';
-      }
+      const { posDefaulTaxProvince } = this.state;
+      const { provinces, stateTitle, taxTitle, postalCodeTitle, province } = SettingsService.getCountryInfo(event.target.value, posDefaulTaxProvince);
+
       this.setState({
         [event.target.name]: event.target.value,
         provinces,

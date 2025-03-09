@@ -66,23 +66,8 @@ class EditCustomer extends React.Component {
     const { match } = this.props;
     const customerId = match.params.id;
     const customer = await CustomerService.getCustomer(customerId);
-    const setting = await SettingsService.getSettings();
-    const { posDefaulTaxCountry, posDefaulTaxProvince } = setting;
-    let provinces = [];
-    let stateTitle = '';
-    let taxTitle = '';
-    let postalCodeTitle = '';
-    if (posDefaulTaxCountry == 'Canada') {
-      provinces = ['BC', 'AB', 'MB', 'NL', 'NS', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT', 'Other'];
-      stateTitle = 'Province';
-      taxTitle = 'PST Number';
-      postalCodeTitle = 'Postal Code';
-    } else {
-      provinces = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY']
-      stateTitle = 'State';
-      taxTitle = 'Tax Number';
-      postalCodeTitle = 'Zip Code';
-    }
+    const {posDefaulTaxCountry, posDefaulTaxProvince} = await SettingsService.getSettings();
+    const { provinces, stateTitle, taxTitle, postalCodeTitle } = SettingsService.getCountryInfo(posDefaulTaxCountry, posDefaulTaxProvince);
 
     this.setState({
       customer,
@@ -115,24 +100,8 @@ class EditCustomer extends React.Component {
     currentState[name] = value;
 
     if (event.target.name === 'country') {
-      let provinces = [];
-      let stateTitle = '';
-      let taxTitle = '';
-      let province = '';
-      let postalCodeTitle = '';
-      if (event.target.value == 'Canada') {
-        provinces = ['BC', 'AB', 'MB', 'NL', 'NS', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT', 'Other'];
-        stateTitle = 'Province';
-        taxTitle = 'PST Number';
-        postalCodeTitle = 'Postal Code';
-        currentState.province = 'BC';
-      } else {
-        provinces = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY']
-        stateTitle = 'State';
-        taxTitle = 'Tax Number';
-        postalCodeTitle = 'Zip Code'
-        province = 'WA';
-      }
+      const { provinces, stateTitle, taxTitle, province, postalCodeTitle } = SettingsService.getCountryInfo(currentState.country, currentState.province);
+
       this.setState({
         customer: currentState,
         provinces,
