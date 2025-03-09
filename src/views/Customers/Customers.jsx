@@ -8,12 +8,28 @@ import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import Card from '../../components/Card/Card';
 import CustomerService from '../../services/CustomerService';
+import SettingsService from '../../services/SettingsService';
 
 export default class Customers extends React.Component {
   state = {
     customers: [],
     loading: false,
-    columns: [
+    options: {
+      paging: true,
+      pageSizeOptions: [25, 50, 100],
+      pageSize: 25,
+      columnsButton: true,
+      exportButton: true,
+      filtering: true,
+      search: true,
+    },
+    columns: []
+  };
+
+  async componentDidMount() {
+
+    const settings = SettingsService.getCountryInfo();
+    const columns = [
       {
         title: 'Customer Code',
         field: 'customerCode',
@@ -56,7 +72,7 @@ export default class Customers extends React.Component {
         readonly: true,
       },
       {
-        title: 'PST Number',
+        title: settings.taxTitle,
         field: 'pstNumber',
         readonly: true,
       },
@@ -71,7 +87,7 @@ export default class Customers extends React.Component {
         readonly: true,
       },
       {
-        title: 'PST Exempt',
+        title: settings.taxExemptTitle,
         field: 'pstExempt',
         readonly: true,
       },
@@ -105,19 +121,9 @@ export default class Customers extends React.Component {
         readonly: true,
         hidden: true,
       },
-    ],
-    options: {
-      paging: true,
-      pageSizeOptions: [25, 50, 100],
-      pageSize: 25,
-      columnsButton: true,
-      exportButton: true,
-      filtering: true,
-      search: true,
-    },
-  };
+    ];
 
-  async componentDidMount() {
+    this.setState({ columns });
     await this.customersList();
   }
 
