@@ -38,6 +38,7 @@ import CustomerInfo from './CustomerInfo';
 import OrderService from '../../services/OrderService';
 import CustomerSearch from './CustomerSearch';
 import LocationService from '../../services/LocationService';
+import SettingsService from '../../services/SettingsService';
 import PosSetting from '../../stores/PosSetting';
 
 const styles = {
@@ -124,6 +125,10 @@ export class Order extends React.Component {
       || (this.props.location.state && this.props.location.state.orderId);
 
     const order = await OrderService.getOrderDetail(orderId);
+
+    const { posDefaulTaxCountry, posDefaulTaxProvince } = await SettingsService.getSettings();
+    const countryInfo = SettingsService.getCountryInfo(posDefaulTaxCountry, posDefaulTaxProvince);
+
     await this.getLocations();
 
     this.setState({
@@ -139,6 +144,7 @@ export class Order extends React.Component {
       openUpdateLocationDialog: false,
       locations: [],
       idempotency: uuidv4(),
+      countryInfo,
     });
   }
 
@@ -850,6 +856,7 @@ export class Order extends React.Component {
       openUpdateLocationDialog,
       locations,
       locationId,
+      countryInfo,
     } = this.state;
 
     const localStoreId = PosSetting.getPOSStoreId();
@@ -1029,7 +1036,7 @@ export class Order extends React.Component {
                     <GridItem xs={8}>
                       <GridContainer>
                         <GridItem xs={12}>
-                          <CustomerInfo customer={order.customer} />
+                          <CustomerInfo customer={order.customer} countryInfo={countryInfo} />
                         </GridItem>
                         <GridItem xs={9}>
                           {(order.status === 'Quote' || order.status === 'Paid') && (

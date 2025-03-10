@@ -178,6 +178,7 @@ export default class AddOrder extends React.Component {
     const setting = await SettingsService.getSettings();
     const { posDefaulTaxCountry, posDefaulTaxProvince } = setting;
     const taxes = await TaxService.getTaxes(posDefaulTaxCountry, posDefaulTaxProvince);
+    const {chargeTaxTitle, taxNumberTitle} = SettingsService.getCountryInfo(posDefaulTaxCountry, posDefaulTaxProvince);
 
     this.setState({
       taxes,
@@ -188,6 +189,8 @@ export default class AddOrder extends React.Component {
       userGivenName: '',
       chequeNo: '',
       walkinPricePercent: setting.walkinPricePercent,
+      chargeTaxTitle,
+      taxNumberTitle
     });
 
     const { match, location } = this.props;
@@ -199,9 +202,7 @@ export default class AddOrder extends React.Component {
         if (order.customer.customerId) {
           this.customerChanged(order.customer);
         }
-        // const {
-        //   customer, rows, total, subTotal, notes, taxes, poNumber, authCode,
-        // } = this.state;
+
         this.setState({
           rows: order.orderDetail
             .sort((a, b) => (a.rowOrder > b.rowOrder ? 1 : -1))
@@ -396,19 +397,11 @@ export default class AddOrder extends React.Component {
 
   async customerChanged(customer) {
     const { chargePst } = this.state;
-
-    if (customer.country === 'USA' || customer.country === 'OTHER') {
-      this.setState({
-        taxes: [],
-        allTaxes: [],
-      });
-    } else if (customer && customer.province && customer.province !== 'BC') {
-      const taxes = await TaxService.getTaxes('Canada', customer.province);
-      this.setState({
+    const taxes = await TaxService.getTaxes(customer.country, customer.province);
+    this.setState({
         taxes,
         allTaxes: taxes,
       });
-    }
 
     this.updateTaxes(customer, chargePst);
 
@@ -917,6 +910,8 @@ export default class AddOrder extends React.Component {
       walkinPricePercent,
       loading,
       shippingAddress,
+      chargeTaxTitle,
+      taxNumberTitle,
     } = this.state;
 
     const locationId = Location.getStoreLocation();
@@ -1053,7 +1048,7 @@ export default class AddOrder extends React.Component {
                             </GridItem>
                             <GridItem xs={12} sm={12} md={3}>
                               <CustomInput
-                                labelText="PST Number"
+                                labelText={taxNumberTitle}
                                 formControlProps={{
                                   fullWidth: true,
                                 }}
@@ -1070,7 +1065,7 @@ export default class AddOrder extends React.Component {
                                     value="chargePst"
                                   />
                                 )}
-                                label="Charge PST"
+                                label={chargeTaxTitle}
                               />
                             </GridItem>
                             <GridItem xs={12} sm={12} md={3}>

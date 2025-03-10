@@ -1,4 +1,5 @@
 
+import TaxService from './TaxService';
 import RestUtilities from './RestUtilities';
 
 export default class SettingsService {
@@ -31,6 +32,9 @@ export default class SettingsService {
     let postalCodeTitle = '';
     let taxExemptTitle = '';
     let provinces = [];
+    let chargeTaxTitle = '';
+    let taxChargedTitle = '';
+    let taxAmountTitle = ''
     const posDefaulTaxProvince = province;
     const posDefaulTaxCountry = country;
     if (posDefaulTaxCountry == 'Canada') {
@@ -39,12 +43,18 @@ export default class SettingsService {
       taxTitle = 'PST Number';
       postalCodeTitle = 'Postal Code';
       taxExemptTitle = 'PST Exempt';
+      chargeTaxTitle = 'Charge PST';
+      taxChargedTitle = 'PST Charged';
+      taxAmountTitle = 'PST Amount'
     } else {
       provinces = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY']
       stateTitle = 'State';
       taxTitle = 'Tax Number';
       postalCodeTitle = 'Zip Code';
       taxExemptTitle = 'Tax Exempt';
+      chargeTaxTitle = 'Charge Tax';
+      taxChargedTitle = 'Tax Charged';
+      taxAmountTitle = 'Tax Amount'
     }
 
     return {
@@ -57,6 +67,9 @@ export default class SettingsService {
       postalCodeTitle,
       taxTitle,
       taxExemptTitle,
+      chargeTaxTitle,
+      taxChargedTitle,
+      taxAmountTitle,
     }
   }
 }

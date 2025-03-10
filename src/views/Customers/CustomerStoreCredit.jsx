@@ -18,6 +18,7 @@ import Button from '../../components/CustomButtons/Button';
 import CustomerInfo from '../Orders/CustomerInfo';
 import CustomerService from '../../services/CustomerService';
 import CustomerStoreCreditService from '../../services/CustomerStoreCreditService';
+import SettingsService from '../../services/SettingsService';
 
 function dateFormat(dateString) {
   const date = new Date(dateString);
@@ -58,6 +59,9 @@ export default class CustomerStoreCredit extends React.Component {
     const customer = await CustomerService.getCustomer(customerId);
     const columns = ['amount', 'notes', 'createdDate', 'createdByUserId'];
 
+    const { posDefaulTaxCountry, posDefaulTaxProvince } = await SettingsService.getSettings();
+    const countryInfo = SettingsService.getCountryInfo(posDefaulTaxCountry, posDefaulTaxProvince);
+
     CustomerStoreCreditService.getCustomerStoreCredits(customerId)
       .then((results) => results.map((row) => columns.map((column) => {
         if (column === 'createdDate') {
@@ -69,6 +73,7 @@ export default class CustomerStoreCredit extends React.Component {
 
     this.setState({
       customer,
+      countryInfo,
     });
   }
 
@@ -182,13 +187,14 @@ export default class CustomerStoreCredit extends React.Component {
       snackbarMessage,
       openSnackbar,
       loading,
+      countryInfo,
     } = this.state;
 
     return (
       <div>
         <GridContainer>
           <GridItem xs={10}>
-            <CustomerInfo customer={customer} />
+            <CustomerInfo customer={customer} countryInfo={countryInfo} />
           </GridItem>
           <GridItem>
             <Button color="primary" onClick={this.updateStoreCredit}>

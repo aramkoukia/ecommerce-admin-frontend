@@ -20,7 +20,7 @@ const style = {
   },
 };
 function CustomerInfo(props) {
-  const { classes, customer } = props;
+  const { classes, customer, countryInfo } = props;
   return (
     <Card>
       <CardHeader color="info">
@@ -39,7 +39,7 @@ function CustomerInfo(props) {
         <>
           <Table
             tableHeaderColor="primary"
-            tableHead={['Email', 'Name', 'Company Name', 'Phone Number', 'PST Number']}
+              tableHead={['Email', 'Name', 'Company Name', 'Phone Number', countryInfo && countryInfo.taxTitle]}
             tableData={[
               [customer.email,
                 `${customer.firstName} ${customer.lastName}`,

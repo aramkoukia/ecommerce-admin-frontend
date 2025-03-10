@@ -32,6 +32,7 @@ import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import OrderService from '../../services/OrderService';
 import LocationService from '../../services/LocationService';
+import SettingsService from '../../services/SettingsService';
 import { Order } from './Order';
 
 const generateClassName = createGenerateClassName({
@@ -72,7 +73,39 @@ export default class Orders extends React.Component {
         locationName: 'All',
       },
     ],
-    columns: [
+    columns: [],
+    options: {
+      paging: true,
+      pageSizeOptions: [25, 50, 100],
+      pageSize: 25,
+      columnsButton: true,
+      exportButton: true,
+      filtering: true,
+      search: true,
+      rowStyle: (data) => {
+        if (data.overDue === 'Yes') {
+          return {
+            backgroundColor: '#ffcccc',
+          };
+        }
+      },
+    },
+  };
+
+  constructor(props) {
+    super(props);
+    this.rowClicked = this.rowClicked.bind(this);
+    this.searchClicked = this.searchClicked.bind(this);
+  }
+
+  async componentDidMount() {
+    const { posDefaulTaxCountry, posDefaulTaxProvince } = await SettingsService.getSettings();
+    const { taxChargedTitle, taxAmountTitle } = SettingsService.getCountryInfo(posDefaulTaxCountry, posDefaulTaxProvince);
+
+    const lastMonthDate = new Date().addHours(-8);
+    const fromDate = dateFormat(new Date(lastMonthDate.setMonth(lastMonthDate.getMonth() - 1)));
+    const toDate = dateFormat((new Date()).addHours(-8));
+    const columns = [
       { title: 'Order Id', field: 'orderId' },
       { title: 'Order Date', field: 'orderDate' },
       { title: 'Sub Total', field: 'subTotal' },
@@ -93,7 +126,7 @@ export default class Orders extends React.Component {
       { title: 'Due Date', field: 'dueDate' },
       { title: 'Company Name', field: 'companyName' },
       {
-        title: 'PST Charged',
+        title: taxChargedTitle,
         field: 'pstCharged',
         lookup: {
           Yes: 'Yes',
@@ -101,7 +134,7 @@ export default class Orders extends React.Component {
         },
       },
       {
-        title: 'PST Amount',
+        title: taxAmountTitle,
         field: 'pstAmount',
         hidden: true,
       },
@@ -128,38 +161,12 @@ export default class Orders extends React.Component {
         title: 'Had RMA',
         field: 'rmaReturnOrder',
       },
-    ],
-    options: {
-      paging: true,
-      pageSizeOptions: [25, 50, 100],
-      pageSize: 25,
-      columnsButton: true,
-      exportButton: true,
-      filtering: true,
-      search: true,
-      rowStyle: (data) => {
-        if (data.overDue === 'Yes') {
-          return {
-            backgroundColor: '#ffcccc',
-          };
-        }
-      },
-    },
-  };
+    ];
 
-  constructor(props) {
-    super(props);
-    this.rowClicked = this.rowClicked.bind(this);
-    this.searchClicked = this.searchClicked.bind(this);
-  }
-
-  async componentDidMount() {
-    const lastMonthDate = new Date().addHours(-8);
-    const fromDate = dateFormat(new Date(lastMonthDate.setMonth(lastMonthDate.getMonth() - 1)));
-    const toDate = dateFormat((new Date()).addHours(-8));
     this.setState({
       fromDate,
       toDate,
+      columns,
     });
     await this.getLocations();
     this.ordersList(0, fromDate, toDate);

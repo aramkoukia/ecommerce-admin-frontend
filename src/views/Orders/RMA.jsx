@@ -26,6 +26,7 @@ import CustomerInfo from './CustomerInfo';
 import OrderService from '../../services/OrderService';
 import Location from '../../stores/Location';
 import UserService from '../../services/UserService';
+import SettingsService from '../../services/SettingsService';
 import AuthStore from '../../stores/Auth';
 
 const styles = {
@@ -75,11 +76,15 @@ export class RMA extends React.Component {
       order.orderDetail[i].total = order.orderDetail[i].total * -1;
     }
 
+    const { posDefaulTaxCountry, posDefaulTaxProvince } = await SettingsService.getSettings();
+    const countryInfo = SettingsService.getCountryInfo(posDefaulTaxCountry, posDefaulTaxProvince);
+
     this.setState({
       order,
       rows: order.orderDetail,
       openAuthDialog: true,
       authCode: '',
+      countryInfo,
     });
   }
 
@@ -244,6 +249,7 @@ export class RMA extends React.Component {
       openAuthDialog,
       authCode,
       userGivenName,
+      countryInfo,
     } = this.state;
 
     return (
@@ -313,7 +319,7 @@ export class RMA extends React.Component {
                     />
                   </GridItem>
                   <GridItem xs={8}>
-                    <CustomerInfo customer={order.customer} />
+                      <CustomerInfo customer={order.customer} countryInfo={countryInfo} />
                   </GridItem>
                   <GridItem xs={4}>
                     <OrderNotes order={order} />

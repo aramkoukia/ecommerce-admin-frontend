@@ -18,6 +18,7 @@ import OrderService from '../../services/OrderService';
 import CustomerInfo from '../Orders/CustomerInfo';
 import CustomerOrderSummary from './CustomerOrderSummary';
 import CustomerService from '../../services/CustomerService';
+import SettingsService from '../../services/SettingsService';
 
 function dateFormat(dateString) {
   const date = new Date(dateString);
@@ -60,12 +61,16 @@ export default class Customer extends React.Component {
     const fromDate = dateFormat(new Date(lastMonthDate.setMonth(lastMonthDate.getMonth() - 12)));
     const toDate = dateFormat((new Date()).addHours(-8));
 
+    const { posDefaulTaxCountry, posDefaulTaxProvince } = await SettingsService.getSettings();
+    const countryInfo = SettingsService.getCountryInfo(posDefaulTaxCountry, posDefaulTaxProvince);
+
     this.setState({
       customer,
       customerOrderSummary,
       loading: false,
       fromDate,
       toDate,
+      countryInfo,
     });
 
     this.ordersList(customerId, fromDate, toDate);
@@ -113,8 +118,10 @@ export default class Customer extends React.Component {
   }
 
   ordersList(customerId, fromDate, toDate) {
-    const columns = ['locationName', 'orderId', 'orderDate', 'subTotal', 'total', 'status', 'poNumber', 'paidAmount', 'givenName'];
+    const columns = ['locationName',
+      'orderId', 'orderDate', 'subTotal', 'total', 'status', 'poNumber', 'paidAmount', 'givenName'];
     this.setState({ loading: true });
+
     OrderService.getCustomerOrdersByDate(customerId, fromDate, toDate)
       .then((results) => results.map((row) => columns.map((column) => row[column] || '')))
       .then((data) => this.setState({ orders: data, loading: false }));
@@ -217,13 +224,14 @@ export default class Customer extends React.Component {
       loading,
       fromDate,
       toDate,
+      countryInfo,
     } = this.state;
 
     return (
       <div>
         <GridContainer>
           <GridItem xs={12}>
-            <CustomerInfo customer={customer} />
+            <CustomerInfo customer={customer} countryInfo={countryInfo} />
           </GridItem>
           <GridItem xs={10}>
             <CustomerOrderSummary customerOrderSummary={customerOrderSummary} />
