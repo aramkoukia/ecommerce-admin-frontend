@@ -61,8 +61,8 @@ export default class Customer extends React.Component {
     const fromDate = dateFormat(new Date(lastMonthDate.setMonth(lastMonthDate.getMonth() - 12)));
     const toDate = dateFormat((new Date()).addHours(-8));
 
-    const { posDefaulTaxCountry, posDefaulTaxProvince } = await SettingsService.getSettings();
-    const countryInfo = SettingsService.getCountryInfo(posDefaulTaxCountry, posDefaulTaxProvince);
+    const { posDefaultTaxCountry, posDefaultTaxProvince } = await SettingsService.getSettings();
+    const countryInfo = SettingsService.getCountryInfo(posDefaultTaxCountry, posDefaultTaxProvince);
 
     this.setState({
       customer,

@@ -35,9 +35,9 @@ export default class SettingsService {
     let chargeTaxTitle = '';
     let taxChargedTitle = '';
     let taxAmountTitle = ''
-    const posDefaulTaxProvince = province;
-    const posDefaulTaxCountry = country;
-    if (posDefaulTaxCountry == 'Canada') {
+    const posDefaultTaxProvince = province;
+    const posDefaultTaxCountry = country;
+    if (posDefaultTaxCountry == 'Canada') {
       provinces = ['BC', 'AB', 'MB', 'NL', 'NS', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT', 'Other'];
       stateTitle = 'Province';
       taxTitle = 'PST Number';
@@ -58,8 +58,8 @@ export default class SettingsService {
     }
 
     return {
-      posDefaulTaxCountry,
-      posDefaulTaxProvince,
+      posDefaultTaxCountry,
+      posDefaultTaxProvince,
       country,
       provinces,
       province,

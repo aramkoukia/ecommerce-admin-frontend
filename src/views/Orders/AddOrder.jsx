@@ -176,9 +176,9 @@ export default class AddOrder extends React.Component {
 
   async componentDidMount() {
     const setting = await SettingsService.getSettings();
-    const { posDefaulTaxCountry, posDefaulTaxProvince } = setting;
-    const taxes = await TaxService.getTaxes(posDefaulTaxCountry, posDefaulTaxProvince);
-    const {chargeTaxTitle, taxNumberTitle} = SettingsService.getCountryInfo(posDefaulTaxCountry, posDefaulTaxProvince);
+    const { posDefaultTaxCountry, posDefaultTaxProvince } = setting;
+    const taxes = await TaxService.getTaxes(posDefaultTaxCountry, posDefaultTaxProvince);
+    const {chargeTaxTitle, taxNumberTitle} = SettingsService.getCountryInfo(posDefaultTaxCountry, posDefaultTaxProvince);
 
     this.setState({
       taxes,

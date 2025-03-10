@@ -46,8 +46,8 @@ class EditCustomer extends React.Component {
       mergeToCustomerId: 0,
       chargePreference: 'None',
     },
-    posDefaulTaxCountry: '',
-    posDefaulTaxProvince: '',
+    posDefaultTaxCountry: '',
+    posDefaultTaxProvince: '',
     provinces: [],
     stateTitle: '',
     taxTitle: '',
@@ -66,8 +66,8 @@ class EditCustomer extends React.Component {
     const { match } = this.props;
     const customerId = match.params.id;
     const customer = await CustomerService.getCustomer(customerId);
-    const {posDefaulTaxCountry, posDefaulTaxProvince} = await SettingsService.getSettings();
-    const { provinces, stateTitle, taxTitle, postalCodeTitle } = SettingsService.getCountryInfo(posDefaulTaxCountry, posDefaulTaxProvince);
+    const {posDefaultTaxCountry, posDefaultTaxProvince} = await SettingsService.getSettings();
+    const { provinces, stateTitle, taxTitle, postalCodeTitle } = SettingsService.getCountryInfo(posDefaultTaxCountry, posDefaultTaxProvince);
 
     this.setState({
       customer,

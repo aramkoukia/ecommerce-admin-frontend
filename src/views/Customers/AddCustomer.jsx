@@ -39,8 +39,8 @@ class AddCustomer extends React.Component {
     creditCardOnFile: false,
     disabled: false,
     chargePreference: 'None',
-    posDefaulTaxCountry: '',
-    posDefaulTaxProvince: '',
+    posDefaultTaxCountry: '',
+    posDefaultTaxProvince: '',
     provinces: [],
     stateTitle: '',
     taxTitle:'',
@@ -56,17 +56,17 @@ class AddCustomer extends React.Component {
 
   async componentDidMount() {
     const setting = await SettingsService.getSettings();
-    const { posDefaulTaxCountry, posDefaulTaxProvince } = setting;
-    const { provinces, stateTitle, taxTitle, postalCodeTitle } = SettingsService.getCountryInfo(posDefaulTaxCountry, posDefaulTaxProvince);
+    const { posDefaultTaxCountry, posDefaultTaxProvince } = setting;
+    const { provinces, stateTitle, taxTitle, postalCodeTitle } = SettingsService.getCountryInfo(posDefaultTaxCountry, posDefaultTaxProvince);
 
     this.setState({
       openSnackbar: false,
       snackbarMessage: '',
       snackbarColor: 'info',
-      country: posDefaulTaxCountry,
-      province: posDefaulTaxProvince,
-      posDefaulTaxCountry,
-      posDefaulTaxProvince,
+      country: posDefaultTaxCountry,
+      province: posDefaultTaxProvince,
+      posDefaultTaxCountry,
+      posDefaultTaxProvince,
       provinces,
       stateTitle,
       taxTitle,
@@ -93,8 +93,8 @@ class AddCustomer extends React.Component {
       creditCardOnFile,
       chargePreference,
       disabled,
-      posDefaulTaxCountry,
-      posDefaulTaxProvince,
+      posDefaultTaxCountry,
+      posDefaultTaxProvince,
     } = this.state;
 
     const customer = {
@@ -129,10 +129,10 @@ class AddCustomer extends React.Component {
       companyName: '',
       phoneNumber: '',
       mobile: '',
-      country: posDefaulTaxCountry,
+      country: posDefaultTaxCountry,
       address: '',
       city: '',
-      province: posDefaulTaxProvince,
+      province: posDefaultTaxProvince,
       postalCode: '',
       pstNumber: '',
       notes: '',
@@ -155,8 +155,8 @@ class AddCustomer extends React.Component {
 
   handleChange = (event) => {
     if (event.target.name === 'country') {
-      const { posDefaulTaxProvince } = this.state;
-      const { provinces, stateTitle, taxTitle, postalCodeTitle, province } = SettingsService.getCountryInfo(event.target.value, posDefaulTaxProvince);
+      const { posDefaultTaxProvince } = this.state;
+      const { provinces, stateTitle, taxTitle, postalCodeTitle, province } = SettingsService.getCountryInfo(event.target.value, posDefaultTaxProvince);
 
       this.setState({
         [event.target.name]: event.target.value,
