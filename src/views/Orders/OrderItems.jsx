@@ -55,7 +55,7 @@ function OrderItems(props) {
               <TableCell numeric>Amount</TableCell>
               <TableCell numeric>Unit Price</TableCell>
               <TableCell numeric>Discount</TableCell>
-              <TableCell numeric>Total Price (After discount)</TableCell>
+              <TableCell numeric align="right">Total Price (After discount)</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -77,7 +77,7 @@ function OrderItems(props) {
                   <TableCell numeric align="right">{row.amount}</TableCell>
                   <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
                   <TableCell numeric>{ccyFormat(row.totalDiscount)}</TableCell>
-                  <TableCell numeric>{ccyFormat(row.total)}</TableCell>
+                  <TableCell numeric align="right">{ccyFormat(row.total)}</TableCell>
                 </TableRow>
               ))}
           </TableBody>
@@ -89,25 +89,25 @@ function OrderItems(props) {
               <TableBody>
                 <TableRow></TableRow>
                 <TableRow>
-                  <TableCell colspan="2">Subtotal (after discount)</TableCell>
-                  <TableCell numeric>{ccyFormat(order.subTotal)}</TableCell>
+                  <TableCell colspan="2" align="right">Subtotal (after discount)</TableCell>
+                  <TableCell numeric align="right">{ccyFormat(order.subTotal)}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell colspan="2">Total Discount</TableCell>
-                  <TableCell numeric>
+                  <TableCell colspan="2" align="right">Total Discount</TableCell>
+                  <TableCell numeric align="right">
                     {ccyFormat(order.orderDetail.map((item) => item.totalDiscount).reduce((prev, next) => prev + next, 0))}
                   </TableCell>
                 </TableRow>
                 {(order.status === 'Return' || order.status === 'RMA') && (
                 <TableRow>
-                  <TableCell><b>Re-Stocking Fee (%)</b></TableCell>
-                  <TableCell numeric>
+                  <TableCell align="right"><b>Re-Stocking Fee (%)</b></TableCell>
+                  <TableCell numeric align="right">
                     <b>
                       {order.restockingFeePercent}
                       %
                     </b>
                   </TableCell>
-                  <TableCell numeric>
+                  <TableCell numeric align="right">
                     <b>
                       {ccyFormat(order.restockingFeeAmount)}
                     </b>
@@ -116,14 +116,14 @@ function OrderItems(props) {
                 )}
                 {order.orderTax.map((tax) => (
                   <TableRow>
-                    <TableCell>{tax.tax.taxName}</TableCell>
-                    <TableCell numeric>{`${(tax.tax.percentage).toFixed(0)} %`}</TableCell>
-                    <TableCell numeric>{ccyFormat(tax.taxAmount)}</TableCell>
+                    <TableCell align="right">{tax.tax.taxName}</TableCell>
+                    <TableCell align="right" numeric>{`${(tax.tax.percentage).toFixed(0)} %`}</TableCell>
+                    <TableCell align="right" numeric>{ccyFormat(tax.taxAmount)}</TableCell>
                   </TableRow>
                 ))}
                 <TableRow>
-                  <TableCell colspan="2"><h3>Total</h3></TableCell>
-                  <TableCell numeric>
+                  <TableCell colspan="2" align="right"><h3>Total</h3></TableCell>
+                  <TableCell numeric align="right">
                     <Success>
                       <h3>
                         {ccyFormat(order.total)}
@@ -144,7 +144,7 @@ function OrderItems(props) {
                 <TableCell><h4>{dateFormat(orderPayment.paymentDate)}</h4></TableCell>
                 <TableCell><h4>{orderPayment.paymentType.paymentTypeName}</h4></TableCell>
                 <TableCell><h4>{orderPayment.chequeNo}</h4></TableCell>
-                <TableCell numeric><h4>{ccyFormat(orderPayment.paymentAmount)}</h4></TableCell>
+                <TableCell numeric align="right"><h4>{ccyFormat(orderPayment.paymentAmount)}</h4></TableCell>
               </TableRow>
             ))}
           </TableBody>

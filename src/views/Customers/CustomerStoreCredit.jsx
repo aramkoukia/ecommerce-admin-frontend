@@ -59,8 +59,8 @@ export default class CustomerStoreCredit extends React.Component {
     const customer = await CustomerService.getCustomer(customerId);
     const columns = ['amount', 'notes', 'createdDate', 'createdByUserId'];
 
-    const { posDefaulTaxCountry, posDefaulTaxProvince } = await SettingsService.getSettings();
-    const countryInfo = SettingsService.getCountryInfo(posDefaulTaxCountry, posDefaulTaxProvince);
+    const { posDefaultTaxCountry, posDefaultTaxProvince } = await SettingsService.getSettings();
+    const countryInfo = SettingsService.getCountryInfo(posDefaultTaxCountry, posDefaultTaxProvince);
 
     CustomerStoreCreditService.getCustomerStoreCredits(customerId)
       .then((results) => results.map((row) => columns.map((column) => {

@@ -10,15 +10,12 @@ import Chip from '@material-ui/core/Chip';
 import Print from '@material-ui/icons/Print';
 import Email from '@material-ui/icons/Email';
 import CloudUpload from '@material-ui/icons/CloudUpload';
-import CloudDownload from '@material-ui/icons/CloudDownload';
-import Delete from '@material-ui/icons/Delete';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -30,7 +27,6 @@ import CardBody from '../../components/Card/CardBody';
 import CardFooter from '../../components/Card/CardFooter';
 import Snackbar from '../../components/Snackbar/Snackbar';
 import GridContainer from '../../components/Grid/GridContainer';
-import FileUpload from '../../components/ImageUpload/FileUpload';
 import GridItem from '../../components/Grid/GridItem';
 import OrderNotes from './OrderNotes';
 import OrderItems from './OrderItems';
@@ -40,6 +36,7 @@ import CustomerSearch from './CustomerSearch';
 import LocationService from '../../services/LocationService';
 import SettingsService from '../../services/SettingsService';
 import PosSetting from '../../stores/PosSetting';
+import OrderAttachments from './OrderAttachments';
 
 const styles = {
   chip: {
@@ -104,19 +101,11 @@ export class Order extends React.Component {
     this.editQuote = this.editQuote.bind(this);
     this.updatePayment = this.updatePayment.bind(this);
     this.updateLocationClicked = this.updateLocationClicked.bind(this);
-    this.attachmentDialogClicked = this.attachmentDialogClicked.bind(this);
-    this.deleteAttachmentConfirmedClicked = this.deleteAttachmentConfirmedClicked.bind(this);
-    this.deleteAttachmentClicked = this.deleteAttachmentClicked.bind(this);
-    this.uploadAttachmentClicked = this.uploadAttachmentClicked.bind(this);
-    this.downloadAttachmentClicked = this.downloadAttachmentClicked.bind(this);
-    this.handleAttachmentClose = this.handleAttachmentClose.bind(this);
-    this.handleConfirmationClose = this.handleConfirmationClose.bind(this);
     this.payByMonerisClicked = this.payByMonerisClicked.bind(this);
     this.updateLocation = this.updateLocation.bind(this);
     this.handleUpdateLocationClose = this.handleUpdateLocationClose.bind(this);
     this.handleLocationChange = this.handleLocationChange.bind(this);
     this.saveAsAccountClicked = this.saveAsAccountClicked.bind(this);
-    this.handleFileChange = this.handleFileChange.bind(this);
   }
 
   async componentDidMount() {
@@ -126,8 +115,8 @@ export class Order extends React.Component {
 
     const order = await OrderService.getOrderDetail(orderId);
 
-    const { posDefaulTaxCountry, posDefaulTaxProvince } = await SettingsService.getSettings();
-    const countryInfo = SettingsService.getCountryInfo(posDefaulTaxCountry, posDefaulTaxProvince);
+    const { posDefaultTaxCountry, posDefaultTaxProvince } = await SettingsService.getSettings();
+    const countryInfo = SettingsService.getCountryInfo(posDefaultTaxCountry, posDefaultTaxProvince);
 
     await this.getLocations();
 
@@ -662,72 +651,9 @@ export class Order extends React.Component {
     });
   }
 
-  async uploadAttachmentClicked() {
-    const { order, orderFile } = this.state;
-    const formData = new FormData();
-    formData.append('file', orderFile);
-
-    order.attachmentPath = orderFile.name;
-    this.setState({
-      loading: true,
-    });
-
-    await OrderService.uploadAttachment(order.orderId, formData);
-    this.setState({
-      openAttachmentDialog: false,
-      orderFile: null,
-      loading: false,
-      order,
-    });
-  }
-
-  async downloadAttachmentClicked() {
-    const { order } = this.state;
-    this.setState({
-      loading: true,
-    });
-
-    await OrderService.downloadAttachment(order.orderId, order.attachmentPath);
-    this.setState({
-      loading: false,
-    });
-  }
-
-  handleConfirmationClose() {
-    this.setState({
-      openDeleteConfirmation: false,
-    });
-  }
-
-  deleteAttachmentClicked() {
-    this.setState({
-      openDeleteConfirmation: true,
-    });
-  }
-
-  async deleteAttachmentConfirmedClicked() {
-    const { order } = this.state;
-    this.setState({
-      loading: true,
-    });
-    order.attachmentPath = null;
-    await OrderService.deleteAttachment(order.orderId);
-    this.setState({
-      loading: false,
-      order,
-      openDeleteConfirmation: false,
-    });
-  }
-
   handleAttachmentClose() {
     this.setState({
       openAttachmentDialog: false,
-    });
-  }
-
-  handleFileChange(images) {
-    this.setState({
-      orderFile: images && images.length > 0 ? images[0] : null,
     });
   }
 
@@ -835,9 +761,6 @@ export class Order extends React.Component {
     const {
       order, openSnackbar, snackbarMessage, snackbarColor, loading,
       openDialog,
-      openAttachmentDialog,
-      openDeleteConfirmation,
-      existingFile,
       openEmailDialog,
       customerEmail,
       chequeNo,
@@ -892,34 +815,6 @@ export class Order extends React.Component {
                           <span><br />{'Return of Invoice #:'} {order.originalOrderId}</span>
                     )}
                   </GridItem>
-                  <GridItem xs={6} sm={6} md={6}>
-                    {order.attachmentPath && (
-                      <Button size="small" color="info" disabled={loading} onClick={this.downloadAttachmentClicked}>
-                        <CloudDownload />
-                        Download Attachment
-                      </Button>
-                    )}
-                   {order.attachmentPath && (
-                      <Button size="small" color="warning" disabled={loading} onClick={this.attachmentDialogClicked}>
-                        <CloudUpload />
-                        &nbsp;
-                        Replace Attachment
-                      </Button>
-                     )}
-                    {!order.attachmentPath && (
-                      <Button size="small" color="success" disabled={loading} onClick={this.attachmentDialogClicked}>
-                        <CloudUpload />
-                        &nbsp;
-                        Attach File
-                      </Button>
-                    )}
-                    {order.attachmentPath && (
-                      <Button size="small" color="error" disabled={loading} onClick={this.deleteAttachmentClicked}>
-                        <Delete />
-                        Delete Attachment
-                      </Button>
-                    )}
-                    </GridItem>
                   </GridContainer>
                 </CardHeader>
                 <CardBody>
@@ -1052,6 +947,9 @@ export class Order extends React.Component {
                     </GridItem>
                     <GridItem xs={4}>
                       <OrderNotes order={order} />
+                    </GridItem>
+                    <GridItem xs={12}>
+                        <OrderAttachments orderId={order.orderId} />
                     </GridItem>
                   </GridContainer>
                 </CardBody>
@@ -1358,7 +1256,7 @@ export class Order extends React.Component {
               </Button>
             </DialogActions>
           </Dialog>
-          <Dialog
+          {/* <Dialog
             open={openAttachmentDialog}
               onClose={this.handleAttachmentClose}
             aria-labelledby="form-dialog-title"
@@ -1388,8 +1286,8 @@ export class Order extends React.Component {
                 Attach
               </Button>
             </DialogActions>
-          </Dialog>
-            <Dialog
+          </Dialog> */}
+            {/* <Dialog
               open={openDeleteConfirmation}
               onClose={this.handleConfirmationClose}
             >
@@ -1407,7 +1305,7 @@ export class Order extends React.Component {
                 </Button>
               </DialogActions>
             </Dialog>
-
+ */}
 
         </div>
         ) }

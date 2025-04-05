@@ -10,6 +10,7 @@ import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import Success from '../../components/Typography/Success';
+import TaxesTable from './TaxesTable';
 
 function ccyFormat(num) {
   return `${num.toFixed(2)} $`;
@@ -246,15 +247,15 @@ export default class ReturnOrderItems extends React.Component {
                   ))}
               <TableRow>
                 <TableCell rowSpan={6} />
-                <TableCell colSpan={3}>Subtotal (after discount)</TableCell>
+                <TableCell colSpan={4}>Subtotal (after discount)</TableCell>
                 <TableCell numeric>{ccyFormat(subTotal)}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell colSpan={3}>Total Discount</TableCell>
+                <TableCell colSpan={4}>Total Discount</TableCell>
                 <TableCell numeric>{ccyFormat(totalDiscount)}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell><b>Re-Stocking Fee (%)</b></TableCell>
+                <TableCell colSpan={3}><b>Re-Stocking Fee (%)</b></TableCell>
                 <TableCell numeric>
                   <TextField
                     name="restockingFeePercent"
@@ -271,16 +272,12 @@ export default class ReturnOrderItems extends React.Component {
                   </b>
                 </TableCell>
               </TableRow>
-              {taxes.map((tax) => (
-                <TableRow>
-                  <TableCell>{tax.tax.taxName}</TableCell>
-                  <TableCell numeric>{`${(tax.tax.percentage).toFixed(0)} %`}</TableCell>
-                  <TableCell numeric>{ccyFormat((tax.tax.percentage / 100) * subTotal)}</TableCell>
-                </TableRow>
-              ))}
+
+                <TaxesTable taxes={taxes} subTotal={subTotal} />
+
               <TableRow>
                 <TableCell colSpan={3}><h4>Refund Total</h4></TableCell>
-                <TableCell numeric><Success><h4>{ccyFormat(total)}</h4></Success></TableCell>
+                <TableCell colSpan={2} numeric align="right"><Success><h4>{ccyFormat(total)}</h4></Success></TableCell>
               </TableRow>
                 {order.orderPayment && order.orderPayment.map((orderPayment) => (
                   <TableRow>

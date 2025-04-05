@@ -20,6 +20,7 @@ import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import IconButton from '@material-ui/core/IconButton';
 import PropTypes from 'prop-types';
 import Success from '../../components/Typography/Success';
+import TaxesTable from './TaxesTable';
 // import {DraggableComponent, DroppableComponent} from './DragableComponent'
 
 export default class OrderTable extends React.Component {
@@ -375,7 +376,7 @@ export default class OrderTable extends React.Component {
               <TableCell numeric>Unit Price ($)</TableCell>
               <TableCell>Discount</TableCell>
               <TableCell />
-              <TableCell numeric>Total Price ($)</TableCell>
+              <TableCell numeric align="right">Total Price ($)</TableCell>
             </TableRow>
           </TableHead>
           <TableBody
@@ -544,51 +545,25 @@ export default class OrderTable extends React.Component {
                       labelPlacement="end"
                     />
                   </TableCell>
-                  <TableCell size="small" numeric padding="none">
+                  <TableCell align="right" size="small" numeric>
                     {this.ccyFormat(row.salesPrice * row.qty)}
                   </TableCell>
                 </TableRow>
               ))}
             <TableRow style={{ 'background-color': 'lightgray' }}>
-              <TableCell />
-              <TableCell />
-              <TableCell />
-              <TableCell />
-              <TableCell />
-              <TableCell>Total Discount</TableCell>
-              <TableCell />
-              <TableCell numeric>{this.ccyFormat(totalDiscount)}</TableCell>
+              <TableCell colspan={6} align="right">Total Discount</TableCell>
+              <TableCell colspan={2} align="right" numeric>{this.ccyFormat(totalDiscount)}</TableCell>
             </TableRow>
             <TableRow style={{ 'background-color': 'lightgray' }}>
-              <TableCell />
-              <TableCell />
-              <TableCell />
-              <TableCell />
-              <TableCell />
-              <TableCell>Subtotal</TableCell>
-              <TableCell />
-              <TableCell numeric>{this.ccyFormat(subTotal)}</TableCell>
+              <TableCell colspan={6} align="right">Subtotal</TableCell>
+              <TableCell colspan={2} align="right" numeric>{this.ccyFormat(subTotal)}</TableCell>
             </TableRow>
-            {taxes && taxes.map((tax) => (
-              <TableRow>
-                <TableCell />
-                <TableCell />
-                <TableCell />
-                <TableCell />
-                <TableCell />
-                <TableCell>{tax.taxName}</TableCell>
-                <TableCell numeric>{`${(tax.percentage).toFixed(0)} %`}</TableCell>
-                <TableCell numeric>{this.ccyFormat((tax.percentage / 100) * subTotal)}</TableCell>
-              </TableRow>
-            ))}
+
+              <TaxesTable taxes={taxes} subTotal={subTotal} />
+
             <TableRow>
-              <TableCell />
-              <TableCell />
-              <TableCell />
-              <TableCell />
-              <TableCell />
-              <TableCell><h4>Total</h4></TableCell>
-              <TableCell align="right" colspan="2" numeric><Success><h4>{this.ccyFormat(total)}</h4></Success></TableCell>
+              <TableCell colspan={6} align="right"><h4>Total</h4></TableCell>
+              <TableCell colspan="2" align="right" numeric><Success><h4>{this.ccyFormat(total)}</h4></Success></TableCell>
             </TableRow>
           </TableBody>
         </Table>

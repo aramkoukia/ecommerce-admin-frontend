@@ -99,8 +99,8 @@ export default class Orders extends React.Component {
   }
 
   async componentDidMount() {
-    const { posDefaulTaxCountry, posDefaulTaxProvince } = await SettingsService.getSettings();
-    const { taxChargedTitle, taxAmountTitle } = SettingsService.getCountryInfo(posDefaulTaxCountry, posDefaulTaxProvince);
+    const { posDefaultTaxCountry, posDefaultTaxProvince } = await SettingsService.getSettings();
+    const { taxChargedTitle, taxAmountTitle } = SettingsService.getCountryInfo(posDefaultTaxCountry, posDefaultTaxProvince);
 
     const lastMonthDate = new Date().addHours(-8);
     const fromDate = dateFormat(new Date(lastMonthDate.setMonth(lastMonthDate.getMonth() - 1)));
@@ -148,10 +148,6 @@ export default class Orders extends React.Component {
       {
         title: 'Ship To',
         field: 'shippingAddress',
-      },
-      {
-        title: 'Attachment',
-        field: 'attachmentPath',
       },
       {
         title: 'Returned RMA or Invoice',
@@ -271,10 +267,10 @@ export default class Orders extends React.Component {
               <TableHead>
                 <TableRow>
                   <TableCell>Product</TableCell>
-                  <TableCell numeric>Amount</TableCell>
-                  <TableCell numeric>Unit Price</TableCell>
-                  <TableCell numeric>Discount</TableCell>
-                  <TableCell numeric>Total Price (After discount)</TableCell>
+                  <TableCell numeric align="right">Amount</TableCell>
+                  <TableCell numeric align="right">Unit Price</TableCell>
+                  <TableCell numeric align="right">Discount</TableCell>
+                  <TableCell numeric align="right">Total Price (After discount)</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -287,9 +283,9 @@ export default class Orders extends React.Component {
                       )}
                     </TableCell>
                     <TableCell numeric align="right">{row.amount}</TableCell>
-                    <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
-                    <TableCell numeric>{ccyFormat(row.totalDiscount)}</TableCell>
-                    <TableCell numeric>{ccyFormat(row.total)}</TableCell>
+                    <TableCell numeric align="right">{ccyFormat(row.unitPrice)}</TableCell>
+                    <TableCell numeric align="right">{ccyFormat(row.totalDiscount)}</TableCell>
+                    <TableCell numeric align="right">{ccyFormat(row.total)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

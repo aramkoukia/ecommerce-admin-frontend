@@ -76,8 +76,8 @@ export class RMA extends React.Component {
       order.orderDetail[i].total = order.orderDetail[i].total * -1;
     }
 
-    const { posDefaulTaxCountry, posDefaulTaxProvince } = await SettingsService.getSettings();
-    const countryInfo = SettingsService.getCountryInfo(posDefaulTaxCountry, posDefaulTaxProvince);
+    const { posDefaultTaxCountry, posDefaultTaxProvince } = await SettingsService.getSettings();
+    const countryInfo = SettingsService.getCountryInfo(posDefaultTaxCountry, posDefaultTaxProvince);
 
     this.setState({
       order,

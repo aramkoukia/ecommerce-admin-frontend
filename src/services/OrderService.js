@@ -38,6 +38,52 @@ export default class OrderService {
     }
   }
 
+  static async uploadAttachmentV2(orderId, orderFile) {
+    try {
+      const response = await RestUtilities.postForm(
+        `orders/${orderId}/attach-to-invoice-v2`,
+        orderFile,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async downloadAttachmentV2(orderId, id, fileName) {
+    try {
+      const response = await RestUtilities.requestAnyBlob(
+        `orders/${orderId}/invoice-attachment-v2/${id}`,
+        fileName,
+      );
+      return response;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async deleteAttachmentV2(orderId, id) {
+    try {
+      const response = await RestUtilities.get(
+        `orders/${orderId}/delete-attachment-v2/${id}/`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async getOrderAttachments(orderId) {
+    try {
+      const response = await RestUtilities.get(
+        `orders/${orderId}/order-attachments`,
+      );
+      return response.content;
+    } catch (err) {
+      return false;
+    }
+  }
+
   static async saveOrder(order, idempotency) {
     try {
       const response = await RestUtilities.post(
