@@ -107,6 +107,7 @@ function createRow(productId, productName, salesPrice, productPackages, id) {
     package: pkg,
     amountInMainPackage,
     rowOrder: id,
+    itemNotes: '',
   };
 }
 
