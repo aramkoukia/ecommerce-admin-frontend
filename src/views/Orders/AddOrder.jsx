@@ -142,6 +142,9 @@ export default class AddOrder extends React.Component {
     loading: false,
     idempotency: uuidv4(),
     shippingAddress: '',
+    defaultTax: 13.5,
+    defaultTaxName: 'Sales Tax',
+    noTaxForLocation: false,
   };
 
   constructor(props) {
@@ -173,12 +176,14 @@ export default class AddOrder extends React.Component {
     this.cancelOrder = this.cancelOrder.bind(this);
     this.customerSaved = this.customerSaved.bind(this);
     this.handleCustomerDialogClose = this.handleCustomerDialogClose.bind(this);
+    this.taxPercentChanged = this.taxPercentChanged.bind(this);
+    this.taxNameChanged = this.taxNameChanged.bind(this);
   }
 
   async componentDidMount() {
     const setting = await SettingsService.getSettings();
     const { posDefaultTaxCountry, posDefaultTaxProvince } = setting;
-    const taxes = await TaxService.getTaxes(posDefaultTaxCountry, posDefaultTaxProvince);
+    const taxes = await this.getTaxes(posDefaultTaxCountry, posDefaultTaxProvince);
     const {chargeTaxTitle, taxNumberTitle} = SettingsService.getCountryInfo(posDefaultTaxCountry, posDefaultTaxProvince);
 
     this.setState({
@@ -237,6 +242,47 @@ export default class AddOrder extends React.Component {
         });
       }
     }
+  }
+
+  async getTaxes(posDefaultTaxCountry, posDefaultTaxProvince) {
+    const { defaultTax, defaultTaxName } = this.state;
+    const taxes = await TaxService.getTaxes(posDefaultTaxCountry, posDefaultTaxProvince);
+    const tax = { taxId: 0, taxName: defaultTaxName, percentage: defaultTax };
+    if (taxes.length == 0) {
+      taxes.push(tax);
+      this.setState({ noTaxForLocation: true });
+    } else {
+      this.setState({ noTaxForLocation: false });
+    }
+    return taxes;
+  }
+
+  taxPercentChanged(taxPercent) {
+    const { taxes, defaultTaxName } = this.state;
+    let taxName = '';
+    if (taxes && taxes.length == 1) {
+      taxName = taxes[0].taxName;
+    } else {
+      taxName = defaultTaxName;
+    }
+
+    const tax = { taxId: 0, taxName, percentage: taxPercent };
+    const newTaxes = [tax];
+    this.setState({ taxes: newTaxes });
+  }
+
+  taxNameChanged(taxName) {
+    const { taxes, defaultTaxPercent } = this.state;
+    let taxPercent = '';
+    if (taxes && taxes.length == 1) {
+        taxPercent = taxes[0].taxPercent;
+    } else {
+      taxPercent = defaultTaxPercent;
+    }
+
+    const tax = { taxId: 0, taxName, percentage: taxPercent };
+    const newTaxes = [tax];
+    this.setState({ taxes: newTaxes });
   }
 
   getOrderPayments() {
@@ -574,6 +620,8 @@ export default class AddOrder extends React.Component {
       {
         taxId: tax.taxId,
         taxAmount: (tax.percentage / 100) * subTotal,
+        taxPercentage: tax.percentage,
+        taxName: tax.taxName,
       }));
 
     let orderPayment = [];
@@ -913,6 +961,7 @@ export default class AddOrder extends React.Component {
       shippingAddress,
       chargeTaxTitle,
       taxNumberTitle,
+      noTaxForLocation,
     } = this.state;
 
     const locationId = Location.getStoreLocation();
@@ -1104,6 +1153,9 @@ export default class AddOrder extends React.Component {
                       discountPercent={discountPercent}
                       priceChanged={this.priceChanged}
                       productRemoved={this.productRemoved}
+                      taxPercentChanged={this.taxPercentChanged}
+                      taxNameChanged={this.taxNameChanged}
+                      noTaxForLocation={noTaxForLocation}
                     />
                   </GridItem>
                 </GridContainer>

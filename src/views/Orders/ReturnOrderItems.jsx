@@ -57,6 +57,8 @@ export default class ReturnOrderItems extends React.Component {
     const { restockingFeePercent } = this.state;
     this.handleQuantityChanged = this.handleQuantityChanged.bind(this);
     this.handleRestockingFeeChanged = this.handleRestockingFeeChanged.bind(this);
+    this.taxPercentChanged = this.taxPercentChanged.bind(this);
+    this.taxNameChanged = this.taxNameChanged.bind(this);
 
     const totalDiscount = this.discount(rows);
     const subTotal = this.subtotal(rows, totalDiscount);
@@ -77,7 +79,15 @@ export default class ReturnOrderItems extends React.Component {
     this.setState({
       [name]: event.target.value,
     });
-  };
+  }
+
+  taxPercentChanged(taxPercent) {
+    this.props.taxPercentChanged(taxPercent);
+  }
+
+  taxNameChanged(taxPercent) {
+    this.props.taxNameChanged(taxPercent);
+  }
 
   handleRestockingFeeChanged(event) {
     const { taxes, priceChanged } = this.props;
@@ -155,12 +165,12 @@ export default class ReturnOrderItems extends React.Component {
   }
 
   total(subTotal, taxes, restockingFeeAmount) {
-    const totalTax = taxes.map(({ tax }) => (tax.percentage / 100) * (subTotal + restockingFeeAmount)).reduce((sum, i) => sum + i, 0);
+    const totalTax = taxes.map((tax) => (tax.percentage / 100) * (subTotal + restockingFeeAmount)).reduce((sum, i) => sum + i, 0);
     return (subTotal + totalTax) + restockingFeeAmount;
   }
 
   render() {
-    const { taxes, order } = this.props;
+    const { taxes, order, noTaxForLocation } = this.props;
     const {
       orderRows, total, subTotal, totalDiscount,
       restockingFeePercent,
@@ -184,79 +194,80 @@ export default class ReturnOrderItems extends React.Component {
               </TableRow>
             </TableHead>
             {orderRows && taxes && (
-            <TableBody>
-                {orderRows
-                  // .sort((a, b) => (a.rowOrder > b.rowOrder ? 1 : -1))
-                  .map((row) => (
-                    <TableRow key={row.id}>
-                      <TableCell>
-                        {row.product.productName}
-                        {row.package && (
-                          ` ( pkg: ${row.package} ) ${row.amountInMainPackage}x`
+              <TableBody>
+                {orderRows.map((row) => (
+                  <TableRow key={row.id}>
+                    <TableCell>
+                      {row.product.productName}
+                      {row.package && (
+                        ` ( pkg: ${row.package} ) ${row.amountInMainPackage}x`
+                      )}
+                    </TableCell>
+                    <TableCell numeric align="right">
+                      <TextField
+                        name={row.id}
+                        value={row.amount}
+                        onChange={this.handleQuantityChanged}
+                        type="number"
+                        inputProps={{
+                          min: '0',
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell align="right" numeric>{ccyFormat(row.unitPrice)}</TableCell>
+                    <TableCell align="right">
+                      {row.discountType === 'amount'
+                        && (
+                          <div>
+                            <TextField
+                              disabled
+                              name={row.id}
+                              value={row.discountAmount}
+                              onChange={this.handleDiscountAmountChanged}
+                              type="number"
+                              style={{ width: 50 }}
+                            />
+                            <div>
+                              $
+                            </div>
+                          </div>
                         )}
-                      </TableCell>
-                      <TableCell numeric align="right">
-                        <TextField
-                          name={row.id}
-                          value={row.amount}
-                          onChange={this.handleQuantityChanged}
-                          type="number"
-                          inputProps={{
-                            min: '0',
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell numeric>{ccyFormat(row.unitPrice)}</TableCell>
-                      <TableCell>
-                        {row.discountType === 'amount'
-                      && (
-                      <div>
-                        <TextField
-                          disabled
-                          name={row.id}
-                          value={row.discountAmount}
-                          onChange={this.handleDiscountAmountChanged}
-                          type="number"
-                          style={{ width: 50 }}
-                        />
-                        <div>
-                          $
-                        </div>
-                      </div>
-                      )}
-                        {row.discountType === 'percent'
-                      && (
-                      <div>
-                        <TextField
-                          disabled
-                          name={row.id}
-                          value={row.discountPercent}
-                          onChange={this.handleDiscountPercentChanged}
-                          type="number"
-                          style={{ width: 50 }}
-                        />
-                        <div>
-                          %
-                        </div>
-                      </div>
-                      )}
-                      </TableCell>
-                      <TableCell numeric>{ccyFormat(row.totalDiscount)}</TableCell>
-                      <TableCell numeric>{ccyFormat(row.total)}</TableCell>
-                    </TableRow>
-                  ))}
-              <TableRow>
-                <TableCell rowSpan={6} />
-                <TableCell colSpan={4}>Subtotal (after discount)</TableCell>
-                <TableCell numeric>{ccyFormat(subTotal)}</TableCell>
+                      {row.discountType === 'percent'
+                        && (
+                          <div>
+                            <TextField
+                              disabled
+                              name={row.id}
+                              value={row.discountPercent}
+                              onChange={this.handleDiscountPercentChanged}
+                              type="number"
+                              style={{ width: 50 }}
+                            />
+                            <div>
+                              %
+                            </div>
+                          </div>
+                        )}
+                    </TableCell>
+                    <TableCell align="right" numeric>{ccyFormat(row.totalDiscount)}</TableCell>
+                    <TableCell align="right" numeric>{ccyFormat(row.total)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>)}
+          </Table>
+          <Table>
+            <TableBody>
+              <TableRow style={{ 'background-color': 'lightgray' }}>
+                <TableCell colSpan={6} align="right">Subtotal (after discount)</TableCell>
+                <TableCell colSpan={2} numeric align="right">{ccyFormat(subTotal)}</TableCell>
               </TableRow>
-              <TableRow>
-                <TableCell colSpan={4}>Total Discount</TableCell>
-                <TableCell numeric>{ccyFormat(totalDiscount)}</TableCell>
+              <TableRow style={{ 'background-color': 'lightgray' }}>
+                <TableCell colSpan={6} align="right">Total Discount</TableCell>
+                <TableCell colSpan={2} numeric align="right">{ccyFormat(totalDiscount)}</TableCell>
               </TableRow>
-              <TableRow>
-                <TableCell colSpan={3}><b>Re-Stocking Fee (%)</b></TableCell>
-                <TableCell numeric>
+              <TableRow style={{ 'background-color': 'lightgray' }}>
+                <TableCell colSpan={6} align="right"><b>Re-Stocking Fee (%)</b></TableCell>
+                <TableCell colSpan={1} numeric align="right">
                   <TextField
                     name="restockingFeePercent"
                     value={restockingFeePercent}
@@ -266,30 +277,35 @@ export default class ReturnOrderItems extends React.Component {
                   />
                   {' %'}
                 </TableCell>
-                <TableCell numeric>
+                <TableCell numeric align="right">
                   <b>
                     {ccyFormat(restockingFeeAmount)}
                   </b>
                 </TableCell>
               </TableRow>
 
-                <TaxesTable taxes={taxes} subTotal={subTotal} />
+              <TaxesTable
+                taxes={taxes}
+                subTotal={subTotal}
+                taxPercentChanged={this.taxPercentChanged}
+                taxNameChanged={this.taxNameChanged}
+                noTaxForLocation={noTaxForLocation}
+              />
 
               <TableRow>
-                <TableCell colSpan={3}><h4>Refund Total</h4></TableCell>
+                <TableCell colSpan={6} align="right"><h4>Refund Total</h4></TableCell>
                 <TableCell colSpan={2} numeric align="right"><Success><h4>{ccyFormat(total)}</h4></Success></TableCell>
               </TableRow>
                 {order.orderPayment && order.orderPayment.map((orderPayment) => (
                   <TableRow>
-                    <TableCell><h4>Payment</h4></TableCell>
-                    <TableCell><h4>{dateFormat(orderPayment.paymentDate)}</h4></TableCell>
-                    <TableCell><h4>{orderPayment.paymentType.paymentTypeName}</h4></TableCell>
-                    <TableCell><h4>{orderPayment.chequeNo}</h4></TableCell>
-                    <TableCell numeric><h4>{ccyFormat(orderPayment.paymentAmount)}</h4></TableCell>
+                    <TableCell colSpan={4} align="right"><h4>Payment</h4></TableCell>
+                    <TableCell align="right"><h4>{dateFormat(orderPayment.paymentDate)}</h4></TableCell>
+                    <TableCell align="right"><h4>{orderPayment.paymentType.paymentTypeName}</h4></TableCell>
+                    <TableCell align="right"><h4>{orderPayment.chequeNo}</h4></TableCell>
+                    <TableCell align="right" numeric><h4>{ccyFormat(orderPayment.paymentAmount)}</h4></TableCell>
                   </TableRow>
                 ))}
             </TableBody>
-            )}
           </Table>
         </CardBody>
       </Card>

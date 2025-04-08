@@ -9,7 +9,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Chip from '@material-ui/core/Chip';
 import Print from '@material-ui/icons/Print';
 import Email from '@material-ui/icons/Email';
-import CloudUpload from '@material-ui/icons/CloudUpload';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';

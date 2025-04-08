@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
@@ -12,45 +13,59 @@ const style = {
 };
 
 class TaxesTable extends React.Component {
-  state = {
-    taxPercent: 0,
-  };
-
   constructor(props) {
     super(props);
   }
 
   async componentDidMount() {
+    this.handleTaxNameChange = this.handleTaxNameChange.bind(this);
+    this.handleTaxPercentChange = this.handleTaxPercentChange.bind(this);
   }
 
-  handleChange = (name) => (event, { newValue }) => {
+  handleTaxPercentChange(event) {
+    this.props.taxPercentChanged(Number(event.target.value));
     this.setState({
-      [name]: newValue,
+      [event.target.name]: event.target.value,
     });
-  };
+  }
+
+  handleTaxNameChange(event) {
+    this.props.taxNameChanged(event.target.value);
+    this.setState({
+      [event.target.name]: event.target.value,
+    });
+  }
 
   render() {
-    const { taxes, subTotal } = this.props;
-    const { taxPercent } = this.state;
-    if (taxes && taxes.length === 0) {
-      return (<TableRow>
+    const { taxes, subTotal, noTaxForLocation } = this.props;
+    if (noTaxForLocation) {
+      return (taxes && taxes.length > 0 && taxes.map((tax) => (
+        <TableRow>
         <TableCell colspan={4}></TableCell>
-        <TableCell colspan={2} align="right">Sales Tax</TableCell>
-        <TableCell align="right">
-          <TextField
-            name="taxPerent"
-            value={taxPercent}
-            onChange={this.handleChange}
-            type="number"
-            style={{ width: 70 }}
-          />
-          {' %'}
-        </TableCell>
-        <TableCell numeric align="right" colspan={2}>{ccyFormat((Number(taxPercent) / 100) * Number(subTotal))}</TableCell>
-      </TableRow>)
+          <TableCell colspan={2} align="right">
+            <TextField
+              name="taxName"
+              value={tax.taxName}
+              onChange={this.handleTaxNameChange}
+              type="string"
+              style={{ width: 200 }}
+            />
+          </TableCell>
+          <TableCell align="right">
+            <TextField
+              name="taxPerent"
+              value={tax.percentage}
+              onChange={this.handleTaxPercentChange}
+              type="number"
+              style={{ width: 70 }}
+            />
+            {' %'}
+          </TableCell>
+          <TableCell numeric align="right" colspan={2}>{ccyFormat((Number(tax.percentage) / 100) * Number(subTotal))}</TableCell>
+      </TableRow>)))
     }
     else {
-      return (taxes && taxes.map((tax) => (
+      return (taxes && taxes.length > 0 && taxes.map((tax) => (
         <TableRow>
           <TableCell colspan={4}></TableCell>
           <TableCell align="right" colspan={2}>{tax.taxName}</TableCell>
@@ -62,5 +77,9 @@ class TaxesTable extends React.Component {
     }
   }
 }
+
+TaxesTable.propTypes = {
+  taxPercentChanged: PropTypes.func,
+};
 
 export default withStyles(style)(TaxesTable);

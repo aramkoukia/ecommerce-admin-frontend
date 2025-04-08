@@ -83,7 +83,7 @@ function OrderItems(props) {
           </TableBody>
         </Table>
         <GridContainer>
-          <GridItem md={6} />
+          <GridItem md={6}/>
           <GridItem md={6}>
             <Table className={classes.table}>
               <TableBody>
@@ -116,9 +116,17 @@ function OrderItems(props) {
                 )}
                 {order.orderTax.map((tax) => (
                   <TableRow>
-                    <TableCell align="right">{tax.tax.taxName}</TableCell>
-                    <TableCell align="right" numeric>{`${(tax.tax.percentage).toFixed(0)} %`}</TableCell>
-                    <TableCell align="right" numeric>{ccyFormat(tax.taxAmount)}</TableCell>
+                    <TableCell align="right">
+                      {tax.tax && (tax.tax.taxName)}
+                      {!tax.tax && tax.taxName && (tax.taxName)}
+                    </TableCell>
+                    <TableCell align="right" numeric>
+                      {tax.tax && `${(tax.tax.percentage).toFixed(0)} %`}
+                      {!tax.tax && `${(tax.taxPercentage).toFixed(2)} %`}
+                    </TableCell>
+                    <TableCell align="right" numeric>
+                      {ccyFormat(tax.taxAmount)}
+                    </TableCell>
                   </TableRow>
                 ))}
                 <TableRow>

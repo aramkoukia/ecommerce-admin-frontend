@@ -66,6 +66,9 @@ export class Return extends React.Component {
     restockingFeePercent: 10,
     restockingFeeAmount: 0,
     idempotency: uuidv4(),
+    defaultTax: 13.5,
+    defaultTaxName: 'Sales Tax',
+    noTaxForLocation: false,
   };
 
   constructor(props) {
@@ -79,6 +82,8 @@ export class Return extends React.Component {
     this.handleCheckChange = this.handleCheckChange.bind(this);
     this.handleAuthCodeChange = this.handleAuthCodeChange.bind(this);
     this.returnToCustomerAccount = this.returnToCustomerAccount.bind(this);
+    this.taxPercentChanged = this.taxPercentChanged.bind(this);
+    this.taxNameChanged = this.taxNameChanged.bind(this);
   }
 
   async componentDidMount() {
@@ -99,6 +104,12 @@ export class Return extends React.Component {
       authCode: '',
       countryInfo,
     });
+  }
+
+  taxNameChanged(taxName) {
+  }
+
+  taxPercentChanged(taxPercent) {
   }
 
   getOrderPayments() {
@@ -424,6 +435,7 @@ export class Return extends React.Component {
       countryInfo,
     } = this.state;
 
+    const taxes = order && order.orderTax && order.orderTax.map(tax => tax.tax);
     return (
       <div>
         { order && (
@@ -477,10 +489,13 @@ export class Return extends React.Component {
                       <ReturnOrderItems
                         order={order}
                         rows={order.orderDetail}
-                        taxes={order.orderTax}
+                        taxes={taxes}
                         discountAmount={order.discountAmount}
                         discountPercent={order.discountPercent}
                         priceChanged={this.priceChanged}
+                        taxPercentChanged={this.taxPercentChanged}
+                        taxNameChanged={this.taxNameChanged}
+                        noTaxForLocation={false}
                       />
                     )}
                   </GridItem>

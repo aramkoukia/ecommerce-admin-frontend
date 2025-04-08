@@ -47,6 +47,8 @@ export default class OrderTable extends React.Component {
     this.handleRowUp = this.handleRowUp.bind(this);
     this.handleRowDown = this.handleRowDown.bind(this);
     this.handleProductPackageChanged = this.handleProductPackageChanged.bind(this);
+    this.taxPercentChanged = this.taxPercentChanged.bind(this);
+    this.taxNameChanged = this.taxNameChanged.bind(this);
     // this.onDragEnd = this.onDragEnd.bind(this);
   }
 
@@ -277,6 +279,22 @@ export default class OrderTable extends React.Component {
     productRemoved(Number(event.currentTarget.name));
   }
 
+  taxPercentChanged(taxPercent) {
+    const { subTotal } = this.state;
+    const { taxes, taxPercentChanged, priceChanged } = this.props;
+    const total = this.total(subTotal, taxes);
+    this.setState({
+      total,
+    });
+
+    taxPercentChanged(taxPercent);
+    priceChanged(subTotal, total);
+  }
+
+  taxNameChanged(taxName) {
+    this.props.taxNameChanged(taxName);
+  }
+
   handleRowUp(event) {
     const { orderRows } = this.state;
     const rowNumber = Number(event.currentTarget.name);
@@ -351,7 +369,7 @@ export default class OrderTable extends React.Component {
   }
 
   total(subTotal, taxes) {
-    if (taxes) {
+    if (taxes && taxes.length > 0) {
       const totalTax = taxes.map(({ percentage }) => (percentage / 100) * subTotal).reduce((sum, i) => sum + i, 0);
       return subTotal + totalTax;
     }
@@ -359,7 +377,7 @@ export default class OrderTable extends React.Component {
   }
 
   render() {
-    const { taxes } = this.props;
+    const { taxes, noTaxForLocation } = this.props;
     const {
       orderRows, total, subTotal, totalDiscount,
     } = this.state;
@@ -558,7 +576,12 @@ export default class OrderTable extends React.Component {
               <TableCell colspan={2} align="right" numeric>{this.ccyFormat(subTotal)}</TableCell>
             </TableRow>
 
-              <TaxesTable taxes={taxes} subTotal={subTotal} />
+            <TaxesTable
+              taxes={taxes}
+              subTotal={subTotal}
+              taxPercentChanged={this.taxPercentChanged}
+              taxNameChanged={this.taxNameChanged}
+              noTaxForLocation={noTaxForLocation} />
 
             <TableRow>
               <TableCell colspan={6} align="right"><h4>Total</h4></TableCell>
