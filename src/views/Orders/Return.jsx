@@ -281,6 +281,8 @@ export class Return extends React.Component {
       {
         taxId: tax.taxId,
         taxAmount: (tax.tax.percentage / 100) * subTotal,
+        taxPercentage: tax.tax.percentage,
+        taxName: tax.tax.taxName,
       }));
 
     let orderPayment = [];

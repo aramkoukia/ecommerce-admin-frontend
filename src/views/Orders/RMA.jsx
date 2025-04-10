@@ -170,6 +170,8 @@ export class RMA extends React.Component {
       {
         taxId: tax.taxId,
         taxAmount: (tax.tax.percentage / 100) * subTotal,
+        taxPercentage: tax.tax.percentage,
+        taxName: tax.taxName,
       }));
 
     const returnOrder = {
@@ -252,6 +254,8 @@ export class RMA extends React.Component {
       countryInfo,
     } = this.state;
 
+    const taxes = order && order.orderTax && order.orderTax.map(tax => tax.tax);
+
     return (
       <div>
         { order && (
@@ -296,7 +300,7 @@ export class RMA extends React.Component {
                       <ReturnOrderItems
                         order={order}
                         rows={order.orderDetail}
-                        taxes={order.orderTax}
+                        taxes={taxes}
                         discountAmount={order.discountAmount}
                         discountPercent={order.discountPercent}
                         priceChanged={this.priceChanged}

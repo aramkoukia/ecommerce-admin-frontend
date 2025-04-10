@@ -69,7 +69,7 @@ class TaxesTable extends React.Component {
         <TableRow>
           <TableCell colspan={4}></TableCell>
           <TableCell align="right" colspan={2}>{tax.taxName}</TableCell>
-          <TableCell align="right" numeric>{`${(tax.percentage).toFixed(0)} %`}</TableCell>
+          <TableCell align="right" numeric>{`${(tax.percentage).toFixed(2)} %`}</TableCell>
           <TableCell align="right" numeric>{ccyFormat((tax.percentage / 100) * subTotal)}</TableCell>
         </TableRow>
       ))
