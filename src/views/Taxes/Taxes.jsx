@@ -1,28 +1,64 @@
 import React from 'react';
-import MUIDataTable from 'mui-datatables';
-import GridItem from '../../components/Grid/GridItem';
+import MaterialTable from 'material-table';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Check from '@material-ui/icons/Check';
+import Portal from '@material-ui/core/Portal';
 import GridContainer from '../../components/Grid/GridContainer';
 import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
+import GridItem from '../../components/Grid/GridItem';
+import Snackbar from '../../components/Snackbar/Snackbar';
 import TaxService from '../../services/TaxService';
-// import AddLocation from "views/Locations/AddLocation";
 
 export default class Taxes extends React.Component {
+  state = {
+    taxes: [],
+    openDialog: false,
+    openPasswordDialog: false,
+    selectedRow: null,
+    openSnackbar: false,
+    snackbarMessage: '',
+    snackbarColor: 'info',
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = { taxes: [] };
+    this.handleUpdate = this.handleUpdate.bind(this);
   }
 
   componentDidMount() {
     this.taxesList();
   }
 
+  async handleUpdate() {
+    const {
+      selectedRow,
+    } = this.state;
+
+    const tax = {
+      email: selectedRow.email,
+    };
+
+    const result = await TaxService.updateTax(tax);
+    if (result) {
+      this.setState({
+        openSnackbar: true,
+        snackbarMessage: 'Tax successfully updated!',
+        snackbarColor: 'success',
+      });
+    }
+
+    this.setState({
+      openDialog: false,
+      selectedRow: null,
+    });
+
+    window.location.reload();
+  }
+
   taxesList() {
-    const columns = ['taxName', 'country', 'province', 'percentage', 'effectiveDate'];
     TaxService.getAllTaxes()
-      .then((results) => results.map((row) => columns.map((column) => row[column] || '')))
       .then((data) => this.setState({ taxes: data }));
   }
 
@@ -57,15 +93,55 @@ export default class Taxes extends React.Component {
       },
     };
 
-    const columns = ['Tax Name', 'Country', 'Province', 'Percentage (%)', 'Effective Date'];
+    const columns = [
+      {
+        title: 'Tax Name',
+        field: 'taxName',
+        readonly: true,
+        editable: 'never',
+      },
+      {
+        title: 'Country',
+        field: 'country',
+        readonly: true,
+        editable: 'never',
+      },
+      {
+        title: 'Province',
+        field: 'province',
+        readonly: true,
+        editable: 'never',
+      },
+      {
+        title: 'Percentage',
+        field: 'percentage',
+      },
+      {
+        title: 'Tax Id',
+        field: 'taxId',
+        hidden: true,
+        readonly: true,
+        editable: 'never',
+      },
+    ];
 
     const options = {
-      filterType: 'checkbox',
-      rowsPerPageOptions: [25, 50, 100],
-      rowsPerPage: 25,
+      paging: true,
+      pageSizeOptions: [25, 50, 100],
+      pageSize: 25,
+      columnsButton: true,
+      exportButton: true,
+      filtering: true,
+      search: true,
     };
 
-    const { taxes } = this.state;
+    const {
+      taxes,
+      openSnackbar,
+      snackbarMessage,
+      snackbarColor,
+      loading,
+    } = this.state;
 
     return (
       <div>
@@ -76,18 +152,42 @@ export default class Taxes extends React.Component {
                 <div className={styles.cardTitleWhite}>Taxes</div>
               </CardHeader>
               <CardBody>
-                <MUIDataTable
-                  data={taxes}
+                <MaterialTable
                   columns={columns}
+                  data={taxes}
                   options={options}
+                  title=""
+                  editable={{
+                    onRowUpdate: (newData, oldData) => new Promise((resolve) => {
+                      setTimeout(() => {
+                        {
+                          const index = taxes.indexOf(oldData);
+                          taxes[index] = newData;
+                          TaxService.updateTax(newData);
+                          this.setState({ taxes }, () => resolve());
+                        }
+                        resolve();
+                      }, 1000);
+                    }),
+                  }}
                 />
+                {loading && (<LinearProgress />)}
               </CardBody>
             </Card>
           </GridItem>
         </GridContainer>
+        <Portal>
+          <Snackbar
+            place="tl"
+            color={snackbarColor}
+            icon={Check}
+            message={snackbarMessage}
+            open={openSnackbar}
+            closeNotification={() => this.setState({ openSnackbar: false })}
+            close
+          />
+        </Portal>
       </div>
     );
   }
 }
-
-// export default withStyles(styles)(Customers);
