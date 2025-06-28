@@ -276,18 +276,28 @@ export default class OrderTable extends React.Component {
 
   handleProductRemoved(event) {
     const { productRemoved } = this.props;
-    productRemoved(Number(event.currentTarget.name));
+    const { orderRows } = this.state;
+    const id = Number(event.currentTarget.name);
+    productRemoved(id);
+    const newOrderRows = orderRows.filter((row) => row.id !== id);
+    newOrderRows.forEach(function (row, i) {
+      row.rowOrder = i + 1;
+      row.id = i + 1;
+    });
+
+    this.setState({
+      orderRows: newOrderRows
+    });
   }
 
   taxPercentChanged(taxPercent) {
     const { subTotal } = this.state;
-    const { taxes, taxPercentChanged, priceChanged } = this.props;
+    const { taxes, priceChanged } = this.props;
+    this.props.taxPercentChanged(taxPercent);
     const total = this.total(subTotal, taxes);
     this.setState({
       total,
     });
-
-    taxPercentChanged(taxPercent);
     priceChanged(subTotal, total);
   }
 

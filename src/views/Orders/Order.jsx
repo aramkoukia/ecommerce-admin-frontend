@@ -387,8 +387,9 @@ export class Order extends React.Component {
 
   editQuote() {
     const orderId = this.props.orderId
-      || this.props.location.state.orderId
-      || this.props.match.params.id;
+      || (this.props.match && this.props.match.params.id)
+      || (this.props.location && this.props.location.state && this.props.location.state.orderId);
+
     const { order } = this.state;
 
     if (order.status === 'Quote') {
