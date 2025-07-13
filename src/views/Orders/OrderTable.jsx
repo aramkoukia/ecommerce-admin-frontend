@@ -420,6 +420,7 @@ export default class OrderTable extends React.Component {
                       aria-label="Move Down"
                       name={row.id}
                       onClick={this.handleRowUp}
+                      disabled={index===0}
                     >
                     <ArrowUpward
                       padding="none"
@@ -436,6 +437,7 @@ export default class OrderTable extends React.Component {
                       name={row.id}
                       padding="none"
                       onClick={this.handleRowDown}
+                      disabled={index === orderRows.length - 1}
                     >
                     <ArrowDownward
                       padding="none"
