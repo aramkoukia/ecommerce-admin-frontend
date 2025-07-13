@@ -306,52 +306,60 @@ export default class OrderTable extends React.Component {
   }
 
   handleRowUp(event) {
-    const { orderRows } = this.state;
-    const rowNumber = Number(event.currentTarget.name);
-    // if it is first one, do nothing
-    if (rowNumber === 1) {
-      return
+    try {
+      const { orderRows } = this.state;
+      const rowNumber = Number(event.currentTarget.name);
+      // if it is first one, do nothing
+      if (rowNumber === 1) {
+        return
+      }
+
+      const newOrderRows = this.reorder(
+        orderRows,
+        rowNumber - 1,
+        rowNumber - 2
+      );
+
+      newOrderRows.forEach(function (row, i) {
+        row.rowOrder = i + 1;
+        row.id = i + 1;
+      });
+
+      this.setState({
+        orderRows: newOrderRows
+      });
+    } catch(ex) {
+      alert(ex.toString());
     }
-
-    const newOrderRows = this.reorder(
-      orderRows,
-      rowNumber - 1,
-      rowNumber - 2
-    );
-
-    newOrderRows.forEach(function (row, i) {
-      row.rowOrder = i + 1;
-      row.id = i + 1;
-    });
-
-    this.setState({
-      orderRows: newOrderRows
-    });
   }
 
   handleRowDown(event) {
-    // if it is last one, do nothing
-    const { orderRows } = this.state;
-    const rowNumber = Number(event.currentTarget.name);
+    try {
+      // if it is last one, do nothing
+      const { orderRows } = this.state;
+      const rowNumber = Number(event.currentTarget.name);
 
-    if (rowNumber === orderRows.length) {
-      return;
+      if (rowNumber === orderRows.length) {
+        return;
+      }
+
+      const newOrderRows = this.reorder(
+        orderRows,
+        rowNumber - 1,
+        rowNumber
+      );
+
+      newOrderRows.forEach(function (row, i) {
+        row.rowOrder = i + 1;
+        row.id = i + 1;
+      });
+
+      this.setState({
+        orderRows: newOrderRows
+      });
+    } catch (ex) {
+      alert(ex.toString());
     }
-
-    const newOrderRows = this.reorder(
-      orderRows,
-      rowNumber-1,
-      rowNumber
-    );
-
-    newOrderRows.forEach(function (row, i) {
-      row.rowOrder = i + 1;
-      row.id = i + 1;
-    });
-
-     this.setState({
-       orderRows: newOrderRows
-     });
   }
 
   ccyFormat(num) {
