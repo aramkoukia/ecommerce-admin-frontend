@@ -73,14 +73,6 @@ export default class OrderTable extends React.Component {
     }
   }
 
-  reorder = (list, startIndex, endIndex) => {
-    const result = Array.from(list)
-    const [removed] = result.splice(startIndex, 1)
-    result.splice(endIndex, 0, removed)
-
-    return result
-  }
-
   // onDragEnd(result) {
   //   // dropped outside the list
   //   if (!result.destination) {
@@ -284,7 +276,6 @@ export default class OrderTable extends React.Component {
       row.rowOrder = i + 1;
       row.id = i + 1;
     });
-
     this.setState({
       orderRows: newOrderRows
     });
@@ -306,60 +297,13 @@ export default class OrderTable extends React.Component {
   }
 
   handleRowUp(event) {
-    try {
-      const { orderRows } = this.state;
-      const rowNumber = Number(event.currentTarget.name);
-      // if it is first one, do nothing
-      if (rowNumber === 1) {
-        return
-      }
-
-      const newOrderRows = this.reorder(
-        orderRows,
-        rowNumber - 1,
-        rowNumber - 2
-      );
-
-      newOrderRows.forEach(function (row, i) {
-        row.rowOrder = i + 1;
-        row.id = i + 1;
-      });
-
-      this.setState({
-        orderRows: newOrderRows
-      });
-    } catch(ex) {
-      alert(ex.toString());
-    }
+    const { productUp } = this.props;
+    productUp(event.currentTarget.name);
   }
 
   handleRowDown(event) {
-    try {
-      // if it is last one, do nothing
-      const { orderRows } = this.state;
-      const rowNumber = Number(event.currentTarget.name);
-
-      if (rowNumber === orderRows.length) {
-        return;
-      }
-
-      const newOrderRows = this.reorder(
-        orderRows,
-        rowNumber - 1,
-        rowNumber
-      );
-
-      newOrderRows.forEach(function (row, i) {
-        row.rowOrder = i + 1;
-        row.id = i + 1;
-      });
-
-      this.setState({
-        orderRows: newOrderRows
-      });
-    } catch (ex) {
-      alert(ex.toString());
-    }
+    const { productDown } = this.props;
+    productDown(event.currentTarget.name)
   }
 
   ccyFormat(num) {

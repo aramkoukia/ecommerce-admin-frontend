@@ -153,6 +153,8 @@ export default class AddOrder extends React.Component {
     this.productChanged = this.productChanged.bind(this);
     this.priceChanged = this.priceChanged.bind(this);
     this.productRemoved = this.productRemoved.bind(this);
+    this.productUp = this.productUp.bind(this);
+    this.productDown = this.productDown.bind(this);
     this.customerChanged = this.customerChanged.bind(this);
     this.clearCustomer = this.clearCustomer.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -446,9 +448,9 @@ export default class AddOrder extends React.Component {
     const { chargePst } = this.state;
     const taxes = await TaxService.getTaxes(customer.country, customer.province);
     this.setState({
-        taxes,
-        allTaxes: taxes,
-      });
+      taxes,
+      allTaxes: taxes,
+    });
 
     this.updateTaxes(customer, chargePst);
 
@@ -783,6 +785,72 @@ export default class AddOrder extends React.Component {
     this.setState({
       rows: rows.filter((row) => row.id !== id),
     });
+  }
+
+  reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list)
+    const [removed] = result.splice(startIndex, 1)
+    result.splice(endIndex, 0, removed)
+
+    return result
+  }
+
+  productDown(id) {
+    const { rows } = this.state;
+    try {
+      // if it is last one, do nothing
+      const rowNumber = Number(id);
+
+      if (rowNumber === rows.length) {
+        return;
+      }
+
+      const newOrderRows = this.reorder(
+        rows,
+        rowNumber - 1,
+        rowNumber
+      );
+
+      newOrderRows.forEach(function (row, i) {
+        row.rowOrder = i + 1;
+        row.id = i + 1;
+      });
+
+      this.setState({
+        rows: newOrderRows
+      });
+    } catch (ex) {
+      alert(ex.toString());
+    }
+  }
+
+  productUp(id) {
+    const { rows } = this.state;
+
+    try {
+      const rowNumber = Number(id);
+      // if it is first one, do nothing
+      if (rowNumber === 1) {
+        return
+      }
+
+      const newOrderRows = this.reorder(
+        rows,
+        rowNumber - 1,
+        rowNumber - 2
+      );
+
+      newOrderRows.forEach(function (row, i) {
+        row.rowOrder = i + 1;
+        row.id = i + 1;
+      });
+
+      this.setState({
+        rows: newOrderRows
+      });
+    } catch(ex) {
+      alert(ex.toString());
+    }
   }
 
   productChanged(product) {
@@ -1153,6 +1221,8 @@ export default class AddOrder extends React.Component {
                       discountPercent={discountPercent}
                       priceChanged={this.priceChanged}
                       productRemoved={this.productRemoved}
+                      productUp={this.productUp}
+                      productDown={this.productDown}
                       taxPercentChanged={this.taxPercentChanged}
                       taxNameChanged={this.taxNameChanged}
                       noTaxForLocation={noTaxForLocation}
