@@ -268,17 +268,8 @@ export default class OrderTable extends React.Component {
 
   handleProductRemoved(event) {
     const { productRemoved } = this.props;
-    const { orderRows } = this.state;
     const id = Number(event.currentTarget.name);
     productRemoved(id);
-    const newOrderRows = orderRows.filter((row) => row.id !== id);
-    newOrderRows.forEach(function (row, i) {
-      row.rowOrder = i + 1;
-      row.id = i + 1;
-    });
-    this.setState({
-      orderRows: newOrderRows
-    });
   }
 
   taxPercentChanged(taxPercent) {
@@ -416,7 +407,8 @@ export default class OrderTable extends React.Component {
                     <TextField
                       padding="none"
                       multiline
-                      rowsMax={3}
+                      rowsMax={4}
+                      style={{ 'min-width': '500px' }}
                       name={row.id}
                       label="Notes"
                       type="text"

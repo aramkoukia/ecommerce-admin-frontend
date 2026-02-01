@@ -782,8 +782,15 @@ export default class AddOrder extends React.Component {
 
   productRemoved(id) {
     const { rows } = this.state;
+
+    const newOrderRows = rows.filter((row) => row.id !== id);
+    newOrderRows.forEach(function (row, i) {
+      row.rowOrder = i + 1;
+      row.id = i + 1;
+    });
+
     this.setState({
-      rows: rows.filter((row) => row.id !== id),
+      rows: newOrderRows
     });
   }
 
