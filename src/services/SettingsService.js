@@ -38,7 +38,7 @@ export default class SettingsService {
     const posDefaultTaxProvince = province;
     const posDefaultTaxCountry = country;
     if (posDefaultTaxCountry == 'Canada') {
-      provinces = ['BC', 'AB', 'MB', 'NL', 'NS', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT', 'Other'];
+      provinces = ['BC', 'AB', 'MB', 'NB', 'NL', 'NS', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT', 'Other'];
       stateTitle = 'Province';
       taxTitle = 'PST Number';
       postalCodeTitle = 'Postal Code';
