@@ -54,8 +54,8 @@ function OrderItems(props) {
               <TableCell>Product</TableCell>
               <TableCell numeric>Amount</TableCell>
               <TableCell numeric>Unit Price</TableCell>
-              <TableCell numeric>Discount</TableCell>
-              <TableCell numeric align="right">Total Price (After discount)</TableCell>
+              <TableCell numeric>Adjustment</TableCell>
+              <TableCell numeric align="right">Total Price (After adjustment)</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -118,11 +118,9 @@ function OrderItems(props) {
                   <TableRow>
                     <TableCell align="right">
                       {tax.tax && (tax.tax.taxName)}
-                      {!tax.tax && tax.taxName && (tax.taxName)}
                     </TableCell>
                     <TableCell align="right" numeric>
-                      {tax.tax && `${(tax.tax.percentage).toFixed(0)} %`}
-                      {!tax.tax && `${(tax.taxPercentage).toFixed(2)} %`}
+                      {tax.tax && `${(tax.tax.percentage).toFixed(2)} %`}
                     </TableCell>
                     <TableCell align="right" numeric>
                       {ccyFormat(tax.taxAmount)}
