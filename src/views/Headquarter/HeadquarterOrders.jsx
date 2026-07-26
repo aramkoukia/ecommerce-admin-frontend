@@ -249,8 +249,8 @@ export default class HeadquarterOrders extends React.Component {
                   <TableCell>Product</TableCell>
                   <TableCell numeric>Amount</TableCell>
                   <TableCell numeric>Unit Price</TableCell>
-                  <TableCell numeric>Discount</TableCell>
-                  <TableCell numeric>Total Price (After discount)</TableCell>
+                  <TableCell numeric>Adjustment</TableCell>
+                  <TableCell numeric>Total Price (After adjustment)</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>

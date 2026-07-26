@@ -345,7 +345,7 @@ export default class OrderTable extends React.Component {
               <TableCell />
               <TableCell>Amount</TableCell>
               <TableCell numeric>Unit Price ($)</TableCell>
-              <TableCell>Discount</TableCell>
+              <TableCell>Adjustment</TableCell>
               <TableCell />
               <TableCell numeric align="right">Total Price ($)</TableCell>
             </TableRow>
@@ -524,7 +524,7 @@ export default class OrderTable extends React.Component {
                 </TableRow>
               ))}
             <TableRow style={{ 'background-color': 'lightgray' }}>
-              <TableCell colspan={6} align="right">Total Discount</TableCell>
+              <TableCell colspan={6} align="right">Total Adjustment</TableCell>
               <TableCell colspan={2} align="right" numeric>{this.ccyFormat(totalDiscount)}</TableCell>
             </TableRow>
             <TableRow style={{ 'background-color': 'lightgray' }}>
