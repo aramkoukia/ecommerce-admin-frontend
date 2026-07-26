@@ -269,8 +269,8 @@ export default class Orders extends React.Component {
                   <TableCell>Product</TableCell>
                   <TableCell numeric align="right">Amount</TableCell>
                   <TableCell numeric align="right">Unit Price</TableCell>
-                  <TableCell numeric align="right">Discount</TableCell>
-                  <TableCell numeric align="right">Total Price (After discount)</TableCell>
+                  <TableCell numeric align="right">Adjustment</TableCell>
+                  <TableCell numeric align="right">Total Price (After Adjustment)</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>

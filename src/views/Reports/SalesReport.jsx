@@ -188,7 +188,7 @@ export default class SalesReport extends React.Component {
         name: 'Other Tax ($)',
       },
       {
-        name: 'Discount ($)',
+        name: 'Adjustment ($)',
       },
       {
         name: 'Sub Total ($)',
@@ -220,7 +220,7 @@ export default class SalesReport extends React.Component {
       },
       {
         field: 'totalDiscount',
-        title: 'Discount ($)',
+        title: 'Adjustment ($)',
       },
       {
         field: 'status',

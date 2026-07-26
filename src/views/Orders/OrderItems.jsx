@@ -89,11 +89,11 @@ function OrderItems(props) {
               <TableBody>
                 <TableRow></TableRow>
                 <TableRow>
-                  <TableCell colspan="2" align="right">Subtotal (after discount)</TableCell>
+                  <TableCell colspan="2" align="right">Subtotal (after adjustment)</TableCell>
                   <TableCell numeric align="right">{ccyFormat(order.subTotal)}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell colspan="2" align="right">Total Discount</TableCell>
+                  <TableCell colspan="2" align="right">Total Adjustment</TableCell>
                   <TableCell numeric align="right">
                     {ccyFormat(order.orderDetail.map((item) => item.totalDiscount).reduce((prev, next) => prev + next, 0))}
                   </TableCell>

@@ -61,7 +61,7 @@ function Discounts(props) {
         <GridItem xs={12} sm={12} md={12}>
           <Card>
             <CardHeader color="primary">
-              <div className={classes.cardTitleWhite}>Discounts</div>
+              <div className={classes.cardTitleWhite}>Adjustments</div>
             </CardHeader>
             <CardBody>
               <MUIDataTable

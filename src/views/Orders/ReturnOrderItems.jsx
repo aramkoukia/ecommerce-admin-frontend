@@ -188,8 +188,8 @@ export default class ReturnOrderItems extends React.Component {
                 <TableCell>Product</TableCell>
                 <TableCell numeric>Amount</TableCell>
                 <TableCell numeric>Unit Price</TableCell>
-                <TableCell numeric>Discount</TableCell>
-                <TableCell numeric>Discount Amount</TableCell>
+                <TableCell numeric>Adjustment</TableCell>
+                <TableCell numeric>Adjustment Amount</TableCell>
                 <TableCell numeric>Total Price</TableCell>
               </TableRow>
             </TableHead>
@@ -258,11 +258,11 @@ export default class ReturnOrderItems extends React.Component {
           <Table>
             <TableBody>
               <TableRow style={{ 'background-color': 'lightgray' }}>
-                <TableCell colSpan={6} align="right">Subtotal (after discount)</TableCell>
+                <TableCell colSpan={6} align="right">Subtotal (after adjustment)</TableCell>
                 <TableCell colSpan={2} numeric align="right">{ccyFormat(subTotal)}</TableCell>
               </TableRow>
               <TableRow style={{ 'background-color': 'lightgray' }}>
-                <TableCell colSpan={6} align="right">Total Discount</TableCell>
+                <TableCell colSpan={6} align="right">Total Adjustment</TableCell>
                 <TableCell colSpan={2} numeric align="right">{ccyFormat(totalDiscount)}</TableCell>
               </TableRow>
               <TableRow style={{ 'background-color': 'lightgray' }}>
